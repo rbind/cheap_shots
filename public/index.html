@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
-  <meta name="generator" content="Hugo 0.24" />
+  <meta name="generator" content="Hugo 0.24.1" />
   <meta name="author" content="Andrew Tyre">
   <meta name="description" content="Professor of Wildlife Ecology">
 
@@ -591,6 +591,109 @@
 <div class="article-list-item" itemscope itemprop="blogPost">
   
   
+  <h3 class="article-title" itemprop="name">
+    <a href="/post/testing-out-latex/" itemprop="url">Testing out latex</a>
+  </h3>
+  
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-06-24 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+      Sat, Jun 24, 2017
+    </time>
+  </span>
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+
+</div>
+
+  <div class="article-style" itemprop="articleBody">
+    
+    <p>Now I want to know if I can use <span class="math inline">\(4 / 5\)</span> inline latex and</p>
+<p><span class="math display">\[
+  N_{t+1} = \lambda N_t
+\]</span></p>
+<p>and R code.</p>
+<pre class="r"><code>plot(rnorm(10),rnorm(10))</code></pre>
+<p><img src="/post/2017-06-24-testing-out-latex_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+
+    
+  </div>
+  <p class="read-more">
+    <a href="/post/testing-out-latex/" class="btn btn-primary btn-outline">
+      CONTINUE READING
+    </a>
+  </p>
+</div>
+
+      
+        
+        
+
+
+<div class="article-list-item" itemscope itemprop="blogPost">
+  
+  
+  <h3 class="article-title" itemprop="name">
+    <a href="/post/the-trouble-with-tibbles/" itemprop="url">The trouble with tibbles</a>
+  </h3>
+  
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-06-24 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+      Sat, Jun 24, 2017
+    </time>
+  </span>
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+
+</div>
+
+  <div class="article-style" itemprop="articleBody">
+    
+    Hadley Wickham’s dplyr package makes complex data manipulations easy to describe. However, dplyr functions all return “tibbles” rather than data.frames. Class tbl inherits from data.frame, so you can use tbls everywhere you use data.frames. Except when you can’t.
+Here’s one example that tripped me up recently.
+df &lt;- data.frame(a = 1:26, b = letters) sapply(df,class) ## a b ## &quot;integer&quot; &quot;factor&quot; sum(df[,&quot;b&quot;] == &#39;b&#39;) ## [1] 1 sum(as.character(df[,&quot;b&quot;],1,1) == &#39;b&#39;) ## [1] 1 But now with tbl_df
+    
+  </div>
+  <p class="read-more">
+    <a href="/post/the-trouble-with-tibbles/" class="btn btn-primary btn-outline">
+      CONTINUE READING
+    </a>
+  </p>
+</div>
+
+      
+        
+        
+
+
+<div class="article-list-item" itemscope itemprop="blogPost">
+  
+  
   <a href="/post/getting-started/">
     <img src="/img/headers/getting-started.png" class="article-banner" itemprop="image">
   </a>
@@ -747,121 +850,6 @@
   </div>
   <p class="read-more">
     <a href="/post/managing-content/" class="btn btn-primary btn-outline">
-      CONTINUE READING
-    </a>
-  </p>
-</div>
-
-      
-        
-        
-
-
-<div class="article-list-item" itemscope itemprop="blogPost">
-  
-  
-  <h3 class="article-title" itemprop="name">
-    <a href="/post/writing-markdown-latex/" itemprop="url">Writing content with Markdown, LaTeX, and Shortcodes</a>
-  </h3>
-  
-
-<div class="article-metadata">
-
-  <span class="article-date">
-    <time datetime="2016-04-20 10:00:00 &#43;0000 UTC" itemprop="datePublished">
-      Wed, Apr 20, 2016
-    </time>
-  </span>
-
-  
-
-  
-  
-  
-  
-
-  
-
-</div>
-
-  <div class="article-style" itemprop="articleBody">
-    
-    <p>Content can be written using <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">Markdown</a>, <a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics" target="_blank">LaTeX math</a>, and <a href="http://gohugo.io/extras/shortcodes/" target="_blank">Hugo Shortcodes</a>. Additionally, HTML may be used for advanced formatting. This article gives an overview of the most common formatting options.</p>
-    
-  </div>
-  <p class="read-more">
-    <a href="/post/writing-markdown-latex/" class="btn btn-primary btn-outline">
-      CONTINUE READING
-    </a>
-  </p>
-</div>
-
-      
-        
-        
-
-
-<div class="article-list-item" itemscope itemprop="blogPost">
-  
-  
-  <h3 class="article-title" itemprop="name">
-    <a href="/post/2015-07-23-r-rmarkdown/" itemprop="url">Hello R Markdown</a>
-  </h3>
-  
-
-<div class="article-metadata">
-
-  <span class="article-date">
-    <time datetime="2015-07-23 21:13:14 -0500 CDT" itemprop="datePublished">
-      Thu, Jul 23, 2015
-    </time>
-  </span>
-
-  
-  
-  
-  <span class="article-categories">
-    <i class="fa fa-folder"></i>
-    
-    <a href="/categories/r">R</a
-    >
-    
-  </span>
-  
-  
-
-  
-  
-  
-  <span class="article-tags">
-    <i class="fa fa-tags"></i>
-    
-    <a href="/tags/r-markdown">R Markdown</a
-    >, 
-    
-    <a href="/tags/plot">plot</a
-    >, 
-    
-    <a href="/tags/regression">regression</a
-    >
-    
-  </span>
-  
-  
-
-  
-
-</div>
-
-  <div class="article-style" itemprop="articleBody">
-    
-    R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.
-    
-  </div>
-  <p class="read-more">
-    <a href="/post/2015-07-23-r-rmarkdown/" class="btn btn-primary btn-outline">
       CONTINUE READING
     </a>
   </p>

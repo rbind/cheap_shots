@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
-  <meta name="generator" content="Hugo 0.24" />
+  <meta name="generator" content="Hugo 0.24.1" />
   <meta name="author" content="Andrew Tyre">
   <meta name="description" content="Professor of Wildlife Ecology">
 
@@ -155,6 +155,83 @@
   
 
   
+  
+  <div>
+    
+    <h2><a href="/post/testing-out-latex/">Testing out latex</a></h2>
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-06-24 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+      Sat, Jun 24, 2017
+    </time>
+  </span>
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+
+</div>
+
+    <div class="article-style"><p>
+      
+      <p>Now I want to know if I can use <span class="math inline">\(4 / 5\)</span> inline latex and</p>
+<p><span class="math display">\[
+  N_{t+1} = \lambda N_t
+\]</span></p>
+<p>and R code.</p>
+<pre class="r"><code>plot(rnorm(10),rnorm(10))</code></pre>
+<p><img src="/post/2017-06-24-testing-out-latex_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+
+      
+    </p></div>
+  </div>
+  
+  <div>
+    
+    <h2><a href="/post/the-trouble-with-tibbles/">The trouble with tibbles</a></h2>
+    
+
+<div class="article-metadata">
+
+  <span class="article-date">
+    <time datetime="2017-06-24 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+      Sat, Jun 24, 2017
+    </time>
+  </span>
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+
+</div>
+
+    <div class="article-style"><p>
+      
+      Hadley Wickham’s dplyr package makes complex data manipulations easy to describe. However, dplyr functions all return “tibbles” rather than data.frames. Class tbl inherits from data.frame, so you can use tbls everywhere you use data.frames. Except when you can’t.
+Here’s one example that tripped me up recently.
+df &lt;- data.frame(a = 1:26, b = letters) sapply(df,class) ## a b ## &quot;integer&quot; &quot;factor&quot; sum(df[,&quot;b&quot;] == &#39;b&#39;) ## [1] 1 sum(as.character(df[,&quot;b&quot;],1,1) == &#39;b&#39;) ## [1] 1 But now with tbl_df
+      
+    </p></div>
+  </div>
   
   <div>
     

@@ -1,0 +1,85 @@
+---
+title: The trouble with tibbles
+author: ~
+date: '2017-06-24'
+slug: the-trouble-with-tibbles
+categories: []
+tags: []
+---
+
+Hadley Wickham's `dplyr` package makes complex 
+data manipulations easy to describe. However, 
+dplyr functions all return "tibbles" rather than 
+data.frames. Class tbl inherits from data.frame, so
+you can use tbls everywhere you use data.frames. 
+Except when you can't. 
+
+Here's one example that tripped me up recently.
+
+```{r}
+df <- data.frame(a = 1:26,
+                 b = letters)
+sapply(df,class)
+sum(df[,"b"] == 'b')
+sum(as.character(df[,"b"],1,1) == 'b')
+```
+
+But now with tbl_df
+
+```{r}
+library(dplyr)
+my_first_tbl <- tbl_df(df)
+my_first_tbl
+
+```
+
+So I don't have to do `sapply(df, class)` to see
+what is going on with the contents. This is good. 
+tbls also print out only what fits on the console, 
+which is also nice.
+
+But check this out:
+
+```{r}
+sum(my_first_tbl[,"b"] == 'b') ## works
+sum(as.character(my_first_tbl[,"b"]) == 'b') ## !!
+```
+
+This threw me for longer than I care to admit.
+Especially embarrassing when a student comes with
+this problem and I don't know the answer!
+
+The reason is that `[.tbl_df()` has different
+default behavior from `[.data.frame` when
+extracting a single column. 
+
+```{r}
+class(my_first_tbl[,"b"])
+class(df[,"b"])
+```
+
+Coercing a data.frame to character gives a 
+different outcome than coercing a tbl_df. What
+gives? Turns out that `[.tbl_df()` has drop = FALSE
+while `[.data.frame` has drop = TRUE when the 
+result has a single column. Never heard 
+of drop you say? Check this out:
+
+```{r}
+class(df[,"b", drop=FALSE])
+sum(as.character(df[,"b", drop=FALSE],1,1) == 'b')
+```
+
+There are other differences too. For example, 
+`data_frame()` by default does NOT convert strings 
+to factors:
+
+```{r}
+my_second_tbl <- data_frame(a = 1:26,
+                            b = letters)
+my_second_tbl
+```
+
+I think I'm a fan of tibbles, but even if I'm not
+I am in love with dplyr, so I'd better get used to 
+tibbles. 

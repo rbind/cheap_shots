@@ -11,6 +11,104 @@
     <atom:link href="/post/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Testing out latex</title>
+      <link>/post/testing-out-latex/</link>
+      <pubDate>Sat, 24 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/testing-out-latex/</guid>
+      <description>&lt;p&gt;Now I want to know if I can use &lt;span class=&#34;math inline&#34;&gt;\(4 / 5\)&lt;/span&gt; inline latex and&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  N_{t+1} = \lambda N_t
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;and R code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(rnorm(10),rnorm(10))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2017-06-24-testing-out-latex_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The trouble with tibbles</title>
+      <link>/post/the-trouble-with-tibbles/</link>
+      <pubDate>Sat, 24 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/post/the-trouble-with-tibbles/</guid>
+      <description>&lt;p&gt;Hadley Wickham’s &lt;code&gt;dplyr&lt;/code&gt; package makes complex data manipulations easy to describe. However, dplyr functions all return “tibbles” rather than data.frames. Class tbl inherits from data.frame, so you can use tbls everywhere you use data.frames. Except when you can’t.&lt;/p&gt;
+&lt;p&gt;Here’s one example that tripped me up recently.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df &amp;lt;- data.frame(a = 1:26,
+                 b = letters)
+sapply(df,class)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##         a         b 
+## &amp;quot;integer&amp;quot;  &amp;quot;factor&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(df[,&amp;quot;b&amp;quot;] == &amp;#39;b&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(as.character(df[,&amp;quot;b&amp;quot;],1,1) == &amp;#39;b&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But now with tbl_df&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;dplyr&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:stats&amp;#39;:
+## 
+##     filter, lag&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:base&amp;#39;:
+## 
+##     intersect, setdiff, setequal, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;my_first_tbl &amp;lt;- tbl_df(df)
+my_first_tbl&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 26 x 2
+##        a      b
+##    &amp;lt;int&amp;gt; &amp;lt;fctr&amp;gt;
+##  1     1      a
+##  2     2      b
+##  3     3      c
+##  4     4      d
+##  5     5      e
+##  6     6      f
+##  7     7      g
+##  8     8      h
+##  9     9      i
+## 10    10      j
+## # ... with 16 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;So I don’t have to do &lt;code&gt;sapply(df, class)&lt;/code&gt; to see what is going on with the contents. This is good. tbls also print out only what fits on the console, which is also nice.&lt;/p&gt;
+&lt;p&gt;But check this out:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(my_first_tbl[,&amp;quot;b&amp;quot;] == &amp;#39;b&amp;#39;) ## works&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(as.character(my_first_tbl[,&amp;quot;b&amp;quot;]) == &amp;#39;b&amp;#39;) ## !!&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This threw me for longer than I care to admit. Especially embarrassing when a student comes with this problem and I don’t know the answer!&lt;/p&gt;
+&lt;p&gt;The reason is that &lt;code&gt;[.tbl_df()&lt;/code&gt; has different default behavior from &lt;code&gt;[.data.frame&lt;/code&gt; when extracting a single column.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;class(my_first_tbl[,&amp;quot;b&amp;quot;])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;tbl_df&amp;quot;     &amp;quot;tbl&amp;quot;        &amp;quot;data.frame&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;class(df[,&amp;quot;b&amp;quot;])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;factor&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Coercing a data.frame to character gives a different outcome than coercing a tbl_df. What gives? Turns out that &lt;code&gt;[.tbl_df()&lt;/code&gt; has drop = FALSE while &lt;code&gt;[.data.frame&lt;/code&gt; has drop = TRUE when the result has a single column. Never heard of drop you say? Check this out:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;class(df[,&amp;quot;b&amp;quot;, drop=FALSE])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;data.frame&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;sum(as.character(df[,&amp;quot;b&amp;quot;, drop=FALSE],1,1) == &amp;#39;b&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There are other differences too. For example, &lt;code&gt;data_frame()&lt;/code&gt; by default does NOT convert strings to factors:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;my_second_tbl &amp;lt;- data_frame(a = 1:26,
+                            b = letters)
+my_second_tbl&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 26 x 2
+##        a     b
+##    &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt;
+##  1     1     a
+##  2     2     b
+##  3     3     c
+##  4     4     d
+##  5     5     e
+##  6     6     f
+##  7     7     g
+##  8     8     h
+##  9     9     i
+## 10    10     j
+## # ... with 16 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I think I’m a fan of tibbles, but even if I’m not I am in love with dplyr, so I’d better get used to tibbles.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Getting started with the Academic framework for Hugo</title>
       <link>/post/getting-started/</link>
       <pubDate>Wed, 20 Apr 2016 12:00:00 +0000</pubDate>
