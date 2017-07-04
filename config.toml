@@ -136,6 +136,12 @@ defaultContentLanguageInSubdir = false
     link = "//twitter.com/SNRatyre2"
 
   [[params.social]]
+    icon = "instagram"
+    icon_pack = "fa"
+    link = "//www.instagram.com/atiretoo/"
+
+
+  [[params.social]]
     icon = "linkedin"
     icon_pack = "fa"
     link = "//www.linkedin.com/in/drew-tyre"
