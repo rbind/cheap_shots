@@ -5,6 +5,10 @@ theme = "hugo-academic"
 enableEmoji = true
 footnotereturnlinkcontents = "<sup>^</sup>"
 
+#[permalinks]
+#    post = "/:year/:month/:day/:slug/"
+
+
 # Enable comments by entering your Disqus shortname
 disqusShortname = "drewtyre"
 
