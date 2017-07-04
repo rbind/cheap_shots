@@ -14,6 +14,8 @@ data.frames. Class tbl inherits from data.frame, so
 you can use tbls everywhere you use data.frames. 
 Except when you can't. 
 
+<!--more-->
+
 Here's one example that tripped me up recently.
 
 ```{r}

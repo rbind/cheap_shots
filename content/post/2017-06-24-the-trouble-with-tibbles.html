@@ -10,6 +10,7 @@ tags: []
 
 
 <p>Hadley Wickham’s <code>dplyr</code> package makes complex data manipulations easy to describe. However, dplyr functions all return “tibbles” rather than data.frames. Class tbl inherits from data.frame, so you can use tbls everywhere you use data.frames. Except when you can’t.</p>
+<!--more-->
 <p>Here’s one example that tripped me up recently.</p>
 <pre class="r"><code>df &lt;- data.frame(a = 1:26,
                  b = letters)
