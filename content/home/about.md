@@ -1,7 +1,7 @@
 +++
 # About/Biography widget.
 
-date = "2016-04-20T00:00:00"
+date = "2017-07-04T00:00:00"
 draft = false
 
 widget = "about"
@@ -12,31 +12,32 @@ weight = 1
 # List your academic interests.
 [interests]
   interests = [
-    "Artificial Intelligence",
-    "Computational Linguistics",
-    "Information Retrieval"
+    "Population ecology",
+    "STEM education",
+    "Statistics",
+    "Computational skills training"
   ]
 
 # List your qualifications (such as academic degrees).
 [[education.courses]]
-  course = "PhD in Artificial Intelligence"
-  institution = "Stanford University"
-  year = 2012
+  course = "PhD in Agriculture"
+  institution = "University of Adelaide"
+  year = 1999
 
 [[education.courses]]
-  course = "MEng in Artificial Intelligence"
-  institution = "Massachusetts Institute of Technology"
-  year = 2009
+  course = "MSc. Behavioural Ecology"
+  institution = "Simon Fraser University"
+  year = 1994
 
 [[education.courses]]
-  course = "BSc in Artificial Intelligence"
-  institution = "Massachusetts Institute of Technology"
-  year = 2008
+  course = "BSc (Honours) Zoology"
+  institution = "University of Alberta"
+  year = 1991
  
 +++
 
 # Biography
 
-Lena Smith is a professor of artificial intelligence at the Stanford AI Lab. Her research interests include distributed robotics, mobile computing and programmable matter. She leads the Robotic Neurobiology group, which develops self-reconfiguring robots, systems of self-organizing robots, and mobile sensor networks.
+This is the internet home of Dr. Andrew Tyre, Professor of Wildlife Ecology at the [University of Nebraska - Lincoln](http://snr.unl.edu/aboutus/who/people/faculty-member.asp?pid=523). All opinions on this page are my own.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate. 
+Nothing fancy, just a place to put ideas, experiment with github hosting, and using R Markdown. 
