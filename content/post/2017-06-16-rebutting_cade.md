@@ -12,7 +12,7 @@ tags:
 
 Brian Cade [published a scathing condemnation of current statistical practices in ecology.](http://onlinelibrary.wiley.com/doi/10.1890/14-1639.1/full) It promises to be highly influential; I have seen it cited by reviewers already. I agree with a great many points Brian raised. I also disagree with one very central point. 
 
-First let's deal with the common ground. Brian's assessment of how carelessly $AIC_c$ based model averaging is being used by ecologists is spot on. There's a lot of sloppy reporting of results as well as egregiously misinformed conclusions. Perhaps the biggest issue with $AIC_c$ approaches is that they require *thinking* to be used effectively. In my experience with teaching ecologists to analyze data, they are desperate to avoid thinking, and it's close cousin, judgement. They want a turn key analysis with a clear, unambiguous interpretation. Unfortunately that's not what $AIC_c$ gives you. 
+First let's deal with the common ground. Brian's assessment of how carelessly $AIC\_c$ based model averaging is being used by ecologists is spot on. There's a lot of sloppy reporting of results as well as egregiously misinformed conclusions. Perhaps the biggest issue with $AIC\_c$ approaches is that they require *thinking* to be used effectively. In my experience with teaching ecologists to analyze data, they are desperate to avoid thinking, and it's close cousin, judgement. They want a turn key analysis with a clear, unambiguous interpretation. Unfortunately that's not what $AIC\_c$ gives you. 
 
 Issues where Brian and I agree:
 
@@ -32,27 +32,27 @@ The consequences of the theorem are clearly correct; it is this latter interpret
 As Brian did, I will start by examining the basic linear regression equation. 
 
 $$
-\begin{aligned}
+\begin{align}
 E[y|x] = & X \beta + \epsilon \\
-E[y|x] = & X_1 \beta_1 + X_c \beta_c + \epsilon
-\end{aligned}
+E[y|x] = & X\_1 \beta\_1 + X\_c \beta\_c + \epsilon
+\end{align}
 $$
 
-The second equation partitions the predictors into a focal predictor $X_1$ and everything else, $X_c$. $\beta_1$ is a 1 x 1 matrix of the regression coefficient for $X_1$, and $\beta_c$ is a vector of regression coefficients for all the other predictors in $X_c$. When I look at that equation, it seems to me that the units of the products $X_1\beta_1$ and $X_c\beta_c$ have to be units of $y$. If that's the case, then the units of $\beta_1$ are $y / X_1$. This might be the place where there is some deeper mathematics going on, so I am happy to be corrected, but as far as I can see the units of $\beta_1$ are independent of whatever $X_c$ is. 
+The second equation partitions the predictors into a focal predictor $X\_1$ and everything else, $X\_c$. $\beta\_1$ is a 1 x 1 matrix of the regression coefficient for $X\_1$, and $\beta\_c$ is a vector of regression coefficients for all the other predictors in $X\_c$. When I look at that equation, it seems to me that the units of the products $X\_1\beta\_1$ and $X\_c\beta\_c$ have to be units of $y$. If that's the case, then the units of $\beta\_1$ are $y / X\_1$. This might be the place where there is some deeper mathematics going on, so I am happy to be corrected, but as far as I can see the units of $\beta\_1$ are independent of whatever $X\_c$ is. 
 
-Next, Brian lays out several versions of the equation for $\beta_1$ to show how it is influenced by $X_c$. Maybe this is where the units change.
+Next, Brian lays out several versions of the equation for $\beta\_1$ to show how it is influenced by $X\_c$. Maybe this is where the units change.
 
 $$
-\begin{aligned}
-\beta_{1,j} = & \left(X'_1 M'_{C_j} M_{C_j} X_1\right)^{-1}X'_1 M'_{C_j} M_{C_j} y \\
-            = & Cov\left(M_{C_j}, X_1 y\right) / Var\left(M_{C_j} X_1\right) \\
-            = & \left(X'_1 X_1\right)^{-1} X'_1 y - \left(X'_1 X_1\right)^{-1} X'_1 X_{C_j} \beta_{C_j}
-\end{aligned}
+\begin{align}
+\beta\_{1,j} =& \left(X'\_1 M'\_{C\_j} M\_{C\_j} X\_1\right)^{-1}X'\_1 M'\_{C\_j} M\_{C\_j} y \\
+            =& Cov\left(M\_{C\_j}, X\_1 y\right) / Var\left(M\_{C\_j} X\_1\right) \\
+            =& \left(X'\_1 X\_1\right)^{-1} X'\_1 y - \left(X'\_1 X\_1\right)^{-1} X'\_1 X\_{C\_j} \beta\_{C\_j}
+\end{align}
 $$
 
-I find it easiest to think through the units of the third version. The first term has two parts. The units of $\left(X'_1 X_1\right)^{-1}$ are $X_1^{-2}$. The second part $X'_1 y$ has units of $X_1 y$. Put those together and you get $y X_1^{-1}$, the same units I found for $\beta_1$ above. The second term is pretty much identical except it has $X_{C_j}\beta_{C_j}$ instead of $y$, but the units of that matrix multiplication are $y$ anyway (see above). So that equation is dimensionally consistent and $\beta_1$ has units of $yX_1^{-1}$ as expected. 
+I find it easiest to think through the units of the third version. The first term has two parts. The units of $\left(X'\_1 X\_1\right)^{-1}$ are $X\_1^{-2}$. The second part $X'\_1 y$ has units of $X\_1 y$. Put those together and you get $y X\_1^{-1}$, the same units I found for $\beta\_1$ above. The second term is pretty much identical except it has $X\_{C\_j}\beta\_{C\_j}$ instead of $y$, but the units of that matrix multiplication are $y$ anyway (see above). So that equation is dimensionally consistent and $\beta\_1$ has units of $yX\_1^{-1}$ as expected. 
 
-From that equation changing the components of $X_{C_j}$ will change the magnitude and possibly the sign of $\beta_1$. But not the units. So it is legitimate to average different values of $\beta_1$ across the models. It still might not be a good idea to do it when there is multi-collinearity, but not because the units change. 
+From that equation changing the components of $X\_{C\_j}$ will change the magnitude and possibly the sign of $\beta\_1$. But not the units. So it is legitimate to average different values of $\beta\_1$ across the models. It still might not be a good idea to do it when there is multi-collinearity, but not because the units change. 
 
 However, even if the magnitude and sign of the coefficient vary between models by a large amount, I think it is reasonable to examine a model averaged estimate of the coefficient as long as the variation is not due to including interaction terms in some of the models. The reason is that large variation between models will either lead to an increase in the model averaged standard error of the coefficient, or the offending model(s) will have a very small weight. In the first instance the model averaging procedure will in fact have told us exactly what we should conclude: conditional on this model set and data, we have poor information about the exact value of that coefficient. I will demonstrate using the simulated example that Brian created for habitat selection by sage grouse. It is important to point out that this example is *designed* to be problematic, and demonstrate the issues that arise with compositional covariates. Those issues are real. What I want to do here is check to see if model averaging coefficients in this highly problematic case leads to incorrect conclusions. 
 
