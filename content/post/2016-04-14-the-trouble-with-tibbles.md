@@ -1,10 +1,9 @@
 ---
-title: The trouble with tibbles
-author: ~
-date: '2017-06-24'
-slug: the-trouble-with-tibbles
-categories: []
-tags: []
+layout: post
+title:  The trouble with tibbles
+date: 2016-04-25 14:07:33
+published: true
+tags: [example1, example2]
 ---
 
 Hadley Wickham's `dplyr` package makes complex 
@@ -14,25 +13,61 @@ data.frames. Class tbl inherits from data.frame, so
 you can use tbls everywhere you use data.frames. 
 Except when you can't. 
 
-<!--more-->
-
 Here's one example that tripped me up recently.
 
-```{r}
+
+```r
 df <- data.frame(a = 1:26,
                  b = letters)
 sapply(df,class)
+```
+
+```
+##         a         b 
+## "integer"  "factor"
+```
+
+```r
 sum(df[,"b"] == 'b')
+```
+
+```
+## [1] 1
+```
+
+```r
 sum(as.character(df[,"b"],1,1) == 'b')
+```
+
+```
+## [1] 1
 ```
 
 But now with tbl_df
 
-```{r}
+
+```r
 library(dplyr)
 my_first_tbl <- tbl_df(df)
 my_first_tbl
+```
 
+```
+## Source: local data frame [26 x 2]
+## 
+##        a      b
+##    <int> <fctr>
+## 1      1      a
+## 2      2      b
+## 3      3      c
+## 4      4      d
+## 5      5      e
+## 6      6      f
+## 7      7      g
+## 8      8      h
+## 9      9      i
+## 10    10      j
+## ..   ...    ...
 ```
 
 So I don't have to do `sapply(df, class)` to see
@@ -42,9 +77,21 @@ which is also nice.
 
 But check this out:
 
-```{r}
+
+```r
 sum(my_first_tbl[,"b"] == 'b') ## works
+```
+
+```
+## [1] 1
+```
+
+```r
 sum(as.character(my_first_tbl[,"b"]) == 'b') ## !!
+```
+
+```
+## [1] 0
 ```
 
 This threw me for longer than I care to admit.
@@ -55,9 +102,21 @@ The reason is that `[.tbl_df()` has different
 default behavior from `[.data.frame` when
 extracting a single column. 
 
-```{r}
+
+```r
 class(my_first_tbl[,"b"])
+```
+
+```
+## [1] "tbl_df"     "tbl"        "data.frame"
+```
+
+```r
 class(df[,"b"])
+```
+
+```
+## [1] "factor"
 ```
 
 Coercing a data.frame to character gives a 
@@ -67,19 +126,50 @@ while `[.data.frame` has drop = TRUE when the
 result has a single column. Never heard 
 of drop you say? Check this out:
 
-```{r}
+
+```r
 class(df[,"b", drop=FALSE])
+```
+
+```
+## [1] "data.frame"
+```
+
+```r
 sum(as.character(df[,"b", drop=FALSE],1,1) == 'b')
+```
+
+```
+## [1] 0
 ```
 
 There are other differences too. For example, 
 `data_frame()` by default does NOT convert strings 
 to factors:
 
-```{r}
+
+```r
 my_second_tbl <- data_frame(a = 1:26,
                             b = letters)
 my_second_tbl
+```
+
+```
+## Source: local data frame [26 x 2]
+## 
+##        a     b
+##    <int> <chr>
+## 1      1     a
+## 2      2     b
+## 3      3     c
+## 4      4     d
+## 5      5     e
+## 6      6     f
+## 7      7     g
+## 8      8     h
+## 9      9     i
+## 10    10     j
+## ..   ...   ...
 ```
 
 I think I'm a fan of tibbles, but even if I'm not
