@@ -1,9 +1,9 @@
 ---
-layout: post
 title:  Scaling and Centering
 date: 2016-05-01 16:49:07
-published: true
-tags: [R]
+summary: "Centering and rescaling covariates is a common task"
+slug: scaling-and-center
+tags: ["R", "data manipulation"]
 ---
 
 Centering and rescaling covariates is a common task prior to building
@@ -17,10 +17,10 @@ the fancy automation tools available in RStudio and package `devtools`. Today
 those musings and desires collided, and I give you [scaler](http://github.com/atyre2/scaler)!
 
 
-{% highlight r %}
+```r
 install.packages("devtools")
 devtools::install_github("atyre2/scaler")
-{% endhighlight %}
+```
 
 The functions in this package provide type-stable
 scaling and/or centering while ignoring
@@ -57,14 +57,14 @@ the scaling means redoing the calculations or storing that information somewhere
 else. Here's an example of the kind of problem that causes for students. 
 
 
-{% highlight r %}
+```r
 library(scaler)
 library(dplyr) # for %>%
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## 
 ## Attaching package: 'dplyr'
 ## 
@@ -75,31 +75,31 @@ library(dplyr) # for %>%
 ## The following objects are masked from 'package:base':
 ## 
 ##     intersect, setdiff, setequal, union
-{% endhighlight %}
+```
 
 
 
-{% highlight r %}
+```r
 library(ggplot2)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Warning: package 'ggplot2' was built under R version 3.2.4
-{% endhighlight %}
+```
 
 
 
-{% highlight r %}
+```r
 sc_iris <- scale_df(iris) %>%
   center_df()
 head(sc_iris)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 ## 1   -0.8976739  1.01560199    -1.335752   -1.311052  setosa
 ## 2   -1.1392005 -0.13153881    -1.335752   -1.311052  setosa
@@ -107,11 +107,11 @@ head(sc_iris)
 ## 4   -1.5014904  0.09788935    -1.279104   -1.311052  setosa
 ## 5   -1.0184372  1.24503015    -1.335752   -1.311052  setosa
 ## 6   -0.5353840  1.93331463    -1.165809   -1.048667  setosa
-{% endhighlight %}
+```
 
 
 
-{% highlight r %}
+```r
 petals_lm <- lm(Petal.Length ~ Petal.Width, data = sc_iris)
 
 # now make a nice plot with predicted values
@@ -121,7 +121,7 @@ nd$Petal.Length <- predict(petals_lm, newdata = nd)
 ggplot(iris, aes(x = Petal.Width, y = Petal.Length)) + 
   geom_point() + 
   geom_path(data=nd)
-{% endhighlight %}
+```
 
 ![plot of chunk unnamed-chunk-1](/figure/scaling-and-center/unnamed-chunk-1-1.png) 
 
