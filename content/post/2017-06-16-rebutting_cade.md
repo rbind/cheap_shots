@@ -32,10 +32,11 @@ The consequences of the theorem are clearly correct; it is this latter interpret
 As Brian did, I will start by examining the basic linear regression equation. 
 
 $$
-\begin{align}
-E[y|x] = & X \beta + \epsilon \\
-E[y|x] = & X\_1 \beta\_1 + X\_c \beta\_c + \epsilon
-\end{align}
+E[y|x] =  X \beta + \epsilon 
+$$
+
+$$
+E[y|x] =  X\_1 \beta\_1 + X\_c \beta\_c + \epsilon
 $$
 
 The second equation partitions the predictors into a focal predictor $X\_1$ and everything else, $X\_c$. $\beta\_1$ is a 1 x 1 matrix of the regression coefficient for $X\_1$, and $\beta\_c$ is a vector of regression coefficients for all the other predictors in $X\_c$. When I look at that equation, it seems to me that the units of the products $X\_1\beta\_1$ and $X\_c\beta\_c$ have to be units of $y$. If that's the case, then the units of $\beta\_1$ are $y / X\_1$. This might be the place where there is some deeper mathematics going on, so I am happy to be corrected, but as far as I can see the units of $\beta\_1$ are independent of whatever $X\_c$ is. 
@@ -43,11 +44,15 @@ The second equation partitions the predictors into a focal predictor $X\_1$ and 
 Next, Brian lays out several versions of the equation for $\beta\_1$ to show how it is influenced by $X\_c$. Maybe this is where the units change.
 
 $$
-\begin{align}
-\beta\_{1,j} =& \left(X'\_1 M'\_{C\_j} M\_{C\_j} X\_1\right)^{-1}X'\_1 M'\_{C\_j} M\_{C\_j} y \\
-            =& Cov\left(M\_{C\_j}, X\_1 y\right) / Var\left(M\_{C\_j} X\_1\right) \\
-            =& \left(X'\_1 X\_1\right)^{-1} X'\_1 y - \left(X'\_1 X\_1\right)^{-1} X'\_1 X\_{C\_j} \beta\_{C\_j}
-\end{align}
+\beta\_{1,j} = \left(X'\_1 M'\_{C\_j} M\_{C\_j} X\_1\right)^{-1}X'\_1 M'\_{C\_j} M\_{C\_j} y
+$$
+
+$$
+            = Cov\left(M\_{C\_j}, X\_1 y\right) / Var\left(M\_{C\_j} X\_1\right) 
+$$
+
+$$
+            = \left(X'\_1 X\_1\right)^{-1} X'\_1 y - \left(X'\_1 X\_1\right)^{-1} X'\_1 X\_{C\_j} \beta\_{C\_j}
 $$
 
 I find it easiest to think through the units of the third version. The first term has two parts. The units of $\left(X'\_1 X\_1\right)^{-1}$ are $X\_1^{-2}$. The second part $X'\_1 y$ has units of $X\_1 y$. Put those together and you get $y X\_1^{-1}$, the same units I found for $\beta\_1$ above. The second term is pretty much identical except it has $X\_{C\_j}\beta\_{C\_j}$ instead of $y$, but the units of that matrix multiplication are $y$ anyway (see above). So that equation is dimensionally consistent and $\beta\_1$ has units of $yX\_1^{-1}$ as expected. 
@@ -77,7 +82,7 @@ ggpairs(df)
 
 ![plot of chunk makeData](/figure/rebutting_cade/makeData-1.png)
 
-So there is a near perfect negative correlation between the things sage grouse like and the things they don't like, although it gets less bad when considering the individual covariates. In fact, looking at the correlations between just x1 through x4 none of them have correlations bigger than $\abs{0.7}$, so common "rules of thumb" would not exclude them. Now we'll build up a Poisson response, and fit all the models 
+So there is a near perfect negative correlation between the things sage grouse like and the things they don't like, although it gets less bad when considering the individual covariates. In fact, looking at the correlations between just x1 through x4 none of them have correlations bigger than $|0.7|$, so common "rules of thumb" would not exclude them. Now we'll build up a Poisson response, and fit all the models 
 
 
 ```r
@@ -172,7 +177,7 @@ So even though the pairwise correlation coefficients are not raising alarms, `ca
 
 ## Model Averaging including interaction terms
 
-One place where model averaging coefficients really will get you in trouble is when there are interaction terms. The problem is that when there is an interaction term between $X_1$ and $X_i$, then the interpretation of $\beta_1$ shifts to be $y X^{-1}_{1}$ conditional on $X_2 = 0$. This can also lead to the magnitude of $\beta_1$ jumping around, and it is so frowned upon that many automatic model averaging functions will simply return an error if they detect the presence of an interaction. 
+One place where model averaging coefficients really will get you in trouble is when there are interaction terms. The problem is that when there is an interaction term between $X_1$ and $X_i$, then the interpretation of $\beta\_1$ shifts to be $y X^{-1}\_{1}$ conditional on $X\_2 = 0$. This can also lead to the magnitude of $\beta\_1$ jumping around, and it is so frowned upon that many automatic model averaging functions will simply return an error if they detect the presence of an interaction. 
 
 Thinking about how the interpretation shifts in the presence of a different predictor is still not assuming the units change. The big difference between the discussion above and the effect of including an interaction is that in the presence of an interaction the interpretation of the coefficient is assuming *a particular value* of another covariate. Not just the presence of that covariate, but a specific value. 
 
