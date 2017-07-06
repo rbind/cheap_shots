@@ -181,7 +181,7 @@ One place where model averaging coefficients really will get you in trouble is w
 
 Thinking about how the interpretation shifts in the presence of a different predictor is still not assuming the units change. The big difference between the discussion above and the effect of including an interaction is that in the presence of an interaction the interpretation of the coefficient is assuming *a particular value* of another covariate. Not just the presence of that covariate, but a specific value. 
 
-I think there is an easy fix to this problem. If all continuous covariates are centered, and [all categorical predictors use sum-to-zero contrasts](https://atyre2.github.io/2016/09/03/sum-to-zero-contrasts.html), then I think the interpretation of the individual coefficients does not change when interactions are present. But that's mostly a guess. For now I recommend not model averaging coefficients when there are interactions present in some of the models. Model average the predictions from all the models if you really want help interpreting the model set.
+I think there is an easy fix to this problem. If all continuous covariates are centered, and [all categorical predictors use sum-to-zero contrasts](/post/sum-to-zero/), then I think the interpretation of the individual coefficients does not change when interactions are present. But that's mostly a guess. For now I recommend not model averaging coefficients when there are interactions present in some of the models. Model average the predictions from all the models if you really want help interpreting the model set.
 
 ## Variable importance weights suck
 
