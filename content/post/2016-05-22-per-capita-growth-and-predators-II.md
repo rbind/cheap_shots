@@ -1,8 +1,9 @@
 --- 
-layout: post 
-title:  How do predators change population growth, part II? 
-published: true 
+title:  How do predators change population growth, part II?
+date: 2016-5-22
 tags: [population regulation, ecology] 
+slug: per-capita-growth-and-predators
+summary: "Last week [I starting thinking about how predation might affect a species that otherwise experiences logistic growth](http://atyre2.github.io/2016/05/18/per-capita-growth-and-predators.html) due to intra-specific competition. I looked at predators with both Type I and Type II functional responses to their prey. What about predators with Type III responses?"
 ---
 
 Last week [I starting thinking about how predation might affect a species that otherwise experiences logistic growth](http://atyre2.github.io/2016/05/18/per-capita-growth-and-predators.html) due to intra-specific competition. I looked at predators with both Type I and Type II functional responses to their prey. What about predators with Type III responses?
@@ -19,21 +20,31 @@ $$
   f(N) = \frac{aN^2}{1+ahN^2}
 $$
 
-The only change is replacing $$N$$ with $$N^2$$. The per capita rate of death due to predation is no longer a maximum at $$N = 0$$. Instead there is a maximum at $$N_{max} = \sqrt{1/ah}$$, which is easiest to see in the following figure. 
+The only change is replacing $N$ with $N^2$. The per capita rate of death due to predation is no longer a maximum at $N = 0$. Instead there is a maximum at $N_{max} = \sqrt{1/ah}$, which is easiest to see in the following figure. 
 
 ![plot of chunk typeIIIplot](/figure/per-capita-growth-and-predators-II/typeIIIplot-1.png) 
 
-The combination of death due to intraspecific competition and death due to a Type III predator creates a non-linear response of total per capita death rates to population size. Total per capita death rate first increases as population size increases. The curve hits a maximum and then begins to decline with increasing population size just like a Type II curve. Eventually, as population size increases the per capita death due to predation asymptotes to 0. At large population sizes the death rate is again linear. If the per capita birth rate function is high enough, then a Type III predator also leads to dynamics that look very much like the logistic. How high is high enough? Unfortunately that's not as easy to work out as it was for the Type II curve! 
-However, as long as $$b(N_{max}) > d(N_{max}) + \frac{aN_{max}}{2}$$, we'll have something that looks logistic. The per capita birth rate has to be higher than the peak in the figure above.
+The combination of death due to intraspecific competition and death due to a Type III predator creates a non-linear response of total per capita death rates to population size.
 
-If that condition is not met, then there are two possibilities. First the most interesting case. The per capita birth rate intersects the per capita death rate somewhere to the right of the maximum predation rate. That point will be stable, and it corresponds to $$K$$ in the absence of predation. Closer to the maximum predation rate, but still to the right of it, there will be an unstable equilibrium point. This is the upper boundary of the "predator pit" created by a Type II predator. Just as in the Type II case, a population slightly larger than this point will increase to the upper stable equilibrium. A population slightly smaller will decrease towards zero. Unlike the Type II case, there is a third equilibrum point bigger than zero. This one is stable. Thus in this case there is a "floor" to the predator pit that is not extinction!
+Total per capita death rate first increases as population size increases. The curve hits a maximum and then begins to
+decline with increasing population size just like a Type II curve. Eventually, as population size increases the per capita death due to predation asymptotes to 0. At large
+population sizes the death rate is again linear. If the per capita birth rate function is high enough, then a Type III predator also leads to dynamics that look very much like the logistic. How high is high enough? Unfortunately that's not as easy to work out as it was for the Type II curve! 
+However, as long as
+
+$$
+  b(N_{max}) > d(N_{max}) + \frac{aN_{max}}{2}
+$$
+
+we'll have something that looks logistic. The per capita birth rate has to be higher than the peak in the figure above.
+
+If that condition is not met, then there are two possibilities. First the most interesting case. The per capita birth rate intersects the per capita death rate somewhere to the right of the maximum predation rate. That point will be stable, and it corresponds to $K$ in the absence of predation. Closer to the maximum predation rate, but still to the right of it, there will be an unstable equilibrium point. This is the upper boundary of the "predator pit" created by a Type II predator. Just as in the Type II case, a population slightly larger than this point will increase to the upper stable equilibrium. A population slightly smaller will decrease towards zero. Unlike the Type II case, there is a third equilibrum point bigger than zero. This one is stable. Thus in this case there is a "floor" to the predator pit that is not extinction!
 
 In the second case the per capita birth rate curve is below the death rate everywhere above the maximum predation point. Then there will be just one equilibrium point, and it will be the third stable point above, close to zero abundance. 
 
 
 ![plot of chunk typeIIIplot2](/figure/per-capita-growth-and-predators-II/typeIIIplot2-1.png) 
 
-When $$N$$ is smaller than Pit, the death rate is larger than the birth rate and the population will decline. When $$N$$ is larger than Pit the death rate is lower than the birth rate and the population increases. 
+When $N$ is smaller than Pit, the death rate is larger than the birth rate and the population will decline. When $N$ is larger than Pit the death rate is lower than the birth rate and the population increases. 
 
 As with simpler predation models the logistic model turns out to be surprisingly good approximation of what happens when adding predation to the logistic model. The critical assumption is that the number of predators doesn't change with changes in the number of the focal species. 
 
