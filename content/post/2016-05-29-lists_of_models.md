@@ -1,52 +1,53 @@
 --- 
-layout: post 
 title:  Lists of models in a data.frame
-published: true 
 tags: [R, multimodel inference, AIC] 
+date: '2016-05-29'
+slug: lists-of-models
+summary: "So a couple weeks ago [I had a stab at putting a list of fitted models into a data.frame](http://atyre2.github.io/2016/05/11/happy-houR-one.html). I didn't succeed. So, here's another try. 
+"
 ---
 
 So a couple weeks ago [I had a stab at putting a list of fitted models into a data.frame](http://atyre2.github.io/2016/05/11/happy-houR-one.html). I didn't succeed. So, here's another try. 
 
 Load up all the things.
 
-
-{% highlight r %}
+```r
 library(dplyr)
 library(tidyr)
 library(purrr)
 library(broom)
-{% endhighlight %}
+```
 
 I'll not repeat all the code from that previous post.[^allthecode] I have a data.frame that has a character column `models` with the formulas I want. I want the fitted results of that in another column of the same data.frame. 
 
 
 
 
-{% highlight r %}
+```r
 results <- mutate(mods,
                   fits = map(models, fitMods))
 glimpse(results)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Observations: 11
 ## Variables: 2
 ## $ models (chr) "DICK ~ 1", "DICK ~ vor", "DICK ~ vor + pc1", "DIC...
 ## $ fits   (list) 2.152592, 0.3941909, 0.626556, 1.207469, 0.742738...
-{% endhighlight %}
+```
 
 That seems to have worked! Lets see ... 
 
 
-{% highlight r %}
+```r
 summary(results[[2]][[3]])
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## 
 ## Call:
 ## glm(formula = as.formula(f), family = "poisson", data = Abundances)
@@ -70,18 +71,18 @@ summary(results[[2]][[3]])
 ## AIC: 329.43
 ## 
 ## Number of Fisher Scoring iterations: 5
-{% endhighlight %}
+```
 
 Yes! all the models are in there. Getting them out of the data.frame is a bit awkward. First I had to extract the relevant column of the dataframe, and then pull out a piece of the list. Looking at `results` is also painful, but turn it into a tbl and ...
 
 
-{% highlight r %}
+```r
 tbl_df(results)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Source: local data frame [11 x 2]
 ## 
 ##                                        models         fits
@@ -97,35 +98,35 @@ tbl_df(results)
 ## 9            DICK ~ vor + pc1 + pc2 + vor:pc2 <S3:glm, lm>
 ## 10 DICK ~ vor + pc1 + pc2 + vor:pc1 + vor:pc2 <S3:glm, lm>
 ## 11                 DICK ~ (vor + pc1 + pc2)^2 <S3:glm, lm>
-{% endhighlight %}
+```
 
 That's quite beautiful! It is interesting that 
 
 
-{% highlight r %}
+```r
 typeof(results[[2]])
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## [1] "list"
-{% endhighlight %}
+```
 
 but `tlb_df()` shows it as `(chr)`. 
 
 OK, now I want to use `broom::glance()` to get the AIC etc
 
 
-{% highlight r %}
+```r
 results2 <- mutate(results,
                    summaries = map(fits, glance))
 tbl_df(results2)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Source: local data frame [11 x 3]
 ## 
 ##                                        models         fits
@@ -142,7 +143,7 @@ tbl_df(results2)
 ## 10 DICK ~ vor + pc1 + pc2 + vor:pc1 + vor:pc2 <S3:glm, lm>
 ## 11                 DICK ~ (vor + pc1 + pc2)^2 <S3:glm, lm>
 ## Variables not shown: summaries (chr)
-{% endhighlight %}
+```
 
 Hmmm. OK, so now summaries is a column of data.frames. `mutate()` might not be quite the right way to do this. I was hoping for several independent columns. In hindsight what I get is obvious, but a bit awkward to work with. Lets see ... 
 
@@ -151,16 +152,16 @@ Hmmm. OK, so now summaries is a column of data.frames. `mutate()` might not be q
 So that's embarrassing. But now `tidyr` to the rescue with `unnest()`.
 
 
-{% highlight r %}
+```r
 results2 <- mutate(results,
                    summaries = map(fits, glance))
 results3 <- unnest(results2, summaries)
 arrange(results3, AIC) %>% select(models, AIC)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Source: local data frame [11 x 2]
 ## 
 ##                                        models      AIC
@@ -176,18 +177,18 @@ arrange(results3, AIC) %>% select(models, AIC)
 ## 9                                  DICK ~ vor 329.7126
 ## 10                 DICK ~ vor + pc1 + vor:pc1 330.5550
 ## 11                                   DICK ~ 1 383.9719
-{% endhighlight %}
+```
 
-So that's pretty good. The top 4 models are all virtually identical, the there's a huge leap to the rest of the set. Let's see what else `broom` has for us.
+So that's pretty good. The top 4 models are all virtually identical, then there's a huge leap to the rest of the set. Let's see what else `broom` has for us.
 
 
-{% highlight r %}
+```r
 tidy(results$fit[[10]])
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ##          term      estimate    std.error statistic      p.value
 ## 1 (Intercept)  0.6734589289 0.2182157796  3.086206 2.027281e-03
 ## 2         vor  0.2696449590 0.0364098129  7.405832 1.303307e-13
@@ -195,28 +196,28 @@ tidy(results$fit[[10]])
 ## 4         pc2 -0.0091398499 0.0021849075 -4.183175 2.874663e-05
 ## 5     vor:pc1 -0.0002913775 0.0001559036 -1.868960 6.162842e-02
 ## 6     vor:pc2  0.0015125136 0.0004025687  3.757157 1.718550e-04
-{% endhighlight %}
+```
 
 That looks pretty good ... calculating model averaged parameters is the next step. What I need is a data.frame with one row per coefficient per model, and the weight for that model.
 
 
-{% highlight r %}
+```r
 results2 <- mutate(tbl_df(results),
                    summaries = map(fits, glance),
                    estimates = map(fits, tidy)) %>%
   unnest(summaries, estimates)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Error: All nested columns must have the same number of elements.
-{% endhighlight %}
+```
 
 OK, that doesn't work to do it all at once because the number of elements in each of the nested columns isn't the same. I think I have to do it in stages. First I'll unnest the summaries and calculate the model weights. 
 
 
-{% highlight r %}
+```r
 results2 <- mutate(tbl_df(results),
                    summaries = map(fits, glance),
                    estimates = map(fits, tidy)) %>%
@@ -226,11 +227,11 @@ results2 <- mutate(tbl_df(results),
     k = df.null - df.residual + 1) %>%
   arrange(deltaAIC)
 select(results2, models, k, AIC, deltaAIC, w)
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Source: local data frame [11 x 5]
 ## 
 ##                                        models     k      AIC
@@ -247,23 +248,23 @@ select(results2, models, k, AIC, deltaAIC, w)
 ## 10                 DICK ~ vor + pc1 + vor:pc1     4 330.5550
 ## 11                                   DICK ~ 1     1 383.9719
 ## Variables not shown: deltaAIC (dbl), w (dbl)
-{% endhighlight %}
+```
 
 This is basically the output of `aictab()`. But, there's more. I've got all the estimates and their standard errors in there. If I unnest that, `group_by(term)` and then summarize ... 
 
 
-{% highlight r %}
+```r
 modavgresults <- unnest(results2, estimates) %>%
   group_by(term) %>%
   summarise(avgCoef = sum(w * estimate),
             totalw = sum(w))
 
 modavgresults
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Source: local data frame [7 x 3]
 ## 
 ##          term       avgCoef    totalw
@@ -275,12 +276,12 @@ modavgresults
 ## 5         vor  2.624654e-01 1.0000000
 ## 6     vor:pc1 -1.555750e-04 0.5578225
 ## 7     vor:pc2  1.443630e-03 0.9984185
-{% endhighlight %}
+```
 
 OK, there's a problem. Not all of the terms appear in every model. This is apparent because the total weight associated with each term is less than 1 for everything besides the intercept.[^1] So now I have two choices. Normalize the averaged coefficients by the total weight for that coefficient, or assume that those coefficients are zero in the models where they're missing. I prefer the second option because it honestly reflects the knowledge of the parameter in the set. I believe there's a function for that.
 
 
-{% highlight r %}
+```r
 modavgresults <- unnest(results2, estimates) %>%
   complete(models, term, fill = list(estimate = 0)) %>%
   group_by(term) %>%
@@ -288,11 +289,11 @@ modavgresults <- unnest(results2, estimates) %>%
             totalw = sum(w, na.rm = TRUE))
 
 modavgresults
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Source: local data frame [7 x 3]
 ## 
 ##          term       avgCoef    totalw
@@ -304,12 +305,12 @@ modavgresults
 ## 5         vor  2.624654e-01 1.0000000
 ## 6     vor:pc1 -1.555750e-04 0.5578225
 ## 7     vor:pc2  1.443630e-03 0.9984185
-{% endhighlight %}
+```
 
 Huh. That's exactly the same result as before. Makes sense, for the weighted avg. each term that's now 0 is just 0 in the sum. So makes no change there. I think it does matter for the averaged standard error. Now I've another little problem to figure out. The model averaged variance of a parameter includes a term with the difference between the model averaged coefficient, and the coefficient conditional on the specific model. So I need to use the model averaged coefficient above and stick it back into the dataframe with one row per term per model. I can use `left_join()` for that.
 
 
-{% highlight r %}
+```r
 modavgresults2 <- unnest(results2, estimates) %>%
   complete(models, term, fill = list(estimate = 0, std.error = 0)) %>%
   mutate(var.est = std.error^2) %>%
@@ -323,11 +324,11 @@ modavgresults2 <- unnest(results2, estimates) %>%
             avgSE = sqrt(avgVar))
 
 modavgresults2
-{% endhighlight %}
+```
 
 
 
-{% highlight text %}
+```
 ## Source: local data frame [7 x 5]
 ## 
 ##          term       avgCoef    totalw     avgVar     avgSE
@@ -339,12 +340,12 @@ modavgresults2
 ## 5         vor  2.624654e-01 1.0000000         NA        NA
 ## 6     vor:pc1 -1.555750e-04 0.5578225         NA        NA
 ## 7     vor:pc2  1.443630e-03 0.9984185         NA        NA
-{% endhighlight %}
+```
 
 OK then. That sucks. Extensive mucking around in the middle of the chain above reveals the problem. When I do `complete()` the value of an unspecified column, like, `w` for example, ends up missing. So when I do the final sum to get the model averaged variance, the result is missing. I can't just set `w = 0` in `complete()`, because I actually need to include the non-zero between model variance component. I think I need to do another join in the middle of the pipe to pull in the model weights from `results2`. What I want is for that operation to replace the column `w` in the data.frame. 
 
 
-{% highlight r %}
+```r
 modavgresults2 <- unnest(results2, estimates) %>%
   complete(models, term, fill = list(estimate = 0, std.error = 0)) %>%
   mutate(var.est = std.error^2) %>%
@@ -359,7 +360,7 @@ modavgresults2 <- unnest(results2, estimates) %>%
             avgSE = sqrt(avgVar))
 
 knitr::kable(modavgresults2, digits = 4)
-{% endhighlight %}
+```
 
 
 
