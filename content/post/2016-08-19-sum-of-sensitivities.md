@@ -1,8 +1,9 @@
 --- 
-layout: post 
 title:  Can you sum the sensitivities?  
-published: true 
+date: '2016-08-19'
 tags: [model, structured population] 
+slug: sum-of-sensitivities
+summary: "TL;DR No."
 ---
 
 TL;DR No. 
@@ -20,30 +21,30 @@ This was stimulated by a question to my boss who passed it on to me. Here's the 
 
 ## What's the sensitivity?
 
-In the analysis of structured population models, the sensitivity of a matrix element is just the partial derivative of the population growth rate $$\lambda$$ with respect to that matrix element. So the question is, does this make any sense?
+In the analysis of structured population models, the sensitivity of a matrix element is just the partial derivative of the population growth rate $\lambda$ with respect to that matrix element. So the question is, does this make any sense?
 
 $$
 \frac{\partial \lambda}
-     {\partial a_{ij}}  +
+     {\partial a\_{ij}}  +
 \frac{\partial \lambda}
-     {\partial a_{kl}}  = ?
+     {\partial a\_{kl}}  = ?
 $$
 
 ## The total differential
 
-Think of what's behind this thing. The population growth rate is a function of the matrix elements, $$\lambda = f(a_{ij}, a_{kl})$$ and let's pretend for the moment that there are only two. The change in $$\lambda$$ caused by changing the inputs to the function can be approximated using the total differential
+Think of what's behind this thing. The population growth rate is a function of the matrix elements, $\lambda = f(a\_{ij}, a\_{kl})$ and let's pretend for the moment that there are only two. The change in $\lambda$ caused by changing the inputs to the function can be approximated using the total differential
 
 $$
 \Delta \lambda \approx \frac{\partial \lambda}
-                      {\partial a_{ij}} \Delta a_{ij} +
+                      {\partial a\_{ij}} \Delta a\_{ij} +
 \frac{\partial \lambda}
-     {\partial a_{kl}} \Delta a_{kl}
+     {\partial a\_{kl}} \Delta a\_{kl}
 $$
 
 which gets more accurate as the changes in the matrix elements get small. If 
-$$\Delta a_{ij} = \Delta a_{kl} = 1$$, then this is just the sum of the sensitivities. So summing the sensitivities is the amount $$\lambda$$ changes if you change the matrix elements by 1 unit. But for survival that makes no sense biologically; survival is always less than 1. 
+$\Delta a\_{ij} = \Delta a\_{kl} = 1$, then this is just the sum of the sensitivities. So summing the sensitivities is the amount $\lambda$ changes if you change the matrix elements by 1 unit. But for survival that makes no sense biologically; survival is always less than 1. 
 
-OK, choose $$\Delta a_{ij}$$ to be something smaller, like, a 1% change. Fine. Guess what? That's called the elasticity. Those CAN be summed up. 
+OK, choose $\Delta a\_{ij}$ to be something smaller, like, a 1% change. Fine. Guess what? That's called the elasticity. Those CAN be summed up. 
 
 ## Conclusion
 
