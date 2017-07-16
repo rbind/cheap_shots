@@ -1,9 +1,10 @@
 --- 
-layout: post 
 title:  Testing disqus comments 
-published: true 
 comments: true
 tags: [keyword1, keyword2] 
+date: '2016-11-25'
+slug: testing_disqus
+summary: "At a reader's request I'm attempting to add disqus comments to my blog posts. Ignore this post!"
 ---
 
 At a reader's request I'm attempting to add disqus comments to my blog posts. Ignore this post!
