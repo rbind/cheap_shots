@@ -19,7 +19,7 @@ I have students think through the logistic model with graphs of per capita birth
 We will use the form of the logistic that uses explicit birth and death rates:
 
 $$
-N_{t+1} = N_t + (b_0 + b_1 N_t) N_t - (d_0 + d_1 N_t) N_t
+N\_{t+1} = N\_t + (b\_0 + b\_1 N\_t) N\_t - (d\_0 + d\_1 N\_t) N\_t
 $$
 
 This model will have 5 parameters: *b_0, b_1, d_0, d_1, N_0* as well as vector of times.
