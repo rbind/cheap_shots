@@ -1,10 +1,14 @@
 --- 
-layout: post 
 title:  Accounting for exposure days 
-published: true 
+date: '2017-02-02'
 comments: true
 tags: [statistics, R, ecology] 
 bibliography: references.bib
+slug: custom-link-funcs
+summary: "Every year I suggest a student use Terry Shaffer's log exposure models
+for nest survival (Shaffer 2004). And every year I spend hours trying to
+figure out why the code in the help section of `?family` doesn't work.
+So this year I'm writing it down."
 ---
 Every year I suggest a student use Terry Shaffer's log exposure models
 for nest survival (Shaffer 2004). And every year I spend hours trying to
@@ -15,7 +19,7 @@ Irregular data collection intervals are an annoying feature of much
 ecological data. Nest survival data in particular. Try monitoring the
 fate of dozens or hundreds of nests scattered across a large landscape
 and make sure you always visit every one every 3 days. There is always
-going to be slop[1]. Ignoring that slop leads to biased estimates of
+going to be slop[^1]. Ignoring that slop leads to biased estimates of
 survival. What we really want is the daily survival rate *p*, but when
 the intervals vary what we are observing is *p*<sup>*d*</sup> where *d*
 is the number of days in the interval.
@@ -121,5 +125,4 @@ Mayfield, Harold F. 1975. “Suggestions for Calculating Nest Success.”
 Shaffer, Terry L. 2004. “A Unified Approach to Analyzing Nest Success.”
 *The Auk* 121 (2): 526–40.
 
-[1] All the code for this post, including that not shown, [can be found
-here](https://github.com/atyre2/atyre2.github.io/raw/master/_drafts/custom_link.Rmd).
+[^1]: All the code for this post, including that not shown, [can be found here](https://github.com/atyre2/atyre2.github.io/raw/master/_drafts/custom_link.Rmd).
