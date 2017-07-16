@@ -32,7 +32,7 @@ population sizes the death rate is again linear. If the per capita birth rate fu
 However, as long as
 
 $$
-  b(N_{max}) > d(N_{max}) + \frac{aN_{max}}{2}
+  b(N\_{max}) > d(N\_{max}) + \frac{aN\_{max}}{2}
 $$
 
 we'll have something that looks logistic. The per capita birth rate has to be higher than the peak in the figure above.
