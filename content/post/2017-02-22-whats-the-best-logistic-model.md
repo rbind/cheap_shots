@@ -1,7 +1,7 @@
 --- 
 title:  What's the best way to implement the logistic model in R?
 comments: true
-tags: [teaching, models] 
+tags: [teaching, models, R] 
 date: '2017-02-22'
 slug: teaching-the-logistic-model
 summary: "I'm teaching my population dynamics class using R for the first time. I want the students to use a simple logistic population model to make predictions about how population size will respond to different management actions. So, I need to figure out the best way to implement a discrete time, logistic growth model in R."
