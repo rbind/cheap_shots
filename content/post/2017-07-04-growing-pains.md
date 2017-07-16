@@ -15,9 +15,13 @@ So I've kicked the ball on migrating to blogdown/hugo/netlify! I was invited to 
 
 Oh, and [Alison Hill's advice](https://support.rbind.io/2017/06/16/academic-site-apreshill/) to just "get it out the door" was helpful too!
 
-This post is just a list of things that stump(ed) me during the migration process. Maybe this will help down the path.
+This post is just a list of things that stump(ed) me during the migration process. Maybe this will help someone else (me?) down the path.
 
-- [ ] Disqus comment block not loading, even on new posts. This might be due to the temporary nature of the URL. I guess we'll see. 
+- [X] Disqus comment block not loading, even on new posts. This might be due to the temporary nature of the URL. I guess we'll see. **Solution?:** Getting the disqus shortname correct is critical! And it *isn't* your username. I created a new site on disqus and put that short name into config.toml. AND, I [followed these directions](https://gohugo.io/extras/comments/) to replace `_internal/disqus.html`. And then it started working. I'm not sure if the second bit was needed to get it working, but avoiding extra discussions from the localhost seemed like a good idea. Nonetheless, I still see the comment block on localhost ... hmmm. Ah. It loads the block but not the attached comments. hmm. 
+
+The main drawback here is that I lost all the comments on the old posts[^2]. There weren't many. But still, I wish I'd read about the comment migration thing before I went and made rash decisions about post urls etc etc. 
+
+[^2]: Well, they are still on the old site. 
 
 - [x] There are a bunch of social sharing icons that are irrelevant to me appearing on my posts! I think I have to edit the theme in order to disappear them. But I don't want to do that so I can update the theme later. **Solution:** Copy just the file with the relevant details into the layouts subdirectory in the root directory. Modify that one, and hugo uses just that one layout file while pulling in all the others from the theme. See [the hugo manual](https://gohugo.io/themes/customizing/) for details.
 
