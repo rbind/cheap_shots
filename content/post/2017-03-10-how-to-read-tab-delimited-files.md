@@ -1,8 +1,10 @@
 --- 
-layout: post 
 title:  How to read a tab delimited file
-published: true 
+date: '2017-03-10'
 comments: true
+slug: how-to-read-tab-delimited-files
+summary: "The [semester long course from Data Carpentry](http://www.datacarpentry.org/semester-biology/) uses `read.csv(..., sep='\t')` to read tab delimited files. I've been using `readr::read_tsv()` because ... well, just because! A student in my data management class (reasonably) had this question: Will both of these essentially do the same thing or are there considerations
+for using one vs. the other?"
 tags: [R, opinion] 
 ---
 
