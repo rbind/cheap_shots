@@ -13,7 +13,7 @@ footnotereturnlinkcontents = "<sup>^</sup>"
 disqusShortname = "cheap-shots"
 
 # Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = ""
+googleAnalytics = "UA-102783334-1"
 
 ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
 
