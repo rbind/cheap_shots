@@ -3,7 +3,7 @@ title: Growing pains
 author: Drew Tyre
 date: '2017-07-06'
 slug: growing-pains
-draft: true
+draft: false
 summary: "So I've kicked the ball on migrating to blogdown/hugo/netlify!"
 categories: []
 tags:
