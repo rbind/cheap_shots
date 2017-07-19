@@ -14,9 +14,9 @@ weight = 60
 
 +++
 
-I am a teaching instructor for the following courses at University of Nebraska-Lincoln:
+I am the instructor for the following courses at University of Nebraska-Lincoln:
 
 - NRES 222 Ecology Lab
 - NRES 450/850 Biology of Wildlife Populations
 - NRES 800 Sampling, Data Management and Visualization
-- NRES 803 Ecological Statistics
+- [NRES 803 Ecological Statistics](classes/NRES803/)
