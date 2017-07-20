@@ -15,4 +15,4 @@ We will cover a broad sample of statistical topics relevant to ecologists; the i
 
 ## Module 1
 
-- [Week 1 lab](lab_1/)
+- [Week 1 Linear Model Review I](Week_1/)
