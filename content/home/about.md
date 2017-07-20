@@ -40,9 +40,6 @@ weight = 1
 
 My main area of interest revolves around helping people to make good wildlife management decisions, especially when very little is known about the wildlife population. We often know particularly little about threatened and endangered species, and we must make many decisions about such species. I like to try and frame these problems to identify "robust" decisions that ensure good outcomes, even when we use inaccurate information.
 
-Drew Tyre flies an aerial camera mounted on a kite to observe lizard habitat in South Austrialia.
-Drew flies an aerial camera mounted on a kite to observe lizard habitat in South Australia. Drew operates the camera by a remote control device he holds.
-
 Right now, I'm working on using very simple, "prototype" models of habitat and population dynamics, to guide decisions about habitat management for Interior Least Terns, Piping Plovers, and other threatened and endangered species. I build these models together with small groups of managers and stakeholders to directly incorporate their objectives into the modeling process. By involving the decision makers in the process of predicting the consequences of their decisions, they accept the recommendations emerging from the decision support process much more readily.
 
 This is the internet home of Dr. Andrew Tyre, Professor of Wildlife Ecology at the [University of Nebraska - Lincoln](http://snr.unl.edu/aboutus/who/people/faculty-member.asp?pid=523). All opinions on this page are my own.
