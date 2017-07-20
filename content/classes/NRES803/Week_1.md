@@ -11,12 +11,12 @@ caption = ""
 
 +++
 
-## Linear Model
+## Linear Model Review I
 
 This week you will focus on reviewing the concept of the linear
 model. This idea is at the core of almost every method we will examine
 throughout the course, so it is worth reminding ourselves of the
-basics. This week will also see the first online paper discussion.
+basics. 
 
 1. Read Chapter 5 of Analysing Ecological Data by Wednesday, 10am.
 
@@ -34,3 +34,5 @@ basics. This week will also see the first online paper discussion.
 * Using a pencil and a straightedge, draw the best fit line on each panel.
 
 4. Online Friday 2 pm, [lab #1](lab_1/), Q&A.
+
+* Turn in lab #1 on Canvas. Compress the *entire* project directory and submit as an attachment.
