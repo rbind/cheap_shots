@@ -1,0 +1,52 @@
+---
+title: "Assessing your Readiness for NRES 803"
+date: "2017-08-01"
+highlight: true
+---
+
+The following figures and outputs are designed to evaluate your readiness to take NRES 803. Type your answers into a TEXT file (NOT a word document!) using a text editor or something like notepad (Windows) or TextEdit (OS/X) or using the RStudio IDE. Copy the question into the file and place your answer underneath it. Save it in a file with the name "yourlastname_is_ready.txt". 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.path = "assets/")
+RIKZ <- read.table("https://unl.box.com/shared/static/pncos8dmjnr27ve1c9f490mon57il9ap.txt", header = TRUE)
+library(ggplot2)
+```
+
+## Interpreting graphical and statistical output
+The RIKZ dataset from the textbook has data on species occurence on `r length(unique(RIKZ$Beach))` sandy beaches along the North Sea. Each observation represents a point along a transect perpendicular to the mean low water level. In addition to species richness there are covariates for habitat variables like Height relative to mean low water (NAP), angle of the beach, salinity, temperature and so on.
+
+Species richness declines with height above mean low water. The solid line is an estimated linear model with Richness as the response and NAP as the covariate. The grey area is the 95% confidence region for the estimated mean response.
+
+```{r plot, echo = FALSE}
+RIKZ$Richness <- rowSums(RIKZ[,2:76] > 0)
+ggplot(RIKZ, aes(x = NAP, y = Richness)) + geom_point(aes(color = factor(Beach))) + geom_smooth(method="lm") + scale_color_discrete(name = "Beach")
+```
+
+The following is the output from the estimated linear model.
+
+```{r model1, echo = FALSE}
+RIKZ_model.1<-lm(Richness ~ NAP, data = RIKZ)
+summary(RIKZ_model.1)
+```
+
+Answer the following questions.
+
+1. What is the expected species richness when NAP is 0? Provide both a mean and standard error. 
+2. How fast does species richness change with increasing NAP? Provide both a mean and standard error. 
+3. Is the relationship between Richness and NAP statistically significant? Quote the relevant statistics to support your conclusion. 
+4. Is the intercept of the model significantly different from 0? Quote the relevant statistics to support your conclusion. 
+5. Test the hypothesis that the effect of NAP on richness is different from -1 species/m.
+6. What is the expected species richness when NAP = -0.5?
+
+## Using R to make a graph
+
+Create a new project in RStudio. [Download the RIKZ dataset from here](https://unl.box.com/shared/static/pncos8dmjnr27ve1c9f490mon57il9ap.txt) and save it into a subdirectory of the project directory called 'data'. Load the dataset into R and make a plot of grainsize vs. sorting1. Color the points according to which beach they were collected on. Use any sort of graphics functions you are comfortable with, but I will use package ggplot2 throughout the class. 
+
+Print out your working directory, and a list of the files in your working directory and all subdirectories. (hint: ?list.files)
+
+Save the R code needed to load the data, make the plot, and print the directory contents into a text file with a '.R' extension. The file should be called "yourlastname_is_ready.R". In a comment at the bottom of this script, write out the full path to the saved script file. This file should be self-contained. That is, if you run it while the working directory is the project directory, and the environment is empty, it should run and produce the results without any errors. 
+
+## Submission
+
+Send me BOTH the '*.txt' and '*.R' files by email <atyre2@unl.edu>. Do not send any data files or saved figures. Do not send a word document. 

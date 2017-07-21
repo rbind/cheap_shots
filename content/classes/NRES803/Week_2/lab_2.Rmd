@@ -18,6 +18,8 @@ Create a new project for Week 2 Lab.
 Download the [RIKZ.txt](https://my.unl.edu/bbcswebdav/users/atyre2/EcoStats/Module_1/Linear_Model_Review_week_2/Data/RIKZ.txt) datafile into a subdirectory called 'data'.
 
 ```{r}
+library(NRES803)
+data(RIKZ)
 RIKZ <- read.table("data/RIKZ.txt", header = TRUE)
 dim(RIKZ)
 ```

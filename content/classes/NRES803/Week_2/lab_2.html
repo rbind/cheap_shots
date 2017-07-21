@@ -11,7 +11,9 @@ output: html_document
 <hr />
 <p>Create a new project for Week 2 Lab.</p>
 <p>Download the <a href="https://my.unl.edu/bbcswebdav/users/atyre2/EcoStats/Module_1/Linear_Model_Review_week_2/Data/RIKZ.txt">RIKZ.txt</a> datafile into a subdirectory called ‘data’.</p>
-<pre class="r"><code>RIKZ &lt;- read.table(&quot;data/RIKZ.txt&quot;, header = TRUE)
+<pre class="r"><code>library(NRES803)
+data(RIKZ)
+RIKZ &lt;- read.table(&quot;data/RIKZ.txt&quot;, header = TRUE)
 dim(RIKZ)</code></pre>
 <p>This file has 45 observations and 89 variables. Many of those variables are abundance measures for single species. These are in columns 2 through 76. To calculate species richness for each site we need to first use a logical variable to seperate the zeros from positive abundances. Then we add up each row. We can use a convenient function rowSum() that calculates the sum of each row in a matrix. The “&gt;0” part converts the count observations of species in columns 2 through 76 into presence/absence of each species. The result is a single vector that contains the species richness, or alpha diversity, of each site in the dataset.</p>
 <pre class="r"><code>RIKZ$Richness &lt;- rowSums(RIKZ[,2:76] &gt; 0)
