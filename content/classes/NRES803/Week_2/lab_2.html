@@ -1,7 +1,7 @@
 ---
 title: "Week 2 Lab"
 author: "Drew Tyre"
-date: "August 21, 2016"
+date: "2017-08-01"
 output: html_document
 ---
 
@@ -9,11 +9,9 @@ output: html_document
 
 <p>This week will give you further practice with making plots, estimating linear models in R, and getting predicted values from those fitted models. This exercise will be completed by Friday afternoon at 5pm. Create a new project in RStudio named “yourlastname_lab2”. Submit the compressed project directory, which should include an R Markdown file that can be compiled directly to html without errors. The answers to the numbered questions should be in plain text. The code should be in R code chunks.</p>
 <hr />
-<p>Create a new project for Week 2 Lab.</p>
-<p>Download the <a href="https://my.unl.edu/bbcswebdav/users/atyre2/EcoStats/Module_1/Linear_Model_Review_week_2/Data/RIKZ.txt">RIKZ.txt</a> datafile into a subdirectory called ‘data’.</p>
+<p>Load the NRES803 package.</p>
 <pre class="r"><code>library(NRES803)
 data(RIKZ)
-RIKZ &lt;- read.table(&quot;data/RIKZ.txt&quot;, header = TRUE)
 dim(RIKZ)</code></pre>
 <p>This file has 45 observations and 89 variables. Many of those variables are abundance measures for single species. These are in columns 2 through 76. To calculate species richness for each site we need to first use a logical variable to seperate the zeros from positive abundances. Then we add up each row. We can use a convenient function rowSum() that calculates the sum of each row in a matrix. The “&gt;0” part converts the count observations of species in columns 2 through 76 into presence/absence of each species. The result is a single vector that contains the species richness, or alpha diversity, of each site in the dataset.</p>
 <pre class="r"><code>RIKZ$Richness &lt;- rowSums(RIKZ[,2:76] &gt; 0)
@@ -28,7 +26,7 @@ Richness_NAP</code></pre>
 <p>I’ve saved the output of <code>ggplot()</code> into a variable so that I can simply reuse that object later when I want to add something to the plot. This isn’t necessary, but saves on copying and pasting code if you’re making the same plot multiple times. Now we fit a linear model to that data.</p>
 <pre class="r"><code>RIKZ_model.1 &lt;- lm(Richness ~ NAP, data = RIKZ)
 summary(RIKZ_model.1)</code></pre>
-<p>You’ve already done some interpretation of that model in the readiness assessment. Let’s take a look at the assumptions of that model.</p>
+<p>You’ve already done some interpretation of that model in the <a href="/classes/NRES803/readiness/">readiness assessment</a>. Let’s take a look at the assumptions of that model.</p>
 <pre class="r"><code>library(broom)
 test_RIKZ &lt;- augment(RIKZ_model.1, data=RIKZ)
 ggplot(test_RIKZ, aes(x = .fitted, y = .resid)) + 

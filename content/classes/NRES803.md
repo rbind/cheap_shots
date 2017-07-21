@@ -18,3 +18,4 @@ If you are wondering if this course is right for you, [do these exercises](readi
 ## Module 1
 
 - [Week 1 Linear Model Review I](Week_1/)
+- [Week 2 More on Linear Models](Week_2/)

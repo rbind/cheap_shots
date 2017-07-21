@@ -1,7 +1,7 @@
 ---
 title: "Week 2 Lab"
 author: "Drew Tyre"
-date: "August 21, 2016"
+date: "2017-08-01"
 output: html_document
 ---
 
@@ -13,14 +13,11 @@ This week will give you further practice with making plots, estimating linear mo
 
 ---
 
-Create a new project for Week 2 Lab.
-
-Download the [RIKZ.txt](https://my.unl.edu/bbcswebdav/users/atyre2/EcoStats/Module_1/Linear_Model_Review_week_2/Data/RIKZ.txt) datafile into a subdirectory called 'data'.
+Load the NRES803 package.
 
 ```{r}
 library(NRES803)
 data(RIKZ)
-RIKZ <- read.table("data/RIKZ.txt", header = TRUE)
 dim(RIKZ)
 ```
 
@@ -50,7 +47,7 @@ RIKZ_model.1 <- lm(Richness ~ NAP, data = RIKZ)
 summary(RIKZ_model.1)
 ```
 
-You've already done some interpretation of that model in the readiness assessment. Let's take a look at the assumptions of that model.
+You've already done some interpretation of that model in the [readiness assessment](/classes/NRES803/readiness/). Let's take a look at the assumptions of that model.
 
 ```{r, results='hold'}
 library(broom)
@@ -130,6 +127,7 @@ ggplot(test_RIKZ, aes(.hat, .std.resid)) +
 
 
 Notice that there are only 4 weeks, with multiple observations per week. Another way to analyse this type of variable is to treat it as a categorical variable, and estimate a different parameter for each week. We can do this quickly like this:
+
 ```{r eval=FALSE}
 RIKZ_model.3 <- lm(Richness~factor(week), data=RIKZ)
 ```
