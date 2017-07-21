@@ -3,7 +3,7 @@ title = "NRES / STAT 803 Ecological Statistics"
 date = "2017-01-01T00:00:00Z"
 math = false
 highlight = false
-
+weight = 803000
 # Optional featured image (relative to `static/img/` folder).
 [header]
 image = ""

@@ -2,6 +2,7 @@
 title: "Assessing your Readiness for NRES 803"
 date: "2017-08-01"
 highlight: true
+weight: 803002
 ---
 
 The following figures and outputs are designed to evaluate your readiness to take NRES 803. Type your answers into a TEXT file (NOT a word document!) using a text editor or something like notepad (Windows) or TextEdit (OS/X) or using the RStudio IDE. Copy the question into the file and place your answer underneath it. Save it in a file with the name "yourlastname_is_ready.txt". 

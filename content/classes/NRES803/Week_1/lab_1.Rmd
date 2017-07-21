@@ -3,6 +3,7 @@ title: "Lab Week 1"
 author: "Drew Tyre"
 date: "2016-08-20"
 type: "lab"
+weight: 803011
 ---
 
 ```{r setup, include=FALSE}
