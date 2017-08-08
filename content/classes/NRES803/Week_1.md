@@ -23,9 +23,9 @@ basics.
 
 2. View videos by Wednesday, 10 am.
 
-* What is a model?
+* [What is a model?](https://youtu.be/tzRl5A30hFc)
 
-* The linear model
+* [The linear model](https://youtu.be/KroxqqUKkNE)
 
 * Multiple Regression.
 
