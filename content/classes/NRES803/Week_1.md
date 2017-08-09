@@ -27,7 +27,7 @@ basics.
 
 * [The linear model](https://youtu.be/KroxqqUKkNE)
 
-* Multiple Regression.
+* [Multiple Regression](https://youtu.be/aYxg224DnCA).
 
 3. Fitting lines exercise and discussion (Online Wednesday)
 
