@@ -23,17 +23,20 @@ basics.
 
 2. View videos by Wednesday, 10 am.
 
-* [What is a model?](https://youtu.be/tzRl5A30hFc)
+    * The data used in these videos is the horseshoes data in package NRES803. The code
+      is in the examples on the help page for the dataset.
 
-* [The linear model](https://youtu.be/KroxqqUKkNE)
+    * [What is a model?](https://youtu.be/tzRl5A30hFc)
 
-* [Multiple Regression](https://youtu.be/aYxg224DnCA).
+    * [The linear model](https://youtu.be/KroxqqUKkNE)
+
+    * [Multiple Regression](https://youtu.be/aYxg224DnCA).
 
 3. Fitting lines exercise and discussion (Online Wednesday)
 
-* Download and print this handout before the session. 
-* Using a pencil and a straightedge, draw the best fit line on each panel.
+    * Download and print this handout before the session. 
+    * Using a pencil and a straightedge, draw the best fit line on each panel.
 
 4. Online Friday 2 pm, [lab #1](lab_1/), Q&A.
 
-* Turn in lab #1 on Canvas. Compress the *entire* project directory and submit as an attachment.
+    * Turn in lab #1 on Canvas. Compress the *entire* project directory and submit as an attachment.
