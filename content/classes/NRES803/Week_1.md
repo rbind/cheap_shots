@@ -34,7 +34,7 @@ basics.
 
 3. Fitting lines exercise and discussion (Online Wednesday)
 
-    * Download and print this handout before the session. 
+    * [Download and print this handout](fittinglines.pdf) before the session. 
     * Using a pencil and a straightedge, draw the best fit line on each panel.
 
 4. Online Friday 2 pm, [lab #1](lab_1/), Q&A.
