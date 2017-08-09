@@ -15,6 +15,12 @@ We will cover a broad sample of statistical topics relevant to ecologists; the i
 
 If you are wondering if this course is right for you, [do these exercises](readiness/)
 
+## Setup
+
+Before the first week of class, you need to [install some software on your computer](computer-setup/). If you want some help, watch these videos
+
+* [Introduction to RStudio](https://youtu.be/FNrCxTSzq6s)
+
 ## Module 1
 
 - [Week 1 Linear Model Review I](Week_1/)

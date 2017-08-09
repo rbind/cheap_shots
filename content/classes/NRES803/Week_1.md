@@ -12,6 +12,10 @@ caption = ""
 
 +++
 
+## Posting introductions
+
+Go to the course discussion board on Canvas, enter the "introductions" discussion , click "Create thread", and introduce yourself! What are you doing at NU? Please also post a photograph of yourself. This is mostly for my benefit. Otherwise, we meet on campus somewhere and I've no idea why you know me but I don't know you!
+
 ## Linear Model Review I
 
 This week you will focus on reviewing the concept of the linear
