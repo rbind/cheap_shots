@@ -1,0 +1,116 @@
+---
+title: "Fitting lines exercise"
+author: "Drew Tyre"
+date: "2016-08-20"
+type: "lab"
+weight: 803012
+---
+
+
+
+<p>This example from Gelman and Nolan 2002 Teaching Statistics: A bag of tricks, chapter 4.</p>
+<pre class="r"><code># now make each figure and the corresponding r lm() output
+x = c(1,2,3)
+y = x
+plot(x,y,xlab=&quot;&quot;,ylab=&quot;&quot;,bty=&quot;n&quot;,xlim=c(0,3),ylim=c(0,3))
+lm.1 = lm(y~x)
+abline(lm.1)</code></pre>
+<p><img src="/classes/NRES803/Week_1/fittinglines_example_files/figure-html/unnamed-chunk-2-1.png" width="288" /></p>
+<pre class="r"><code>summary(lm.1)</code></pre>
+<pre><code>## Warning in summary.lm(lm.1): essentially perfect fit: summary may be
+## unreliable</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+## 1 2 3 
+## 0 0 0 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        0          0      NA       NA    
+## x                  1          0     Inf   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0 on 1 degrees of freedom
+## Multiple R-squared:      1,  Adjusted R-squared:      1 
+## F-statistic:   Inf on 1 and 1 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p></p>
+<pre class="r"><code># now make each figure and the corresponding r lm() output
+x = c(1,1,2)
+y = c(1,2,2)
+plot(x,y,xlab=&quot;&quot;,ylab=&quot;&quot;,bty=&quot;n&quot;,xlim=c(0,3),ylim=c(0,3))
+lm.1 = lm(y~x)
+abline(lm.1)</code></pre>
+<p><img src="/classes/NRES803/Week_1/fittinglines_example_files/figure-html/unnamed-chunk-3-1.png" width="288" /></p>
+<pre class="r"><code>summary(lm.1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##          1          2          3 
+## -5.000e-01  5.000e-01  2.498e-16 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)    1.000      1.225   0.816    0.564
+## x              0.500      0.866   0.577    0.667
+## 
+## Residual standard error: 0.7071 on 1 degrees of freedom
+## Multiple R-squared:   0.25,  Adjusted R-squared:   -0.5 
+## F-statistic: 0.3333 on 1 and 1 DF,  p-value: 0.6667</code></pre>
+<p></p>
+<pre class="r"><code># now make each figure and the corresponding r lm() output
+x = c(1,1,2,2)
+y = c(1,2,1,2)
+plot(x,y,xlab=&quot;&quot;,ylab=&quot;&quot;,bty=&quot;n&quot;,xlim=c(0,3),ylim=c(0,3))
+lm.1 = lm(y~x)
+abline(lm.1)</code></pre>
+<p><img src="/classes/NRES803/Week_1/fittinglines_example_files/figure-html/unnamed-chunk-4-1.png" width="288" /></p>
+<pre class="r"><code>summary(lm.1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##    1    2    3    4 
+## -0.5  0.5 -0.5  0.5 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 1.500e+00  1.118e+00   1.342    0.312
+## x           1.110e-16  7.071e-01   0.000    1.000
+## 
+## Residual standard error: 0.7071 on 2 degrees of freedom
+## Multiple R-squared:  1.972e-31,  Adjusted R-squared:   -0.5 
+## F-statistic: 3.944e-31 on 1 and 2 DF,  p-value: 1</code></pre>
+<p></p>
+<pre class="r"><code># now make each figure and the corresponding r lm() output
+x = c(1,2,3,3,4,5)
+y = c(2,3,1,3,2,3)
+plot(x,y,xlab=&quot;&quot;,ylab=&quot;&quot;,bty=&quot;n&quot;,xlim=c(0,6),ylim=c(0,4))
+lm.1 = lm(y~x)
+abline(lm.1)</code></pre>
+<p><img src="/classes/NRES803/Week_1/fittinglines_example_files/figure-html/unnamed-chunk-5-1.png" width="288" /></p>
+<pre class="r"><code>summary(lm.1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##       1       2       3       4       5       6 
+## -0.1333  0.7667 -1.3333  0.6667 -0.4333  0.4667 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)   2.0333     0.9286   2.190   0.0937 .
+## x             0.1000     0.2843   0.352   0.7428  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.8991 on 4 degrees of freedom
+## Multiple R-squared:   0.03,  Adjusted R-squared:  -0.2125 
+## F-statistic: 0.1237 on 1 and 4 DF,  p-value: 0.7428</code></pre>
