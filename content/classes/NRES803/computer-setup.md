@@ -18,7 +18,7 @@ classes***
 
 Download and install the [R base system](http://cran.rstudio.com/). I recommend you use the [Rstudio Desktop system](http://www.rstudio.com/products/rstudio/download/) to work with the base system. When installing you can accept all the default options.
 
-You should also install package `tidyverse`. I am providing all the data and some code for the course in a source package `NRES803` which you can download from the files link in Canvas.
+You should also install package `tidyverse`. I am providing all the data and some code for the course in a source package `NRES803` which you can download from the files link in Canvas. [Here is a video](https://youtu.be/Ks3qOWSQ_eo) showing you how to install packages.
 
 ### Getting help
 
