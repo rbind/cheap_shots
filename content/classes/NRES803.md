@@ -28,7 +28,7 @@ Before the first week of class, you need to [install some software on your compu
 - [Week 1 Linear Model Review I][Week_1]
 - [Week 2 More on Linear Models][Week_2]
 
-[syllabus]: syllabus/
-[computer-setup]: computer-setup/
-[Week_1]: Week_1/
-[Week_2]: Week_2/
+[syllabus]: /classes/NRES803/syllabus/
+[computer-setup]: /classes/NRES803/computer-setup/
+[Week_1]: /classes/NRES803/Week_1/
+[Week_2]: /classes/NRES803/Week_2/
