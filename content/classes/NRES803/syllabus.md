@@ -1,5 +1,5 @@
 +++
-title = "Syllabus"
+title = "NRES / STAT 803 Syllabus"
 date = "2017-08-01T00:00:00Z"
 math = false
 highlight = false
@@ -11,18 +11,16 @@ caption = ""
 
 +++
 
-# NRES/STAT 803 {#ecological-statistics-fall-2016-nresstat-803 align="center"}
+## Instructor
 
-+-----------------------------------------------------------------------+
-| **Instructor:**\                                                      |
-| Dr. Drew Tyre\                                                        |
-| Office: Hardin Hall Rm 416\                                           |
-| Phone: 402-472-4054\                                                  |
-| E-Mail: atyre2@unl.edu                                                |
-|                                                                       |
-| *Time: Lectures & Lab: online (see below for details)*\             |
-| *Office hours:* M 10-12pm, W 10-12pm, F 2-5pm or *by appointment*     |
-+-----------------------------------------------------------------------+
+Dr. Drew Tyre                                                       
+Office: Hardin Hall Rm 416                                         
+Phone: 402-472-4054                                            
+E-Mail: atyre2@unl.edu   
+<https://drewtyre.rbind.io>
+                                                                       
+*Time: Lectures & Lab: online (see below for details)*  
+*Office hours:* M 10-12pm, W 10-12pm, F 2-5pm or *by appointment*
 
 ## Index {#top}
 |                                                 |                                        |                       |
@@ -30,7 +28,7 @@ caption = ""
 | [Technical Requirements](#techrequirements)     | [Description](#description)            | [Prerequisites](#prerequisites) |
 | [Learning Objectives](#learning-objectives)     | [Instructor's Role](#instructors-role) | [Textbooks](#textbooks) |
 | [Hardware and software requirements](#hardsoft) | [Assessment/Grading](#assessment)      | [Course Schedule](#schedule) |
-| [Course Policies](#course-policies)             | [Student's with Disabilities](#disabilities) | [HELP](#help)     |
+| [Course Policies](#course-policies)             | [Students with Disabilities](#disabilities) | [HELP](#help)     |
 
 **(Click on the areas above for more detail)**
 
@@ -149,25 +147,28 @@ typically respond to voice mail messages within 4 hours.
 
 ## Textbooks 
 
-+-----------------------------------------------------------------------+
-| 1.  Alain F. Zuur, Elena N. Ieno, Graham M. Smith. 2007. Analysing    |
-|     Ecological Data. New York ; London : Springer.\                   |
-|                                                                       |
-| 2.  David R. Anderson. 2009. Model-Based Inference in the Life        |
-|     Sciences: A Primer on Evidence. Springer, New York, NY. 180 pp.   |
-|                                                                       |
-| 3.  Alain F. Zuur, Elena N. Ieno, Erik H.W.G. Meesters. 2009. A       |
-|     beginner’s Guide to R. New York; London : Springer.               |
-|                                                                       |
-| 4.  Garret Grolemund and Hadley Wickham. 2016. R for Data Science.    |
-|     [Published online](http://r4ds.had.co.nz/).                       |
-+-----------------------------------------------------------------------+
-| **Note:** All three of the required texts are available               |
-| electronically through the UNL library. The Zuur et al (2009)         |
-| Beginners guide is a bit dated. Grolemund and Wickham is better. But  |
-| I am assuming that you know the basic concepts of running R code,     |
-| getting help, manipulating data and making plots.                     |
-+-----------------------------------------------------------------------+
+
+
+1.  **Required:** Alain F. Zuur, Elena N. Ieno, Graham M. Smith. 2007. Analysing    
+    Ecological Data. New York ; London : Springer.                  
+                                                                     
+2.  **Required:** David R. Anderson. 2009. Model-Based Inference in the Life        
+    Sciences: A Primer on Evidence. Springer, New York, NY. 180 pp.
+    
+3.  Larkin A. Powell and George A. Gale. 2015. Estimation of Parameters for Animal Populations: A primer for the rest of us. Caught napping publications, Lincoln, NE. [available online](http://larkinpowell.wixsite.com/larkinpowell/estimation-of-parameters-for-animal-pop)
+                                                                     
+3.  Alain F. Zuur, Elena N. Ieno, Erik H.W.G. Meesters. 2009. A       
+    beginner’s Guide to R. New York; London : Springer.               
+
+4.  Garret Grolemund and Hadley Wickham. 2016. R for Data Science.    
+    [Published online](http://r4ds.had.co.nz/).                       
+
+> **Note:** All  of the texts are available
+> electronically through the UNL library or online . The Zuur et al (2009)
+> Beginners guide is a bit dated. Grolemund and Wickham is better. But
+> I am assuming that you know the basic concepts of running R code,
+> getting help, manipulating data and making plots.                     
+
 
 [**Return to Index**](#top)
 
@@ -188,7 +189,7 @@ it even if you're not telling me in words!
 
 All of the statistical software we will use is available as open source.
 Links to software [can be found
-here](computer-setup/). 
+here](../computer-setup/). 
 
 [**Return to Index**](#top)
 
@@ -267,45 +268,41 @@ band.
 
 ### Module 1
 
-  ------------- ---------------------------------------------- ----------------
-  Week          Topic                                          Assignment Due
-  1 -- Aug 21   Introductions, setup, Review linear models I   
-  2 -- Aug 28   Review of linear models II                     
-  3 -- Sep 4    Model Selection & Power                        Linear Models
-  4 -- Sep 11   Model Selection AIC, BIC and friends           Preproposal
-  ------------- ---------------------------------------------- ----------------
+| Week          | Topic                  | Assignment Due        |
+|:--------------|:-----------------------|:----------------------|
+|  1 -- Aug 21  | Introductions, setup, Review linear models I |    
+|  2 -- Aug 28  | Review of linear models II                  |     
+|  3 -- Sep 4   | Model Selection & Power                      |  Linear Models  
+|  4 -- Sep 11  | Model Selection AIC, BIC and friends        |   Preproposal  
 
 ### Module 2
 
-  ------------- ------------------------------ ------------------------
-  Week          Topic                          Assignment Due
-  5 -- Sep 18   Generalized Linear Models      
-  6 -- Sep 25   Generalized Additive Models    Mt Lofty Birds
-  7 -- Oct 2    NO CLASS - DR TYRE AWAY        
-  8 -- Oct 9    What's the smoothest path?     Preproposal Discussion
-  ------------- ------------------------------ ------------------------
+| Week          | Topic                  | Assignment Due        |
+|:--------------|:-----------------------|:----------------------|
+|  5 -- Sep 18  | Generalized Linear Models    |    
+|  6 -- Sep 25  | Generalized Additive Models |   Mt Lofty Birds  
+|  7 -- Oct 2   | NO CLASS - DR TYRE AWAY     |     
+|  8 -- Oct 9   | What's the smoothest path?  |   Preproposal Discussion  
 
 
 ### Module 3
 
-  -------------- ------------------------ -----------------------
-  Week           Topic                    Assignment Due
-   9 -- Oct 16   FALL BREAK No Class      
-  10 -- Oct 23   Mixing it up I           What's the Best Shape
-  11 -- Oct 30   Mixing it up II          Project Intro/methods
-  12 -- Nov 6    Choosing a mixed model   
-  -------------- ------------------------ -----------------------
+| Week          | Topic                  | Assignment Due        |
+|:--------------|:-----------------------|:----------------------|
+| 9 -- Oct 16   | FALL BREAK No Class    |                       |
+| 10 -- Oct 23  | Mixing it up I         | What's the Best Shape |
+| 11 -- Oct 30  | Mixing it up II        | Project Intro/methods |  
+| 12 -- Nov 6   | Choosing a mixed model |                       |
 
 
 ### Module 4
 
-  -------------- -------------------- -------------------
-  Week           Topic                Assignment Due
-  13 -- Nov 13   Time to Event Data   Herbivore Shadows
-  14 -- Nov 20   THANKSGIVING BREAK   
-  15 -- Nov 27   Topics TBD       
-  16 -- Dec 4    Topics TBD      
-  -------------- -------------------- -------------------
+| Week          | Topic                  | Assignment Due        |
+|:--------------|:-----------------------|:----------------------|
+|  13 -- Nov 13  | Time to Event Data  | Herbivore Shadows  |
+|  14 -- Nov 20 |  THANKSGIVING BREAK |    |
+|  15 -- Nov 27 |  Topics TBD          |  | 
+|  16 -- Dec 4  |  Topics TBD         |    |
 
 > **Note:** I reserve the right to deviate from this schedule if
 > required. However, I will not make any reading or assessment due
