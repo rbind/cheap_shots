@@ -20,7 +20,7 @@ This week you will continue to review the concept of the linear model. This week
 
     * [Evaluating Assumptions](https://youtu.be/E27HcS9QaT0).
 
-    * Limits of the linear regression (not what it sounds like!).
+    * [Limits of the linear regression (not what it sounds like!)](https://youtu.be/MQbvvydPSyg).
 
 2. Paper discussions board by Friday 2pm.
 
