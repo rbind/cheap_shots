@@ -1,0 +1,26 @@
+---
+title: "Week 2 Homework"
+author: "Drew Tyre"
+date: "2017-08-01"
+output: html_document
+weight: 803022
+---
+
+The data bleaching are in package `NRES803`. These data are derived from a paper on the regional severity of coral bleaching events triggered by high ocean temperatures (McWilliams et al, 2005). The first column (SST) is Sea Surface Temperature “anomalies” – that is, the difference between the average sea surface temperature for the Caribbean between Aug and October, and the long run average from 1961 to 1990. Positive values represent years in which the water was warmer than average; negative values represent cool years. The second column in the dataset (BLEACH is the log10 transformed percentage of 1° latitude/longitude cells reporting at least one coral bleaching event in a given year. The final column (MASS) is an indicator marking those years which were considered “Mass Bleaching Events”.
+
+1. Load the data in R, and calculate a linear regression model relating LOGBLEACH to SST using any appropriate function. Provide a written interpretation of the results, including an assessment of the assumptions. Include a plot of the raw data with the fitted model predictions superimposed on it.
+
+2. The authors log base 10 transformed the bleaching variable "... to generate linear relationships with temperature." In R, back transform LOGBLEACH to the original percentage scale, and plot against SST. Does a log-transformation make ecological sense, given the type of process and the data?  
+
+> hint: think about what happens when SST gets very large or very small on the log transformed scale
+
+3. At what range of SST values does the fitted model predict 100% bleaching will occur?  
+
+> hint: in R you can use the predict function with options newdata and interval="prediction". See `help(predict.lm)`.
+
+Please do the analyses yourself. Do not use the analysis presented in the paper, although you can refer to the paper for the ecological background. I WILL know if you do not do the analysis yourself! Please submit an R Markdown file named "yourlastname_hw_2.Rmd". You should be able to click the "knit" button in RStudio and have it produce an html file without errors.
+
+McWilliams, J et al (2005) Accelerating impacts of temperature-induced coral bleaching in the Caribbean. Ecology 86(5):2055-2060.
+
+Complete Homework and Submit by Midnight Tuesday of week 3.
+
