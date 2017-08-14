@@ -3,7 +3,7 @@ title = "NRES/BIOS 222 Ecology Lab"
 date = "2017-08-01T00:00:00Z"
 math = false
 highlight = false
-weight = 803000
+weight = 222000
 # Optional featured image (relative to `static/img/` folder).
 [header]
 image = ""

@@ -3,7 +3,7 @@ title = "NRES / BIOS 222 Syllabus"
 date = "2017-08-01T00:00:00Z"
 math = false
 highlight = false
-weight = 803003
+weight = 222003
 # Optional featured image (relative to `static/img/` folder).
 [header]
 image = ""
