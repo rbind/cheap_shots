@@ -20,24 +20,16 @@ E-Mail: atyre2@unl.edu
 <https://drewtyre.rbind.io>
                                                                        
 
-*Office hours:* M 10-12pm, W 10-12pm, F 2-5pm or *by appointment*
+*Office hours:* We will not post regular office hours, but we encourage you to make an appointment by email with either Dr. Tyre or your TA. You can also ask questions on the Canvas discussion boards opened for that purpose. Emailed questions (unless containing confidential information) will be re-posted to Canvas discussion boards so everyone can benefit from the answers. 
 
-
+Dr Tyre is also available by telephone at the number above during the week,
+generally between 8:30 am and 4:30 pm. If I am not at my desk, I
+typically respond to voice mail messages within 4 hours. 
 
 ## Description {#description}
 
-We will cover a broad sample of statistical topics relevant to
-ecologists; the intent is to provide an introduction enabling student to
-intelligently follow a seminar or scientific paper utilizing these
-methods. Depending on the needs and interests of the students we will
-enable students to conduct analyses on their own for a subset of topics.
-Across all topics we will emphasize modern methods of model
-selection/multi-model inference and relevant study design questions.
-Topics will include generalized linear and additive models, mixed
-models, and survival analysis. We will use the software package R. Each
-student will present a data analysis problem of their choice, implement
-an ecological analysis, and prepare a written paper summarizing the
-analysis and results.
+We will be going off campus three times during lab period for field activities.  **It is critical that students be on time for departure.**  Meet in Hardin Hall North Lobby (near HarH 163) unless otherwise announced. We will try to always return to Hardin Hall by 5:00pm, but you should let the instructors know if you have a tight schedule after lab (job, class, meeting).  It may be possible for you to drive separately, but please make an arrangement with the TA. When lab meets on campus, some activities will require the full 3 hours while others may not.  An overview of activities for lab each week will always be posted on Canvas prior to lab.  Check Canvas to see if we are going in the field and if any special preparation is necessary.
+
 
 [**Return to Index**](#top)
 
@@ -45,11 +37,7 @@ analysis and results.
 
 ## Prerequisites
 
-Graduate standing or permission of instructor; STAT 801 or equivalent;
-Prior Experience with "R" software.
-
-You should be familiar with basic hypothesis testing using a t-test,
-ANOVA and simple Linear Regression.
+Co-enrollment or previous enrollment in NRES/BIOS220
 
 [**Return to Index**](#top)
 
@@ -57,24 +45,10 @@ ANOVA and simple Linear Regression.
 
 ## Learning Objectives 
 
-*By the end of the course the students will be able to:*
-
-1.  Identify and summarize statistical results as presented in peer
-    reviewed articles
-2.  Compare and contrast the outputs of a model selection processes
-    based on Frequentist or Information Theoretic methods
-3.  Use R to conduct model based analyses of ecological data
-4.  Combine statistical results and ecological knowledge to support a
-    conclusion
-5.  Evaluate the presentation of statistical results in written and
-    verbal form
-
-*Students will have the opportunity to*
-
-1.  Critically discuss modern literature on ecological data analysis.
-2.  Use modern methods to analyze their own data.
-3.  Practice asking for and giving accurate and useful assistance from
-    the R-help community
+- Introduce you to field research in representative natural ecosystems of eastern Nebraska (prairie, saline wetlands, lakes)  
+- Introduce you to asking and investigating ecological questions. 
+- Quantitative literacy, including the ability to use R (data entry, graphing, basic analyses)  
+- Write effectively for a scientific audience, including appropriate style and format.
 
 [**Return to Index**](#top)
 
@@ -82,20 +56,7 @@ ANOVA and simple Linear Regression.
 
 ## Instructor's Role 
 
-This course is offered fully online, in an asynchronous fashion. I will
-have online "office hours" using Adobe Connect Monday at 10 - 12 pm,
-Wednesday at 10-12 am and Friday between 2 and 5 pm. At other times I
-will read items posted in the discussion groups within 24 hours of
-posting during the week, and within 48 hours over the weekend. I will
-respond if needed to clarify a question or comment, answer a question,
-or clarify a response by another course participant. If you send in a
-question via email, I will repost it in a discussion thread
-and answer it there. You will get your answer much more quickly by
-posting in the discussion thread directly.
 
-I am also available by telephone at the number above during the week,
-generally between 8:30 am and 4:30 pm. If I am not at my desk, I
-typically respond to voice mail messages within 4 hours. 
 
 **[Return to Index](#top)**
 
@@ -103,10 +64,7 @@ typically respond to voice mail messages within 4 hours.
 
 ## Textbooks 
 
-
-
-There are no textbooks required for this course, all materials will be available electronically on Canvas.                     
-
+There are no textbooks required for this course, all materials will be available electronically on Canvas.
 
 [**Return to Index**](#top)
 
@@ -142,6 +100,34 @@ also know or learn how to use Canvas courseware.
 
 ------------------------------------------------------------------------
 
+## Course Schedule {#schedule}
+
+| Week          | Topic                  | Assignment Due        |
+|:--------------|:-----------------------|:----------------------|
+|  1 -- Aug 21  |  |    |
+|  2 -- Aug 28  |                   |     |
+|  3 -- Sep 4   |                       |  |
+|  4 -- Sep 11  |         |   |
+|  5 -- Sep 18  | |    
+|  6 -- Sep 25  | |  
+|  7 -- Oct 2   | NO CLASS - DR TYRE AWAY     |     
+|  8 -- Oct 9   | |    
+| 9 -- Oct 16   | FALL BREAK No Class    |                       |
+| 10 -- Oct 23  | | 
+| 11 -- Oct 30  |  |  |
+| 12 -- Nov 6   | | |
+|  13 -- Nov 13  |  |  |
+|  14 -- Nov 20 |  |    |
+|  15 -- Nov 27 |           |  | 
+|  16 -- Dec 4  |          |    |
+
+> **Note:** I reserve the right to deviate from this schedule if
+> required. However, I will not make any reading or assessment due
+> earlier; I will only postpone due dates or cancel assessments
+> altogether.
+
+[**Return to Index**](#top)
+
 ## Assessment / Grading {#assessment}
 
 
@@ -158,43 +144,6 @@ band.
 
 ## Course Schedule {#schedule}
 
-### Module 1
-
-| Week          | Topic                  | Assignment Due        |
-|:--------------|:-----------------------|:----------------------|
-|  1 -- Aug 21  | Introductions, setup, Review linear models I |    
-|  2 -- Aug 28  | Review of linear models II                  |     
-|  3 -- Sep 4   | Model Selection & Power                      |  Linear Models  
-|  4 -- Sep 11  | Model Selection AIC, BIC and friends        |   Preproposal  
-
-### Module 2
-
-| Week          | Topic                  | Assignment Due        |
-|:--------------|:-----------------------|:----------------------|
-|  5 -- Sep 18  | Generalized Linear Models    |    
-|  6 -- Sep 25  | Generalized Additive Models |   Mt Lofty Birds  
-|  7 -- Oct 2   | NO CLASS - DR TYRE AWAY     |     
-|  8 -- Oct 9   | What's the smoothest path?  |   Preproposal Discussion  
-
-
-### Module 3
-
-| Week          | Topic                  | Assignment Due        |
-|:--------------|:-----------------------|:----------------------|
-| 9 -- Oct 16   | FALL BREAK No Class    |                       |
-| 10 -- Oct 23  | Mixing it up I         | What's the Best Shape |
-| 11 -- Oct 30  | Mixing it up II        | Project Intro/methods |  
-| 12 -- Nov 6   | Choosing a mixed model |                       |
-
-
-### Module 4
-
-| Week          | Topic                  | Assignment Due        |
-|:--------------|:-----------------------|:----------------------|
-|  13 -- Nov 13  | Time to Event Data  | Herbivore Shadows  |
-|  14 -- Nov 20 |  THANKSGIVING BREAK |    |
-|  15 -- Nov 27 |  Topics TBD          |  | 
-|  16 -- Dec 4  |  Topics TBD         |    |
 
 > **Note:** I reserve the right to deviate from this schedule if
 > required. However, I will not make any reading or assessment due
@@ -232,10 +181,6 @@ The SNR policy on Academic Dishonesty and procedures for appeals are
 available
 [here](http://snr.unl.edu/employeeinfo/information/employeehandbook-single.asp?infocode=S162).
 
-### Netiquette
-
-Core rules of Netiquette:
-<http://www.albion.com/netiquette/corerules.html>
 
 [**Return to Index**](#top)
 
