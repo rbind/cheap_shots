@@ -44,19 +44,11 @@ typically respond to voice mail messages within 4 hours.
 
 [**Return to Index**](#top)
 
-------------------------------------------------------------------------
-
-## Description {#description}
-
-We will be going off campus three times during lab period for field activities.  **It is critical that students be on time for departure.**  Meet in Hardin Hall North Lobby (near HarH 163) unless otherwise announced. We will try to always return to Hardin Hall by 5:00pm, but you should let the instructors know if you have a tight schedule after lab (job, class, meeting).  It may be possible for you to drive separately, but please make an arrangement with the TA. When lab meets on campus, some activities will require the full 3 hours while others may not.  An overview of activities for lab each week will always be posted on Canvas prior to lab.  Check Canvas to see if we are going in the field and if any special preparation is necessary.
-
-[**Return to Index**](#top)
-
-------------------------------------------------------------------------
-
 ## Expectations
 
 We expect that you will come to every class on time and let us know ahead of time if you have a problem. If you are going to miss a lab, let us know before hand. If you let us know afterward there is no guarantee that we can help you make up the lab. We also expect that you will turn assignments in on time and do your best to understand the material. This might require that you ask questions- so please, don’t be shy. Finally, we would like you to read the section on academic honesty. If you have any questions about this, please ask.
+
+We will be going off campus three times during lab period for field activities.  **It is critical that students be on time for departure.**  Meet in Hardin Hall North Lobby (near HarH 163) unless otherwise announced. We will try to always return to Hardin Hall by 5:00pm, but you should let the instructors know if you have a tight schedule after lab (job, class, meeting).  It may be possible for you to drive separately, but please make an arrangement with the TA. When lab meets on campus, some activities will require the full 3 hours while others may not.  An overview of activities for lab each week will always be posted on Canvas prior to lab.  Check Canvas to see if we are going in the field and if any special preparation is necessary.
 
 [**Return to Index**](#top)
 
@@ -84,7 +76,9 @@ Any modern pc or mac should be able to run all of the software we will
 use in this course. An internet connection is needed to access course
 materials on Canvas, and submit assignments. 
 
-You will need to install R Version 3.4.0 or higher and RStudio Version 1.0.143 or higher (see [setup guide](computer-setup/))
+You will need to install R Version 3.4.0 or higher and RStudio Version 1.0.143 or higher (see [setup guide][computer-setup])
+
+[computer-setup]: /classes/NRES803/computer-setup/
 
 The current version of Canvas works with the following web browsers:
 
@@ -249,7 +243,7 @@ resources at the bottom left Help link on your Canvas home page.
 
 ### Library Services
 
-UNL distance students have access to a tremendous resource-UNL’s Library
+UNL students have access to a tremendous resource-UNL’s Library
 Services
 
 This web site can also be accessed directly at: <http://iris.unl.edu/>
