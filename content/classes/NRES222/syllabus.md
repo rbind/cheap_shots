@@ -19,10 +19,9 @@ Phone: 402-472-4054
 E-Mail: atyre2@unl.edu   
 <https://drewtyre.rbind.io>
                                                                        
-Graduate Teaching Assistants:
-Monday (Sect.1): Kelly Willemessens (kelly.willemssens@huskers.unl.edu) 
-Tuesday (Sect.2): 
-Wednesday (Sect.3): 
+Graduate Teaching Assistants:  
+Kelly Willemessens (kelly.willemssens@huskers.unl.edu)   
+Amber MacInnis (thesocialblowfly@gmail.com)  
 You can also contact us through Canvas.
 
 *Office hours:* We will not post regular office hours, but we encourage you to make an appointment by email with either Dr. Tyre or your TA. You can also ask questions on the Canvas discussion boards opened for that purpose. Emailed questions (unless containing confidential information) will be re-posted to Canvas discussion boards so everyone can benefit from the answers. 
