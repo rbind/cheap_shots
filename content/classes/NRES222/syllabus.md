@@ -19,6 +19,11 @@ Phone: 402-472-4054
 E-Mail: atyre2@unl.edu   
 <https://drewtyre.rbind.io>
                                                                        
+Graduate Teaching Assistants:
+Monday (Sect.1): Kelly Willemessens (kelly.willemssens@huskers.unl.edu) 
+Tuesday (Sect.2): 
+Wednesday (Sect.3): 
+You can also contact us through Canvas.
 
 *Office hours:* We will not post regular office hours, but we encourage you to make an appointment by email with either Dr. Tyre or your TA. You can also ask questions on the Canvas discussion boards opened for that purpose. Emailed questions (unless containing confidential information) will be re-posted to Canvas discussion boards so everyone can benefit from the answers. 
 
@@ -26,10 +31,32 @@ Dr Tyre is also available by telephone at the number above during the week,
 generally between 8:30 am and 4:30 pm. If I am not at my desk, I
 typically respond to voice mail messages within 4 hours. 
 
+-------------------------------------------------------------------
+
+## Learning Objectives 
+
+- Introduce you to field research in representative natural ecosystems of eastern Nebraska (prairie, saline wetlands, lakes)  
+- Predict how species richness changes with area
+- Quantify community responses to environmental gradients
+- Predict the effect of adding extra carbon, nitrogen or phosphorous on aquatic nitrogen cycles
+- Quantitative literacy, including data entry and the ability to use R for graphing and basic analyses  
+- Write effectively for a scientific audience, including appropriate style and format.
+
+[**Return to Index**](#top)
+
+------------------------------------------------------------------------
+
 ## Description {#description}
 
 We will be going off campus three times during lab period for field activities.  **It is critical that students be on time for departure.**  Meet in Hardin Hall North Lobby (near HarH 163) unless otherwise announced. We will try to always return to Hardin Hall by 5:00pm, but you should let the instructors know if you have a tight schedule after lab (job, class, meeting).  It may be possible for you to drive separately, but please make an arrangement with the TA. When lab meets on campus, some activities will require the full 3 hours while others may not.  An overview of activities for lab each week will always be posted on Canvas prior to lab.  Check Canvas to see if we are going in the field and if any special preparation is necessary.
 
+[**Return to Index**](#top)
+
+------------------------------------------------------------------------
+
+## Expectations
+
+We expect that you will come to every class on time and let us know ahead of time if you have a problem. If you are going to miss a lab, let us know before hand. If you let us know afterward there is no guarantee that we can help you make up the lab. We also expect that you will turn assignments in on time and do your best to understand the material. This might require that you ask questions- so please, don’t be shy. Finally, we would like you to read the section on academic honesty. If you have any questions about this, please ask.
 
 [**Return to Index**](#top)
 
@@ -40,25 +67,6 @@ We will be going off campus three times during lab period for field activities. 
 Co-enrollment or previous enrollment in NRES/BIOS220
 
 [**Return to Index**](#top)
-
-------------------------------------------------------------------------
-
-## Learning Objectives 
-
-- Introduce you to field research in representative natural ecosystems of eastern Nebraska (prairie, saline wetlands, lakes)  
-- Introduce you to asking and investigating ecological questions. 
-- Quantitative literacy, including the ability to use R (data entry, graphing, basic analyses)  
-- Write effectively for a scientific audience, including appropriate style and format.
-
-[**Return to Index**](#top)
-
-------------------------------------------------------------------------
-
-## Instructor's Role 
-
-
-
-**[Return to Index](#top)**
 
 ------------------------------------------------------------------------
 
@@ -102,24 +110,26 @@ also know or learn how to use Canvas courseware.
 
 ## Course Schedule {#schedule}
 
+UNDER CONSTRUCTION! Due dates yet to be decided
+
 | Week          | Topic                  | Assignment Due        |
 |:--------------|:-----------------------|:----------------------|
-|  1 -- Aug 21  |  |    |
-|  2 -- Aug 28  |                   |     |
-|  3 -- Sep 4   |                       |  |
-|  4 -- Sep 11  |         |   |
-|  5 -- Sep 18  | |    
-|  6 -- Sep 25  | |  
-|  7 -- Oct 2   | NO CLASS - DR TYRE AWAY     |     
-|  8 -- Oct 9   | |    
-| 9 -- Oct 16   | FALL BREAK No Class    |                       |
-| 10 -- Oct 23  | | 
-| 11 -- Oct 30  |  |  |
-| 12 -- Nov 6   | | |
-|  13 -- Nov 13  |  |  |
-|  14 -- Nov 20 |  |    |
-|  15 -- Nov 27 |           |  | 
-|  16 -- Dec 4  |          |    |
+|  1 -- Aug 21  | Learning R, Making a data sheet, Species Area relationships |    |
+|  2 -- Aug 28  | **9 Mile Prairie Field Trip** |     |
+|  3 -- Sep 4   | Labor Day - no class but save days for rain makeup |  |
+|  4 -- Sep 11  | Entering 9 mile data, discuss aquatic ecology trip and datasheet |   |
+|  5 -- Sep 18  | **Aquatic ecology field trip** |    
+|  6 -- Sep 25  | Entering aquatic ecology data, analysis, initiate aquaria experiment |  
+|  7 -- Oct 2   | finish aquatic ecology analysis, prepare saline wetland lab     |     
+|  8 -- Oct 9   | **Saline wetland field trip** |    
+| 9 -- Oct 16   | **FALL BREAK** make up trips as needed |                       |
+| 10 -- Oct 23  | Saline wetland data entry and analysis | 
+| 11 -- Oct 30  | go over saline wetland analysis |  |
+| 12 -- Nov 6   | Species diversity worksheet, data entry for aquarium experiment | |
+| 13 -- Nov 13  | Population growth lab |  |
+| 14 -- Nov 20  | Thanksgiving - make up labs |    |
+| 15 -- Nov 27  | Work on report |  | 
+| 16 -- Dec 4   | last week of class |    |
 
 > **Note:** I reserve the right to deviate from this schedule if
 > required. However, I will not make any reading or assessment due
@@ -137,18 +147,6 @@ The total points assessed will be translated into letter grades as
 follows: &lt;60 F, 60-69 D, 70-79 C, 80-89 B, 90-100 A. I do not use
 minus grades, and give plus grades to scores in the top 20% of each
 band.
-
-[**Return to Index**](#top)
-
-------------------------------------------------------------------------
-
-## Course Schedule {#schedule}
-
-
-> **Note:** I reserve the right to deviate from this schedule if
-> required. However, I will not make any reading or assessment due
-> earlier; I will only postpone due dates or cancel assessments
-> altogether.
 
 [**Return to Index**](#top)
 
