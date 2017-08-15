@@ -104,26 +104,28 @@ also know or learn how to use Canvas courseware.
 
 ## Course Schedule {#schedule}
 
-UNDER CONSTRUCTION! Due dates yet to be decided
+*DUE DATES NOT YET FINAL*
 
-| Week          | Topic                  | Assignment Due        |
-|:--------------|:-----------------------|:----------------------|
+All assignments are due at midnight on the day of your lab in the week indicated. 
+
+| Week          | Topic                 | Assignment Due  |
+|:--------------|:----------------------|:----------------|
 |  1 -- Aug 21  | Learning R, Making a data sheet, Species Area relationships |    |
-|  2 -- Aug 28  | **9 Mile Prairie Field Trip** |     |
+|  2 -- Aug 28  | **9 Mile Prairie Field Trip** | Quantitative literacy WS |
 |  3 -- Sep 4   | Labor Day - no class but save days for rain makeup |  |
 |  4 -- Sep 11  | Entering 9 mile data, discuss aquatic ecology trip and datasheet |   |
 |  5 -- Sep 18  | **Aquatic ecology field trip** |    
 |  6 -- Sep 25  | Entering aquatic ecology data, analysis, initiate aquaria experiment |  
-|  7 -- Oct 2   | finish aquatic ecology analysis, prepare saline wetland lab     |     
+|  7 -- Oct 2   | Finish aquatic ecology analysis, prepare saline wetland lab | 9 Mile Prairie report     
 |  8 -- Oct 9   | **Saline wetland field trip** |    
-| 9 -- Oct 16   | **FALL BREAK** make up trips as needed |                       |
+| 9 -- Oct 16   | **FALL BREAK** make up trips as needed | Draft Aquatic Ecology report |
 | 10 -- Oct 23  | Saline wetland data entry and analysis | 
 | 11 -- Oct 30  | go over saline wetland analysis |  |
-| 12 -- Nov 6   | Species diversity worksheet, data entry for aquarium experiment | |
-| 13 -- Nov 13  | Population growth lab |  |
-| 14 -- Nov 20  | Thanksgiving - make up labs |    |
-| 15 -- Nov 27  | Work on report |  | 
-| 16 -- Dec 4   | last week of class |    |
+| 12 -- Nov 6   | Species diversity worksheet, data entry for aquarium experiment |Final Aquatic Ecology report  |
+| 13 -- Nov 13  | Population growth lab | Draft Saline Wetland Report |
+| 14 -- Nov 20  | Thanksgiving - make up labs | Species diversity WS |
+| 15 -- Nov 27  | Aquarium experiment analysis and worksheet | Population WS | 
+| 16 -- Dec 4   | last week of class | Final Saline wetland report; Aquarium WS   |
 
 > **Note:** I reserve the right to deviate from this schedule if
 > required. However, I will not make any reading or assessment due
@@ -134,6 +136,33 @@ UNDER CONSTRUCTION! Due dates yet to be decided
 
 ## Assessment / Grading {#assessment}
 
+### Problems
+
+Please contact the instructors in person or by email with any problem. If you are having problems with the material, seek help early rather than later in the term.  Do not give up on any of the assignments; we would rather receive them late than not at all. 
+
+**Point Value**|**Name**|**Due Date**
+:------|:------|:------
+5|Quantitative Literacy Worksheet (WS)|Week 2
+10|9-Mile Prairie Report | Week 7
+25|Aquatic Ecology Report (draft and rewrite)|draft Week 9, final Week 12
+25|Saline Wetland Report (draft and rewrite)|draft Week 13, final week 16
+10|Species Diversity Worksheet| Week 14
+10|Population Worksheet| Week 15
+10|Aquarium experiment worksheet | Week 16
+5|Professionalism| Week 16
+100| Total | 
+
+Be sure to see the [policy on late assignments][late-assignments]
+
+[late-assignments]: #late-assignments
+
+Professionalism points will be assigned using the following rubric
+
+**Points assigned**|**Description**
+:-----|:-----
+4-5|Student maintains professional demeanor even when stressed; not verbally hostile, abusive, dismissive or inappropriately angry. Never expresses anger physically. Student works productively individually, or in teams, with minimal distraction to task. Student is consistently early or on time to lab, especially on field trip days. Student consistently communicates respectfully with students and instructors using professional and appropriate language. Student encourages and initiates positive interactions, and demonstrates leadership in collaboration with both individuals and groups.
+2-3|Student usually maintains professional demeanor, although may be inconsistent. Student can verbally explain expected professional behavior, but may have difficulty acting accordingly. May have difficulty expressing anger or emotions appropriately. Student may need reminders to stay on task in order to avoid disruption to the class. Student typically on time, but may miss some classes although still able to complete assignments on time. Student often requires reminders about using professional language, but is attempting to accept and incorporate feedback. Participates positively in team interaction but may not initiate.
+0-1|Student exhibits disruptive behaviors. May distract other students, or instructor. May talk to others instead of working. May argue in front of classmates. Expresses anger in verbal outbursts, or physically. May engage in physical actions that threaten others, such as throwing or knocking down objects. Student consistently late or absent, affecting ability to complete assignments in a timely manner. Displays disrespectful behavior by using insults, verbal comments, or criticism intended to belittle or berate others. Student may make racially or sexually inappropriate remarks. Does not participate positively in team interactions.
 
 **Grading Scale**
 
