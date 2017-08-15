@@ -17,6 +17,10 @@ We will cover a broad sample of statistical topics relevant to ecologists; the i
 
 If you are wondering if this course is right for you, [do these exercises](readiness/)
 
+## Statement on Diversity
+
+I want our classroom to be a safe and inclusive place for all. Every individual is valued, has the capability to succeed and has something to offer the class. While our class may only be a temporary solace from the fear, suffering or depression you may be facing in your day as a result of racism, homophobia, transphobia, sexism, legal/immigration status, political belief, or any other discrimination, know that I am always here for you. My door is always open. 
+
 ## Setup
 
 Before the first week of class, you need to [install some software on your computer][computer-setup]. If you want some help, watch these videos
