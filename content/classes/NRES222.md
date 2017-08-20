@@ -29,4 +29,4 @@ Before the first week of class, you need to [install some software on your compu
 
 [syllabus]: /classes/NRES222/syllabus/
 [computer-setup]: /classes/NRES803/computer-setup/
-[week1-lab]: /classes/NRES222/week_1/
+[week1-lab]: /classes/NRES222/week_1/lab_1/
