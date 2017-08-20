@@ -6,7 +6,7 @@ type: "lab"
 weight: 222011
 ---
 
-```{r setup, include=FALSE}
+```{r real_setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 The goal of this week's lab is just getting your feet wet, learning how to use R. Like all labs, I expect you to submit an R Markdown file that I can compile to html. You should assume any data files are in a subdirectory called "data". Your file should *not* echo the code used. Answer the *numbered questions* in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference. 
@@ -21,4 +21,41 @@ If R prompts you with a question about installing from source because of a newer
 
 Download the data from the link in Canvas, saving it into a subdirectory of your project called `data`. 
 
-Create a new R Markdown file by clicking the button in the top left of RStudio with a `+` on it. Save this file into your project directory
+Create a new R Markdown file by clicking the button in the top left of RStudio with a `+` on it. Save this file into your project directory with a filename `yourlastname_week1.Rmd`. Your file pane should look something like this:
+
+![A good directory structure at this point.](img/file_tree_step1.png)
+
+At the top of the file is some header information that you can leave as is for now.
+
+On line 8 you will see a block of text with ` ``` ` on the top and bottom:
+<pre><code>```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```</code></pre>
+This is a "code chunk". Everything in between the ` ``` ` is treated as instructions to the computer. Everything outside the code chunk is rendered as regular text. Add a line to the code chunk to load the `tidyverse` package we installed above. 
+<pre><code>```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```</code></pre>
+
+You can delete everything from the end of that code chunk to the bottom of the file. Click the Knit button at the top. You should get a preview of an HTML file that just has the header information in it. An html file will also appear in the file pane next to the Rmd file. 
+
+## Bring the data in
+
+We add another line to the code to read the data into an R object called a `data.frame`
+<pre><code>```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+beetles <- read_csv("data/dobesh_bettles.csv")
+```</code></pre>
+
+Run that line of code (control / command - enter). You will likely get an error:
+
+```
+Error: 'data/dobesh_bettles.csv' does not exist in current working directory ('/Users/atyre2/Documents/NRES222/week_1').
+```
+
+Double check the spelling of the file name (I misspelled it), and if that is good, double check that you saved the file in the right place with the right name. 
+
+## make a figure
+
+We want to make three figures. Two showing the average beetle diversity or average beetle abundance in the two habitats, and one showing how diversity changes with abundance. The third one is easier, so let's start there. The TA will demonstrate building up the code below bit by bit explaining what each piece does. 
