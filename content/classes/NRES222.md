@@ -24,5 +24,9 @@ Before the first week of class, you need to [install some software on your compu
 
 * [Introduction to RStudio](https://youtu.be/FNrCxTSzq6s)
 
+## Weeks 1 - 4
+[Week 1 lab handout][week1-lab]
+
 [syllabus]: /classes/NRES222/syllabus/
 [computer-setup]: /classes/NRES803/computer-setup/
+[week1-lab]: /classes/NRES222/week_1/
