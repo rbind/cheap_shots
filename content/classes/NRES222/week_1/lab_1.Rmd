@@ -1,0 +1,24 @@
+---
+title: "Lab Week 1"
+author: "Drew Tyre"
+date: "2016-08-20"
+type: "lab"
+weight: 222011
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+The goal of this week's lab is just getting your feet wet, learning how to use R. Like all labs, I expect you to submit an R Markdown file that I can compile to html. You should assume any data files are in a subdirectory called "data". Your file should *not* echo the code used. Answer the *numbered questions* in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference. 
+
+Open RStudio and create a new project. I recommend creating a project for each week of class inside a folder called `NRES222` or whatever else works for you.
+
+If you haven't previously, do
+```{r}
+install.packages("tidyverse")
+```
+If R prompts you with a question about installing from source because of a newer version, answer `n` for no. 
+
+Download the data from the link in Canvas, saving it into a subdirectory of your project called `data`. 
+
+Create a new R Markdown file by clicking the button in the top left of RStudio with a `+` on it. Save this file into your project directory
