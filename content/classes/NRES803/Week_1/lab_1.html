@@ -91,11 +91,11 @@ pred.1$upr &lt;- with(pred.1, .fitted + tcrit * .se.fit)
 
 ## put the raw data plot back first, then add
 ## lines and ribbons
-ggplot(gala, aes(x = log(Area), y = log(Species))) + 
-  geom_point(size = 3) + 
-  geom_line(aes(x = log(Area), y = .fitted ), 
+ggplot(gala, aes(x = log(Area))) + 
+  geom_point(aes(y = log(Species)), size = 3) + 
+  geom_line(aes(y = .fitted ), 
             data = pred.1, size = 2, color = &quot;blue&quot;) + 
-  geom_ribbon(aes(x = log(Area), ymin = lwr, ymax = upr, y = 0), 
+  geom_ribbon(aes(ymin = lwr, ymax = upr), 
               data = pred.1, alpha = 0.5)</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>What size island has a <em>mean</em> # of species equal to 55?</li>
@@ -106,14 +106,21 @@ ggplot(gala, aes(x = log(Area), y = log(Species))) +
 pred.1$plwr &lt;- with(pred.1, .fitted - tcrit * psigma)
 pred.1$pupr &lt;- with(pred.1, .fitted + tcrit * psigma)
 
-ggplot(gala, aes(x = log(Area), y = log(Species))) + 
-  geom_point(size = 3) + 
-  geom_line(aes(x = log(Area), y = .fitted ), 
+ggplot(gala, aes(x = log(Area))) + 
+  geom_point(aes(y = log(Species)), size = 3) + 
+  geom_line(aes(y = .fitted ), 
             data = pred.1, size = 2, color = &quot;blue&quot;) + 
-  geom_ribbon(aes(x = log(Area), ymin = lwr, ymax = upr, y = 0), data = pred.1, alpha = 0.25) +
-  geom_ribbon(aes(x = log(Area), ymin = plwr, ymax = pupr, y = 0), data = pred.1, alpha = 0.25)</code></pre>
+  geom_ribbon(aes(ymin = lwr, ymax = upr, y = 0), data = pred.1, alpha = 0.25) +
+  geom_ribbon(aes(ymin = plwr, ymax = pupr, y = 0), data = pred.1, alpha = 0.25)</code></pre>
 <p>The lighter grey polygon shows the distribution of observations expected for each value of <span class="math inline">\(log(Area)\)</span></p>
 <ol start="6" style="list-style-type: decimal">
 <li>What size island has a 2.5 % chance of <em>observing</em> &lt; 55 species?</li>
 </ol>
-<p>Finally, it is sometimes useful to make a plot on the untransformed scales. There should be an easy way to do this, but it isn’t working just now.</p>
+<p>Finally, it is sometimes useful to make a plot on the untransformed scales. The easy way to do that is to add <code>coord_trans()</code> to the plot, and provide the inverse functions for the transformation. Doesn’t look very good in this case!</p>
+<p>A better plot here might be to plot the data on the original, untransformed scale, and then transform the values of <code>.fitted</code> etc.</p>
+<pre class="r"><code>ggplot(gala, aes(x = Area)) + 
+  geom_point(aes(y = Species), size = 3) + 
+  geom_line(aes(y = exp(.fitted) ), 
+            data = pred.1, size = 2, color = &quot;blue&quot;) + 
+  geom_ribbon(aes(ymin = exp(lwr), ymax = exp(upr)), data = pred.1, alpha = 0.25) </code></pre>
+<p>That’s a bit better, but really hard to see what is going on with the majority of the data points in this case.</p>
