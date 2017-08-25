@@ -167,7 +167,7 @@ The lighter grey polygon shows the distribution of observations expected for eac
 
 Finally, it is sometimes useful to make a plot on the untransformed scales. The easy way to do that is to add `coord_trans()` to the plot, and provide the inverse functions for the transformation. Doesn't look very good in this case!
 
-```{r, include=FALSE, eval = FALSE}
+```{r}
 ggplot(gala, aes(x = log(Area))) + 
   geom_point(aes(y = log(Species)), size = 3) + 
   geom_line(aes(y = .fitted ), 
@@ -178,6 +178,7 @@ ggplot(gala, aes(x = log(Area))) +
 ```
 
 A better plot here might be to plot the data on the original, untransformed scale, and then transform the values of `.fitted` etc. 
+
 ```{r}
 ggplot(gala, aes(x = Area)) + 
   geom_point(aes(y = Species), size = 3) + 

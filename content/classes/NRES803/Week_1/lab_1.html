@@ -117,6 +117,13 @@ ggplot(gala, aes(x = log(Area))) +
 <li>What size island has a 2.5 % chance of <em>observing</em> &lt; 55 species?</li>
 </ol>
 <p>Finally, it is sometimes useful to make a plot on the untransformed scales. The easy way to do that is to add <code>coord_trans()</code> to the plot, and provide the inverse functions for the transformation. Doesn’t look very good in this case!</p>
+<pre class="r"><code>ggplot(gala, aes(x = log(Area))) + 
+  geom_point(aes(y = log(Species)), size = 3) + 
+  geom_line(aes(y = .fitted ), 
+            data = pred.1, size = 2, color = &quot;blue&quot;) + 
+  geom_ribbon(aes(ymin = lwr, ymax = upr), data = pred.1, alpha = 0.25) +
+  geom_ribbon(aes(ymin = plwr, ymax = pupr), data = pred.1, alpha = 0.25) +
+  coord_trans(x=&quot;exp&quot;, y=&quot;exp&quot;)</code></pre>
 <p>A better plot here might be to plot the data on the original, untransformed scale, and then transform the values of <code>.fitted</code> etc.</p>
 <pre class="r"><code>ggplot(gala, aes(x = Area)) + 
   geom_point(aes(y = Species), size = 3) + 

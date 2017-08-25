@@ -327,13 +327,8 @@ map_df(parms[1:5, 1], my_modavg, .y = fits, modnames = modnames)</code></pre>
 # make prediction data
 nd &lt;- expand.grid(Edge = -3:3, Amount = quantile(smithsim$Amount, 
     p = c(0, 0.5, 1)), Hetero = median(smithsim$Hetero), MnPatch = median(smithsim$MnPatch))
-nd &lt;- augment(fits[[12]], newdata = nd)</code></pre>
-<pre><code>## Warning: Deprecated: please use `purrr::possibly()` instead</code></pre>
-<pre><code>## Warning: Deprecated: please use `purrr::possibly()` instead</code></pre>
-<pre><code>## Warning: Deprecated: please use `purrr::possibly()` instead</code></pre>
-<pre><code>## Warning: Deprecated: please use `purrr::possibly()` instead</code></pre>
-<pre><code>## Warning: Deprecated: please use `purrr::possibly()` instead</code></pre>
-<pre class="r"><code>gg1 + geom_line(aes(y = .fitted, group = Amount), data = nd)</code></pre>
+nd &lt;- augment(fits[[12]], newdata = nd)
+gg1 + geom_line(aes(y = .fitted, group = Amount), data = nd)</code></pre>
 <p><img src="/classes/NRES803/Week_3/lab_4_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>The color shows the value of amount for each point, a third dimension. The lines are the prediction from the top model, and automatically are colored to match the points so you can see the value of Amount that gives you that prediction. The lines are parallel because there is no interaction term.</p>
 </div>
