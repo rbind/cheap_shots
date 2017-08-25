@@ -152,12 +152,12 @@ pred.1$psigma <- sqrt(stats.gala$sigma^2 + pred.1$.se.fit^2)
 pred.1$plwr <- with(pred.1, .fitted - tcrit * psigma)
 pred.1$pupr <- with(pred.1, .fitted + tcrit * psigma)
 
-ggplot(gala, aes(x = log(Area), y = log(Species))) + 
-  geom_point(size = 3) + 
-  geom_line(aes(x = log(Area), y = .fitted ), 
+ggplot(gala, aes(x = log(Area))) + 
+  geom_point(aes(y = log(Species)), size = 3) + 
+  geom_line(aes(y = .fitted ), 
             data = pred.1, size = 2, color = "blue") + 
-  geom_ribbon(aes(x = log(Area), ymin = lwr, ymax = upr, y = 0), data = pred.1, alpha = 0.25) +
-  geom_ribbon(aes(x = log(Area), ymin = plwr, ymax = pupr, y = 0), data = pred.1, alpha = 0.25)
+  geom_ribbon(aes(ymin = lwr, ymax = upr, y = 0), data = pred.1, alpha = 0.25) +
+  geom_ribbon(aes(ymin = plwr, ymax = pupr, y = 0), data = pred.1, alpha = 0.25)
 
 ```
 
