@@ -165,16 +165,25 @@ The lighter grey polygon shows the distribution of observations expected for eac
 
 6. What size island has a 2.5 % chance of _observing_ < 55 species?
 
-Finally, it is sometimes useful to make a plot on the untransformed scales. There should be an easy way to do this, but it isn't working just now. 
+Finally, it is sometimes useful to make a plot on the untransformed scales. The easy way to do that is to add `coord_trans()` to the plot, and provide the inverse functions for the transformation. Doesn't look very good in this case!
 
 ```{r, include=FALSE, eval = FALSE}
-ggplot(gala, aes(x = log(Area), y = log(Species))) + 
-  geom_point(size = 3) + 
-  geom_line(aes(x = log(Area), y = .fitted ), 
+ggplot(gala, aes(x = log(Area))) + 
+  geom_point(aes(y = log(Species)), size = 3) + 
+  geom_line(aes(y = .fitted ), 
             data = pred.1, size = 2, color = "blue") + 
-  geom_ribbon(aes(x = log(Area), ymin = lwr, ymax = upr, y = 0), data = pred.1, alpha = 0.25) +
-  geom_ribbon(aes(x = log(Area), ymin = plwr, ymax = pupr, y = 0), data = pred.1, alpha = 0.25) + 
-  scale_x_continuous(trans = "exp") + 
-  scale_y_continuous(trans = "exp")
+  geom_ribbon(aes(ymin = lwr, ymax = upr), data = pred.1, alpha = 0.25) +
+  geom_ribbon(aes(ymin = plwr, ymax = pupr), data = pred.1, alpha = 0.25) +
+  coord_trans(x="exp", y="exp")
 ```
 
+A better plot here might be to plot the data on the original, untransformed scale, and then transform the values of `.fitted` etc. 
+```{r}
+ggplot(gala, aes(x = Area)) + 
+  geom_point(aes(y = Species), size = 3) + 
+  geom_line(aes(y = exp(.fitted) ), 
+            data = pred.1, size = 2, color = "blue") + 
+  geom_ribbon(aes(ymin = exp(lwr), ymax = exp(upr)), data = pred.1, alpha = 0.25) 
+```
+
+That's a bit better, but really hard to see what is going on with the majority of the data points in this case. 
