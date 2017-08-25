@@ -18,7 +18,7 @@ In this week we’ll look at how model selection methods lead us to the idea of 
 
 1. Monday optional online help session 10-11, read, watch videos, post your pre-proposal.
 
-4. Post pre-proposal in discussion board by Tuesday 11:59 pm, Week 4.
+4. Post pre-proposal in discussion board by Tuesday 11:59 pm, Week 5.
 
 1. Before Wednesday’s online session
 
