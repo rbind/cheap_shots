@@ -8,117 +8,562 @@ weight: 803021
 
 
 
-<p>This week will give you further practice with making plots, estimating linear models in R, and getting predicted values from those fitted models. This exercise will be completed by Friday afternoon at 5pm. Create a new project in RStudio named “yourlastname_lab2”. Submit the compressed project directory, which should include an R Markdown file that can be compiled directly to html without errors. The answers to the numbered questions should be in plain text. The code should be in R code chunks.</p>
-<hr />
-<p>Load the NRES803 package.</p>
-<pre class="r"><code>library(NRES803)
-data(RIKZ)
-dim(RIKZ)</code></pre>
-<p>This file has 45 observations and 89 variables. Many of those variables are abundance measures for single species. These are in columns 2 through 76. To calculate species richness for each site we need to first use a logical variable to seperate the zeros from positive abundances. Then we add up each row. We can use a convenient function rowSum() that calculates the sum of each row in a matrix. The “&gt;0” part converts the count observations of species in columns 2 through 76 into presence/absence of each species. The result is a single vector that contains the species richness, or alpha diversity, of each site in the dataset.</p>
-<pre class="r"><code>RIKZ$Richness &lt;- rowSums(RIKZ[,2:76] &gt; 0)
-dim(RIKZ)</code></pre>
-<p>You can see that we now have one more variable than before. Now we want to plot species richness against NAP, which is a measure of how far up the beach the sampling location is.</p>
-<pre class="r"><code>library(ggplot2)
-# make &quot;Beach&quot; into a factor otherwise treated as continuous
-RIKZ$fBeach &lt;- factor(RIKZ$Beach)
-Richness_NAP &lt;- ggplot(RIKZ, aes(x = NAP, y = Richness)) + 
-  geom_point(aes(color=fBeach))
-Richness_NAP</code></pre>
-<p>I’ve saved the output of <code>ggplot()</code> into a variable so that I can simply reuse that object later when I want to add something to the plot. This isn’t necessary, but saves on copying and pasting code if you’re making the same plot multiple times. Now we fit a linear model to that data.</p>
-<pre class="r"><code>RIKZ_model.1 &lt;- lm(Richness ~ NAP, data = RIKZ)
-summary(RIKZ_model.1)</code></pre>
-<p>You’ve already done some interpretation of that model in the <a href="/classes/NRES803/readiness/">readiness assessment</a>. Let’s take a look at the assumptions of that model.</p>
-<pre class="r"><code>library(broom)
-test_RIKZ &lt;- augment(RIKZ_model.1, data=RIKZ)
-ggplot(test_RIKZ, aes(x = .fitted, y = .resid)) + 
-  geom_point(aes(color=fBeach)) + 
-  geom_smooth()
-
-# this is lifted out of base R qqline()
-y &lt;- quantile(test_RIKZ$.resid, c(0.25, 0.75))
-x &lt;- qnorm(c(0.25, 0.75))
-slope &lt;- diff(y)/diff(x)
-int &lt;- y[1L] - slope * x[1L]
-
-ggplot(test_RIKZ, aes(sample = .resid)) + 
-  stat_qq() + 
-  geom_abline(slope = slope, intercept = int)
-
-ggplot(test_RIKZ, aes(x = .fitted, y = sqrt(abs(.std.resid)))) + 
-  geom_point() + 
-  geom_smooth() + 
-  geom_hline(yintercept = 1)
-
-ggplot(test_RIKZ, aes(.hat, .std.resid)) +
- geom_vline(size = 2, colour = &quot;white&quot;, xintercept = 0) +
-  geom_hline(size = 2, colour = &quot;white&quot;, yintercept = 0) +
-  geom_point(aes(size = .cooksd)) + geom_smooth(se = FALSE)</code></pre>
-<ol style="list-style-type: decimal">
-<li>Briefly interpret what those plots are telling you about each of the four assumptions of the linear model.</li>
-</ol>
-<p>Next we will look for other important variables. It would not be uncommon for ecological communities to vary over time. So plot species richness against the variable week. I will leave this one as an exercise!</p>
-<p>Do you think the timing of the sample collection matters? Test your intuition with a linear model</p>
-<pre class="r"><code>RIKZ_model.2 = lm(Richness ~ week, data = RIKZ)
-summary(RIKZ_model.2)</code></pre>
+<p>In this week’s lab exercise we will first go through calculating the AIC values “by hand”, and then using a addon package modavgAIC. Doing the calculations by hand serves three purposes: 1) you practice using R!, 2) you gain a deeper understanding of how much work the add-on package is doing for you, and 3) sometimes the add-on package won’t work for a new class of model, and if you can do it by hand you won’t be stuck.</p>
+<p>We’ll begin by using a simulated dataset from the paper “<a href="">Confronting collinearity: comparing methods for disentangling the effects of habitat loss and fragmentation</a>” by Adam Smith and colleagues. They had real data, but I have written a few lines of code that produce datasets that are similar. They have 4 variables that describe patches in a landscape (Amount, Edge, MnPatch, and Hetero), and simulated a normally distributed response variable. Amount, Edge and Hetero affect the response, Y, and MnPatch does not. All four of the variables are correlated to some extent. The script and data will be available in package <code>NRES803</code>. The code to make the data is in the examples section of <code>?smithsim</code>, or simply load the dataframe with <code>data(&quot;smithsim&quot;)</code>. Include all the outputs and figures in your Rmd file. Answer the numbered questions.</p>
+<p>Fit a global model that includes all four variables.</p>
+<pre class="r"><code>data(&quot;smithsim&quot;)
+global &lt;- lm(Y ~ Amount + Edge + MnPatch + Hetero, data = smithsim)</code></pre>
 <ol class="example" style="list-style-type: decimal">
-<li>Does week of sampling affect species richness? How well does the fitted line represent the variation among weeks? (hint graphically check assumptions)</li>
+<li>Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (2, -2, 0, 2), and the known residual standard error of 3.5.</li>
 </ol>
-<p>Notice that there are only 4 weeks, with multiple observations per week. Another way to analyse this type of variable is to treat it as a categorical variable, and estimate a different parameter for each week. We can do this quickly like this:</p>
-<pre class="r"><code>RIKZ_model.3 &lt;- lm(Richness~factor(week), data=RIKZ)</code></pre>
-<p>However, this ends up labeling the parameters as factor(week) which is a bit odd, and makes it more difficult to do predictions from the model. A better approach is to change the variable in the dataframe:</p>
-<pre class="r"><code>RIKZ$fweek = factor(RIKZ$week)
-RIKZ_model.3 = lm(Richness ~ fweek, data = RIKZ)</code></pre>
+<p>Now fit the TRUE model; recall that the true effect of the <code>MnPatch</code> variable is 0. This model enforces that by not estimated a coefficient for this variable.</p>
+<pre class="r"><code>truth &lt;- lm(Y ~ Amount + Edge + Hetero, data = smithsim)</code></pre>
 <ol start="2" class="example" style="list-style-type: decimal">
-<li>Which model, 2 or 3, is a better predictor of Species Richness? Does model 3 fit the assumptions of the linear model?</li>
+<li>Use the summary and plots of residuals to compare the estimated coefficients and residual standard error to the true values. Is this model closer to the truth than the global model? How can you tell?</li>
 </ol>
-<p>Now we would like to find out what the estimated species richness is in each week. We could do the calculations manually, but there is a better way that uses the fitted model object. First we need a data.frame that contains one row for each estimate, and one column for each covariate in the model that we want to predict from. We can call this data.frame anything, but I prefer to call it nd, for “new data”. In our case, we are going to have 4 rows, one for each week, as a factor called fweek:</p>
-<pre class="r"><code>nd &lt;- data.frame(fweek=factor(levels(RIKZ$fweek)))
-# There is a lot going on in that one line of code. The best way to break this down is to run each piece from the “inside” out, so:
-RIKZ$fweek  # shows us the original data
-levels(RIKZ$fweek) # gives a vector of the unique levels
-factor(levels(RIKZ$fweek)) # creates a new “factor”
-# create a data.frame with one column called fweek
-data.frame(fweek=factor(levels(RIKZ$fweek)))
-# and save it in an object named ‘nd’
-nd &lt;- data.frame(fweek=factor(levels(RIKZ$fweek)))</code></pre>
-<p>Whenever you come across a bit of R code that is doing something complicated, you can use this approach to decompose what is going on. This is a very powerful way to learn R.</p>
-<p>Now we need to use the nd data.frame, together with the fitted model object, to get the predicted values:</p>
-<pre class="r"><code>augment(RIKZ_model.3,newdata=nd)</code></pre>
-<p>This gives us a dataframe of mean species richness in each week and the standard errors. So the mean species richness in week 3 is 4.2±0.96 (SE). That’s nice, but it would be nicer if we could plot it on a figure. Save the predicted means and standard errors to an object named ‘predicted.Richness’ and make the plot again.</p>
-<pre class="r"><code>predicted.Richness &lt;- augment(RIKZ_model.3, newdata=nd)
-
-# have to set color explicitly otherwise looks for fbeach in predicted.Richness
-richness_week + geom_point(aes(x = fweek, y = .fitted), color = &quot;red&quot;, data = predicted.Richness)</code></pre>
-<p>That will fail with an error about a discrete value being supplied to a continuous scale. The problem is that we made the object richness_week with week not fweek. So let’s redo that object.</p>
-<pre class="r"><code>predicted.Richness &lt;- augment(RIKZ_model.3, newdata=nd)
-# redo the plot object
-richness_week &lt;- ggplot(RIKZ, aes(x = fweek, y = Richness, color = fBeach)) + 
-  geom_point()
-# have to set color explicitly otherwise looks for fbeach in predicted.Richness
-richness_week + geom_point(aes(x = fweek, y = .fitted), color = &quot;red&quot;, size = 2, data = predicted.Richness) + 
-  geom_errorbar(aes(x = fweek, 
-                    ymin = .fitted - 1.96*.se.fit,
-                    ymax = .fitted + 1.96*.se.fit), color = &quot;red&quot;, data = predicted.Richness, inherit.aes = FALSE)</code></pre>
-<p>This same procedure works with continuous variables too. If we only have a single linear covariate we can add <code>geom_smooth(method = &quot;lm&quot;)</code> to plot the fitted line but that won’t work for more complex models or for categorical variables.</p>
-<p>Both NAP and fweek seem to affect the response. Fit a linear regression model with main effects of both NAP and fweek, like this:</p>
-<pre class="r"><code>RIKZ_model.4 = lm(Richness ~ NAP + fweek, data = RIKZ)</code></pre>
+<p>One strategy for deciding if we can remove a variable from a model is “backward selection”. We can do this with an F-test.</p>
+<pre class="r"><code>anova(truth, global)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Y ~ Amount + Edge + Hetero
+## Model 2: Y ~ Amount + Edge + MnPatch + Hetero
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1    346 4336.2                           
+## 2    345 4326.2  1     10.04 0.8007 0.3715</code></pre>
+<p>So we can justify using the smaller model because there is no significant difference between the simpler and more complex models. Now we can check to see if we can further simplify the model <code>truth</code>. I use the function <code>update()</code> to create a model that is identical except that it removes the variable <code>Amount</code>.</p>
+<pre class="r"><code>smaller.model &lt;- update(truth, . ~ . - Amount)
+anova(smaller.model, global)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Y ~ Edge + Hetero
+## Model 2: Y ~ Amount + Edge + MnPatch + Hetero
+##   Res.Df    RSS Df Sum of Sq    F    Pr(&gt;F)    
+## 1    347 4521.1                                
+## 2    345 4326.2  2    194.87 7.77 0.0005004 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Can we eliminate the Amount variable from our model? No, because doing so leads to a significant change in the residual sum of squares.</p>
 <ol start="3" class="example" style="list-style-type: decimal">
-<li>Examine the summary for this model and compare with the previous models.Also compare the coefficients for NAP and fweek with those estimated in models 1 and 3 – are the qualitative conclusions (sign and magnitude) different when the variables are combined in a single model?</li>
+<li>Repeat these two steps for the other two variables, remembering to always start from the model truth. Can we eliminate any additional variables?</li>
 </ol>
-<p>Making a plot with a more complex model is a bit involved. The problem is that we now have to make predictions with <em>both</em> NAP and fweek. So we are going to get 4 lines on a plot of Richness vs. NAP; one for each week.</p>
-<pre class="r"><code>nd = expand.grid(NAP=seq(-1.5,2.5,0.1), fweek=factor(levels(RIKZ$fweek)))
-predicted.Richness.4 &lt;- augment(RIKZ_model.4, newdata = nd)
-
-# reuse ggplot object from above. fix color to black or geom_line looks for fBeach. x aesthetic inherited from Richness_NAP
-Richness_NAP + geom_line(aes(y = .fitted, group = fweek, linetype = fweek), color = &quot;black&quot;, data = predicted.Richness.4)</code></pre>
-<p>It is important that the variable fweek in nd has the same levels as the variable that was used to fit the model; specifying the levels is the best way to ensure this. Notice that the lines are all parallel – that is because we fitted a model with no interaction between the continuous variable NAP and the factor variable fweek. Effectively we have 4 intercepts and one slope.</p>
-<p>Now fit a model that includes both NAP, fweek, and their interaction:</p>
-<pre class="r"><code>RIKZ_model.5 = lm(Richness~NAP*fweek,data=RIKZ)</code></pre>
-<p>Look carefully to see the difference in the code – it is a single character! However that single change adds 3 parameters to our model. Now we have 8 parameters, essentially an intercept and slope for each week.</p>
+<p>Now we’re going to try AIC model selection. The first step, no matter how you do the calculations, is to write out a list object containing all of the models we want to fit. In this case, we’ll simply do all of the possible main effect models – we have plenty of data:</p>
+<pre class="r"><code>models &lt;- list(Y ~ 1, Y ~ Amount, Y ~ Edge, Y ~ MnPatch, Y ~ 
+    Hetero, Y ~ Amount + Edge, Y ~ Amount + MnPatch, Y ~ Amount + 
+    Hetero, Y ~ Edge + MnPatch, Y ~ Edge + Hetero, Y ~ MnPatch + 
+    Hetero, Y ~ Amount + Edge + Hetero, Y ~ Amount + Edge + MnPatch, 
+    Y ~ Amount + MnPatch + Hetero, Y ~ Edge + MnPatch + Hetero, 
+    Y ~ Amount + Edge + MnPatch + Hetero)</code></pre>
+<p>This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually. Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using <code>lapply()</code>. This function takes a list as it’s first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to <code>lapply()</code>. In this case I give the argument <code>data=smithsim</code> to make sure the data are available to <code>lm()</code>.</p>
+<pre class="r"><code>fits &lt;- lapply(models, lm, data = smithsim)</code></pre>
+<p>Next we want to get the AIC values for each of these models. We use sapply(), which is related to lapply, but will simplify the result to a vector if possible:</p>
+<pre class="r"><code>aic &lt;- sapply(fits, AIC)
+aic</code></pre>
+<pre><code>##  [1] 2012.749 1981.386 2003.985 1994.779 1901.672 1964.264 1983.353
+##  [8] 1903.578 1996.685 1896.756 1903.558 1884.147 1966.180 1904.977
+## [15] 1892.695 1885.336</code></pre>
+<p>The best model has the smallest AIC.</p>
+<pre class="r"><code>which.min(aic)</code></pre>
+<pre><code>## [1] 12</code></pre>
+<pre class="r"><code>models[[which.min(aic)]]  # which model is that?</code></pre>
+<pre><code>## Y ~ Amount + Edge + Hetero</code></pre>
+<p>Which happens to be the true model. However, how many other models are close by? Here is where we manually calculate an AIC table. Start by calculating the <span class="math inline">\(\Delta AIC\)</span> values, and convert them to the model weights.</p>
+<pre class="r"><code>deltas &lt;- aic - min(aic)  # smallest will be zero
+weights &lt;- exp(-deltas/2)  # this is an intermediate step
+weights &lt;- weights/sum(weights)  # so we can do this</code></pre>
+<p>In this step we’re really taking advantage of R’s “vectorizing” of calculations to automatically repeat the same calculation across an entire vector.</p>
+<p>We also want the number of estimated parameters in each model.</p>
+<pre class="r"><code>npars &lt;- sapply(fits, function(mm) length(coef(mm))) + 1</code></pre>
+<p>Recall that the second argument to <code>sapply()</code> is a function. Here I’ve defined an <em>anonymous</em> function (it has no name) just to use here. If that looks intimidating – start with coef(global) and build out and you’ll see what the function does with a single fitted model object. Next use “cbind” to show all the results together.</p>
+<pre class="r"><code>cbind(AIC = aic, k = npars, deltas = deltas, weights = weights)</code></pre>
+<pre><code>##            AIC k     deltas      weights
+##  [1,] 2012.749 2 128.602514 7.567903e-29
+##  [2,] 1981.386 3  97.239483 4.890702e-22
+##  [3,] 2003.985 3 119.838505 6.054187e-27
+##  [4,] 1994.779 3 110.632482 6.041131e-25
+##  [5,] 1901.672 3  17.525363 9.978664e-05
+##  [6,] 1964.264 4  80.116887 2.555616e-18
+##  [7,] 1983.353 4  99.206322 1.829269e-22
+##  [8,] 1903.578 4  19.431349 3.847625e-05
+##  [9,] 1996.685 4 112.538508 2.329325e-25
+## [10,] 1896.756 4  12.609044 1.165836e-03
+## [11,] 1903.558 4  19.410710 3.887536e-05
+## [12,] 1884.147 5   0.000000 6.377590e-01
+## [13,] 1966.180 5  82.032674 9.805909e-19
+## [14,] 1904.977 5  20.830519 1.911467e-05
+## [15,] 1892.695 5   8.548433 8.879487e-03
+## [16,] 1885.336 6   1.188662 3.519995e-01</code></pre>
+<p>This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:</p>
+<pre class="r"><code>aic.table &lt;- cbind(model = 1:16, AIC = aic, k = npars, deltas = deltas, 
+    weights = weights)
+at2 &lt;- aic.table[order(aic), ]  # so I can get cumulative weight
+cbind(at2, cumw = cumsum(at2[, &quot;weights&quot;]))</code></pre>
+<pre><code>##       model      AIC k     deltas      weights      cumw
+##  [1,]    12 1884.147 5   0.000000 6.377590e-01 0.6377590
+##  [2,]    16 1885.336 6   1.188662 3.519995e-01 0.9897584
+##  [3,]    15 1892.695 5   8.548433 8.879487e-03 0.9986379
+##  [4,]    10 1896.756 4  12.609044 1.165836e-03 0.9998037
+##  [5,]     5 1901.672 3  17.525363 9.978664e-05 0.9999035
+##  [6,]    11 1903.558 4  19.410710 3.887536e-05 0.9999424
+##  [7,]     8 1903.578 4  19.431349 3.847625e-05 0.9999809
+##  [8,]    14 1904.977 5  20.830519 1.911467e-05 1.0000000
+##  [9,]     6 1964.264 4  80.116887 2.555616e-18 1.0000000
+## [10,]    13 1966.180 5  82.032674 9.805909e-19 1.0000000
+## [11,]     2 1981.386 3  97.239483 4.890702e-22 1.0000000
+## [12,]     7 1983.353 4  99.206322 1.829269e-22 1.0000000
+## [13,]     4 1994.779 3 110.632482 6.041131e-25 1.0000000
+## [14,]     9 1996.685 4 112.538508 2.329325e-25 1.0000000
+## [15,]     3 2003.985 3 119.838505 6.054187e-27 1.0000000
+## [16,]     1 2012.749 2 128.602514 7.567903e-29 1.0000000</code></pre>
 <ol start="4" class="example" style="list-style-type: decimal">
-<li>Examine the summary for this model and compare with the previous models.Also compare the coefficients for NAP and fweek with those estimated in models 1, 3 and 4 – are the qualitative conclusions (sign and magnitude) different with the interaction?</li>
+<li>Which models have a substantial weight? Can we be completely confident in the top model?</li>
 </ol>
-<p>The three interaction coefficients can be thought of as a change in the slope of NAP for weeks 2, 3 and 4. So we expect the line for week 2 to be shallower (less negative), while weeks 3 and 4 should be steeper (more negative). Confirm this interpretation by repeating the figure above using model 5 to get the predictions.</p>
-<pre class="r"><code># try with sum-to-zero contrasts
-options(contrasts = c(&quot;contr.sum&quot;,&quot;contr.poly&quot;))
-RIKZ_model.6 = lm(Richness~NAP*fweek,data=RIKZ)</code></pre>
+<p>And that’s all fine, but what if you want that table to be “pretty”, and actually formatted as a word table so you could put it in a manuscript? A final step for most analyses is to put the table into a word processing document. However, word processors don’t handle numbers very well, so a better approach is to copy the table into a spreadsheet like Excel, format all the numbers, and then copy from Excel into Word. On a windoze box, you can copy an R object to the windows clipboard like this:</p>
+<pre class="r"><code>write.csv(aic.table, &quot;clipboard&quot;, row.names = FALSE)</code></pre>
+<p>On a mac it is a bit more involved to copy to the clipboard, but:</p>
+<pre class="r"><code>clip &lt;- pipe(&quot;pbcopy&quot;, &quot;w&quot;)
+write.table(aic.table, file = clip)
+close(clip)</code></pre>
+<p>should work. In both cases, change to Excel and paste. You could also sort it before doing the write.table() but that’s not essential. Once in Excel you will have to use the Text to Columns dialog to get the results into a table. Then it is easy to change the scientific notation for the weights column to something readable, adjust the number of decimal places, and sort the table how you like. Or we can do it directly in R Markdown. First load the <code>pander</code> package.</p>
+<pre class="r"><code>library(pander)
+pander(aic.table[order(aic), ], caption = &quot;Table 1 AIC table of smithsim results.&quot;)</code></pre>
+<table style="width:50%;">
+<caption>Table 1 AIC table of smithsim results.</caption>
+<colgroup>
+<col width="11%" />
+<col width="8%" />
+<col width="5%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">model</th>
+<th align="center">AIC</th>
+<th align="center">k</th>
+<th align="center">deltas</th>
+<th align="center">weights</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">12</td>
+<td align="center">1884</td>
+<td align="center">5</td>
+<td align="center">0</td>
+<td align="center">0.6378</td>
+</tr>
+<tr class="even">
+<td align="center">16</td>
+<td align="center">1885</td>
+<td align="center">6</td>
+<td align="center">1.189</td>
+<td align="center">0.352</td>
+</tr>
+<tr class="odd">
+<td align="center">15</td>
+<td align="center">1893</td>
+<td align="center">5</td>
+<td align="center">8.548</td>
+<td align="center">0.008879</td>
+</tr>
+<tr class="even">
+<td align="center">10</td>
+<td align="center">1897</td>
+<td align="center">4</td>
+<td align="center">12.61</td>
+<td align="center">0.001166</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">1902</td>
+<td align="center">3</td>
+<td align="center">17.53</td>
+<td align="center">9.979e-05</td>
+</tr>
+<tr class="even">
+<td align="center">11</td>
+<td align="center">1904</td>
+<td align="center">4</td>
+<td align="center">19.41</td>
+<td align="center">3.888e-05</td>
+</tr>
+<tr class="odd">
+<td align="center">8</td>
+<td align="center">1904</td>
+<td align="center">4</td>
+<td align="center">19.43</td>
+<td align="center">3.848e-05</td>
+</tr>
+<tr class="even">
+<td align="center">14</td>
+<td align="center">1905</td>
+<td align="center">5</td>
+<td align="center">20.83</td>
+<td align="center">1.911e-05</td>
+</tr>
+<tr class="odd">
+<td align="center">6</td>
+<td align="center">1964</td>
+<td align="center">4</td>
+<td align="center">80.12</td>
+<td align="center">2.556e-18</td>
+</tr>
+<tr class="even">
+<td align="center">13</td>
+<td align="center">1966</td>
+<td align="center">5</td>
+<td align="center">82.03</td>
+<td align="center">9.806e-19</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">1981</td>
+<td align="center">3</td>
+<td align="center">97.24</td>
+<td align="center">4.891e-22</td>
+</tr>
+<tr class="even">
+<td align="center">7</td>
+<td align="center">1983</td>
+<td align="center">4</td>
+<td align="center">99.21</td>
+<td align="center">1.829e-22</td>
+</tr>
+<tr class="odd">
+<td align="center">4</td>
+<td align="center">1995</td>
+<td align="center">3</td>
+<td align="center">110.6</td>
+<td align="center">6.041e-25</td>
+</tr>
+<tr class="even">
+<td align="center">9</td>
+<td align="center">1997</td>
+<td align="center">4</td>
+<td align="center">112.5</td>
+<td align="center">2.329e-25</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">2004</td>
+<td align="center">3</td>
+<td align="center">119.8</td>
+<td align="center">6.054e-27</td>
+</tr>
+<tr class="even">
+<td align="center">1</td>
+<td align="center">2013</td>
+<td align="center">2</td>
+<td align="center">128.6</td>
+<td align="center">7.568e-29</td>
+</tr>
+</tbody>
+</table>
+<p>When you click “Knit Word” in RStudio you get a word document that is completely editable, and the table is nicely produced and ready to go. Incidentally, <code>pander</code> does pretty cool things with other R objects too.</p>
+<pre class="r"><code>pander(truth)</code></pre>
+<table style="width:86%;">
+<caption>Fitting linear model: Y ~ Amount + Edge + Hetero</caption>
+<colgroup>
+<col width="25%" />
+<col width="15%" />
+<col width="18%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Estimate</th>
+<th align="center">Std. Error</th>
+<th align="center">t value</th>
+<th align="center">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>Amount</strong></td>
+<td align="center">1.798</td>
+<td align="center">0.4681</td>
+<td align="center">3.84</td>
+<td align="center">0.0001461</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>Edge</strong></td>
+<td align="center">-2.058</td>
+<td align="center">0.4404</td>
+<td align="center">-4.674</td>
+<td align="center">4.234e-06</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>Hetero</strong></td>
+<td align="center">2.186</td>
+<td align="center">0.2285</td>
+<td align="center">9.565</td>
+<td align="center">2.186e-19</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>(Intercept)</strong></td>
+<td align="center">-0.1014</td>
+<td align="center">0.1894</td>
+<td align="center">-0.5352</td>
+<td align="center">0.5929</td>
+</tr>
+</tbody>
+</table>
+<p>Is there nothing R can’t do? Well, you still have to write the interpretation of the model!</p>
+<p>And here is the easy way to do all of the above. First, make sure you have the AICcmodavg package installed on your computer.</p>
+<pre class="r"><code>library(AICcmodavg)</code></pre>
+<pre><code>## Warning: package &#39;AICcmodavg&#39; was built under R version 3.4.1</code></pre>
+<pre class="r"><code>aictab(fits)</code></pre>
+<pre><code>## Warning in aictab.AIClm(fits): 
+## Model names have been supplied automatically in the table</code></pre>
+<pre><code>## 
+## Model selection based on AICc:
+## 
+##       K    AICc Delta_AICc AICcWt Cum.Wt       LL
+## Mod12 5 1884.32       0.00   0.65   0.65  -937.07
+## Mod16 6 1885.58       1.26   0.34   0.99  -936.67
+## Mod15 5 1892.87       8.55   0.01   1.00  -941.35
+## Mod10 4 1896.87      12.55   0.00   1.00  -944.38
+## Mod5  3 1901.74      17.42   0.00   1.00  -947.84
+## Mod11 4 1903.67      19.35   0.00   1.00  -947.78
+## Mod8  4 1903.69      19.37   0.00   1.00  -947.79
+## Mod14 5 1905.15      20.83   0.00   1.00  -947.49
+## Mod6  4 1964.38      80.06   0.00   1.00  -978.13
+## Mod13 5 1966.35      82.03   0.00   1.00  -978.09
+## Mod2  3 1981.46      97.13   0.00   1.00  -987.69
+## Mod7  4 1983.47      99.15   0.00   1.00  -987.68
+## Mod4  3 1994.85     110.53   0.00   1.00  -994.39
+## Mod9  4 1996.80     112.48   0.00   1.00  -994.34
+## Mod3  3 2004.05     119.73   0.00   1.00  -998.99
+## Mod1  2 2012.78     128.46   0.00   1.00 -1004.37</code></pre>
+<p>where fits is the list of fitted model objects we created before, and 1:16 is a vector of labels to use in the table. One line! Two, if you count loading the library. If you look closely you’ll see that the AIC values in this table are slightly different from the ones we calculated, because aictab() is using the 2nd order sample size correction by default. If you do:</p>
+<pre class="r"><code>aictab(fits, modnames = 1:16, second.ord = FALSE)</code></pre>
+<pre><code>## 
+## Model selection based on AIC:
+## 
+##    K     AIC Delta_AIC AICWt Cum.Wt       LL
+## 12 5 1884.15      0.00  0.64   0.64  -937.07
+## 16 6 1885.34      1.19  0.35   0.99  -936.67
+## 15 5 1892.70      8.55  0.01   1.00  -941.35
+## 10 4 1896.76     12.61  0.00   1.00  -944.38
+## 5  3 1901.67     17.53  0.00   1.00  -947.84
+## 11 4 1903.56     19.41  0.00   1.00  -947.78
+## 8  4 1903.58     19.43  0.00   1.00  -947.79
+## 14 5 1904.98     20.83  0.00   1.00  -947.49
+## 6  4 1964.26     80.12  0.00   1.00  -978.13
+## 13 5 1966.18     82.03  0.00   1.00  -978.09
+## 2  3 1981.39     97.24  0.00   1.00  -987.69
+## 7  4 1983.35     99.21  0.00   1.00  -987.68
+## 4  3 1994.78    110.63  0.00   1.00  -994.39
+## 9  4 1996.69    112.54  0.00   1.00  -994.34
+## 3  3 2003.99    119.84  0.00   1.00  -998.99
+## 1  2 2012.75    128.60  0.00   1.00 -1004.37</code></pre>
+<p>You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to <em>not</em> use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases. The table is even easier to understand if we put the model formulas into the table.</p>
+<pre class="r"><code>modnames &lt;- sapply(models, function(ff) deparse(ff[[3]]))
+pander(aictab(fits, modnames = modnames), split.tables = Inf)</code></pre>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="27%" />
+<col width="4%" />
+<col width="7%" />
+<col width="13%" />
+<col width="11%" />
+<col width="10%" />
+<col width="7%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"> </th>
+<th align="center">Modnames</th>
+<th align="center">K</th>
+<th align="center">AICc</th>
+<th align="center">Delta_AICc</th>
+<th align="center">ModelLik</th>
+<th align="center">AICcWt</th>
+<th align="center">LL</th>
+<th align="center">Cum.Wt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>12</strong></td>
+<td align="center">Amount + Edge + Hetero</td>
+<td align="center">5</td>
+<td align="center">1884</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0.6456</td>
+<td align="center">-937.1</td>
+<td align="center">0.6456</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>16</strong></td>
+<td align="center">Amount + Edge + MnPatch + Hetero</td>
+<td align="center">6</td>
+<td align="center">1886</td>
+<td align="center">1.259</td>
+<td align="center">0.5328</td>
+<td align="center">0.344</td>
+<td align="center">-936.7</td>
+<td align="center">0.9896</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>15</strong></td>
+<td align="center">Edge + MnPatch + Hetero</td>
+<td align="center">5</td>
+<td align="center">1893</td>
+<td align="center">8.548</td>
+<td align="center">0.01392</td>
+<td align="center">0.008989</td>
+<td align="center">-941.3</td>
+<td align="center">0.9986</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>10</strong></td>
+<td align="center">Edge + Hetero</td>
+<td align="center">4</td>
+<td align="center">1897</td>
+<td align="center">12.55</td>
+<td align="center">0.001882</td>
+<td align="center">0.001215</td>
+<td align="center">-944.4</td>
+<td align="center">0.9998</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>5</strong></td>
+<td align="center">Hetero</td>
+<td align="center">3</td>
+<td align="center">1902</td>
+<td align="center">17.42</td>
+<td align="center">0.0001649</td>
+<td align="center">0.0001065</td>
+<td align="center">-947.8</td>
+<td align="center">0.9999</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>11</strong></td>
+<td align="center">MnPatch + Hetero</td>
+<td align="center">4</td>
+<td align="center">1904</td>
+<td align="center">19.35</td>
+<td align="center">6.276e-05</td>
+<td align="center">4.052e-05</td>
+<td align="center">-947.8</td>
+<td align="center">0.9999</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>8</strong></td>
+<td align="center">Amount + Hetero</td>
+<td align="center">4</td>
+<td align="center">1904</td>
+<td align="center">19.37</td>
+<td align="center">6.212e-05</td>
+<td align="center">4.01e-05</td>
+<td align="center">-947.8</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>14</strong></td>
+<td align="center">Amount + MnPatch + Hetero</td>
+<td align="center">5</td>
+<td align="center">1905</td>
+<td align="center">20.83</td>
+<td align="center">2.997e-05</td>
+<td align="center">1.935e-05</td>
+<td align="center">-947.5</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>6</strong></td>
+<td align="center">Amount + Edge</td>
+<td align="center">4</td>
+<td align="center">1964</td>
+<td align="center">80.06</td>
+<td align="center">4.126e-18</td>
+<td align="center">2.664e-18</td>
+<td align="center">-978.1</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>13</strong></td>
+<td align="center">Amount + Edge + MnPatch</td>
+<td align="center">5</td>
+<td align="center">1966</td>
+<td align="center">82.03</td>
+<td align="center">1.538e-18</td>
+<td align="center">9.926e-19</td>
+<td align="center">-978.1</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>2</strong></td>
+<td align="center">Amount</td>
+<td align="center">3</td>
+<td align="center">1981</td>
+<td align="center">97.13</td>
+<td align="center">8.082e-22</td>
+<td align="center">5.218e-22</td>
+<td align="center">-987.7</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>7</strong></td>
+<td align="center">Amount + MnPatch</td>
+<td align="center">4</td>
+<td align="center">1983</td>
+<td align="center">99.15</td>
+<td align="center">2.953e-22</td>
+<td align="center">1.907e-22</td>
+<td align="center">-987.7</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>4</strong></td>
+<td align="center">MnPatch</td>
+<td align="center">3</td>
+<td align="center">1995</td>
+<td align="center">110.5</td>
+<td align="center">9.983e-25</td>
+<td align="center">6.445e-25</td>
+<td align="center">-994.4</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>9</strong></td>
+<td align="center">Edge + MnPatch</td>
+<td align="center">4</td>
+<td align="center">1997</td>
+<td align="center">112.5</td>
+<td align="center">3.761e-25</td>
+<td align="center">2.428e-25</td>
+<td align="center">-994.3</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>3</strong></td>
+<td align="center">Edge</td>
+<td align="center">3</td>
+<td align="center">2004</td>
+<td align="center">119.7</td>
+<td align="center">1e-26</td>
+<td align="center">6.459e-27</td>
+<td align="center">-999</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>1</strong></td>
+<td align="center">1</td>
+<td align="center">2</td>
+<td align="center">2013</td>
+<td align="center">128.5</td>
+<td align="center">1.273e-28</td>
+<td align="center">8.216e-29</td>
+<td align="center">-1004</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>split.tables=Inf</code> argument to <code>pander</code> just tells pander to not try and be smart about dividing up the result to fit inside a fixed number of columns. While it pains me to admit it, Word is actually smarter than R when it comes to sizing the columns of the table to fit on a page.</p>

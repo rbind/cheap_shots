@@ -14,12 +14,12 @@ library(NRES803)
 
 In this week’s lab exercise we will first go through calculating the AIC values "by hand", and then using a addon package modavgAIC. Doing the calculations by hand serves three purposes: 1) you practice using R!, 2) you gain a deeper understanding of how much work the add-on package is doing for you, and 3) sometimes the add-on package won’t work for a new class of model, and if you can do it by hand you won’t be stuck.
 
-We’ll begin by using a simulated dataset from the paper "[Confronting collinearity: comparing methods for disentangling the effects of habitat loss and fragmentation]()" by Adam Smith and colleagues. They had real data, but I have written a few lines of code that produce datasets that are similar. They have 4 variables that describe patches in a landscape (Amount, Edge, MnPatch, and Hetero), and simulated a normally distributed response variable. Amount, Edge and Hetero affect the response, Y, and MnPatch does not. All four of the variables are correlated to some extent. The script and data will be available in package `NRES803`. You can either open the script [week3-make_lab_data-2012-6-26.r]() and make your own data, or simply load the dataframe.  Include all the outputs and figures in your Rmd file. Answer the numbered questions. 
+We’ll begin by using a simulated dataset from the paper "[Confronting collinearity: comparing methods for disentangling the effects of habitat loss and fragmentation]()" by Adam Smith and colleagues. They had real data, but I have written a few lines of code that produce datasets that are similar. They have 4 variables that describe patches in a landscape (Amount, Edge, MnPatch, and Hetero), and simulated a normally distributed response variable. Amount, Edge and Hetero affect the response, Y, and MnPatch does not. All four of the variables are correlated to some extent. The script and data will be available in package `NRES803`. The code to make the data is in the examples section of `?smithsim`, or simply load the dataframe with `data("smithsim")`.  Include all the outputs and figures in your Rmd file. Answer the numbered questions. 
 
 Fit a global model that includes all four variables. 
 ```{r}
-
-global = lm(Y~Amount+Edge+MnPatch+Hetero, data=smithsim)
+data("smithsim")
+global <- lm(Y~Amount+Edge+MnPatch+Hetero, data=smithsim)
 ```
 
 (@) Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (2, -2, 0, 2), and the known residual standard error of 3.5.
@@ -27,7 +27,7 @@ global = lm(Y~Amount+Edge+MnPatch+Hetero, data=smithsim)
 Now fit the TRUE model; recall that the true effect of the `MnPatch` variable is 0. This model enforces that by not estimated a coefficient for this variable. 
 
 ```{r}
-truth = lm(Y~Amount+Edge+Hetero, data=smithsim)
+truth <- lm(Y~Amount+Edge+Hetero, data=smithsim)
 
 ```
 
@@ -42,7 +42,7 @@ anova(truth,global)
 So we can justify using the smaller model because there is no significant difference between the simpler and more complex models. Now we can check to see if we can further simplify the model `truth`. I use the function `update()` to create a model that is identical except that it removes the variable `Amount`.
 
 ```{r}
-smaller.model = update(truth,.~.-Amount)
+smaller.model <-  update(truth,.~.-Amount)
 anova(smaller.model,global)
 ```
 
@@ -53,7 +53,7 @@ Can we eliminate the Amount variable from our model? No, because doing so leads 
 Now we’re going to try AIC model selection. The first step, no matter how you do the calculations, is to write out a list object containing all of the models we want to fit. In this case, we’ll simply do all of the possible main effect models – we have plenty of data:
 
 ```{r}
-models = list(Y~1,
+models <- list(Y~1,
               Y~Amount,
               Y~Edge,
               Y~MnPatch,
@@ -74,7 +74,7 @@ models = list(Y~1,
 This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually.
 Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using `lapply()`. This function takes a list as it's first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to `lapply()`. In this case I give the argument `data=smithsim` to make sure the data are available to `lm()`.
 ```{r}
-fits = lapply(models, lm, data=smithsim)
+fits <- lapply(models, lm, data=smithsim)
 
 ```
 Next we want to get the AIC values for each of these models. We use sapply(), which is related to lapply, but will simplify the result to a vector if possible:
@@ -94,16 +94,16 @@ models[[which.min(aic)]] # which model is that?
 Which happens to be the true model. However, how many other models are close by? Here is where we manually calculate an AIC table. Start by calculating the $\Delta AIC$ values, and convert them to the model weights.
 
 ```{r}
-deltas = aic - min(aic) # smallest will be zero
-weights = exp(-deltas/2) # this is an intermediate step
-weights = weights/sum(weights) # so we can do this
+deltas <- aic - min(aic) # smallest will be zero
+weights <- exp(-deltas/2) # this is an intermediate step
+weights <- weights/sum(weights) # so we can do this
 ```
 
 In this step we’re really taking advantage of R’s “vectorizing” of calculations to automatically repeat the same calculation across an entire vector.
 
 We also want the number of estimated parameters in each model.
 ```{r}
-npars = sapply(fits, function(mm)length(coef(mm)))+1
+npars <- sapply(fits, function(mm)length(coef(mm)))+1
 ```
 
 Recall that the second argument to `sapply()` is a function. Here I've defined an *anonymous* function (it has no name) just to use here. If that looks intimidating – start with coef(global) and build out and you’ll see what the function does with a single fitted model object. Next use “cbind” to show all the results together.
@@ -115,7 +115,7 @@ cbind(AIC=aic,k=npars,deltas=deltas,weights=weights)
 This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:
 
 ```{r}
-aic.table = cbind(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
+aic.table <- cbind(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
 at2 <- aic.table[order(aic),] # so I can get cumulative weight
 cbind(at2, cumw = cumsum(at2[,"weights"]))
 ```
