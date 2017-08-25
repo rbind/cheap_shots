@@ -1,0 +1,171 @@
+---
+title: "Week 3 Lab"
+author: "Drew Tyre"
+date: "2017-08-01"
+output: html_document
+weight: 803021
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60), eval = TRUE)
+library(tidyverse)
+library(NRES803)
+```
+
+In this week’s lab exercise we will first go through calculating the AIC values "by hand", and then using a addon package modavgAIC. Doing the calculations by hand serves three purposes: 1) you practice using R!, 2) you gain a deeper understanding of how much work the add-on package is doing for you, and 3) sometimes the add-on package won’t work for a new class of model, and if you can do it by hand you won’t be stuck.
+
+We’ll begin by using a simulated dataset from the paper "[Confronting collinearity: comparing methods for disentangling the effects of habitat loss and fragmentation]()" by Adam Smith and colleagues. They had real data, but I have written a few lines of code that produce datasets that are similar. They have 4 variables that describe patches in a landscape (Amount, Edge, MnPatch, and Hetero), and simulated a normally distributed response variable. Amount, Edge and Hetero affect the response, Y, and MnPatch does not. All four of the variables are correlated to some extent. The script and data will be available in package `NRES803`. You can either open the script [week3-make_lab_data-2012-6-26.r]() and make your own data, or simply load the dataframe.  Include all the outputs and figures in your Rmd file. Answer the numbered questions. 
+
+Fit a global model that includes all four variables. 
+```{r}
+
+global = lm(Y~Amount+Edge+MnPatch+Hetero, data=smithsim)
+```
+
+(@) Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (2, -2, 0, 2), and the known residual standard error of 3.5.
+
+Now fit the TRUE model; recall that the true effect of the `MnPatch` variable is 0. This model enforces that by not estimated a coefficient for this variable. 
+
+```{r}
+truth = lm(Y~Amount+Edge+Hetero, data=smithsim)
+
+```
+
+(@) Use the summary and plots of residuals to compare the estimated coefficients and residual standard error to the true values. Is this model closer to the truth than the global model? How can you tell?
+
+One strategy for deciding if we can remove a variable from a model is "backward selection". We can do this with an F-test.
+
+```{r}
+anova(truth,global)
+```
+
+So we can justify using the smaller model because there is no significant difference between the simpler and more complex models. Now we can check to see if we can further simplify the model `truth`. I use the function `update()` to create a model that is identical except that it removes the variable `Amount`.
+
+```{r}
+smaller.model = update(truth,.~.-Amount)
+anova(smaller.model,global)
+```
+
+Can we eliminate the Amount variable from our model? No, because doing so leads to a significant change in the residual sum of squares. 
+
+(@) Repeat these two steps for the other two variables, remembering to always start from the model truth. Can we eliminate any additional variables?
+
+Now we’re going to try AIC model selection. The first step, no matter how you do the calculations, is to write out a list object containing all of the models we want to fit. In this case, we’ll simply do all of the possible main effect models – we have plenty of data:
+
+```{r}
+models = list(Y~1,
+              Y~Amount,
+              Y~Edge,
+              Y~MnPatch,
+              Y~Hetero,
+              Y~Amount + Edge,
+              Y~Amount + MnPatch,
+              Y~Amount + Hetero,
+              Y~Edge + MnPatch,
+              Y~Edge + Hetero,
+              Y~MnPatch + Hetero,
+              Y~Amount+Edge+Hetero,
+              Y~Amount+Edge+MnPatch,
+              Y~Amount+MnPatch+Hetero,
+              Y~Edge+MnPatch+Hetero,
+              Y~Amount+Edge+MnPatch+Hetero)
+```
+
+This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually.
+Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using `lapply()`. This function takes a list as it's first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to `lapply()`. In this case I give the argument `data=smithsim` to make sure the data are available to `lm()`.
+```{r}
+fits = lapply(models, lm, data=smithsim)
+
+```
+Next we want to get the AIC values for each of these models. We use sapply(), which is related to lapply, but will simplify the result to a vector if possible:
+
+```{r}
+aic <- sapply(fits,AIC)
+aic
+```
+
+The best model has the smallest AIC. 
+
+```{r}
+which.min(aic)
+models[[which.min(aic)]] # which model is that?
+```
+
+Which happens to be the true model. However, how many other models are close by? Here is where we manually calculate an AIC table. Start by calculating the $\Delta AIC$ values, and convert them to the model weights.
+
+```{r}
+deltas = aic - min(aic) # smallest will be zero
+weights = exp(-deltas/2) # this is an intermediate step
+weights = weights/sum(weights) # so we can do this
+```
+
+In this step we’re really taking advantage of R’s “vectorizing” of calculations to automatically repeat the same calculation across an entire vector.
+
+We also want the number of estimated parameters in each model.
+```{r}
+npars = sapply(fits, function(mm)length(coef(mm)))+1
+```
+
+Recall that the second argument to `sapply()` is a function. Here I've defined an *anonymous* function (it has no name) just to use here. If that looks intimidating – start with coef(global) and build out and you’ll see what the function does with a single fitted model object. Next use “cbind” to show all the results together.
+
+```{r}
+cbind(AIC=aic,k=npars,deltas=deltas,weights=weights)
+```
+
+This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:
+
+```{r}
+aic.table = cbind(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
+at2 <- aic.table[order(aic),] # so I can get cumulative weight
+cbind(at2, cumw = cumsum(at2[,"weights"]))
+```
+
+(@) Which models have a substantial weight? Can we be completely confident in the top model?
+
+And that's all fine, but what if you want that table to be "pretty", and actually formatted as a word table so you could put it in a manuscript? A final step for most analyses is to put the table into a word processing document. However, word processors don’t handle numbers very well, so a better approach is to copy the table into a spreadsheet like Excel, format all the numbers, and then copy from Excel into Word. On a windoze box, you can copy an R object to the windows clipboard like this:
+```{r, eval = FALSE}
+write.csv(aic.table,"clipboard",row.names=FALSE)
+```
+
+On a mac it is a bit more involved to copy to the clipboard, but:
+```{r, eval=FALSE}
+clip <- pipe("pbcopy", "w")
+write.table(aic.table, file=clip)
+close(clip) 
+```
+
+should work. In both cases, change to Excel and paste. You could also sort it before doing the write.table() but that’s not essential. Once in Excel you will have to use the Text to Columns dialog to get the results into a table. Then it is easy to change the scientific notation for the weights column to something readable, adjust the number of decimal places, and sort the table how you like.
+Or we can do it directly in R Markdown. First load the `pander` package.
+```{r}
+library(pander)
+pander(aic.table[order(aic),],caption="Table 1 AIC table of smithsim results.")
+```
+
+When you click "Knit Word" in RStudio you get a word document that is completely editable, and the table is nicely produced and ready to go. 
+Incidentally, `pander` does pretty cool things with other R objects too. 
+
+```{r}
+pander(truth)
+```
+
+Is there nothing R can't do? Well, you still have to write the interpretation of the model! 
+
+And here is the easy way to do all of the above.
+First, make sure you have the AICcmodavg package installed on your computer.
+```{r}
+library(AICcmodavg)
+aictab(fits)
+```
+where fits is the list of fitted model objects we created before, and 1:16 is a vector of labels to use in the table. One line! Two, if you count loading the library. If you look closely you’ll see that the AIC values in this table are slightly different from the ones we calculated, because aictab() is using the 2nd order sample size correction by default. If you do:
+```{r}
+aictab(fits,modnames=1:16,second.ord=FALSE)
+```
+
+You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to *not* use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases. 
+The table is even easier to understand if we put the model formulas into the table.
+```{r}
+modnames=sapply(models,function(ff)deparse(ff[[3]]))
+pander(aictab(fits,modnames=modnames),split.tables=Inf)
+```
+
+The `split.tables=Inf` argument to `pander` just tells pander to not try and be smart about dividing up the result to fit inside a fixed number of columns. While it pains me to admit it, Word is actually smarter than R when it comes to sizing the columns of the table to fit on a page. 
