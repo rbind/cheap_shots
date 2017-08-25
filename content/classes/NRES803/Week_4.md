@@ -31,5 +31,3 @@ In this week we’ll look at how model selection methods lead us to the idea of 
 2. In Wednesday’s online session we will go over Exercises 1 & 2 from MBILS Chapter 5
 
 3. Friday Do [Lab #4](../Week_3/lab_4/). 
-
-4. Start Mount Lofty Birds Homework - Due Tuesday week 6
