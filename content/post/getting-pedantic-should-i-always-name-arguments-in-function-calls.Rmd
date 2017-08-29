@@ -1,0 +1,24 @@
+---
+title: 'Getting pedantic: should I always name arguments in function calls?'
+author: Drew Tyre
+date: '2017-08-29'
+slug: getting-pedantic-should-i-always-name-arguments-in-function-calls
+draft: true
+summary: "I've been teaching students `ggplot2` for graphics exclusively for a year or more now. One issue that seems to throw students is the specification of different data sets for some layers. Part of the confusion seems to arise from reversing the order of arguments between `ggplot()` and `geom_*()`. I'm trying to combat this by always naming my arguments. Is this a good idea?"
+categories:
+  - R
+  - Teaching
+tags: []
+---
+
+I've been teaching students `ggplot2` for graphics exclusively for a couple years now. One issue that seems to throw students is the specification of different data sets for some layers. Part of the confusion seems to arise from reversing the order of arguments between `ggplot()` and `geom_*()`. I'm trying to combat this by always naming my arguments. Is this a good idea?
+
+`ggplot()` has `data` as the first argument, while `geom_*()` have `mapping` as the first argument. Both have the other argument as the second argument. If I don't name arguments I do
+
+```{r example-no-names, message=FALSE}
+library(tidyverse)
+data(iris)
+ggplot(iris, aes(x=Sepal.Width, y=Petal.Length)) +
+  geom_point(aes(color=Species))
+```
+
