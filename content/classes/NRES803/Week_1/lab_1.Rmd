@@ -40,8 +40,9 @@ confint(gala.1)
 ```
 1. What is the estimated value of *z*?
 2. What is the estimated value of *c*?
-3. Drakare et al. (2005) found the average value of *z* across many studies to be 0.27. Is the value of z from this dataset significantly different from 0.27?
+3. Drakare et al. (2005) found the average value of *z* across many studies to be 0.27. Is the value of z from this dataset significantly different from 0.27? [^1]
 
+[^1]: I should dig out the SE and do the proper test. Thanks to Gabriela Palomo for pointing this out.
 Now examine the assumptions of this model. This uses base graphics, but too easy not to! 
 ```{r}
 old.par = par(mfrow=c(2,2))
