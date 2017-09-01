@@ -1,0 +1,24 @@
+---
+title: 'Getting pedantic: should I always name arguments in function calls?'
+author: Drew Tyre
+date: '2017-08-29'
+slug: getting-pedantic-should-i-always-name-arguments-in-function-calls
+draft: true
+summary: "I've been teaching students `ggplot2` for graphics exclusively for a year or more now. One issue that seems to throw students is the specification of different data sets for some layers. Part of the confusion seems to arise from reversing the order of arguments between `ggplot()` and `geom_*()`. I'm trying to combat this by always naming my arguments. Is this a good idea?"
+categories:
+  - R
+  - Teaching
+tags: []
+---
+
+
+
+<p>I’ve been teaching students <code>ggplot2</code> for graphics exclusively for a couple years now. One issue that seems to throw students is the specification of different data sets for some layers. Part of the confusion seems to arise from reversing the order of arguments between <code>ggplot()</code> and <code>geom_*()</code>. I’m trying to combat this by always naming my arguments. Is this a good idea?</p>
+<p><code>ggplot()</code> has <code>data</code> as the first argument, while <code>geom_*()</code> have <code>mapping</code> as the first argument. Both have the other argument as the second argument. If I don’t name arguments I do</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tibble&#39; was built under R version 3.4.1</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 3.4.1</code></pre>
+<pre class="r"><code>data(iris)
+ggplot(iris, aes(x=Sepal.Width, y=Petal.Length)) +
+  geom_point(aes(color=Species))</code></pre>
+<p><img src="/post/getting-pedantic-should-i-always-name-arguments-in-function-calls_files/figure-html/example-no-names-1.png" width="672" /></p>

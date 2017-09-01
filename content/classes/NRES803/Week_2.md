@@ -22,12 +22,12 @@ This week you will continue to review the concept of the linear model. This week
 
     * [Limits of the linear regression (not what it sounds like!)](https://youtu.be/MQbvvydPSyg).
 
-2. Paper discussions board by Friday 2pm.
+2. Paper discussions board by Tuesday week 3.
 
     * Read Guthery and Bingham (2007) (See Files | Readings on Canvas for pdf).
-      Post a quote that stimulated your interest, surprised you, or that you disagree with. Then comment on at least two other people's quotes. Once you have comments from two other people, post the reason why you picked that quote.
+      Post a quote that stimulated your interest, surprised you, or that you disagree with. Then comment on *at least* two other people's quotes. Once you have comments from two other people, post the reason why you picked that quote.
 
 3. Online Friday 11 am, [lab #2](lab_2/), Q&A.
 
-4. [Week 2 Homework](homework_2/) is due Tuesday 9 am, of week 3.
+4. [Week 2 Homework](homework_2/).
 

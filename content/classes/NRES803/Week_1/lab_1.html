@@ -30,7 +30,7 @@ confint(gala.1)</code></pre>
 <ol style="list-style-type: decimal">
 <li>What is the estimated value of <em>z</em>?</li>
 <li>What is the estimated value of <em>c</em>?</li>
-<li>Drakare et al. (2005) found the average value of <em>z</em> across many studies to be 0.27. Is the value of z from this dataset significantly different from 0.27?</li>
+<li>Drakare et al. (2005) found the average value of <em>z</em> across many studies to be 0.27. Is the value of z from this dataset significantly different from 0.27? <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></li>
 </ol>
 <p>Now examine the assumptions of this model. This uses base graphics, but too easy not to!</p>
 <pre class="r"><code>old.par = par(mfrow=c(2,2))
@@ -131,3 +131,9 @@ ggplot(gala, aes(x = log(Area))) +
             data = pred.1, size = 2, color = &quot;blue&quot;) + 
   geom_ribbon(aes(ymin = exp(lwr), ymax = exp(upr)), data = pred.1, alpha = 0.25) </code></pre>
 <p>That’s a bit better, but really hard to see what is going on with the majority of the data points in this case.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I should dig out the SE and do the proper test. Thanks to Gabriela Palomo for pointing this out.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>

@@ -78,7 +78,7 @@ ggplot(test_RIKZ, aes(.hat, .std.resid)) +
   geom_point(aes(size = .cooksd)) + geom_smooth(se = FALSE)
 ```
 
-1. Briefly interpret what those plots are telling you about each of the four assumptions of the linear model. 
+(@) Briefly interpret what those plots are telling you about each of the four assumptions of the linear model. 
 
 Next we will look for other important variables. It would not be uncommon for ecological communities to vary over time. 
 So plot species richness against the variable week. I will leave this one as an exercise! 
