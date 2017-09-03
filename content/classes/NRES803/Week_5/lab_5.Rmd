@@ -8,12 +8,8 @@ weight: 803051
 ```{r setup2, include=FALSE, echo=FALSE}
 # set eval = FALSE in the following line to make handout
 knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60), eval = TRUE)
-source(knitr::purl("lab_3.rmd", output = tempfile()))
-```
-
-```{r setup,echo=FALSE, results='hide'}
 lab.eval=TRUE 
-lab.results='mark' # set to 'hide' to produce lab handout.
+lab.results=FALSE # set to FALSE to produce lab handout.
 ```
 
 In this exercise we'll practice fitting glms and making predictions. Download the data file [abundances.csv](https://my.unl.edu/bbcswebdav/users/atyre2/EcoStats/Module_2/GLM_week_5/Data/Abundances.csv?target=blank). This data set was collected by Andrea Hanson during her MSc. project in the School of Natural Resources. She sampled 14 transects in CRP fields scattered across SE Nebraska 4 times throughout the summer. She measured Visual Obstruction Readings (VOR) at 12 spots along each transect; these were averaged to obtain a single number representing vegetation structure within the CRP field. She also recorded the amount of 4 types of land use in the surrounding 2 km radius circle. These landscape metrics were highly correlated, so she used a Principle Components analysis to derive two combined metrics that were uncorrelated with each other. PC1 represents a gradient of increasing row crops, while PC2 represents decreasing woodland. 
@@ -23,7 +19,7 @@ Dickcissels
 -----------------------------
 Begin your analysis of Dickcissels (column "DICK" in the data.frame) by plotting the response variable against all three covariates individually. Check for any signs of non-linearities.
 
-```{r ,eval=lab.eval, results=lab.results, fig.show= lab.results}
+```{r ,eval=lab.eval, include=lab.results}
 Abundances <- read.csv("data/Abundances.csv")
 Abundances <- Abundances[,1:7] # drop bogus excel columns
 
@@ -53,7 +49,7 @@ grid.arrange(ggvor, ggpc1, ggpc2, ggdick)
 Our response is _discrete_; only integer values occur. Moreover it is a count of events (seeing a bird), so no negative values occur. Both of these suggest that a Poisson distribution is a good choice.
 
 So, we start by fitting a glm with a poisson error distribution using all three covariates and their pairwise interactions. Get the summary, and calculate the overall goodness of fit test to look for lack of fit. There aren't many more models more complex than this for these data, so this will be our *global* model. We assess our assumptions with this model.
-```{r ,eval=lab.eval, results=lab.results, fig.show= lab.results}
+```{r ,eval=lab.eval, include= lab.results}
 library(broom)
 dick.1 <- glm(DICK~(vor + pc1 + pc2)^2,data=Abundances,
               family=poisson)
@@ -64,7 +60,7 @@ gof.p.dick.1 <- with(sum.dick.1,pchisq(deviance,df.residual,lower=FALSE))
 So our model is significantly over-dispersed ($\chi^2=$ `r formatC(sum.dick.1$deviance)`, df = `r sum.dick.1$df.residual`, p = `r formatC(gof.p.dick.1)`). That means that the estimated standard errors of our model are too small. For the moment we will ignore this issue, but keep in mind that tests of significance with this model are biased towards rejecting null hypotheses.
 
 We can check the linearity assumption by plotting the deviance residuals against each covariate.
-```{r ,eval=lab.eval, results=lab.results, fig.show= lab.results}
+```{r ,eval=lab.eval, include= lab.results}
 dick.1.test <- augment(dick.1)
 lin.vor <- ggplot(dick.1.test, aes(x = vor, y = .std.resid)) + geom_count() + 
   scale_size_area(max_size=4) + 
@@ -80,7 +76,7 @@ grid.arrange(lin.vor, lin.pc1, lin.pc2)
 That's a bit squashed, but the horizontal line is inside the confidence polygon of the smooth fit throughout, so there is no indication that the linearity assumption is violated. 
 
 Finally, examine the residual plots.
-```{r checkResiduals2,eval=lab.eval, results=lab.results, fig.show= lab.results}
+```{r checkResiduals2,eval=lab.eval, include= lab.results}
 
 resd1 <- ggplot(dick.1.test, aes(x = .fitted, y = .resid)) + 
   geom_point() + 
@@ -117,7 +113,7 @@ Nothing particularly worrisome there. There are some particularly large negative
 
 Although this model is overdispersed, we'll work with it for now. We can use the ratio of the summed Pearson residuals to residual degrees of freedom to correct the AICc values. First we want to create a list of possible models. With 3 main effects and their 3 interactions, we have 48 possible models to consider. That is far too many for such a limited dataset. Background knowledge suggests that we know vor will be important, so all models we consider should include that effect. Then we'll add each of the landscape variables in turn, together with the interaction with VOR. 
 
-```{r ,eval=lab.eval, results=lab.results, fig.show= lab.results}
+```{r ,eval=lab.eval, include= lab.results}
 models = list(DICK~1,DICK~vor, 
               DICK~vor + pc1,
               DICK~vor + pc1 + vor:pc1,
@@ -133,7 +129,7 @@ fits = lapply(models,glm,data=Abundances,family="poisson")
 
 We could calculate $\hat{c}$ manually, but package AICcmodavg has a function to do it for us, and we'll use it to get a table of the Quasi-AICc values.
 
-```{r ,eval=lab.eval, results=lab.results, fig.show= lab.results}
+```{r ,eval=lab.eval, include= lab.results}
 library(AICcmodavg)
 library(pander)
 # get shorter model names (remove DICK ~)
@@ -144,7 +140,7 @@ pander(aictab(fits,c.hat=c_hat(fits[[11]]),modname=modnames), caption="Table 1. 
 (@) Which model or models do you think you should pay attention to and why? 
 
 The top model includes pc2 and it's interaction with vor. In fact, the four top models all include those terms. The second through fourth ranked models are all within 2 likelihood units of the top model, suggesting that nesting is playing a role here. Thus it seems justifiable to simply use the top model as our model for prediction. However, model averaging the predictions is quite easy given the AICcmodavg package, so lets try both ways and see how much it matters. As before, create some new data assuming pc1 and pc2 are at the median values:
-```{r ,eval=lab.eval, results=lab.results, fig.show= lab.results}
+```{r ,eval=lab.eval, include= lab.results}
 nd = data.frame(vor=seq(2,9,0.1),
                 pc1=median(Abundances$pc1),
                 pc2=median(Abundances$pc2))
@@ -167,7 +163,7 @@ ggplot(Abundances, aes(x = vor, y = DICK)) +
 
 So the model averaged prediction is right on top of the top model prediction in this case. Let's look at the model coefficients for those top four models
 
-```{r , results=lab.results, fig.show=lab.results}
+```{r , eval=lab.eval, include=lab.results}
 # poo. easy way with stargazer doesn't play with tidyverse
 # make a dataframe
 tidy_w_name <- function(.x, .y){
@@ -218,7 +214,7 @@ I spent a long time fussing around to make that graph look like I wanted. The de
 Note: If you're working ahead I haven't modified this section to use ggplot and the tidyverse yet. 
 
 Working with binary data is similar, but back-transforming the link function is a bit more involved. Also the global goodness of fit test doesn't work when the data are zero/one. Download the file [isolation.txt](https://my.unl.edu/bbcswebdav/users/atyre2/EcoStats/Module_2/GLM_week_5/Data/isolation.txt?target=blank), which has three variables, incidence (presence/absence of a species), area of island (km^2), and isolation (distance to mainland in km). This exercise is modified from pg. 595 of Michael Crawley's "The R Book".
-```{r ,eval=lab.eval}
+```{r , eval=lab.eval}
 island <- read.table("data/isolation.txt",header=TRUE)
 names(island)
 ```
@@ -269,8 +265,9 @@ polygon(c(nd$area,rev(nd$area)),1/(1+exp(-c(lo.95,rev(up.95)))),
 ```
 Go back and make a new plot for the effect of isolation that includes the 95% confidence region.
 
-What would happen if we used AIC model selection on this dataset? 
-```{r}
+What would happen if we used AIC model selection on this dataset?
+
+```{r , eval=lab.eval}
 models = list(incidence~1,
               incidence~area,
               incidence~isolation,
