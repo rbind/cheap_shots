@@ -7,7 +7,7 @@ weight: 803051
 ---
 ```{r setup2, include=FALSE, echo=FALSE}
 # set eval = FALSE in the following line to make handout
-knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60, warning=FALSE, message=FALSE))
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, tidy.opts=list(arrow = TRUE, width.cutoff=60))
 lab.eval=TRUE 
 lab.results='hide' # set to FALSE to produce lab handout.
 ```
