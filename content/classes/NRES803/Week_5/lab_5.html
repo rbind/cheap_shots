@@ -1,0 +1,211 @@
+---
+title: "Week 5 Lab"
+author: "Drew Tyre"
+date: "2017-08-01"
+output: html_document
+weight: 803051
+---
+
+
+
+<p>In this exercise we’ll practice fitting glms and making predictions. The data is <code>hanson_birds</code> in package <code>NRES803</code>. This data set was collected by Andrea Hanson during her MSc. project in the School of Natural Resources. She sampled 14 transects in CRP fields scattered across SE Nebraska 4 times throughout the summer. She measured Visual Obstruction Readings (VOR) at 12 spots along each transect; these were averaged to obtain a single number representing vegetation structure within the CRP field. She also recorded the amount of 4 types of land use in the surrounding 2 km radius circle. These landscape metrics were highly correlated, so she used a Principle Components analysis to derive two combined metrics that were uncorrelated with each other. PC1 represents a gradient of increasing row crops, while PC2 represents decreasing woodland.</p>
+<div id="dickcissels" class="section level2">
+<h2>Dickcissels</h2>
+<p>Begin your analysis of Dickcissels (column “DICK” in the data.frame) by plotting the response variable against all three covariates individually. Check for any signs of non-linearities.</p>
+<pre class="r"><code>library(NRES803)
+data(hanson_birds)
+
+library(tidyverse)  # load all the things
+library(gridExtra)  # to put multiple plots on one page
+
+# make up a theme object that does what I want
+my_theme &lt;- theme_classic() + theme(text = element_text(size = rel(4)))
+
+# some points overlap so use geom_count()
+ggvor &lt;- ggplot(hanson_birds, aes(x = vor, y = DICK)) + geom_count() + 
+    geom_smooth() + scale_size_area(max_size = 4) + guides(size = FALSE) + 
+    my_theme
+## OMG I just figured out how to make these plots with
+## different x axis variables!!!
+ggpc1 &lt;- ggvor + aes(x = pc1)
+ggpc2 &lt;- ggvor + aes(x = pc2)
+# geom_bar with stat=&#39;count&#39; nice for discrete data
+ggdick &lt;- ggplot(hanson_birds, aes(x = DICK)) + geom_bar(stat = &quot;count&quot;) + 
+    my_theme
+grid.arrange(ggvor, ggpc1, ggpc2, ggdick)</code></pre>
+<p>Our response is <em>discrete</em>; only integer values occur. Moreover it is a count of events (seeing a bird), so no negative values occur. Both of these suggest that a Poisson distribution is a good choice.</p>
+<p>So, we start by fitting a glm with a poisson error distribution using all three covariates and their pairwise interactions. Get the summary, and calculate the overall goodness of fit test to look for lack of fit. There aren’t many more models more complex than this for these data, so this will be our <em>global</em> model. We assess our assumptions with this model.</p>
+<pre class="r"><code>library(broom)
+dick.1 &lt;- glm(DICK ~ (vor + pc1 + pc2)^2, data = hanson_birds, 
+    family = poisson)
+sum.dick.1 &lt;- glance(dick.1)
+gof.p.dick.1 &lt;- with(sum.dick.1, pchisq(deviance, df.residual, 
+    lower = FALSE))</code></pre>
+<p>So our model is significantly over-dispersed (<span class="math inline">\(\chi^2=\)</span> 88.06, df = 49, p = 0.0005217). That means that the estimated standard errors of our model are too small. For the moment we will ignore this issue, but keep in mind that tests of significance with this model are biased towards rejecting null hypotheses.</p>
+<p>We can check the linearity assumption by plotting the deviance residuals against each covariate.</p>
+<pre class="r"><code>dick.1.test &lt;- augment(dick.1)
+lin.vor &lt;- ggplot(dick.1.test, aes(x = vor, y = .std.resid)) + 
+    geom_count() + scale_size_area(max_size = 4) + geom_hline(yintercept = 0, 
+    linetype = 2) + geom_smooth() + guides(size = FALSE) + my_theme
+
+lin.pc1 &lt;- lin.vor + aes(x = pc1)
+lin.pc2 &lt;- lin.vor + aes(x = pc2)
+
+grid.arrange(lin.vor, lin.pc1, lin.pc2)</code></pre>
+<p>That’s a bit squashed, but the horizontal line is inside the confidence polygon of the smooth fit throughout, so there is no indication that the linearity assumption is violated.</p>
+<p>Finally, examine the residual plots.</p>
+<pre class="r"><code>resd1 &lt;- ggplot(dick.1.test, aes(x = .fitted, y = .resid)) + 
+    geom_point() + geom_smooth() + geom_hline(yintercept = 0, 
+    linetype = 2) + my_theme
+
+resd2 &lt;- resd1 + aes(y = sqrt(abs(.std.resid))) + geom_hline(yintercept = 1, 
+    linetype = 2)
+
+resd3 &lt;- ggplot(dick.1.test, aes(.hat, .std.resid)) + geom_vline(size = 2, 
+    colour = &quot;white&quot;, xintercept = 0) + geom_hline(size = 2, 
+    colour = &quot;white&quot;, yintercept = 0) + geom_point(aes(size = .cooksd)) + 
+    geom_smooth(se = FALSE) + my_theme
+
+# get int and slope for qqline
+probs &lt;- c(0.25, 0.75)
+y &lt;- quantile(dick.1.test$.std.resid, probs, names = FALSE, na.rm = TRUE)
+x &lt;- qnorm(probs)
+slope &lt;- diff(y)/diff(x)
+int &lt;- y[1L] - slope * x[1L]
+
+qq.dick &lt;- ggplot(dick.1.test, aes(sample = .std.resid)) + geom_qq(size = rel(4)) + 
+    geom_abline(intercept = int, slope = slope, linetype = 2, 
+        size = 2) + my_theme
+
+grid.arrange(resd1, resd2, resd3, qq.dick)</code></pre>
+<p>Nothing particularly worrisome there. There are some particularly large negative residuals that are probably contributing to the overdispersion, but they don’t look too bad.</p>
+<p>Although this model is overdispersed, we’ll work with it for now. We can use the ratio of the summed Pearson residuals to residual degrees of freedom to correct the AICc values. First we want to create a list of possible models. With 3 main effects and their 3 interactions, we have 48 possible models to consider. That is far too many for such a limited dataset. Background knowledge suggests that we know vor will be important, so all models we consider should include that effect. Then we’ll add each of the landscape variables in turn, together with the interaction with VOR.</p>
+<pre class="r"><code>models &lt;- list(DICK ~ 1, DICK ~ vor, DICK ~ vor + pc1, DICK ~ 
+    vor + pc1 + vor:pc1, DICK ~ vor + pc2, DICK ~ vor + pc2 + 
+    vor:pc2, DICK ~ vor + pc1 + pc2, DICK ~ vor + pc1 + pc2 + 
+    vor:pc1, DICK ~ vor + pc1 + pc2 + vor:pc2, DICK ~ vor + pc1 + 
+    pc2 + vor:pc1 + vor:pc2, DICK ~ (vor + pc1 + pc2)^2)
+fits &lt;- lapply(models, glm, data = hanson_birds, family = &quot;poisson&quot;)</code></pre>
+<p>We could calculate <span class="math inline">\(\hat{c}\)</span> manually, but package AICcmodavg has a function to do it for us, and we’ll use it to get a table of the Quasi-AICc values.</p>
+<pre class="r"><code>library(AICcmodavg)</code></pre>
+<pre><code>## Warning: package &#39;AICcmodavg&#39; was built under R version 3.4.1</code></pre>
+<pre class="r"><code>library(pander)
+# get shorter model names (remove DICK ~)
+modnames &lt;- sapply(models, function(ff) deparse(ff[[3]]))
+pander(aictab(fits, c.hat = c_hat(fits[[11]]), modname = modnames), 
+    caption = &quot;Table 1. AICc model selection table for Dickcissel relative abundance in CRP fields.&quot;, 
+    split.tables = Inf)</code></pre>
+<ol class="example" style="list-style-type: decimal">
+<li>Which model or models do you think you should pay attention to and why?</li>
+</ol>
+<p>The top model includes pc2 and it’s interaction with vor. In fact, the four top models all include those terms. The second through fourth ranked models are all within 2 likelihood units of the top model, suggesting that nesting is playing a role here. Thus it seems justifiable to simply use the top model as our model for prediction. However, model averaging the predictions is quite easy given the AICcmodavg package, so lets try both ways and see how much it matters. As before, create some new data assuming pc1 and pc2 are at the median values:</p>
+<pre class="r"><code>nd &lt;- data.frame(vor = seq(2, 9, 0.1), pc1 = median(hanson_birds$pc1), 
+    pc2 = median(hanson_birds$pc2))
+pred.dick &lt;- augment(fits[[6]], newdata = nd, type.predict = &quot;response&quot;)
+
+pred.mavg &lt;- modavgPred(fits, newdata = nd, type = &quot;response&quot;, 
+    c.hat = c_hat(fits[[11]]), modnames = modnames)
+
+pred.dick$mod.avg.pred &lt;- pred.mavg$mod.avg.pred
+pred.dick$uncond.se &lt;- pred.mavg$uncond.se
+
+ggplot(hanson_birds, aes(x = vor, y = DICK)) + geom_count() + 
+    scale_size_area(max_size = 4) + geom_line(aes(y = .fitted), 
+    data = pred.dick, size = 2) + geom_line(aes(y = mod.avg.pred), 
+    data = pred.dick, size = 2, linetype = 2) + my_theme + guides(size = FALSE)</code></pre>
+<p>So the model averaged prediction is right on top of the top model prediction in this case. Let’s look at the model coefficients for those top four models</p>
+<pre class="r"><code># poo. easy way with stargazer doesn&#39;t play with tidyverse
+# make a dataframe
+tidy_w_name &lt;- function(.x, .y) {
+    df &lt;- tidy(.x)  #get the coefficient table
+    df$modname &lt;- .y  #add a column with the modname
+    df  # return df
+}
+# just the top 4 models to save grief later
+etc &lt;- map2_df(fits[c(6, 9, 10, 11)], modnames[c(6, 9, 10, 11)], 
+    tidy_w_name)
+
+etc &lt;- mutate(etc, Estimate = paste(formatC(estimate, digits = 3, 
+    format = &quot;f&quot;), &quot; (&quot;, formatC(std.error, digits = 3, format = &quot;f&quot;), 
+    &quot;)&quot;, sep = &quot;&quot;))
+tab &lt;- spread(etc[, c(1, 6, 7)], key = modname, value = Estimate)
+# arrange the models in order ...
+pander(tab[, 5:2], split.tables = Inf, caption = &quot;Table 2. Estimates (SE) for each of the top four models.&quot;)</code></pre>
+<p>The row ordering of that table isn’t the best, but it’ll work for now. What I want to do is check to see if any of the coefficients from the second through fourth ranked models have estimates more than 2 SE from zero. For example, <code>pc1</code> is at most 2 times the SE in those models. The value of the other two coefficients <code>pc1:pc2</code> and <code>vor:pc1</code> also have small magnitudes relative to their SE. This increases our confidence that nesting effects are responsible for the model selection uncertainty. Ignoring the model selection uncertainty might make our predictions a bit too precise, but the parameters <code>vor</code>, <code>pc2</code> and <code>vor:pc2</code> are very similar across the four models.</p>
+<p>Finally, I want to make a plot showing the prediction from the top model that demonstrates the interaction with <code>pc2</code>. To do this, I’ll make predictions from the lower quartile, median and upper quartile of <code>pc2</code> for a range of vor.</p>
+<pre class="r"><code>nd &lt;- crossing(vor = seq(2, 9, 0.1), pc2 = quantile(hanson_birds$pc2))
+nd$pc2Labels &lt;- factor(rep_len(c(&quot;Min&quot;, &quot;25%&quot;, &quot;50%&quot;, &quot;75%&quot;, 
+    &quot;Max&quot;), nrow(nd)))
+pred.dick &lt;- augment(fits[[6]], newdata = nd, type.predict = &quot;response&quot;)
+
+ggplot(hanson_birds, aes(x = vor, y = DICK)) + geom_count() + 
+    scale_size_area(max_size = 4) + geom_line(aes(y = .fitted, 
+    colour = pc2Labels), data = pred.dick, size = 2) + my_theme + 
+    guides(size = FALSE) + theme(legend.text = element_text(size = 16)) + 
+    scale_color_discrete(breaks = c(&quot;Min&quot;, &quot;25%&quot;, &quot;50%&quot;, &quot;75%&quot;, 
+        &quot;Max&quot;), name = &quot;PC2&quot;) + scale_y_continuous(limits = c(0, 
+    25)) + xlab(&quot;Visual Obstruction Reading&quot;) + ylab(&quot;Dickcissel Abundance&quot;)</code></pre>
+<pre><code>## Warning: Removed 17 rows containing missing values (geom_path).</code></pre>
+<p>I spent a long time fussing around to make that graph look like I wanted. The defaults are often nice but sometimes you want something specific. To see the “quick and dirty” starting point for that graph run the first 4 lines leaving out the final ‘+’.</p>
+<ol start="2" class="example" style="list-style-type: decimal">
+<li>Think carefully about the sign of the coefficients in the top model from Table 2. Does the direction of the trend in the graph match what you think the coefficients are telling you? (hint: the simple effect of pc2 is when vor = 0)</li>
+</ol>
+<hr />
+</div>
+<div id="incidence-function-model" class="section level1">
+<h1>Incidence function model</h1>
+<p>Working with binary data is similar, but back-transforming the link function is a bit more involved. Also the global goodness of fit test doesn’t work when the data are zero/one. The data are <code>isolation</code>, which has three variables, incidence (presence/absence of a species), area of island (km^2), and isolation (distance to mainland in km). This exercise is modified from pg. 595 of Michael Crawley’s “The R Book”.</p>
+<pre class="r"><code>data(isolation)
+names(isolation)</code></pre>
+<ol start="3" class="example" style="list-style-type: decimal">
+<li>Plot the area using boxplots for present and absent(hint: use <code>geom_boxplot()</code>).</li>
+</ol>
+<p><em>Ecological Thought provoker - Do you expect there to be effects of area and isolation, and in which direction should they go?</em></p>
+<p>Next we’ll fit a binomial GLM, and then simplify using backwards selection.</p>
+<pre class="r"><code>isolation.1 &lt;- glm(incidence ~ area * isolation, data = isolation, 
+    family = binomial)
+isolation.2 &lt;- glm(incidence ~ area + isolation, data = isolation, 
+    family = binomial)
+anova(isolation.2, isolation.1, test = &quot;Chisq&quot;)</code></pre>
+<p>So the simpler model is not worse than the more complex model. Check the summary to find the weakest single term, and continue with the backwards selection.</p>
+<pre class="r"><code>summary(isolation.2)
+# area has the smallest z score
+isolation.3 &lt;- update(isolation.2, . ~ . - area)
+anova(isolation.3, isolation.2, test = &quot;Chisq&quot;)</code></pre>
+<p>So removing <code>area</code> does make a significant difference, so we stop with <code>isolation.2</code>.</p>
+<p><em>Ecological thought provoker - Does the sign of the coefficients for area and isolation match your expectations from the boxplots?</em></p>
+<p>Next we want to plot the effects.</p>
+<pre class="r"><code>nd &lt;- data.frame(area = seq(0, 9, 0.01), isolation = median(isolation$isolation))
+pred.p &lt;- augment(isolation.2, newdata = nd, type.predict = &quot;response&quot;)
+ggplot(data = pred.p, mapping = aes(x = area)) + geom_line(mapping = aes(y = .fitted)) + 
+    geom_rug(data = isolation[isolation$incidence &gt; 0, ], sides = &quot;t&quot;) + 
+    geom_rug(data = isolation[isolation$incidence == 0, ], sides = &quot;b&quot;) + 
+    xlab(&quot;Island Area [km^2]&quot;) + ylab(&quot;Probability of Presence&quot;)</code></pre>
+<p>The “rug plots” are a way to show where the data points are located along the x-axis without cluttering up the graph too much.</p>
+<p>Make a plot of the effect of isolation on incidence when island area is held at the median value.</p>
+<p>Adding confidence limits to this sort of plot requires making the prediction on the linear predictor scale, constructing the confidence limits, and then back-transforming the predictions to the response scale using the inverse link function. There are several ways to write the inverse link function for a logit link model, but the easiest to use in my opinion is <span class="math display">\[
+  \hat{p} = \frac{1}{1+e^{-\beta X}}
+\]</span> where <span class="math inline">\(\beta X\)</span> is the prediction on the link scale.</p>
+<pre class="r"><code>nd &lt;- data.frame(area = seq(0, 9, 0.01), isolation = median(isolation$isolation))
+pred.p &lt;- augment(isolation.2, newdata = nd, type.predict = &quot;link&quot;, 
+    se.fit = TRUE) %&gt;% mutate(p = 1/(1 + exp(-.fitted)), lowerci = 1/(1 + 
+    exp(-(.fitted - 2 * .se.fit))), upperci = 1/(1 + exp(-(.fitted + 
+    2 * .se.fit))))
+ggplot(data = pred.p, mapping = aes(x = area)) + geom_line(mapping = aes(y = p)) + 
+    geom_ribbon(mapping = aes(ymin = lowerci, ymax = upperci), 
+        alpha = 0.5) + geom_rug(data = isolation[isolation$incidence &gt; 
+    0, ], sides = &quot;t&quot;) + geom_rug(data = isolation[isolation$incidence == 
+    0, ], sides = &quot;b&quot;) + xlab(&quot;Island Area [km^2]&quot;) + ylab(&quot;Probability of Presence&quot;)</code></pre>
+<ol start="4" class="example" style="list-style-type: decimal">
+<li>Go back and make a new plot for the effect of isolation that includes the 95% confidence region.</li>
+</ol>
+<p>What would happen if we used AIC model selection on this dataset?</p>
+<pre class="r"><code>models &lt;- list(incidence ~ 1, incidence ~ area, incidence ~ isolation, 
+    incidence ~ area + isolation, incidence ~ area + isolation + 
+        area:isolation)
+fits &lt;- lapply(models, glm, family = binomial, data = isolation)
+aictab(fits, as.character(models))</code></pre>
+<ol start="5" class="example" style="list-style-type: decimal">
+<li>Use the AIC table to assess the effects of area and isolation on incidence. What do you have strong evidence for and what is there weaker or no evidence for? Does AIC lead you to a different conclusion compared to backwards selection?</li>
+</ol>
+</div>
