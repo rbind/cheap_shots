@@ -34,9 +34,18 @@ Before the first week of class, you need to [install some software on your compu
 - [Week 3 Model Selection][Week_3]
 - [Week 4 Multi-model inference][Week_4]
 
+## Module 2
+
+- [Week 5 Linear Model Review I][Week_5]
+- [Week 6 More on Linear Models][Week_6]
+- Week 7 No Class Dr. Tyre away
+
+
 [syllabus]: /classes/NRES803/syllabus/
 [computer-setup]: /classes/NRES803/computer-setup/
 [Week_1]: /classes/NRES803/Week_1/
 [Week_2]: /classes/NRES803/Week_2/
 [Week_3]: /classes/NRES803/Week_3/
 [Week_4]: /classes/NRES803/Week_4/
+[Week_5]: /classes/NRES803/Week_5/
+[Week_6]: /classes/NRES803/Week_6/
