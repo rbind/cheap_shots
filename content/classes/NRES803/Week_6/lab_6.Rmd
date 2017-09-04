@@ -7,30 +7,30 @@ weight: 803061
 ---
 ```{r setup2, include=FALSE, echo=FALSE}
 # set eval = FALSE in the following line to make handout
-knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, tidy.opts=list(arrow = TRUE, width.cutoff=60))
 lab.eval=TRUE 
-lab.results='hide' # set to FALSE to produce lab handout.
+ # set to 'hide' to produce lab handout.
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'hide', fig.show='hide', tidy.opts=list(arrow = TRUE, width.cutoff=60))
 ```
 
 In this lab we're going to use a subset of data from Sikkink et al. (2007; Chapter 26 in AED) on grassland species richness in Yellowstone National park. The data were measured on 8 different transects in 8 years between 1958 and 2002. Not every transect was measured in every year, so the intervals between samples varies from 4 to 11 years in duration. According to Zuur et al. (2009) the Richness variable is the Beta diversity - the number of species unique to that site. Here we're only using a subset of covariates identified by Sikkink et al. (2007) as important.
 ```{r ,eval=lab.eval}
+library(NRES803)
 library(tidyverse)
 library(GGally) # for ggpairs()
-Data<-read.table("data/Vegetation.txt",header=TRUE)
-names(Data)
-with(Data, table(SAMPLEYR, Time)) # different scale, same thing
-with(Data, table(SAMPLEYR, Transect)) # every transect sampled every year here
+data(vegetation)
+with(vegetation, table(SAMPLEYR, Time)) # different scale, same thing
+with(vegetation, table(SAMPLEYR, Transect)) # every transect sampled every year here
 
 
-ggpairs(Data[,c(-1,-2,-3)]) # might bog down older computer
+ggpairs(vegetation[,c(-1,-2,-3)]) # might bog down older computer
 # many warnings about missing data
-sum(complete.cases(Data))
-nrow(Data)
+sum(complete.cases(vegetation))
+nrow(vegetation)
 ```
 As you can see from the `ggpairs()` plot, one of the issues we'll have to deal with is collinearity between the explanatory variables. There is a moderately high negative correlation between ROCK and LITTER, which makes sense as these are both cover variables. There are also a few outliers for FallPrec and a few rows with missing data for Richness. Let's get rid of the incomplete cases.
 
 ```{r, eval=lab.eval}
-Data <- Data[complete.cases(Data),]
+vegetation <- vegetation[complete.cases(vegetation),]
 ```
 
 
@@ -38,7 +38,7 @@ I'll start by exploring the response as a smooth function of just one of the var
 
 ```{r ,eval=lab.eval}
 library(mgcv)
-M1 <- gam(Richness~s(SprTmax),data=Data)
+M1 <- gam(Richness~s(SprTmax),data=vegetation)
 summary(M1)
 ```
 
@@ -52,7 +52,7 @@ This shows us the response first rises with increasing maximum spring temperatur
 library(broom)
 nd = data.frame(SprTmax=seq(9,17,0.1))
 pred.R = augment(M1,newdata=nd)
-p <- ggplot(Data, aes(x=SprTmax, y=Richness)) + 
+p <- ggplot(vegetation, aes(x=SprTmax, y=Richness)) + 
   geom_point() + xlab("Maximum spring temperature")
 pgam <- p + geom_line(data=pred.R, mapping=aes(x=SprTmax, y=.fitted)) + 
   geom_ribbon(data=pred.R, aes(x = SprTmax, ymin = .fitted - 1.96*.se.fit, ymax = .fitted + 1.96*.se.fit),inherit.aes = FALSE, alpha=0.5, color = "grey")
@@ -62,8 +62,8 @@ So it appears that warm springs have fewer unique species emerging. Just out of 
 
 ```{r ,eval=lab.eval, tidy=FALSE}
 # convert Transect to a factor -- it is discrete
-Data$Transect <- factor(Data$Transect)
-ggplot(Data, aes(x=SAMPLEYR, y = SprTmax,  color=Transect)) + geom_point()
+vegetation$Transect <- factor(vegetation$Transect)
+ggplot(vegetation, aes(x=SAMPLEYR, y = SprTmax,  color=Transect)) + geom_point()
 ```
 
 So much of the variation in temperature is variation between transects, with the rank order of transects being fairly consistent within each year. It also appears that there might be 3 groups of transects (1&2, 3 through 6, and 7&8). So the effect of spring temperature could also be a spatial effect to some extent. Although this is stretching the amount of data we have greatly, we could explore to see if there is an interaction between the "group" and temperature to see if it is a temperature effect, a spatial effect, or both. First let us examine the residuals from our GAM. 
@@ -101,7 +101,7 @@ So it looks like there is a bit of heteroscedasticity, but no sign that there is
 At this point a nameless skeptic looked over my shoulder while I was writing the lab, and demanded proof that the non-linearity was real. No joke! However, this isn't unknown as I mentioned above, so let's look at the linear model and compare them. 
 
 ```{r ,eval=lab.eval, tidy=FALSE}
-lm.1 <- lm(Richness~SprTmax,data=Data)
+lm.1 <- lm(Richness~SprTmax,data=vegetation)
 summary(lm.1)
 ```
 
@@ -148,7 +148,7 @@ grid.arrange(r1, r2, r3, r4, ncol=2)
 
 There is a pattern in the residuals vs. fitted plot at the higher values of predicted richness. The heteroscedasticity we mentioned before is also clearer in the scale-location plot. These plots didn't convince my skeptic that the GAM was necessary. Ideally, we'd compare the two models using ANOVA or AIC and judge that way. However, comparing models fitted by different functions is fraught with difficulty. What we need to do is use `gam()` to fit the simpler model.
 ```{r ,eval=lab.eval}
-M0 <- gam(Richness~SprTmax,data=Data)
+M0 <- gam(Richness~SprTmax,data=vegetation)
 anova(M0,M1,test="F")
 ```
 So the change in deviance is unlikely to have occurred by chance. The p-value is on the border of the region where we would want to be careful about rejecting the null hypothesis, but still OK. Anyway, it convinced my household skeptic.
@@ -160,7 +160,7 @@ Before I was so rudely interrupted I was going to examine the residuals vs. `SAM
 ```{r , eval=lab.eval}
 # screwed up my residual df so make new one
 # add the SAMPLEYR and Transect columns
-r <- Data %>% select(SAMPLEYR, Transect) %>%
+r <- vegetation %>% select(SAMPLEYR, Transect) %>%
   bind_cols(augment(M1))
 ggplot(r, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
@@ -181,18 +181,18 @@ ggplot(r, aes(x = Group, y = .resid)) +
 ```
 It certainly appears that there is something varying by transect that affects species richness. Looking back at the `ggpairs()` plot it seems like the variable `BARESOIL` is negatively correlated with Richness, and not very correlated with `SprTmax`. 
 ```{r ,eval=lab.eval, tidy=FALSE}
-ggplot(Data, aes(x=SAMPLEYR, y = BARESOIL, color = Transect)) + 
+ggplot(vegetation, aes(x=SAMPLEYR, y = BARESOIL, color = Transect)) + 
   geom_point()
 
 ```
 There's definately a temporal trend in baresoil amount, but not much relationship with transect. Let us include it in the model and see what happens. 
 ```{r ,eval=lab.eval}
-M2 <- gam(Richness~s(SprTmax)+s(BARESOIL),data=Data)
+M2 <- gam(Richness~s(SprTmax)+s(BARESOIL),data=vegetation)
 summary(M2)
 ```
 Our intercept hasn't changed, the $R^2$ has increased a bit, and the GCV score dropped a bit. However, look at the estimated degrees of freedom for the `BARESOIL` variable; it is 1. This means we can safely include it as a linear term in the model. 
 ```{r ,eval=lab.eval}
-M2 <- gam(Richness~s(SprTmax)+BARESOIL,data=Data)
+M2 <- gam(Richness~s(SprTmax)+BARESOIL,data=vegetation)
 summary(M2)
 anova(M1,M2,test="F")
 ```
@@ -200,7 +200,7 @@ So that is a significant improvement in the Deviance.
 
 It's also possible that the effect of spring temperature and baresoil interact, and we can build that in using a "by" argument to the smooth term. Placing a numeric variable in the by argument tells `gam()` to multiply the smooth by the variable - effectively creating an interaction between baresoil and the smooth function of spring temperature.
 ```{r ,eval=lab.eval}
-M3 <- gam(Richness~s(SprTmax,by=BARESOIL)+BARESOIL,data=Data)
+M3 <- gam(Richness~s(SprTmax,by=BARESOIL)+BARESOIL,data=vegetation)
 summary(M3)
 ```
 This has increased the complexity of the model and actually makes the deviance worse, so let's not go there. Next, examine the residuals. There is a function that does a bit of the residual plotting for us, `gam.check()` - it also does some diagnostic checks on the smoother. 
@@ -209,7 +209,7 @@ gam.check(M2)
 ```
 The quantile-quantile plot and histogram of the residuals look reasonable, but there is still that annoying amount of heteroscedasticity in the residuals. Let's repeat the plots of residuals against year and transect again too.
 ```{r ,eval=lab.eval}
-r2 <- Data %>% select(SAMPLEYR, Transect) %>%
+r2 <- vegetation %>% select(SAMPLEYR, Transect) %>%
   bind_cols(augment(M2))
 pr2a <- ggplot(r2, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
@@ -221,29 +221,29 @@ grid.arrange(pr2a, pr2b, ncol=2)
 ```
 There's still more pattern there than I like to see. Let's see if any of our other covariates vary among transects or years.
 ```{r ,eval=lab.eval}
-ggplot(Data, aes(x = Transect, y = BARESOIL)) + 
+ggplot(vegetation, aes(x = Transect, y = BARESOIL)) + 
   geom_boxplot()
-ggplot(Data, aes(x = SAMPLEYR, y = BARESOIL, color=Transect)) + 
+ggplot(vegetation, aes(x = SAMPLEYR, y = BARESOIL, color=Transect)) + 
   geom_point() + geom_line()
 ```
 The percentage of Bare rock looks interesting - it varies over time within transects, but also much more between transects, and in a way that matches the residual pattern, maybe. 
 ```{r ,eval=lab.eval}
-ggplot(Data, aes(x = Transect, y = LITTER)) + 
+ggplot(vegetation, aes(x = Transect, y = LITTER)) + 
   geom_boxplot()
-ggplot(Data, aes(x = SAMPLEYR, y = LITTER, color=Transect)) + 
+ggplot(vegetation, aes(x = SAMPLEYR, y = LITTER, color=Transect)) + 
   geom_point() + geom_line()
 ```
 Litter varies too, but much more between years than between transects - the lines cross alot more.
 ```{r ,eval=lab.eval}
-ggplot(Data, aes(x = Transect, y = FallPrec)) + 
+ggplot(vegetation, aes(x = Transect, y = FallPrec)) + 
   geom_boxplot()
-ggplot(Data, aes(x = SAMPLEYR, y = FallPrec, color=Transect)) + 
+ggplot(vegetation, aes(x = SAMPLEYR, y = FallPrec, color=Transect)) + 
   geom_point() + geom_line()
 ```
 Fall Precipitation varies alot among years, without much variation between transects within years. 
 So after Spring temperature and Baresoil, Rock has the highest correlation with Richness, and seems like it might reflect variation among transects. Litter is less well correlated with Richness, and is also highly correlated with Rock, so we'll leave it out. Fall precipitation also seems like it could easily affect germination rates. 
 ```{r ,eval=lab.eval}
-M4 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK),data=Data)
+M4 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK),data=vegetation)
 summary(M4)
 plot(M4)
 anova(M2,M4,test="F")
@@ -251,7 +251,7 @@ anova(M2,M4,test="F")
 This addition gave us a huge jump in the $R^2$, and a very significant change in the deviance. We might consider a model that allows for an interaction between `ROCK` and `SprTmax`, which we do by introducing a 2 dimensional smooth term. This term will capture responses not modelled by the independent smooth functions of temperature and Rock. I changed the basis for this new term to "ts", which is a version of the thin plate regression spline that will allow the degrees of freedom to approach zero. If it does approach zero, then we know we can safely remove that term as it isn't contributing to the fit.
 ```{r ,eval=lab.eval, tidy=FALSE}
 M5 <- gam(Richness~s(SprTmax)+s(ROCK)+s(SprTmax,ROCK,bs="ts")+BARESOIL,
-          data=Data)
+          data=vegetation)
 summary(M5)
 ```
 There is no change in the $R^2$ and GCV scores, and the estimated degrees of freedom for the 2-D term is essentially zero, so we can leave it out. 
@@ -262,7 +262,7 @@ Now lets reexamine the residuals to see how we're doing.
 ```{r ,eval=lab.eval}
 gam.check(M4)
 
-r4 <- Data %>% select(SAMPLEYR, Transect) %>%
+r4 <- vegetation %>% select(SAMPLEYR, Transect) %>%
   bind_cols(augment(M4))
 pr4a <- ggplot(r4, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
@@ -277,7 +277,7 @@ grid.arrange(pr4a, pr4b, ncol=2)
 There's still a bit of pattern left in the plot of residuals vs. transect, but more of the form of heteroscedasticity. Normally I think I would stop here, or maybe try a different family to see if the heteroscedasticity can be fixed. However, I want to try a few more models. Let's see if precipitation variation between years has anything to tell us. 
 
 ```{r ,eval=lab.eval}
-M6 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK)+s(FallPrec),data=Data)
+M6 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK)+s(FallPrec),data=vegetation)
 summary(M6)
 anova(M4,M6,test="F")
 ```
@@ -287,7 +287,7 @@ Although the model improves slightly, the new smooth term is not significant, an
 ```{r ,eval=lab.eval}
 gam.check(M6)
 
-r6 <- Data %>% select(SAMPLEYR, Transect) %>%
+r6 <- vegetation %>% select(SAMPLEYR, Transect) %>%
   bind_cols(augment(M6))
 pr6a <- ggplot(r6, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
@@ -303,15 +303,15 @@ These look much better. So we're in a bit of a quandry - Fall precipitation help
 
 The threshold model is suggested by the residual pattern vs. SAMPLEYR for M4 - looks like there is a "step" change around 1980. It could be that something changed in the park around 1980, and this is sort of correlated with a change in precipitation. I'm going to create a variable that says Year > 1980, and use that as a categorical variable in the model.
 ```{r ,eval=lab.eval}
-Data$Period = factor(Data$SAMPLEYR>1980)
-M7 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK)+Period,data=Data)
+vegetation$Period = factor(vegetation$SAMPLEYR>1980)
+M7 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK)+Period,data=vegetation)
 summary(M7)
 anova(M4,M7,test="F")
 ```
 This is better than M4 although not by much. 
 ```{r ,eval=lab.eval}
 gam.check(M7)
-r7 <- Data %>% select(SAMPLEYR, Transect) %>%
+r7 <- vegetation %>% select(SAMPLEYR, Transect) %>%
   bind_cols(augment(M7))
 pr7a <- ggplot(r7, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
@@ -328,7 +328,7 @@ Not really any improvement compared with M4.
 (@) Fit M8 adding `Transect` to M4, compare with M4 and check residuals. 
 
 ```{r , echo=FALSE, eval=lab.eval}
-M8 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK)+Transect, data=Data)
+M8 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK)+Transect, data=vegetation)
 summary(M8)
 anova(M4, M8, test="F")
 # no significant improvement
@@ -339,9 +339,9 @@ What about that heteroscedasticity? Now let's see, we've got a variable that onl
 (@) Refit model 4 with a different family. Check the residuals and other assumptions, decide which model is better. Use AIC to adjudicate between your normal error model and this new model. 
 
 ```{r, echo=FALSE, eval=lab.eval}
-M9 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK),data=Data,family=poisson)
+M9 <- gam(Richness~s(SprTmax)+BARESOIL+s(ROCK),data=vegetation,family=poisson)
 summary(M9)
-M10 <- gam(Richness~s(SprTmax)+BARESOIL,data=Data,family=poisson)
+M10 <- gam(Richness~s(SprTmax)+BARESOIL,data=vegetation,family=poisson)
 summary(M10)
 # but is it better than M4 - can't use ANOVA, AIC gives a higher value for M10. Can we trust it? Residuals look worse on gam.check(). 
 
