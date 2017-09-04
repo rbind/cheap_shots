@@ -87,9 +87,8 @@ grid.arrange(resd1, resd2, resd3, qq.dick)</code></pre>
     pc2 + vor:pc1 + vor:pc2, DICK ~ (vor + pc1 + pc2)^2)
 fits &lt;- lapply(models, glm, data = hanson_birds, family = &quot;poisson&quot;)</code></pre>
 <p>We could calculate <span class="math inline">\(\hat{c}\)</span> manually, but package AICcmodavg has a function to do it for us, and we’ll use it to get a table of the Quasi-AICc values.</p>
-<pre class="r"><code>library(AICcmodavg)</code></pre>
-<pre><code>## Warning: package &#39;AICcmodavg&#39; was built under R version 3.4.1</code></pre>
-<pre class="r"><code>library(pander)
+<pre class="r"><code>library(AICcmodavg)
+library(pander)
 # get shorter model names (remove DICK ~)
 modnames &lt;- sapply(models, function(ff) deparse(ff[[3]]))
 pander(aictab(fits, c.hat = c_hat(fits[[11]]), modname = modnames), 
@@ -145,7 +144,6 @@ ggplot(hanson_birds, aes(x = vor, y = DICK)) + geom_count() +
     scale_color_discrete(breaks = c(&quot;Min&quot;, &quot;25%&quot;, &quot;50%&quot;, &quot;75%&quot;, 
         &quot;Max&quot;), name = &quot;PC2&quot;) + scale_y_continuous(limits = c(0, 
     25)) + xlab(&quot;Visual Obstruction Reading&quot;) + ylab(&quot;Dickcissel Abundance&quot;)</code></pre>
-<pre><code>## Warning: Removed 17 rows containing missing values (geom_path).</code></pre>
 <p>I spent a long time fussing around to make that graph look like I wanted. The defaults are often nice but sometimes you want something specific. To see the “quick and dirty” starting point for that graph run the first 4 lines leaving out the final ‘+’.</p>
 <ol start="2" class="example" style="list-style-type: decimal">
 <li>Think carefully about the sign of the coefficients in the top model from Table 2. Does the direction of the trend in the graph match what you think the coefficients are telling you? (hint: the simple effect of pc2 is when vor = 0)</li>
