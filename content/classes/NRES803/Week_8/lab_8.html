@@ -1,0 +1,86 @@
+---
+title: "Week 8 Lab"
+author: "Drew Tyre"
+date: "2017-09-07"
+output: html_document
+weight: 803081
+---
+
+
+
+<p>We’ll play with a few datasets from Mick Crawley’s “The R Book” <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.</p>
+<pre class="r"><code>library(NRES803)
+library(tidyverse)
+library(mgcv)
+library(broom)
+library(GGally)
+library(gridExtra)
+data(sheep)
+ggplot(sheep, aes(x = Year, y = Population)) + geom_point()</code></pre>
+<p>The goal is to identify a function relating growth rate Delta to population size. The simplest population model has this as a linear function, but there’s no a priori reason to suppose that it should be linear.</p>
+<pre class="r"><code>sheep.lm &lt;- lm(Delta ~ Population, data = sheep)
+sheep.gam &lt;- gam(Delta ~ s(Population), data = sheep)
+
+# get residual df for both models
+stuff_lm &lt;- glance(sheep.lm)
+stuff_gam &lt;- glance(sheep.gam)
+
+nd &lt;- data.frame(Population = seq(600, 2000, 10))
+pred_lm &lt;- augment(sheep.lm, newdata = nd) %&gt;% mutate(l95ci = .fitted - 
+    .se.fit * qt(0.975, stuff_lm$df.residual), u95ci = .fitted + 
+    .se.fit * qt(0.975, stuff_lm$df.residual)) %&gt;% rename(Delta = .fitted)
+
+pred_gam &lt;- augment(sheep.gam, newdata = nd) %&gt;% mutate(l95ci = .fitted - 
+    .se.fit * qt(0.975, stuff_gam$df.residual), u95ci = .fitted + 
+    .se.fit * qt(0.975, stuff_gam$df.residual)) %&gt;% rename(Delta = .fitted)
+
+# make a plot
+ggplot(sheep, aes(x = Population, y = Delta)) + geom_point() + 
+    geom_line(data = pred_lm, color = &quot;blue&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci, 
+    ymax = u95ci), data = pred_lm, color = &quot;grey&quot;, alpha = 0.33) + 
+    geom_line(data = pred_gam, color = &quot;green&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci, 
+    ymax = u95ci), data = pred_gam, color = &quot;grey&quot;, alpha = 0.33)</code></pre>
+<p>The gam fit is kind of interesting, looks like there are two broad regimes of population growth within which the growth rate is pretty constant with respect to population size. So which is the better model? This is actually quite important to get right, as the dynamics implied by the non-linear model will be much different. Recall that we can use gam() to fit the simpler model as well.</p>
+<ol class="example" style="list-style-type: decimal">
+<li>Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?</li>
+</ol>
+<p>The residuals look OK from both models. There is a bit of structure in the residuals vs. fitted plot for the linear model, but always inside the confidence limits. These models appear pretty much equivalent, with a slight favor to the gam.</p>
+<ol start="2" class="example" style="list-style-type: decimal">
+<li>Fit the linear model using gam() and use anova() to compare the two models. Which one would you choose and why?</li>
+</ol>
+<p>So that’s a borderline case if ever there was one! This is actually apparent from the plot above. The straight line falls entirely within the confidence limits of the gam fit. Confidence limits don’t overlap everywhere, which is why we’re seeing a borderline p value for the anova.</p>
+<div id="ozone-data" class="section level2">
+<h2>Ozone data</h2>
+<p>Next we’ll take a look at an air quality dataset. Not ecological, but a good test of your ability to see patterns in residuals.</p>
+<pre class="r"><code>data(ozone)
+
+ggpairs(ozone)</code></pre>
+<p>The goal here is to predict ozone readings from solar radiation levels, temperature, and wind. You can see from the pairs plot that temperature in particular looks quite non-linear, as does radiation.</p>
+<ol start="3" class="example" style="list-style-type: decimal">
+<li>Set up a <code>gam()</code> model with smooth terms for all three predictor variables. Evaluate this model graphically and interpret the results graphically (make a prediction plot) and in written form.</li>
+</ol>
+<p>There is a bit of upward curvature in the qq plot and a hint of heteroscedasticity in the residuals vs. linear predictor plot. Both of those suggest a log transformation of ozone is helpful, especially combined with the observation that ozone is always strictly greater than zero.</p>
+<p>All three smooth terms are significant at p &lt; 0.01, and all have estimated degrees of freedom greater than 2. All three variables are important and non-linear. Now make some prediction plots I’ll plot ozone vs each of the others, coloring by the second predictor, holding the third predictor at the median.</p>
+<p>That was alot of typing but some pretty interesting results! The effect of changing radiation is fairly small compared to the effects of wind and temp. Check the top two plots. Look at the range of any one predicted line, and compare that to the range between lines. Similarly, compare the range of a single temperature line to the spread between lines in the bottom left plot (colored by radiation). Also, the model is doing a poor job of predicting the effect of high temperature when wind is high, and low temperature when wind is low.</p>
+<ol start="4" class="example" style="list-style-type: decimal">
+<li>log transform Ozone, and repeat the model with three smooth terms. Compare these two models graphically and numerically, choose which one is better, and explain why.</li>
+</ol>
+<p>The log transformed response gives better looking residuals. It is almost too strong – the variance decreases with increasing mean, but not enough to worry about. There is one extreme negative outlier; the lowest observation is poorly predicted.</p>
+<p>This looks good too. I would pick the log transformed model on the basis of improved residuals and the observation that the response distribution is continuous and bounded at 0. Now I’ll redo the prediction plots, hopefully I can reuse some of the objects from above! I’m not going to use rad on the x axis, just wind and temp.</p>
+<p>Conclusions are similar here. The effect of changing radiation is fairly small compared to the effects of wind and temp. Also, the model is still doing a poor job of predicting the effect of high temperature when wind is high, and low temperature when wind is low.</p>
+<ol start="5" class="example" style="list-style-type: decimal">
+<li>Based on your conclusions from the initial model, fit one or more new models with either fewer smooth terms (possibly linear), or additional interaction terms. Evaluate and interpret these models graphically and numerically.</li>
+</ol>
+<p>I can think of two possible explanations for the poor predictions at opposing extremes of temperature and wind. One is that there is an interaction between them. The other is that they are corrlated, and so we never see situations with low temps and low wind, or high temps and high wind. In that case the lines we are plotting just don’t make sense in those regions, because those combinations don’t occur. We can check the first explanation easily by adding a 2-D spline with wind and temperature.</p>
+<p>The residuals on that model look fantastic, and the new 2-D smooth is very strong. Both of the 1-D smooths on temp and wind are now not-signficant, suggesting that their effects have been absorbed into the 2-D smooth. So I’ll pull those out, refit, and look at the predictions.</p>
+<p>Those are some crazy looking plots. I think the problem is the second case – temp and wind are correlated, and the predictions I am making ignore that, and essentially cut straight across the surface. Generating predictions that respect that relationship is a bit tricky. I’m going to try, but note that this is in the “beyond the scope of the course” category.</p>
+<p>What I want is a new data.frame that has a range of values for wind that make sense for a particular temperature. If I was only interested in predicting the mean I could just use a linear model. But I want a range of values at particular quantiles. What I need is a quantile regression - how does the (say) 75th percentile of wind change as temperature changes. Enter package quantreg</p>
+<p>That’s much better! Still, the prediction for the 90th percentile of wind is well outside the data. Let’s see if the 2-D model does any better.</p>
+<p>At the top end that’s better, and the lines are a little less crazy. Hard to believe that’s not overfitted though. I think this 2-D smooth is seriously stretching the value of the data. You know what is crazy cool? The lines are colored according to the value of wind for that temperature!</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This is an excellent book if you are looking for a second reference book on statistics for ecology in R. The code and data for the book are available <a href="http://www.bio.ic.ac.uk/research/mjcraw/therbook/">here</a>.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
