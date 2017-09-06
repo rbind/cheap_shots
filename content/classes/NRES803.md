@@ -39,6 +39,7 @@ Before the first week of class, you need to [install some software on your compu
 - [Week 5 Generalized Linear Models][Week_5]
 - [Week 6 Generalized Additive Models][Week_6]
 - Week 7 No Class Dr. Tyre away
+- [Week 8 Deciding what to do][Week_8]
 
 
 [syllabus]: /classes/NRES803/syllabus/
@@ -49,3 +50,4 @@ Before the first week of class, you need to [install some software on your compu
 [Week_4]: /classes/NRES803/Week_4/
 [Week_5]: /classes/NRES803/Week_5/
 [Week_6]: /classes/NRES803/Week_6/
+[Week_8]: /classes/NRES803/Week_8/
