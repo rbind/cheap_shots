@@ -16,13 +16,13 @@ In this homework assignment you will analyse a dataset on Forest Bird densities 
 
 Recall from island biogeography theory that species richness should increase with AREA and decrease with isolation (DIST, LDIST, and YR.ISOL). Grazing is expected to have a negative effect on forest bird abundance because of the effects on understory vegetation. All species are lumped together in this response. 
 
-Here's a bit of code to get you started.
+Here's a bit of code to get you started. Issues to consider: what about the distribution of area? Do you expect abundance per count to scale linearly with area? Grazing is a category; does R think it is a category?
 
 ```{r}
 library(NRES803)
 library(tidyverse)
 data(loyn)
 library(GGally) # for ggpairs
-ggpairs(loyn)
+ggpairs(loyn[,-(1:2)])
 ```
 

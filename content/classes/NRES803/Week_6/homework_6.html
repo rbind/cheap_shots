@@ -1,0 +1,18 @@
+---
+title: "Week 6 Homework"
+author: "Drew Tyre"
+date: "2017-08-01"
+output: html_document
+weight: 803062
+---
+
+
+
+<p>In this homework assignment you will analyse a dataset on Forest Bird densities from 56 patches in south eastern Victoria, in Australia. The aim of the study was to relate bird density to 6 habitat covariates, patch area (AREA), distance to nearest patch (DIST), distance to nearest larger patch (LDIST), altitude (ALT), the year the patch was isolated by vegetation clearing (YEAR.ISOL), and a categorical index of stock grazing intensity (GRAZE; 1 = light, 5 = heavy). The data are in the package NRES803. Conduct a full analysis of these data, including data exploration. Be sure to identify non-linear relationships as appropriate, and think carefully about what the appropriate error distribution is for these data. What kind of model selection process are you going to use, if any? Submit the zipped project folder. Your R markdown file should contain a (brief; &lt; 250 words) methods section describing your analytical process, and a results section describing the results. Figures can be embedded in the text where you reference them. These sections are written in complete, grammatically correct sentences. Imagine this is a draft of a paper you are going to submit to a journal.</p>
+<p>Recall from island biogeography theory that species richness should increase with AREA and decrease with isolation (DIST, LDIST, and YR.ISOL). Grazing is expected to have a negative effect on forest bird abundance because of the effects on understory vegetation. All species are lumped together in this response.</p>
+<p>Here’s a bit of code to get you started. Issues to consider: what about the distribution of area? Do you expect abundance per count to scale linearly with area? Grazing is a category; does R think it is a category?</p>
+<pre class="r"><code>library(NRES803)
+library(tidyverse)
+data(loyn)
+library(GGally)  # for ggpairs
+ggpairs(loyn[, -(1:2)])</code></pre>
