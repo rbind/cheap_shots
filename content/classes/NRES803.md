@@ -36,8 +36,8 @@ Before the first week of class, you need to [install some software on your compu
 
 ## Module 2
 
-- [Week 5 Linear Model Review I][Week_5]
-- [Week 6 More on Linear Models][Week_6]
+- [Week 5 Generalized Linear Models][Week_5]
+- [Week 6 Generalized Additive Models][Week_6]
 - Week 7 No Class Dr. Tyre away
 
 

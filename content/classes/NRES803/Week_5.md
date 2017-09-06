@@ -46,5 +46,4 @@ Post pre-proposal in discussion board by Tuesday 11:59 pm. You have until Tuesda
 
 ### Friday
 
-    Do [Week 5 lab](lab_5/). Submit in Canvas, due Midnight Tuesday of Week 6.
-    
+Do [Week 5 lab](lab_5/). Submit in Canvas, due Midnight Tuesday of Week 6.

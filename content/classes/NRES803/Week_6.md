@@ -47,4 +47,4 @@ In this week we’ll look at breaking the assumption that the covariates are lin
 
 1. [Friday's lab assignment](lab_6/) has lots of looking at residual plots. Submit on canvas, midnight Tuesday of Week 7.
 
-2. Mt Lofty Birds Homework is due Midnight Tuesday of Week 8.
+2. [Week 6 Homework](homework_6/)  is due Midnight Tuesday of Week 8.
