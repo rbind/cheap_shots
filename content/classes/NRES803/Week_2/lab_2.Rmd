@@ -81,7 +81,8 @@ ggplot(test_RIKZ, aes(.hat, .std.resid)) +
 (@) Briefly interpret what those plots are telling you about each of the four assumptions of the linear model. 
 
 Next we will look for other important variables. It would not be uncommon for ecological communities to vary over time. 
-So plot species richness against the variable week. I will leave this one as an exercise! 
+
+(@) Plot species richness against the variable week. Save the plot object in an object named `richness_week`. 
 
 ```{r, include = FALSE}
 richness_week <- ggplot(RIKZ, aes(x = week, y = Richness, color = fBeach)) + 
