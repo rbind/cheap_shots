@@ -37,9 +37,9 @@ Post pre-proposal in discussion board by Tuesday 11:59 pm. You have until Tuesda
 
     * View Videos:
 
-        GLM Introduction
-
-        GLM Testing
+        [GLM Introduction](https://youtu.be/S5lNiAJ5X4E)
+        
+        [GLM Testing](https://youtu.be/mkTavUXyY-c)
 
     * In Wednesday’s class  
         Tick exercise; worms exercise
