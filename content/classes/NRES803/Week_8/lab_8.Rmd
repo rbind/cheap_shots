@@ -21,7 +21,7 @@ library(mgcv)
 library(broom)
 library(GGally)
 library(gridExtra)
-sheep = read.table("data/soaysheep.txt",header=TRUE)
+data(sheep)
 ggplot(sheep, aes(x=Year, y=Population)) + 
   geom_point()
 ```
@@ -71,9 +71,9 @@ that we can use gam() to fit the simpler model as well.
 # tired of typing out all that crap. I made a function
 #source("check_assumptions.R")
 # install.packages("devtools")
-devtools::source_gist("https://gist.github.com/atyre2/ff4e1ec24e42adda8dbd43cda99d6282")
+#devtools::source_gist("https://gist.github.com/atyre2/ff4e1ec24e42adda8dbd43cda99d6282")
 
-check_assumptions(sheep.lm)
+#check_assumptions(sheep.lm)
 # but won't work with gam objects :( 
 gam.check(sheep.gam) # this is ugly
 rr <- augment(sheep.gam)
@@ -106,14 +106,13 @@ cat("So that's a borderline case if ever there was one! This is actually apparen
 Next we'll take a look at an air quality dataset. Not ecological, but a good test of your ability to see patterns in residuals.
 
 ```{r}
-ozone <- read.table("data/ozone.data.txt", header=TRUE)
+data(ozone)
 
 ggpairs(ozone)
 ```
 
 The goal here is to predict ozone readings from solar radiation levels, temperature, and wind. You can see from the pairs plot that temperature in particular
-looks quite non-linear, as does radiation. Notice that Ozone readings are
-bounded - they’re never less than zero, and the smallest value is 1.
+looks quite non-linear, as does radiation. 
 
 (@) Set up a `gam()` model with smooth terms for all three predictor variables. Evaluate this model graphically and interpret the results graphically (make a prediction plot) and in written form. 
 
