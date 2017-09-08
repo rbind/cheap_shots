@@ -14,7 +14,7 @@ weight: 803031
 <pre class="r"><code>data(&quot;smithsim&quot;)
 global &lt;- lm(Y ~ Amount + Edge + MnPatch + Hetero, data = smithsim)</code></pre>
 <ol class="example" style="list-style-type: decimal">
-<li>Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (2, -2, 0, 2), and the known residual standard error of 3.5.</li>
+<li>Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (intercept=0, Amount = 2, Edge = -2, MnPatch = 0, Hetero = 2), and the known residual standard error of 3.5.</li>
 </ol>
 <p>Now fit the TRUE model; recall that the true effect of the <code>MnPatch</code> variable is 0. This model enforces that by not estimated a coefficient for this variable.</p>
 <pre class="r"><code>truth &lt;- lm(Y ~ Amount + Edge + Hetero, data = smithsim)</code></pre>
@@ -23,25 +23,9 @@ global &lt;- lm(Y ~ Amount + Edge + MnPatch + Hetero, data = smithsim)</code></p
 </ol>
 <p>One strategy for deciding if we can remove a variable from a model is “backward selection”. We can do this with an F-test.</p>
 <pre class="r"><code>anova(truth, global)</code></pre>
-<pre><code>## Analysis of Variance Table
-## 
-## Model 1: Y ~ Amount + Edge + Hetero
-## Model 2: Y ~ Amount + Edge + MnPatch + Hetero
-##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
-## 1    346 4336.2                           
-## 2    345 4326.2  1     10.04 0.8007 0.3715</code></pre>
 <p>So we can justify using the smaller model because there is no significant difference between the simpler and more complex models. Now we can check to see if we can further simplify the model <code>truth</code>. I use the function <code>update()</code> to create a model that is identical except that it removes the variable <code>Amount</code>.</p>
 <pre class="r"><code>smaller.model &lt;- update(truth, . ~ . - Amount)
 anova(smaller.model, global)</code></pre>
-<pre><code>## Analysis of Variance Table
-## 
-## Model 1: Y ~ Edge + Hetero
-## Model 2: Y ~ Amount + Edge + MnPatch + Hetero
-##   Res.Df    RSS Df Sum of Sq    F    Pr(&gt;F)    
-## 1    347 4521.1                                
-## 2    345 4326.2  2    194.87 7.77 0.0005004 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Can we eliminate the Amount variable from our model? No, because doing so leads to a significant change in the residual sum of squares.</p>
 <ol start="3" class="example" style="list-style-type: decimal">
 <li>Repeat these two steps for the other two variables, remembering to always start from the model truth. Can we eliminate any additional variables?</li>
@@ -58,14 +42,9 @@ anova(smaller.model, global)</code></pre>
 <p>Next we want to get the AIC values for each of these models. We use sapply(), which is related to lapply, but will simplify the result to a vector if possible:</p>
 <pre class="r"><code>aic &lt;- sapply(fits, AIC)
 aic</code></pre>
-<pre><code>##  [1] 2012.749 1981.386 2003.985 1994.779 1901.672 1964.264 1983.353
-##  [8] 1903.578 1996.685 1896.756 1903.558 1884.147 1966.180 1904.977
-## [15] 1892.695 1885.336</code></pre>
 <p>The best model has the smallest AIC.</p>
-<pre class="r"><code>which.min(aic)</code></pre>
-<pre><code>## [1] 12</code></pre>
-<pre class="r"><code>models[[which.min(aic)]]  # which model is that?</code></pre>
-<pre><code>## Y ~ Amount + Edge + Hetero</code></pre>
+<pre class="r"><code>which.min(aic)
+models[[which.min(aic)]]  # which model is that?</code></pre>
 <p>Which happens to be the true model. However, how many other models are close by? Here is where we manually calculate an AIC table. Start by calculating the <span class="math inline">\(\Delta AIC\)</span> values, and convert them to the model weights.</p>
 <pre class="r"><code>deltas &lt;- aic - min(aic)  # smallest will be zero
 weights &lt;- exp(-deltas/2)  # this is an intermediate step
@@ -75,45 +54,11 @@ weights &lt;- weights/sum(weights)  # so we can do this</code></pre>
 <pre class="r"><code>npars &lt;- sapply(fits, function(mm) length(coef(mm))) + 1</code></pre>
 <p>Recall that the second argument to <code>sapply()</code> is a function. Here I’ve defined an <em>anonymous</em> function (it has no name) just to use here. If that looks intimidating – start with coef(global) and build out and you’ll see what the function does with a single fitted model object. Next use “cbind” to show all the results together.</p>
 <pre class="r"><code>cbind(AIC = aic, k = npars, deltas = deltas, weights = weights)</code></pre>
-<pre><code>##            AIC k     deltas      weights
-##  [1,] 2012.749 2 128.602514 7.567903e-29
-##  [2,] 1981.386 3  97.239483 4.890702e-22
-##  [3,] 2003.985 3 119.838505 6.054187e-27
-##  [4,] 1994.779 3 110.632482 6.041131e-25
-##  [5,] 1901.672 3  17.525363 9.978664e-05
-##  [6,] 1964.264 4  80.116887 2.555616e-18
-##  [7,] 1983.353 4  99.206322 1.829269e-22
-##  [8,] 1903.578 4  19.431349 3.847625e-05
-##  [9,] 1996.685 4 112.538508 2.329325e-25
-## [10,] 1896.756 4  12.609044 1.165836e-03
-## [11,] 1903.558 4  19.410710 3.887536e-05
-## [12,] 1884.147 5   0.000000 6.377590e-01
-## [13,] 1966.180 5  82.032674 9.805909e-19
-## [14,] 1904.977 5  20.830519 1.911467e-05
-## [15,] 1892.695 5   8.548433 8.879487e-03
-## [16,] 1885.336 6   1.188662 3.519995e-01</code></pre>
 <p>This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:</p>
 <pre class="r"><code>aic.table &lt;- cbind(model = 1:16, AIC = aic, k = npars, deltas = deltas, 
     weights = weights)
 at2 &lt;- aic.table[order(aic), ]  # so I can get cumulative weight
 cbind(at2, cumw = cumsum(at2[, &quot;weights&quot;]))</code></pre>
-<pre><code>##       model      AIC k     deltas      weights      cumw
-##  [1,]    12 1884.147 5   0.000000 6.377590e-01 0.6377590
-##  [2,]    16 1885.336 6   1.188662 3.519995e-01 0.9897584
-##  [3,]    15 1892.695 5   8.548433 8.879487e-03 0.9986379
-##  [4,]    10 1896.756 4  12.609044 1.165836e-03 0.9998037
-##  [5,]     5 1901.672 3  17.525363 9.978664e-05 0.9999035
-##  [6,]    11 1903.558 4  19.410710 3.887536e-05 0.9999424
-##  [7,]     8 1903.578 4  19.431349 3.847625e-05 0.9999809
-##  [8,]    14 1904.977 5  20.830519 1.911467e-05 1.0000000
-##  [9,]     6 1964.264 4  80.116887 2.555616e-18 1.0000000
-## [10,]    13 1966.180 5  82.032674 9.805909e-19 1.0000000
-## [11,]     2 1981.386 3  97.239483 4.890702e-22 1.0000000
-## [12,]     7 1983.353 4  99.206322 1.829269e-22 1.0000000
-## [13,]     4 1994.779 3 110.632482 6.041131e-25 1.0000000
-## [14,]     9 1996.685 4 112.538508 2.329325e-25 1.0000000
-## [15,]     3 2003.985 3 119.838505 6.054187e-27 1.0000000
-## [16,]     1 2012.749 2 128.602514 7.567903e-29 1.0000000</code></pre>
 <ol start="4" class="example" style="list-style-type: decimal">
 <li>Which models have a substantial weight? Can we be completely confident in the top model?</li>
 </ol>
@@ -126,444 +71,15 @@ close(clip)</code></pre>
 <p>should work. In both cases, change to Excel and paste. You could also sort it before doing the write.table() but that’s not essential. Once in Excel you will have to use the Text to Columns dialog to get the results into a table. Then it is easy to change the scientific notation for the weights column to something readable, adjust the number of decimal places, and sort the table how you like. Or we can do it directly in R Markdown. First load the <code>pander</code> package.</p>
 <pre class="r"><code>library(pander)
 pander(aic.table[order(aic), ], caption = &quot;Table 1 AIC table of smithsim results.&quot;)</code></pre>
-<table style="width:50%;">
-<caption>Table 1 AIC table of smithsim results.</caption>
-<colgroup>
-<col width="11%" />
-<col width="8%" />
-<col width="5%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">model</th>
-<th align="center">AIC</th>
-<th align="center">k</th>
-<th align="center">deltas</th>
-<th align="center">weights</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">12</td>
-<td align="center">1884</td>
-<td align="center">5</td>
-<td align="center">0</td>
-<td align="center">0.6378</td>
-</tr>
-<tr class="even">
-<td align="center">16</td>
-<td align="center">1885</td>
-<td align="center">6</td>
-<td align="center">1.189</td>
-<td align="center">0.352</td>
-</tr>
-<tr class="odd">
-<td align="center">15</td>
-<td align="center">1893</td>
-<td align="center">5</td>
-<td align="center">8.548</td>
-<td align="center">0.008879</td>
-</tr>
-<tr class="even">
-<td align="center">10</td>
-<td align="center">1897</td>
-<td align="center">4</td>
-<td align="center">12.61</td>
-<td align="center">0.001166</td>
-</tr>
-<tr class="odd">
-<td align="center">5</td>
-<td align="center">1902</td>
-<td align="center">3</td>
-<td align="center">17.53</td>
-<td align="center">9.979e-05</td>
-</tr>
-<tr class="even">
-<td align="center">11</td>
-<td align="center">1904</td>
-<td align="center">4</td>
-<td align="center">19.41</td>
-<td align="center">3.888e-05</td>
-</tr>
-<tr class="odd">
-<td align="center">8</td>
-<td align="center">1904</td>
-<td align="center">4</td>
-<td align="center">19.43</td>
-<td align="center">3.848e-05</td>
-</tr>
-<tr class="even">
-<td align="center">14</td>
-<td align="center">1905</td>
-<td align="center">5</td>
-<td align="center">20.83</td>
-<td align="center">1.911e-05</td>
-</tr>
-<tr class="odd">
-<td align="center">6</td>
-<td align="center">1964</td>
-<td align="center">4</td>
-<td align="center">80.12</td>
-<td align="center">2.556e-18</td>
-</tr>
-<tr class="even">
-<td align="center">13</td>
-<td align="center">1966</td>
-<td align="center">5</td>
-<td align="center">82.03</td>
-<td align="center">9.806e-19</td>
-</tr>
-<tr class="odd">
-<td align="center">2</td>
-<td align="center">1981</td>
-<td align="center">3</td>
-<td align="center">97.24</td>
-<td align="center">4.891e-22</td>
-</tr>
-<tr class="even">
-<td align="center">7</td>
-<td align="center">1983</td>
-<td align="center">4</td>
-<td align="center">99.21</td>
-<td align="center">1.829e-22</td>
-</tr>
-<tr class="odd">
-<td align="center">4</td>
-<td align="center">1995</td>
-<td align="center">3</td>
-<td align="center">110.6</td>
-<td align="center">6.041e-25</td>
-</tr>
-<tr class="even">
-<td align="center">9</td>
-<td align="center">1997</td>
-<td align="center">4</td>
-<td align="center">112.5</td>
-<td align="center">2.329e-25</td>
-</tr>
-<tr class="odd">
-<td align="center">3</td>
-<td align="center">2004</td>
-<td align="center">3</td>
-<td align="center">119.8</td>
-<td align="center">6.054e-27</td>
-</tr>
-<tr class="even">
-<td align="center">1</td>
-<td align="center">2013</td>
-<td align="center">2</td>
-<td align="center">128.6</td>
-<td align="center">7.568e-29</td>
-</tr>
-</tbody>
-</table>
 <p>When you click “Knit Word” in RStudio you get a word document that is completely editable, and the table is nicely produced and ready to go. Incidentally, <code>pander</code> does pretty cool things with other R objects too.</p>
 <pre class="r"><code>pander(truth)</code></pre>
-<table style="width:86%;">
-<caption>Fitting linear model: Y ~ Amount + Edge + Hetero</caption>
-<colgroup>
-<col width="25%" />
-<col width="15%" />
-<col width="18%" />
-<col width="13%" />
-<col width="13%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center"> </th>
-<th align="center">Estimate</th>
-<th align="center">Std. Error</th>
-<th align="center">t value</th>
-<th align="center">Pr(&gt;|t|)</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center"><strong>Amount</strong></td>
-<td align="center">1.798</td>
-<td align="center">0.4681</td>
-<td align="center">3.84</td>
-<td align="center">0.0001461</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>Edge</strong></td>
-<td align="center">-2.058</td>
-<td align="center">0.4404</td>
-<td align="center">-4.674</td>
-<td align="center">4.234e-06</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Hetero</strong></td>
-<td align="center">2.186</td>
-<td align="center">0.2285</td>
-<td align="center">9.565</td>
-<td align="center">2.186e-19</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>(Intercept)</strong></td>
-<td align="center">-0.1014</td>
-<td align="center">0.1894</td>
-<td align="center">-0.5352</td>
-<td align="center">0.5929</td>
-</tr>
-</tbody>
-</table>
 <p>Is there nothing R can’t do? Well, you still have to write the interpretation of the model!</p>
 <p>And here is the easy way to do all of the above. First, make sure you have the AICcmodavg package installed on your computer.</p>
-<pre class="r"><code>library(AICcmodavg)</code></pre>
-<pre><code>## Warning: package &#39;AICcmodavg&#39; was built under R version 3.4.1</code></pre>
-<pre class="r"><code>aictab(fits)</code></pre>
-<pre><code>## Warning in aictab.AIClm(fits): 
-## Model names have been supplied automatically in the table</code></pre>
-<pre><code>## 
-## Model selection based on AICc:
-## 
-##       K    AICc Delta_AICc AICcWt Cum.Wt       LL
-## Mod12 5 1884.32       0.00   0.65   0.65  -937.07
-## Mod16 6 1885.58       1.26   0.34   0.99  -936.67
-## Mod15 5 1892.87       8.55   0.01   1.00  -941.35
-## Mod10 4 1896.87      12.55   0.00   1.00  -944.38
-## Mod5  3 1901.74      17.42   0.00   1.00  -947.84
-## Mod11 4 1903.67      19.35   0.00   1.00  -947.78
-## Mod8  4 1903.69      19.37   0.00   1.00  -947.79
-## Mod14 5 1905.15      20.83   0.00   1.00  -947.49
-## Mod6  4 1964.38      80.06   0.00   1.00  -978.13
-## Mod13 5 1966.35      82.03   0.00   1.00  -978.09
-## Mod2  3 1981.46      97.13   0.00   1.00  -987.69
-## Mod7  4 1983.47      99.15   0.00   1.00  -987.68
-## Mod4  3 1994.85     110.53   0.00   1.00  -994.39
-## Mod9  4 1996.80     112.48   0.00   1.00  -994.34
-## Mod3  3 2004.05     119.73   0.00   1.00  -998.99
-## Mod1  2 2012.78     128.46   0.00   1.00 -1004.37</code></pre>
+<pre class="r"><code>library(AICcmodavg)
+aictab(fits)</code></pre>
 <p>where fits is the list of fitted model objects we created before, and 1:16 is a vector of labels to use in the table. One line! Two, if you count loading the library. If you look closely you’ll see that the AIC values in this table are slightly different from the ones we calculated, because aictab() is using the 2nd order sample size correction by default. If you do:</p>
 <pre class="r"><code>aictab(fits, modnames = 1:16, second.ord = FALSE)</code></pre>
-<pre><code>## 
-## Model selection based on AIC:
-## 
-##    K     AIC Delta_AIC AICWt Cum.Wt       LL
-## 12 5 1884.15      0.00  0.64   0.64  -937.07
-## 16 6 1885.34      1.19  0.35   0.99  -936.67
-## 15 5 1892.70      8.55  0.01   1.00  -941.35
-## 10 4 1896.76     12.61  0.00   1.00  -944.38
-## 5  3 1901.67     17.53  0.00   1.00  -947.84
-## 11 4 1903.56     19.41  0.00   1.00  -947.78
-## 8  4 1903.58     19.43  0.00   1.00  -947.79
-## 14 5 1904.98     20.83  0.00   1.00  -947.49
-## 6  4 1964.26     80.12  0.00   1.00  -978.13
-## 13 5 1966.18     82.03  0.00   1.00  -978.09
-## 2  3 1981.39     97.24  0.00   1.00  -987.69
-## 7  4 1983.35     99.21  0.00   1.00  -987.68
-## 4  3 1994.78    110.63  0.00   1.00  -994.39
-## 9  4 1996.69    112.54  0.00   1.00  -994.34
-## 3  3 2003.99    119.84  0.00   1.00  -998.99
-## 1  2 2012.75    128.60  0.00   1.00 -1004.37</code></pre>
 <p>You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to <em>not</em> use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases. The table is even easier to understand if we put the model formulas into the table.</p>
 <pre class="r"><code>modnames &lt;- sapply(models, function(ff) deparse(ff[[3]]))
 pander(aictab(fits, modnames = modnames), split.tables = Inf)</code></pre>
-<table>
-<colgroup>
-<col width="9%" />
-<col width="27%" />
-<col width="4%" />
-<col width="7%" />
-<col width="13%" />
-<col width="11%" />
-<col width="10%" />
-<col width="7%" />
-<col width="8%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center"> </th>
-<th align="center">Modnames</th>
-<th align="center">K</th>
-<th align="center">AICc</th>
-<th align="center">Delta_AICc</th>
-<th align="center">ModelLik</th>
-<th align="center">AICcWt</th>
-<th align="center">LL</th>
-<th align="center">Cum.Wt</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center"><strong>12</strong></td>
-<td align="center">Amount + Edge + Hetero</td>
-<td align="center">5</td>
-<td align="center">1884</td>
-<td align="center">0</td>
-<td align="center">1</td>
-<td align="center">0.6456</td>
-<td align="center">-937.1</td>
-<td align="center">0.6456</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>16</strong></td>
-<td align="center">Amount + Edge + MnPatch + Hetero</td>
-<td align="center">6</td>
-<td align="center">1886</td>
-<td align="center">1.259</td>
-<td align="center">0.5328</td>
-<td align="center">0.344</td>
-<td align="center">-936.7</td>
-<td align="center">0.9896</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>15</strong></td>
-<td align="center">Edge + MnPatch + Hetero</td>
-<td align="center">5</td>
-<td align="center">1893</td>
-<td align="center">8.548</td>
-<td align="center">0.01392</td>
-<td align="center">0.008989</td>
-<td align="center">-941.3</td>
-<td align="center">0.9986</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>10</strong></td>
-<td align="center">Edge + Hetero</td>
-<td align="center">4</td>
-<td align="center">1897</td>
-<td align="center">12.55</td>
-<td align="center">0.001882</td>
-<td align="center">0.001215</td>
-<td align="center">-944.4</td>
-<td align="center">0.9998</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>5</strong></td>
-<td align="center">Hetero</td>
-<td align="center">3</td>
-<td align="center">1902</td>
-<td align="center">17.42</td>
-<td align="center">0.0001649</td>
-<td align="center">0.0001065</td>
-<td align="center">-947.8</td>
-<td align="center">0.9999</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>11</strong></td>
-<td align="center">MnPatch + Hetero</td>
-<td align="center">4</td>
-<td align="center">1904</td>
-<td align="center">19.35</td>
-<td align="center">6.276e-05</td>
-<td align="center">4.052e-05</td>
-<td align="center">-947.8</td>
-<td align="center">0.9999</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>8</strong></td>
-<td align="center">Amount + Hetero</td>
-<td align="center">4</td>
-<td align="center">1904</td>
-<td align="center">19.37</td>
-<td align="center">6.212e-05</td>
-<td align="center">4.01e-05</td>
-<td align="center">-947.8</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>14</strong></td>
-<td align="center">Amount + MnPatch + Hetero</td>
-<td align="center">5</td>
-<td align="center">1905</td>
-<td align="center">20.83</td>
-<td align="center">2.997e-05</td>
-<td align="center">1.935e-05</td>
-<td align="center">-947.5</td>
-<td align="center">1</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>6</strong></td>
-<td align="center">Amount + Edge</td>
-<td align="center">4</td>
-<td align="center">1964</td>
-<td align="center">80.06</td>
-<td align="center">4.126e-18</td>
-<td align="center">2.664e-18</td>
-<td align="center">-978.1</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>13</strong></td>
-<td align="center">Amount + Edge + MnPatch</td>
-<td align="center">5</td>
-<td align="center">1966</td>
-<td align="center">82.03</td>
-<td align="center">1.538e-18</td>
-<td align="center">9.926e-19</td>
-<td align="center">-978.1</td>
-<td align="center">1</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>2</strong></td>
-<td align="center">Amount</td>
-<td align="center">3</td>
-<td align="center">1981</td>
-<td align="center">97.13</td>
-<td align="center">8.082e-22</td>
-<td align="center">5.218e-22</td>
-<td align="center">-987.7</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>7</strong></td>
-<td align="center">Amount + MnPatch</td>
-<td align="center">4</td>
-<td align="center">1983</td>
-<td align="center">99.15</td>
-<td align="center">2.953e-22</td>
-<td align="center">1.907e-22</td>
-<td align="center">-987.7</td>
-<td align="center">1</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>4</strong></td>
-<td align="center">MnPatch</td>
-<td align="center">3</td>
-<td align="center">1995</td>
-<td align="center">110.5</td>
-<td align="center">9.983e-25</td>
-<td align="center">6.445e-25</td>
-<td align="center">-994.4</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>9</strong></td>
-<td align="center">Edge + MnPatch</td>
-<td align="center">4</td>
-<td align="center">1997</td>
-<td align="center">112.5</td>
-<td align="center">3.761e-25</td>
-<td align="center">2.428e-25</td>
-<td align="center">-994.3</td>
-<td align="center">1</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>3</strong></td>
-<td align="center">Edge</td>
-<td align="center">3</td>
-<td align="center">2004</td>
-<td align="center">119.7</td>
-<td align="center">1e-26</td>
-<td align="center">6.459e-27</td>
-<td align="center">-999</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>1</strong></td>
-<td align="center">1</td>
-<td align="center">2</td>
-<td align="center">2013</td>
-<td align="center">128.5</td>
-<td align="center">1.273e-28</td>
-<td align="center">8.216e-29</td>
-<td align="center">-1004</td>
-<td align="center">1</td>
-</tr>
-</tbody>
-</table>
 <p>The <code>split.tables=Inf</code> argument to <code>pander</code> just tells pander to not try and be smart about dividing up the result to fit inside a fixed number of columns. While it pains me to admit it, Word is actually smarter than R when it comes to sizing the columns of the table to fit on a page.</p>

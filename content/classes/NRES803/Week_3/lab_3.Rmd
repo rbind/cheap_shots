@@ -7,7 +7,7 @@ weight: 803031
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60), eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60), eval = FALSE)
 library(tidyverse)
 library(NRES803)
 ```
@@ -22,7 +22,7 @@ data("smithsim")
 global <- lm(Y~Amount+Edge+MnPatch+Hetero, data=smithsim)
 ```
 
-(@) Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (2, -2, 0, 2), and the known residual standard error of 3.5.
+(@) Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (intercept=0, Amount = 2, Edge = -2, MnPatch = 0, Hetero = 2), and the known residual standard error of 3.5.
 
 Now fit the TRUE model; recall that the true effect of the `MnPatch` variable is 0. This model enforces that by not estimated a coefficient for this variable. 
 
