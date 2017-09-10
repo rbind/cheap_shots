@@ -7,14 +7,14 @@ weight: 222041
 ---
 
 ```{r real_setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 library(tidyverse)
 plants <- read_csv("~/cheap_shots/static/classes/NRES222/nine_mile_ws/data/9mile_plants_all.csv")
 ```
 
 ## Introduction
 
-The goal of this week's lab is to analyze the species area curve data from 9 Mile Prairie, and get more experience making figures and calculating summary statistics in R. Like all labs, I expect you to submit an R Markdown file that I can compile to html. You should assume any data files are in a subdirectory called "data". Your file should *not* echo the code used. Answer the *numbered questions* in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference. 
+The goal of this week's lab is to analyze the species area curve data from 9 Mile Prairie, and get more experience making figures and calculating summary statistics in R. Like all labs, I expect you to submit an R Markdown file that I can compile to html. You should assume any data files are in a subdirectory called "data". Your file should *not* echo the code used. In the handout, there may be several code blocks making the same graph multiple times with slight tweaks. You should only keep the best and final graph that you chose in your submitted file. Answer the *numbered questions* in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference. 
 
 We collected species occurence data in nested quadrats in 3 different parts of the original 9 mile Prairie. Each section collected data from a portion burned in 2015, 2016 or earlier this year in 2017. Dr. Wedin's hypothesis is that the biodiversity will be the same in these three fields, even though they look very different to the eye.
 
@@ -30,6 +30,7 @@ On line 8 you will see a block of text with ` ``` ` on the top and bottom:
 <pre><code>```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```</code></pre>
+
 Remember that this is a "code chunk". Everything in between the ` ``` ` is treated as instructions to the computer. Everything outside the code chunk is rendered as regular text. Add a line to the code chunk to load the `tidyverse` package we installed last week. 
 <pre><code>```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -40,7 +41,7 @@ You can delete everything from the end of that code chunk to the bottom of the f
 
 ## Bring the data in
 
-We add another line to the setup code to read the data into an R object called a `data.frame`
+We add another line to the setup code to read the data into a dataframe called `plants`.  
 <pre><code>```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -51,7 +52,7 @@ plants <- read_csv("data/9mile_plants_all.csv")
 
 For the first question, you will calculate the total number of species observed in each size quadrat, for each group and section of the lab. 
 
-```{r}
+```{r, results = "markup"}
 # make a factor to get colors right
 plants$fBurned <- factor(plants$Burned)
 
@@ -61,11 +62,53 @@ spparea2 <- summarise(spparea1, newspp = n())
 spparea3 <- mutate(spparea2, 
                    totspp = cumsum(newspp))
 
+# now make the plot
+ggplot(data = spparea3,
+       mapping = aes(x=Quadrat_Area, y=totspp)) + 
+  geom_point(mapping=aes(color=fBurned),
+             position = "jitter")
 ```
 
-1) Using the graphs with the raw data, rank the 3 fields ( burned in 2015, 2016, or 2017) from most homogeneous (all student data sets similar) to most heterogeneous.  Why are some fields more variable (speculate)?
+Adding the argument `position = "jitter"` to `geom_point()` just adds a small random number to each data point to avoid points plotting on top of each other. Another way to separate the sections that might be easier to answer Q1 is to make a separate subplot for each unit burned.
 
-Now calculate the average number of species found in each size plot for each field.  Next, make a graph with the average numbers of species versus plot size for each field.
+```{r}
+ggplot(data = spparea3,
+       mapping = aes(x=Quadrat_Area, y=totspp)) + 
+  geom_point(mapping=aes(color=fBurned),
+             position = "jitter") +
+  facet_wrap(~fBurned)
+```
+
+
+1) Using the graphs with the raw data, rank the 3 fields (burned in 2015, 2016, or 2017) from most homogeneous (all student data sets similar) to most heterogeneous. You are looking at the spread vertically within a single size of quadrat. Why are some fields more variable (speculate)?
+
+----
+
+Now calculate the average number of species found in each size plot for each field. Use `summarize()` again, this time to summarize each quadrat size across all groups. Also calculate the standard error of the mean, a measure of how precise the estimate is. 
+
+```{r}
+spparea4 <- group_by(spparea3, fBurned, Quadrat_Area)
+spparea4 <- summarize(spparea4,
+                      meanspp = mean(totspp),
+                      sespp = sd(totspp) / sqrt(n()))
+```
+
+Next, make a graph with the average numbers of species versus plot size for each field. We also add error bars to each point.
+
+```{r}
+ggplot(data = spparea4,
+       mapping = aes(x=Quadrat_Area, y=meanspp)) + 
+  geom_point() +
+  facet_wrap(~fBurned) + 
+  geom_errorbar(mapping = aes(ymin = meanspp - qt(0.975, df = 3) * sespp, 
+                              ymax = meanspp + qt(0.975, df = 3) * sespp)) + 
+  labs(x = "Quadrat Area [m^2]", 
+       y = "Cumulative species richness (95% CI)",
+       caption = "Figure 1: Cumulative species richness as a function of total quadrat area searched in three fields at 9 Mile Prairie, Nebraska.") + 
+  theme(plot.caption = element_text(hjust=0))
+
+```
+
 
 2) Compare the average curves for the 3 fields.  Does the species area curve appear to follow a smooth relationship?  Is the shape of the curve the same for all four fields?
 
@@ -73,14 +116,20 @@ Now calculate the average number of species found in each size plot for each fie
 
 4) In which size plots do we generally gain the most new species?
 
-5) Pick the field with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a 100m2 plot in that field?
+5) Pick the field with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a $100 m^2$ plot in that field?
 
 6) If you were surveying many grassland types and had to pick a single plot size to use for data collection, what size would you pick and why?
+
+-----
+
 Ecologists often present species-area curves on log10  axes (both the X and Y axes) or transform the data by taking logs before graphing.  This generally turns the curve into a straight line (See the discussion of species-area curves in your ecology textbook).  It also allows the viewer to compare changes in diversity in small plots equally with changes in large plots.  On regular (linear) axes, the changes in big plots dwarf changes seen in small plots.
+
 Mathematically, species-area curves can be fit with the non-linear equation
-S = cAz  where S is species number, A is plot area, and c and z are constants. 
-	We won’t use this equation in lab; non-linear equations such as this are much more difficult to work with.  However, if you transform the data for species number and plot area to log values, the relationship becomes linear. A line fit to the data averages across point to point irregularities to give the best description of the species area relationship in each area. The equation now has the form:
-				LogS = log c + z (logA)
+$S = cA^z$  where S is species number, A is plot area, and c and z are constants. 
+We won’t use this equation in lab; non-linear equations such as this are much more difficult to work with.  However, if you transform the data for species number and plot area to log values, the relationship becomes linear. A line fit to the data averages across point to point irregularities to give the best description of the species area relationship in each area. The equation now has the form:
+$$
+Log(S) = log c + z log(A)
+$$ 
 
 Copy  the average species number results for each grassland area to a second worksheet.  Add the functions to convert the data to log10 plot size.  Create two graphs using the 3 data sets versus plots size, one with the original (linear) axes, and one with log10 – transformed data.  Add linear trend lines, with the equation, for each data set.
 
@@ -116,6 +165,9 @@ Big discussion questions (each answer should be 200 – 400 words)
 14) Why do you think the various fields we studied differ in plant diversity?  How does age of the field since planting, the number of species planted and the type of management appear to affect diversity?  You will need to look at some other resources to answer this question well; there is no single correct answer.
 
 15) Based on the results of our study of diversity in these 3 neighboring grassland areas, what new observations would you propose for future study? We only measured a few of the possible combinations of land-use history (unplowed prairie versus replanted crop land) and management (burning vs haying) for grasslands in the Nine-Mile Prairie area.  Assuming you had enough time and money, design a bigger, long-term study of factors controlling plant diversity in prairies.
+
+
+
 ## Turn in
 
 In Canvas, you will submit your R markdown file. Be sure your last name is the first part of the filename, and that it says "9mile" somewhere as well. Double check that it will work (necessary for full points) by clicking the "knit" button. If it produces an HTML file with all your figures and answers to the questions, you're good! 
