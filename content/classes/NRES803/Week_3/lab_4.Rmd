@@ -7,7 +7,7 @@ weight: 803041
 ---
 ```{r setup2, include=FALSE, echo=FALSE}
 # set eval = FALSE in the following line to make handout
-knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60), eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60), eval = FALSE, results = "markup")
 source(knitr::purl("lab_3.rmd", output = tempfile()))
 ```
 
@@ -36,19 +36,18 @@ First let’s look at the intercept. We need to get a vector of the estimated in
 
 ```{r}
 library(broom) # for tidy
-library(purrr) # for map_chr(), map_df()
-library(dplyr) # for filter(), mutate()
+library(tidyverse) # for map_chr(), map_df(), filter(), mutate()
 
 # old way
 #intercepts = sapply(fits,function(mm)coef(mm)[1])
 # new way
 # apply tidy() to each element of the list
-map_df(fits,tidy) %>% 
-  filter(term=="(Intercept)") -> intercepts
-intercepts <- cbind(models=modnames,intercepts)
+intercepts <- map_df(fits,tidy) %>% 
+  filter(term=="(Intercept)") %>%
+  mutate(models=modnames)
 ```
 
-The estimated intercepts are stored in the list object fits, and we use the function `tidy()` to pull them out into a dataframe. `tidy()` only works on a single model object, so we use `map_df()` to apply tidy to each object in the list, and pull all the results into a data.frame. Then we use `filter()` to keep just the rows with estimated intercepts.  Explore this code a bit by using the individual functions, and looking carefully at the returned results, including the new data.frame intercepts. Do not include these interactive explorations in your submitted R markdown file.
+The estimated intercepts are stored in the list object `fits`, and we use the function `tidy()` to pull them out into a dataframe. `tidy()` only works on a single model object, so we use `map_df()` to apply tidy to each object in the list, and pull all the results into a data.frame. Then we use `filter()` to keep just the rows with estimated intercepts.  Explore this code a bit by using the individual functions, and looking carefully at the returned results, including the new dataframe `intercepts`. Do not include these interactive explorations in your submitted R markdown file.
 
 I left the "old way" of extracting these estimates in there for you to compare. Notice that the result is a single vector of the estimates, not a data.frame. Although the tidyverse approach looks more complex, with a couple of lines of code we've made several subsequent steps of the old way completely obsolete! 
 
@@ -61,10 +60,12 @@ Here we’ve multiplied each element of the vector weights with its correspondin
 
 (@) Compare the result to the estimated intercepts for the two top models, 12 and 16.
 
+-----
+
 Next we need to calculate the variance of our model averaged estimate. Variances can be added together, so first square our standard errors to get the variance of each estimate.
 ```{r}
-intercepts %>%
-  mutate(var_est = std.error^2) -> intercepts
+intercepts <- intercepts %>%
+  mutate(var_est = std.error^2) 
 ```
 
 Now we calculate a weighted average of the variances, but we also have to include a component of how different the estimates are between models (see page 111 in MBILS). Vectorized calculations are our friend here:
@@ -78,17 +79,12 @@ sum(weights * (intercepts$var_est + (intercepts$estimate - mavg.intercept)^2))
 
 ## Model averaging coefficients not in every model
 
-The intercept was easy because it occurs in every model. What if we want to model average a parameter that does not occur in every model, such as Amount? There are two problems to solve – how to extract the coefficients from the models that have Amount, and what to do with the models Amount does not occur in. The first is actually pretty easy – we just change the `filter()` condition above. For convienence later on, I'm going to add the modnames to each row returned by `tidy()`. To do that I will create a function that 'wraps' tidy() and does the extra work I want.
+The intercept was easy because it occurs in every model. What if we want to model average a parameter that does not occur in every model, such as Amount? There are two problems to solve – how to extract the coefficients from the models that have Amount, and what to do with the models Amount does not occur in. The first is actually pretty easy – we just change the `filter()` condition above. For convienence later on, I'm going to add the modnames to the list `fits`. Then `map_df()` will use the names of the list to create a variable in the result indicating which list item the row comes from.
 
 ```{r}
-tidy_w_name <- function(.x, .y){
-  df <- tidy(.x) #get the coefficient table
-  df$modname <- .y #add a column with the modname
-  df # return df
-}
-# map2_df() "walks" over two arguments simultaneously
-map2_df(fits,modnames,tidy_w_name) %>% 
-  filter(term=="Amount") -> Amount 
+names(fits) <- modnames
+amount <- map_df(fits, tidy, .id="modname") %>% 
+  filter(term=="Amount") 
 ```
 
 If you look at the data.frame Amount you can see that it has fewer rows than the number of models. That is because the covariate Amount only appears in some of the models. We have two choices about how to deal with this fact. The first option just uses the weights from the models with Amount in them, re-normalizing the weights to add to 1. The other option is to assume the models without Amount have an estimated value of zero. We'll try both.
@@ -98,31 +94,28 @@ If you look at the data.frame Amount you can see that it has fewer rows than the
 We have to do two things: match the weights up to the smaller dataframe, and then change them to sum to one. The first task is solved handily by using a join operation. I will first add the modnames column to the dataframe with all the AIC statistics, then join the two tables together. 
 
 ```{r}
-# aic.table was a matrix, so coerce to data.frame before binding
-# set option stringsAsFactors FALSE to avoid warnings later
-options(stringsAsFactors = FALSE)
-aic.table <- cbind(modname=modnames, 
-                   as.data.frame(aic.table)) 
+# have to add modnames to aic.table too!
+aic.table$modname <- modnames
 # we want all the rows in Amount, and all columns in both
 # that is a left join in database speak. see ?join in dplyr for all the options
-Amount <-  left_join(Amount, aic.table, by = "modname")
-names(Amount)
+amount <-  left_join(amount, aic.table, by = "modname")
+names(amount)
 ```
 
 As you can see, we now have added the `aic.table` columns to the `Amount` data.frame. Manually compare a couple of rows from `Amount` with the values in `aic.table` to convince yourself this magic actually works. Now we renormalize the weights to 1
 
 ```{r}
-sum(Amount$weights) # less than 1 but not by much
-Amount$weights <- Amount$weights / sum(Amount$weights)
+sum(amount$weights) # less than 1 but not by much
+amount$weights <- amount$weights / sum(amount$weights)
 ```
 
 and then do the model averaging calculations:
 
 ```{r}
 # use with() to make code shorter -- looks for objects in Amount first.
-mavg.Amount <- with(Amount, sum(weights * estimate))
-Amount$var_est <- Amount$std.error^2
-mavg.var.Amount <- with(Amount,  sum(weights * (var_est + (estimate - mavg.Amount)^2)))
+mavg.amount <- with(amount, sum(weights * estimate))
+amount$var_est <- amount$std.error^2
+mavg.var.amount <- with(amount,  sum(weights * (var_est + (estimate - mavg.amount)^2)))
 ```
 
 (@) Compare the model averaged coefficient and it's variance with the estimates from models 12 and 16. Does the model averaging change your conclusion about the effect of this variable? 
@@ -133,26 +126,26 @@ The other way to do model averaging, which I prefer, is to assume the estimate i
 
 ```{r}
 # remake the Amount table
-map2_df(fits,modnames,tidy_w_name) %>% 
-  filter(term=="Amount") -> Amount 
-Amount_allrows <-  full_join(Amount, aic.table, by = "modname")
+amount <- map_df(fits, tidy, .id="modname") %>% 
+  filter(term=="Amount")
+amount_allrows <-  full_join(amount, aic.table, by = "modname")
 ```
 
 Notice that the last 8 rows have values from `aic.table`, but `NA` for all the columns in Amount. We want to set the estimates and standard errors for those rows to zero.
 
 ```{r}
 # create a logical vector -- avoid relying on order
-pick <- is.na(Amount_allrows$estimate)
-Amount_allrows[pick,c("estimate","std.error")] <- 0
+pick <- is.na(amount_allrows$estimate)
+amount_allrows[pick,c("estimate","std.error")] <- 0
 ```
 
 And now we can use exactly the same code to get the model averaged estimates.
 
 
 ```{r}
-mavg.Amount2 <- with(Amount_allrows, sum(weights * estimate))
-Amount_allrows$var_est <- Amount_allrows$std.error^2
-mavg.var.Amount2 <- with(Amount_allrows,  sum(weights * (var_est + (estimate - mavg.Amount2)^2)))
+mavg.amount2 <- with(amount_allrows, sum(weights * estimate))
+amount_allrows$var_est <- amount_allrows$std.error^2
+mavg.var.amount2 <- with(amount_allrows,  sum(weights * (var_est + (estimate - mavg.amount2)^2)))
 ```
 
 (@) Compare those model averaged estimates with the ones from the conditional average. Again, does changing the method change your conclusion about the effect of Amount on the response? 
@@ -166,7 +159,7 @@ We start by simply not filtering when we create our table of parameter estimates
 
 ```{r}
 # get all the things
-estimates <- map2_df(fits,modnames,tidy_w_name) 
+estimates <- map_df(fits, tidy, .id="modname") 
 ```
 
 Start with the version that conditions the weights on the models containing each parameter. First we need to get the weights associated with each model attached to the right rows. Back to `left_join()`
@@ -230,10 +223,8 @@ pander(top_coef)
 Now let's do it with the other option, assuming the estimates are zero when a parameter isn't present in the model. We need to flesh out our dataframe `estimates` with the rows that are missing. A full join will do this, but first we need a table with all the coefficients and all the model names in it.
 
 ```{r}
-# expand.grid doesn't respect global option?
-parms <- expand.grid(term=c("(Intercept)","Amount","Edge","Hetero","MnPatch"), 
-                     modname = modnames,
-                     stringsAsFactors = FALSE)
+parms <- crossing(term=c("(Intercept)","Amount","Edge","Hetero","MnPatch"), 
+                     modname = modnames)
 # if no by = argument, uses all columns with identical names
 estimates2 <- full_join(estimates, parms)
 ```
@@ -253,7 +244,7 @@ estimates2 %>%
             avg_var = sum(weights * (var_est + (estimate - avg_est)^2)))
 ```
 
-(@) Make the nice data.frame and put it in a pretty table. Compare the results with the other model averaging approach.
+(@) Make the nice data_frame and put it in a pretty table. Compare the results with the other model averaging approach.
 
 ## Now the easy way
 
@@ -267,17 +258,7 @@ modavg(fits, "Amount", modnames = modnames)
 modavgShrink(fits,"Amount",modnames=modnames)
 ```
 
-So that was less code, but pulling it all out into a table would be more painful than the `dplyr` based manual code above. You have to do each parameter individually. But maybe ... 
-
-```{r}
-my_modavg <- function(.x, .y, modnames){
-  ma <- modavg(.y, .x, modnames = modnames)
-  ma[c(1,3:7)]
-}
-map_df(parms[1:5,1],my_modavg, .y = fits, modnames=modnames)
-```
-
-As above, the trick is to wrap the function that does what you want into another function that calls it to control how the arguments are fed in and to organize the results into a single list or vector with single numbers. 
+So that was less code, but pulling it all out into a table for all parameters would be more painful than the `dplyr` based manual code above. You have to do each parameter individually. 
 
 Finally, let's make a plot. The design of the plot below was suggested by Shivani Jadeja a couple of years ago. 
 

@@ -21,14 +21,13 @@ weight: 803041
 <h2>Manually model average the intercept</h2>
 <p>First let’s look at the intercept. We need to get a vector of the estimated intercepts from each model:</p>
 <pre class="r"><code>library(broom)  # for tidy
-library(purrr)  # for map_chr(), map_df()
-library(dplyr)  # for filter(), mutate()
+library(tidyverse)  # for map_chr(), map_df(), filter(), mutate()
 
 # old way intercepts = sapply(fits,function(mm)coef(mm)[1])
 # new way apply tidy() to each element of the list
-intercepts &lt;- map_df(fits, tidy) %&gt;% filter(term == &quot;(Intercept)&quot;)
-intercepts &lt;- cbind(models = modnames, intercepts)</code></pre>
-<p>The estimated intercepts are stored in the list object fits, and we use the function <code>tidy()</code> to pull them out into a dataframe. <code>tidy()</code> only works on a single model object, so we use <code>map_df()</code> to apply tidy to each object in the list, and pull all the results into a data.frame. Then we use <code>filter()</code> to keep just the rows with estimated intercepts. Explore this code a bit by using the individual functions, and looking carefully at the returned results, including the new data.frame intercepts. Do not include these interactive explorations in your submitted R markdown file.</p>
+intercepts &lt;- map_df(fits, tidy) %&gt;% filter(term == &quot;(Intercept)&quot;) %&gt;% 
+    mutate(models = modnames)</code></pre>
+<p>The estimated intercepts are stored in the list object <code>fits</code>, and we use the function <code>tidy()</code> to pull them out into a dataframe. <code>tidy()</code> only works on a single model object, so we use <code>map_df()</code> to apply tidy to each object in the list, and pull all the results into a data.frame. Then we use <code>filter()</code> to keep just the rows with estimated intercepts. Explore this code a bit by using the individual functions, and looking carefully at the returned results, including the new dataframe <code>intercepts</code>. Do not include these interactive explorations in your submitted R markdown file.</p>
 <p>I left the “old way” of extracting these estimates in there for you to compare. Notice that the result is a single vector of the estimates, not a data.frame. Although the tidyverse approach looks more complex, with a couple of lines of code we’ve made several subsequent steps of the old way completely obsolete!</p>
 <p>Now we need to calculate the weighted average of the intercepts, using the AIC weights. There are at least two ways to do this – but in the spirit of KISS we’ll use the brute force option:</p>
 <pre class="r"><code>mavg.intercept &lt;- sum(weights * intercepts$estimate)</code></pre>
@@ -36,54 +35,42 @@ intercepts &lt;- cbind(models = modnames, intercepts)</code></pre>
 <ol class="example" style="list-style-type: decimal">
 <li>Compare the result to the estimated intercepts for the two top models, 12 and 16.</li>
 </ol>
+<hr />
 <p>Next we need to calculate the variance of our model averaged estimate. Variances can be added together, so first square our standard errors to get the variance of each estimate.</p>
 <pre class="r"><code>intercepts &lt;- intercepts %&gt;% mutate(var_est = std.error^2)</code></pre>
 <p>Now we calculate a weighted average of the variances, but we also have to include a component of how different the estimates are between models (see page 111 in MBILS). Vectorized calculations are our friend here:</p>
 <pre class="r"><code>sum(weights * (intercepts$var_est + (intercepts$estimate - mavg.intercept)^2))</code></pre>
-<pre><code>## [1] 0.03599938</code></pre>
 <ol start="2" class="example" style="list-style-type: decimal">
 <li>Compare this “unconditional variance” with the value of the variance for the top two models.</li>
 </ol>
 </div>
 <div id="model-averaging-coefficients-not-in-every-model" class="section level2">
 <h2>Model averaging coefficients not in every model</h2>
-<p>The intercept was easy because it occurs in every model. What if we want to model average a parameter that does not occur in every model, such as Amount? There are two problems to solve – how to extract the coefficients from the models that have Amount, and what to do with the models Amount does not occur in. The first is actually pretty easy – we just change the <code>filter()</code> condition above. For convienence later on, I’m going to add the modnames to each row returned by <code>tidy()</code>. To do that I will create a function that ‘wraps’ tidy() and does the extra work I want.</p>
-<pre class="r"><code>tidy_w_name &lt;- function(.x, .y) {
-    df &lt;- tidy(.x)  #get the coefficient table
-    df$modname &lt;- .y  #add a column with the modname
-    df  # return df
-}
-# map2_df() &#39;walks&#39; over two arguments simultaneously
-Amount &lt;- map2_df(fits, modnames, tidy_w_name) %&gt;% filter(term == 
+<p>The intercept was easy because it occurs in every model. What if we want to model average a parameter that does not occur in every model, such as Amount? There are two problems to solve – how to extract the coefficients from the models that have Amount, and what to do with the models Amount does not occur in. The first is actually pretty easy – we just change the <code>filter()</code> condition above. For convienence later on, I’m going to add the modnames to the list <code>fits</code>. Then <code>map_df()</code> will use the names of the list to create a variable in the result indicating which list item the row comes from.</p>
+<pre class="r"><code>names(fits) &lt;- modnames
+amount &lt;- map_df(fits, tidy, .id = &quot;modname&quot;) %&gt;% filter(term == 
     &quot;Amount&quot;)</code></pre>
 <p>If you look at the data.frame Amount you can see that it has fewer rows than the number of models. That is because the covariate Amount only appears in some of the models. We have two choices about how to deal with this fact. The first option just uses the weights from the models with Amount in them, re-normalizing the weights to add to 1. The other option is to assume the models without Amount have an estimated value of zero. We’ll try both.</p>
 <div id="renormalizing-weights-to-1" class="section level3">
 <h3>Renormalizing weights to 1</h3>
 <p>We have to do two things: match the weights up to the smaller dataframe, and then change them to sum to one. The first task is solved handily by using a join operation. I will first add the modnames column to the dataframe with all the AIC statistics, then join the two tables together.</p>
-<pre class="r"><code># aic.table was a matrix, so coerce to data.frame before
-# binding set option stringsAsFactors FALSE to avoid warnings
-# later
-options(stringsAsFactors = FALSE)
-aic.table &lt;- cbind(modname = modnames, as.data.frame(aic.table))
+<pre class="r"><code># have to add modnames to aic.table too!
+aic.table$modname &lt;- modnames
 # we want all the rows in Amount, and all columns in both
 # that is a left join in database speak. see ?join in dplyr
 # for all the options
-Amount &lt;- left_join(Amount, aic.table, by = &quot;modname&quot;)
-names(Amount)</code></pre>
-<pre><code>##  [1] &quot;term&quot;      &quot;estimate&quot;  &quot;std.error&quot; &quot;statistic&quot; &quot;p.value&quot;  
-##  [6] &quot;modname&quot;   &quot;model&quot;     &quot;AIC&quot;       &quot;k&quot;         &quot;deltas&quot;   
-## [11] &quot;weights&quot;</code></pre>
+amount &lt;- left_join(amount, aic.table, by = &quot;modname&quot;)
+names(amount)</code></pre>
 <p>As you can see, we now have added the <code>aic.table</code> columns to the <code>Amount</code> data.frame. Manually compare a couple of rows from <code>Amount</code> with the values in <code>aic.table</code> to convince yourself this magic actually works. Now we renormalize the weights to 1</p>
-<pre class="r"><code>sum(Amount$weights)  # less than 1 but not by much</code></pre>
-<pre><code>## [1] 0.989816</code></pre>
-<pre class="r"><code>Amount$weights &lt;- Amount$weights/sum(Amount$weights)</code></pre>
+<pre class="r"><code>sum(amount$weights)  # less than 1 but not by much
+amount$weights &lt;- amount$weights/sum(amount$weights)</code></pre>
 <p>and then do the model averaging calculations:</p>
 <pre class="r"><code># use with() to make code shorter -- looks for objects in
 # Amount first.
-mavg.Amount &lt;- with(Amount, sum(weights * estimate))
-Amount$var_est &lt;- Amount$std.error^2
-mavg.var.Amount &lt;- with(Amount, sum(weights * (var_est + (estimate - 
-    mavg.Amount)^2)))</code></pre>
+mavg.amount &lt;- with(amount, sum(weights * estimate))
+amount$var_est &lt;- amount$std.error^2
+mavg.var.amount &lt;- with(amount, sum(weights * (var_est + (estimate - 
+    mavg.amount)^2)))</code></pre>
 <ol start="3" class="example" style="list-style-type: decimal">
 <li>Compare the model averaged coefficient and it’s variance with the estimates from models 12 and 16. Does the model averaging change your conclusion about the effect of this variable?</li>
 </ol>
@@ -92,18 +79,18 @@ mavg.var.Amount &lt;- with(Amount, sum(weights * (var_est + (estimate -
 <h3>Use all models, missing estimates set to 0</h3>
 <p>The other way to do model averaging, which I prefer, is to assume the estimate is zero for those models in which it doesn’t appear. This “shrinks” the estimate towards zero, and by a greater amount if models without Amount have substantial weight on them. The trick is to use a different join operation, one that “fills in” with missing values rows that are missing in the lefthand table.</p>
 <pre class="r"><code># remake the Amount table
-Amount &lt;- map2_df(fits, modnames, tidy_w_name) %&gt;% filter(term == 
+amount &lt;- map_df(fits, tidy, .id = &quot;modname&quot;) %&gt;% filter(term == 
     &quot;Amount&quot;)
-Amount_allrows &lt;- full_join(Amount, aic.table, by = &quot;modname&quot;)</code></pre>
+amount_allrows &lt;- full_join(amount, aic.table, by = &quot;modname&quot;)</code></pre>
 <p>Notice that the last 8 rows have values from <code>aic.table</code>, but <code>NA</code> for all the columns in Amount. We want to set the estimates and standard errors for those rows to zero.</p>
 <pre class="r"><code># create a logical vector -- avoid relying on order
-pick &lt;- is.na(Amount_allrows$estimate)
-Amount_allrows[pick, c(&quot;estimate&quot;, &quot;std.error&quot;)] &lt;- 0</code></pre>
+pick &lt;- is.na(amount_allrows$estimate)
+amount_allrows[pick, c(&quot;estimate&quot;, &quot;std.error&quot;)] &lt;- 0</code></pre>
 <p>And now we can use exactly the same code to get the model averaged estimates.</p>
-<pre class="r"><code>mavg.Amount2 &lt;- with(Amount_allrows, sum(weights * estimate))
-Amount_allrows$var_est &lt;- Amount_allrows$std.error^2
-mavg.var.Amount2 &lt;- with(Amount_allrows, sum(weights * (var_est + 
-    (estimate - mavg.Amount2)^2)))</code></pre>
+<pre class="r"><code>mavg.amount2 &lt;- with(amount_allrows, sum(weights * estimate))
+amount_allrows$var_est &lt;- amount_allrows$std.error^2
+mavg.var.amount2 &lt;- with(amount_allrows, sum(weights * (var_est + 
+    (estimate - mavg.amount2)^2)))</code></pre>
 <ol start="4" class="example" style="list-style-type: decimal">
 <li><p>Compare those model averaged estimates with the ones from the conditional average. Again, does changing the method change your conclusion about the effect of Amount on the response?</p></li>
 <li><p>Recall from Week 3 that we actually know the true coefficients; Amount should be 2. Compare the top models and model averaged coefficients with the true value.</p></li>
@@ -114,38 +101,16 @@ mavg.var.Amount2 &lt;- with(Amount_allrows, sum(weights * (var_est +
 <h2>Model average all the things</h2>
 <p>Ideally we want to get a table with the model averaged coefficients for every parameter in the model. We could copy and paste the calculations above for each parameter, then bind them all together into a data.frame. Or we could do all the calculations at once. We start by simply not filtering when we create our table of parameter estimates.</p>
 <pre class="r"><code># get all the things
-estimates &lt;- map2_df(fits, modnames, tidy_w_name)</code></pre>
+estimates &lt;- map_df(fits, tidy, .id = &quot;modname&quot;)</code></pre>
 <p>Start with the version that conditions the weights on the models containing each parameter. First we need to get the weights associated with each model attached to the right rows. Back to <code>left_join()</code></p>
 <pre class="r"><code>estimates1 &lt;- left_join(estimates, aic.table[, c(&quot;weights&quot;, &quot;modname&quot;)], 
     by = &quot;modname&quot;)
 head(estimates1)</code></pre>
-<pre><code>##          term   estimate std.error  statistic      p.value modname
-## 1 (Intercept) -0.1964312 0.2283599 -0.8601826 3.902789e-01       1
-## 2 (Intercept) -0.1975069 0.2180439 -0.9058126 3.656618e-01  Amount
-## 3      Amount  1.3207586 0.2238738  5.8995666 8.641434e-09  Amount
-## 4 (Intercept) -0.2028180 0.2252064 -0.9005869 3.684308e-01    Edge
-## 5        Edge  0.7599250 0.2305050  3.2967824 1.078809e-03    Edge
-## 6 (Intercept) -0.2431992 0.2224965 -1.0930475 2.751290e-01 MnPatch
-##        weights
-## 1 7.567903e-29
-## 2 4.890702e-22
-## 3 4.890702e-22
-## 4 6.054187e-27
-## 5 6.054187e-27
-## 6 6.041131e-25</code></pre>
 <p>We have multiple rows for each model, one for every parameter in the model. I restricted the columns of <code>aic.table</code> just for simplicity. Now we are going to repeat all the calculations above for each value of <code>term</code>, and summarize the result into a single data.frame.</p>
 <pre class="r"><code>estimates1 %&gt;% group_by(term) %&gt;% mutate(wnorm = weights/sum(weights), 
     var_est = std.error^2) %&gt;% 
 summarize(avg_est = sum(estimate * wnorm), avg_var = sum(wnorm * 
     (var_est + (estimate - avg_est)^2)))</code></pre>
-<pre><code>## # A tibble: 5 x 3
-##          term    avg_est    avg_var
-##         &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1 (Intercept) -0.1056922 0.03599938
-## 2      Amount  1.7249917 0.24755342
-## 3        Edge -2.0506418 0.20441879
-## 4      Hetero  2.1923425 0.05285660
-## 5     MnPatch  0.2813948 0.09558152</code></pre>
 <p>Now that’s pretty nice! We did everything in about 7 lines of code.</p>
 <p>Now we want to create a dataframe with the model averaged estimate, standard error, and a t-test comparing the estimate against the known true value and turn it into a nice output table using package pander.</p>
 <pre class="r"><code># repeat code from above but save to object
@@ -168,70 +133,14 @@ coef_table1$p_value &lt;- 2 * (1 - pt(abs(coef_table1$t_value),
 # print while removing variance column pander(coef_table1[, -
 # 3]) # broken!
 knitr::kable(coef_table1[, -3], digits = 2)</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">term</th>
-<th align="right">avg_est</th>
-<th align="right">avg_SE</th>
-<th align="right">true_parms</th>
-<th align="right">t_value</th>
-<th align="right">p_value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">(Intercept)</td>
-<td align="right">-0.11</td>
-<td align="right">0.19</td>
-<td align="right">0</td>
-<td align="right">-0.56</td>
-<td align="right">0.58</td>
-</tr>
-<tr class="even">
-<td align="left">Amount</td>
-<td align="right">1.72</td>
-<td align="right">0.50</td>
-<td align="right">2</td>
-<td align="right">-0.55</td>
-<td align="right">0.58</td>
-</tr>
-<tr class="odd">
-<td align="left">Edge</td>
-<td align="right">-2.05</td>
-<td align="right">0.45</td>
-<td align="right">-2</td>
-<td align="right">-0.11</td>
-<td align="right">0.91</td>
-</tr>
-<tr class="even">
-<td align="left">Hetero</td>
-<td align="right">2.19</td>
-<td align="right">0.23</td>
-<td align="right">2</td>
-<td align="right">0.84</td>
-<td align="right">0.40</td>
-</tr>
-<tr class="odd">
-<td align="left">MnPatch</td>
-<td align="right">0.28</td>
-<td align="right">0.31</td>
-<td align="right">0</td>
-<td align="right">0.91</td>
-<td align="right">0.36</td>
-</tr>
-</tbody>
-</table>
 <ol start="6" class="example" style="list-style-type: decimal">
 <li>Also make a table of the top model (hint: start with the output of <code>tidy(fits[[12]])</code>). Compare the conclusions you make about each effect in the model by using the top model or the model averaged coefficients.</li>
 </ol>
 <p>Now let’s do it with the other option, assuming the estimates are zero when a parameter isn’t present in the model. We need to flesh out our dataframe <code>estimates</code> with the rows that are missing. A full join will do this, but first we need a table with all the coefficients and all the model names in it.</p>
-<pre class="r"><code># expand.grid doesn&#39;t respect global option?
-parms &lt;- expand.grid(term = c(&quot;(Intercept)&quot;, &quot;Amount&quot;, &quot;Edge&quot;, 
-    &quot;Hetero&quot;, &quot;MnPatch&quot;), modname = modnames, stringsAsFactors = FALSE)
+<pre class="r"><code>parms &lt;- crossing(term = c(&quot;(Intercept)&quot;, &quot;Amount&quot;, &quot;Edge&quot;, &quot;Hetero&quot;, 
+    &quot;MnPatch&quot;), modname = modnames)
 # if no by = argument, uses all columns with identical names
 estimates2 &lt;- full_join(estimates, parms)</code></pre>
-<pre><code>## Joining, by = c(&quot;term&quot;, &quot;modname&quot;)</code></pre>
 <p>Now we have a table with 5 parameters x 16 models = 80 rows. We can use nearly the same code as before, just skipping the normalization of the weights.</p>
 <pre class="r"><code># don&#39;t forget to add the model weights!
 estimates2 &lt;- left_join(estimates2, aic.table[, c(&quot;weights&quot;, 
@@ -242,16 +151,8 @@ estimates2 %&gt;% group_by(term) %&gt;% mutate(estimate = if_else(is.na(estimate
     var_est = std.error^2) %&gt;% summarize(avg_est = sum(estimate * 
     weights), avg_var = sum(weights * (var_est + (estimate - 
     avg_est)^2)))</code></pre>
-<pre><code>## # A tibble: 5 x 3
-##          term    avg_est    avg_var
-##         &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1 (Intercept) -0.1056922 0.03599938
-## 2      Amount  1.7074244 0.27502716
-## 3        Edge -2.0502394 0.20520378
-## 4      Hetero  2.1923425 0.05285660
-## 5     MnPatch  0.1015658 0.05276338</code></pre>
 <ol start="7" class="example" style="list-style-type: decimal">
-<li>Make the nice data.frame and put it in a pretty table. Compare the results with the other model averaging approach.</li>
+<li>Make the nice data_frame and put it in a pretty table. Compare the results with the other model averaging approach.</li>
 </ol>
 </div>
 <div id="now-the-easy-way" class="section level2">
@@ -259,68 +160,10 @@ estimates2 %&gt;% group_by(term) %&gt;% mutate(estimate = if_else(is.na(estimate
 <p>All those calculations can be done for you by package AICcmodavg.</p>
 <pre class="r"><code>library(AICcmodavg)
 # conditional on inclusion in a model
-modavg(fits, &quot;Amount&quot;, modnames = modnames)</code></pre>
-<pre><code>## 
-## Multimodel inference on &quot;Amount&quot; based on AICc
-## 
-## AICc table used to obtain model-averaged estimate:
-## 
-##                                  K    AICc Delta_AICc AICcWt Estimate   SE
-## Amount                           3 1981.46      97.13   0.00     1.32 0.22
-## Amount + Edge                    4 1964.38      80.06   0.00     3.29 0.50
-## Amount + MnPatch                 4 1983.47      99.15   0.00     1.27 0.35
-## Amount + Hetero                  4 1903.69      19.37   0.00    -0.08 0.25
-## Amount + Edge + Hetero           5 1884.32       0.00   0.65     1.80 0.47
-## Amount + Edge + MnPatch          5 1966.35      82.03   0.00     3.22 0.55
-## Amount + MnPatch + Hetero        5 1905.15      20.83   0.00    -0.26 0.35
-## Amount + Edge + MnPatch + Hetero 6 1885.58       1.26   0.35     1.59 0.52
-## 
-## Model-averaged estimate: 1.73 
-## Unconditional SE: 0.5 
-## 95% Unconditional confidence interval: 0.75, 2.7</code></pre>
-<pre class="r"><code># with all the models
+modavg(fits, &quot;Amount&quot;, modnames = modnames)
+# with all the models
 modavgShrink(fits, &quot;Amount&quot;, modnames = modnames)</code></pre>
-<pre><code>## 
-## Multimodel inference on &quot;Amount&quot; based on AICc
-## 
-## AICc table used to obtain model-averaged estimate with shrinkage:
-## 
-##                                  K    AICc Delta_AICc AICcWt Estimate   SE
-## 1                                2 2012.78     128.46   0.00     0.00 0.00
-## Amount                           3 1981.46      97.13   0.00     1.32 0.22
-## Edge                             3 2004.05     119.73   0.00     0.00 0.00
-## MnPatch                          3 1994.85     110.53   0.00     0.00 0.00
-## Hetero                           3 1901.74      17.42   0.00     0.00 0.00
-## Amount + Edge                    4 1964.38      80.06   0.00     3.29 0.50
-## Amount + MnPatch                 4 1983.47      99.15   0.00     1.27 0.35
-## Amount + Hetero                  4 1903.69      19.37   0.00    -0.08 0.25
-## Edge + MnPatch                   4 1996.80     112.48   0.00     0.00 0.00
-## Edge + Hetero                    4 1896.87      12.55   0.00     0.00 0.00
-## MnPatch + Hetero                 4 1903.67      19.35   0.00     0.00 0.00
-## Amount + Edge + Hetero           5 1884.32       0.00   0.65     1.80 0.47
-## Amount + Edge + MnPatch          5 1966.35      82.03   0.00     3.22 0.55
-## Amount + MnPatch + Hetero        5 1905.15      20.83   0.00    -0.26 0.35
-## Edge + MnPatch + Hetero          5 1892.87       8.55   0.01     0.00 0.00
-## Amount + Edge + MnPatch + Hetero 6 1885.58       1.26   0.34     1.59 0.52
-## 
-## Model-averaged estimate with shrinkage: 1.71 
-## Unconditional SE: 0.52 
-## 95% Unconditional confidence interval: 0.68, 2.74</code></pre>
-<p>So that was less code, but pulling it all out into a table would be more painful than the <code>dplyr</code> based manual code above. You have to do each parameter individually. But maybe …</p>
-<pre class="r"><code>my_modavg &lt;- function(.x, .y, modnames) {
-    ma &lt;- modavg(.y, .x, modnames = modnames)
-    ma[c(1, 3:7)]
-}
-map_df(parms[1:5, 1], my_modavg, .y = fits, modnames = modnames)</code></pre>
-<pre><code>## # A tibble: 5 x 6
-##     Parameter Mod.avg.beta Uncond.SE Conf.level   Lower.CL   Upper.CL
-##         &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-## 1 (Intercept)   -0.1056034 0.1897311       0.95 -0.4774695  0.2662627
-## 2      Amount    1.7266309 0.4970308       0.95  0.7524685  2.7007933
-## 3        Edge   -2.0503914 0.4523383       0.95 -2.9369583 -1.1638246
-## 4      Hetero    2.1922853 0.2299220       0.95  1.7416464  2.6429241
-## 5     MnPatch    0.2817431 0.3093590       0.95 -0.3245894  0.8880756</code></pre>
-<p>As above, the trick is to wrap the function that does what you want into another function that calls it to control how the arguments are fed in and to organize the results into a single list or vector with single numbers.</p>
+<p>So that was less code, but pulling it all out into a table for all parameters would be more painful than the <code>dplyr</code> based manual code above. You have to do each parameter individually.</p>
 <p>Finally, let’s make a plot. The design of the plot below was suggested by Shivani Jadeja a couple of years ago.</p>
 <pre class="r"><code>gg1 &lt;- ggplot(smithsim, aes(x = Edge, y = Y, color = Amount)) + 
     geom_point()
@@ -329,6 +172,5 @@ nd &lt;- expand.grid(Edge = -3:3, Amount = quantile(smithsim$Amount,
     p = c(0, 0.5, 1)), Hetero = median(smithsim$Hetero), MnPatch = median(smithsim$MnPatch))
 nd &lt;- augment(fits[[12]], newdata = nd)
 gg1 + geom_line(aes(y = .fitted, group = Amount), data = nd)</code></pre>
-<p><img src="/"https://drewtyre.rbind.io/"  # End your URL with a `/` trailing slash.classes/NRES803/Week_3/lab_4_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>The color shows the value of amount for each point, a third dimension. The lines are the prediction from the top model, and automatically are colored to match the points so you can see the value of Amount that gives you that prediction. The lines are parallel because there is no interaction term.</p>
 </div>
