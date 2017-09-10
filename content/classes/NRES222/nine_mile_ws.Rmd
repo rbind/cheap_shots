@@ -8,6 +8,8 @@ weight: 222041
 
 ```{r real_setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(tidyverse)
+plants <- read_csv("~/cheap_shots/static/classes/NRES222/nine_mile_ws/data/9mile_plants_all.csv")
 ```
 
 ## Introduction
@@ -45,9 +47,25 @@ library(tidyverse)
 plants <- read_csv("data/9mile_plants_all.csv")
 ```</code></pre>
 
-1) Using the graphs with the raw data, rank the 3 fields (2012CRP field, Entrance field, and 9MP) from most homogeneous (all student data sets similar) to most heterogeneous.  Why are some fields more variable (speculate)?
+## Plot the raw data
 
-Now calculate the average number of species found in each size plot for each group.  Next, make a graph with the average numbers of species versus plot size for each grassland type.
+For the first question, you will calculate the total number of species observed in each size quadrat, for each group and section of the lab. 
+
+```{r}
+# make a factor to get colors right
+plants$fBurned <- factor(plants$Burned)
+
+## first get numbers of species by quadrat area, grouped by id and day
+spparea1 <- group_by(plants, fBurned, id, Quadrat_Area)
+spparea2 <- summarise(spparea1, newspp = n())  
+spparea3 <- mutate(spparea2, 
+                   totspp = cumsum(newspp))
+
+```
+
+1) Using the graphs with the raw data, rank the 3 fields ( burned in 2015, 2016, or 2017) from most homogeneous (all student data sets similar) to most heterogeneous.  Why are some fields more variable (speculate)?
+
+Now calculate the average number of species found in each size plot for each field.  Next, make a graph with the average numbers of species versus plot size for each field.
 
 2) Compare the average curves for the 3 fields.  Does the species area curve appear to follow a smooth relationship?  Is the shape of the curve the same for all four fields?
 
