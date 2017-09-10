@@ -24,7 +24,9 @@ global <- lm(Y~Amount+Edge+MnPatch+Hetero, data=smithsim)
 
 (@) Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (intercept=0, Amount = 2, Edge = -2, MnPatch = 0, Hetero = 2), and the known residual standard error of 3.5.
 
-Now fit the TRUE model; recall that the true effect of the `MnPatch` variable is 0. This model enforces that by not estimated a coefficient for this variable. 
+------
+
+Now fit the TRUE model; recall that the true effect of the `MnPatch` variable is 0. This model enforces that by not estimating a coefficient for this variable. 
 
 ```{r}
 truth <- lm(Y~Amount+Edge+Hetero, data=smithsim)
@@ -32,6 +34,8 @@ truth <- lm(Y~Amount+Edge+Hetero, data=smithsim)
 ```
 
 (@) Use the summary and plots of residuals to compare the estimated coefficients and residual standard error to the true values. Is this model closer to the truth than the global model? How can you tell?
+
+-----
 
 One strategy for deciding if we can remove a variable from a model is "backward selection". We can do this with an F-test.
 
@@ -43,12 +47,14 @@ So we can justify using the smaller model because there is no significant differ
 
 ```{r}
 smaller.model <-  update(truth,.~.-Amount)
-anova(smaller.model,global)
+anova(smaller.model, truth)
 ```
 
-Can we eliminate the Amount variable from our model? No, because doing so leads to a significant change in the residual sum of squares. 
+Can we eliminate the Amount variable from our model `truth`? No, because doing so leads to a significant change in the residual sum of squares. 
 
 (@) Repeat these two steps for the other two variables, remembering to always start from the model truth. Can we eliminate any additional variables?
+
+------
 
 Now we’re going to try AIC model selection. The first step, no matter how you do the calculations, is to write out a list object containing all of the models we want to fit. In this case, we’ll simply do all of the possible main effect models – we have plenty of data:
 
@@ -72,15 +78,18 @@ models <- list(Y~1,
 ```
 
 This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually.
-Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using `lapply()`. This function takes a list as it's first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to `lapply()`. In this case I give the argument `data=smithsim` to make sure the data are available to `lm()`.
+Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using `map()` [^mapvslapply]. This function takes a list as it's first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to `map()` to the function. In this case I give the argument `data=smithsim` to make sure the data are available to `lm()`.
+
+[^mapvslapply]: You might already be familiar with base R functions `lapply()`, `sapply()` etc.; the `map*()` functions do the same thing, but are more picky about the arguments they get and the values they return. This makes them safer to program with. The `map*()` functions are found in package `purrr` in the `tidyverse`.
+
 ```{r}
-fits <- lapply(models, lm, data=smithsim)
+fits <- map(models, lm, data=smithsim)
 
 ```
-Next we want to get the AIC values for each of these models. We use sapply(), which is related to lapply, but will simplify the result to a vector if possible:
+Next we want to get the AIC values for each of these models. We use `map_dbl()`, which is similar to `map()`, but returns a numeric vector:
 
 ```{r}
-aic <- sapply(fits,AIC)
+aic <- map_dbl(fits,AIC)
 aic
 ```
 
@@ -103,24 +112,30 @@ In this step we’re really taking advantage of R’s “vectorizing” of calcu
 
 We also want the number of estimated parameters in each model.
 ```{r}
-npars <- sapply(fits, function(mm)length(coef(mm)))+1
+npars <- map_dbl(fits, ~length(coef(.x))+1)
 ```
 
-Recall that the second argument to `sapply()` is a function. Here I've defined an *anonymous* function (it has no name) just to use here. If that looks intimidating – start with coef(global) and build out and you’ll see what the function does with a single fitted model object. Next use “cbind” to show all the results together.
+Recall that the second argument to `map_dbl()` is a function. Here I've defined an *anonymous* function (it has no name) just to use here. If that looks intimidating – start with `coef(global)` and build out and you’ll see what the function does with a single fitted model object. Finally, use `data_frame()` to show all the results together.[^usedataframe]
+
+[^usedataframe]: In fact, we could have done all in the individual calculations directly inside the call to `data_frame()`. In this case I needed to explain each line one by one, so that becomes awkward.
 
 ```{r}
-cbind(AIC=aic,k=npars,deltas=deltas,weights=weights)
+data_frame(AIC=aic,k=npars,deltas=deltas,weights=weights)
 ```
 
 This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:
 
 ```{r}
-aic.table <- cbind(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
-at2 <- aic.table[order(aic),] # so I can get cumulative weight
-cbind(at2, cumw = cumsum(at2[,"weights"]))
+aic.table <- data_frame(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
+at2 <- aic.table %>%
+  arrange(AIC) %>%
+  mutate(cumw = cumsum(weights))
+at2
 ```
 
 (@) Which models have a substantial weight? Can we be completely confident in the top model?
+
+-----
 
 And that's all fine, but what if you want that table to be "pretty", and actually formatted as a word table so you could put it in a manuscript? A final step for most analyses is to put the table into a word processing document. However, word processors don’t handle numbers very well, so a better approach is to copy the table into a spreadsheet like Excel, format all the numbers, and then copy from Excel into Word. On a windoze box, you can copy an R object to the windows clipboard like this:
 ```{r, eval = FALSE}
@@ -138,7 +153,7 @@ should work. In both cases, change to Excel and paste. You could also sort it be
 Or we can do it directly in R Markdown. First load the `pander` package.
 ```{r}
 library(pander)
-pander(aic.table[order(aic),],caption="Table 1 AIC table of smithsim results.")
+pander(as.data.frame(at2),caption="Table 1 AIC table of smithsim results.")
 ```
 
 When you click "Knit Word" in RStudio you get a word document that is completely editable, and the table is nicely produced and ready to go. 
@@ -164,7 +179,7 @@ aictab(fits,modnames=1:16,second.ord=FALSE)
 You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to *not* use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases. 
 The table is even easier to understand if we put the model formulas into the table.
 ```{r}
-modnames=sapply(models,function(ff)deparse(ff[[3]]))
+modnames=map_chr(models,~deparse(.x[[3]]))
 pander(aictab(fits,modnames=modnames),split.tables=Inf)
 ```
 

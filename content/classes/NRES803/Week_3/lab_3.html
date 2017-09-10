@@ -9,27 +9,30 @@ weight: 803031
 
 
 <p>In this week’s lab exercise we will first go through calculating the AIC values “by hand”, and then using a addon package modavgAIC. Doing the calculations by hand serves three purposes: 1) you practice using R!, 2) you gain a deeper understanding of how much work the add-on package is doing for you, and 3) sometimes the add-on package won’t work for a new class of model, and if you can do it by hand you won’t be stuck.</p>
-<p>We’ll begin by using a simulated dataset from the paper “<a href="">Confronting collinearity: comparing methods for disentangling the effects of habitat loss and fragmentation</a>” by Adam Smith and colleagues. They had real data, but I have written a few lines of code that produce datasets that are similar. They have 4 variables that describe patches in a landscape (Amount, Edge, MnPatch, and Hetero), and simulated a normally distributed response variable. Amount, Edge and Hetero affect the response, Y, and MnPatch does not. All four of the variables are correlated to some extent. The script and data will be available in package <code>NRES803</code>. The code to make the data is in the examples section of <code>?smithsim</code>, or simply load the dataframe with <code>data(&quot;smithsim&quot;)</code>. Include all the outputs and figures in your Rmd file. Answer the numbered questions.</p>
+<p>We’ll begin by using a simulated dataset from the paper “<a href="http://rdcu.be/vG1r">Confronting collinearity: comparing methods for disentangling the effects of habitat loss and fragmentation</a>” by Adam Smith and colleagues. They had real data, but I have written a few lines of code that produce datasets that are similar. They have 4 variables that describe patches in a landscape (Amount, Edge, MnPatch, and Hetero), and simulated a normally distributed response variable. Amount, Edge and Hetero affect the response, Y, and MnPatch does not. All four of the variables are correlated to some extent. The script and data will be available in package <code>NRES803</code>. The code to make the data is in the examples section of <code>?smithsim</code>, or simply load the dataframe with <code>data(&quot;smithsim&quot;)</code>. Include all the outputs and figures in your Rmd file. Answer the numbered questions.</p>
 <p>Fit a global model that includes all four variables.</p>
 <pre class="r"><code>data(&quot;smithsim&quot;)
 global &lt;- lm(Y ~ Amount + Edge + MnPatch + Hetero, data = smithsim)</code></pre>
 <ol class="example" style="list-style-type: decimal">
 <li>Check the summary of the fitted model and plot the residuals – this is what the residuals SHOULD look like! Compare the estimated coefficients with the known true values of (intercept=0, Amount = 2, Edge = -2, MnPatch = 0, Hetero = 2), and the known residual standard error of 3.5.</li>
 </ol>
-<p>Now fit the TRUE model; recall that the true effect of the <code>MnPatch</code> variable is 0. This model enforces that by not estimated a coefficient for this variable.</p>
+<hr />
+<p>Now fit the TRUE model; recall that the true effect of the <code>MnPatch</code> variable is 0. This model enforces that by not estimating a coefficient for this variable.</p>
 <pre class="r"><code>truth &lt;- lm(Y ~ Amount + Edge + Hetero, data = smithsim)</code></pre>
 <ol start="2" class="example" style="list-style-type: decimal">
 <li>Use the summary and plots of residuals to compare the estimated coefficients and residual standard error to the true values. Is this model closer to the truth than the global model? How can you tell?</li>
 </ol>
+<hr />
 <p>One strategy for deciding if we can remove a variable from a model is “backward selection”. We can do this with an F-test.</p>
 <pre class="r"><code>anova(truth, global)</code></pre>
 <p>So we can justify using the smaller model because there is no significant difference between the simpler and more complex models. Now we can check to see if we can further simplify the model <code>truth</code>. I use the function <code>update()</code> to create a model that is identical except that it removes the variable <code>Amount</code>.</p>
 <pre class="r"><code>smaller.model &lt;- update(truth, . ~ . - Amount)
-anova(smaller.model, global)</code></pre>
-<p>Can we eliminate the Amount variable from our model? No, because doing so leads to a significant change in the residual sum of squares.</p>
+anova(smaller.model, truth)</code></pre>
+<p>Can we eliminate the Amount variable from our model <code>truth</code>? No, because doing so leads to a significant change in the residual sum of squares.</p>
 <ol start="3" class="example" style="list-style-type: decimal">
 <li>Repeat these two steps for the other two variables, remembering to always start from the model truth. Can we eliminate any additional variables?</li>
 </ol>
+<hr />
 <p>Now we’re going to try AIC model selection. The first step, no matter how you do the calculations, is to write out a list object containing all of the models we want to fit. In this case, we’ll simply do all of the possible main effect models – we have plenty of data:</p>
 <pre class="r"><code>models &lt;- list(Y ~ 1, Y ~ Amount, Y ~ Edge, Y ~ MnPatch, Y ~ 
     Hetero, Y ~ Amount + Edge, Y ~ Amount + MnPatch, Y ~ Amount + 
@@ -37,10 +40,10 @@ anova(smaller.model, global)</code></pre>
     Hetero, Y ~ Amount + Edge + Hetero, Y ~ Amount + Edge + MnPatch, 
     Y ~ Amount + MnPatch + Hetero, Y ~ Edge + MnPatch + Hetero, 
     Y ~ Amount + Edge + MnPatch + Hetero)</code></pre>
-<p>This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually. Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using <code>lapply()</code>. This function takes a list as it’s first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to <code>lapply()</code>. In this case I give the argument <code>data=smithsim</code> to make sure the data are available to <code>lm()</code>.</p>
-<pre class="r"><code>fits &lt;- lapply(models, lm, data = smithsim)</code></pre>
-<p>Next we want to get the AIC values for each of these models. We use sapply(), which is related to lapply, but will simplify the result to a vector if possible:</p>
-<pre class="r"><code>aic &lt;- sapply(fits, AIC)
+<p>This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually. Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using <code>map()</code> <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. This function takes a list as it’s first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to <code>map()</code> to the function. In this case I give the argument <code>data=smithsim</code> to make sure the data are available to <code>lm()</code>.</p>
+<pre class="r"><code>fits &lt;- map(models, lm, data = smithsim)</code></pre>
+<p>Next we want to get the AIC values for each of these models. We use <code>map_dbl()</code>, which is similar to <code>map()</code>, but returns a numeric vector:</p>
+<pre class="r"><code>aic &lt;- map_dbl(fits, AIC)
 aic</code></pre>
 <p>The best model has the smallest AIC.</p>
 <pre class="r"><code>which.min(aic)
@@ -51,17 +54,18 @@ weights &lt;- exp(-deltas/2)  # this is an intermediate step
 weights &lt;- weights/sum(weights)  # so we can do this</code></pre>
 <p>In this step we’re really taking advantage of R’s “vectorizing” of calculations to automatically repeat the same calculation across an entire vector.</p>
 <p>We also want the number of estimated parameters in each model.</p>
-<pre class="r"><code>npars &lt;- sapply(fits, function(mm) length(coef(mm))) + 1</code></pre>
-<p>Recall that the second argument to <code>sapply()</code> is a function. Here I’ve defined an <em>anonymous</em> function (it has no name) just to use here. If that looks intimidating – start with coef(global) and build out and you’ll see what the function does with a single fitted model object. Next use “cbind” to show all the results together.</p>
-<pre class="r"><code>cbind(AIC = aic, k = npars, deltas = deltas, weights = weights)</code></pre>
+<pre class="r"><code>npars &lt;- map_dbl(fits, ~length(coef(.x)) + 1)</code></pre>
+<p>Recall that the second argument to <code>map_dbl()</code> is a function. Here I’ve defined an <em>anonymous</em> function (it has no name) just to use here. If that looks intimidating – start with <code>coef(global)</code> and build out and you’ll see what the function does with a single fitted model object. Finally, use <code>data_frame()</code> to show all the results together.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<pre class="r"><code>data_frame(AIC = aic, k = npars, deltas = deltas, weights = weights)</code></pre>
 <p>This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:</p>
-<pre class="r"><code>aic.table &lt;- cbind(model = 1:16, AIC = aic, k = npars, deltas = deltas, 
+<pre class="r"><code>aic.table &lt;- data_frame(model = 1:16, AIC = aic, k = npars, deltas = deltas, 
     weights = weights)
-at2 &lt;- aic.table[order(aic), ]  # so I can get cumulative weight
-cbind(at2, cumw = cumsum(at2[, &quot;weights&quot;]))</code></pre>
+at2 &lt;- aic.table %&gt;% arrange(AIC) %&gt;% mutate(cumw = cumsum(weights))
+at2</code></pre>
 <ol start="4" class="example" style="list-style-type: decimal">
 <li>Which models have a substantial weight? Can we be completely confident in the top model?</li>
 </ol>
+<hr />
 <p>And that’s all fine, but what if you want that table to be “pretty”, and actually formatted as a word table so you could put it in a manuscript? A final step for most analyses is to put the table into a word processing document. However, word processors don’t handle numbers very well, so a better approach is to copy the table into a spreadsheet like Excel, format all the numbers, and then copy from Excel into Word. On a windoze box, you can copy an R object to the windows clipboard like this:</p>
 <pre class="r"><code>write.csv(aic.table, &quot;clipboard&quot;, row.names = FALSE)</code></pre>
 <p>On a mac it is a bit more involved to copy to the clipboard, but:</p>
@@ -70,7 +74,7 @@ write.table(aic.table, file = clip)
 close(clip)</code></pre>
 <p>should work. In both cases, change to Excel and paste. You could also sort it before doing the write.table() but that’s not essential. Once in Excel you will have to use the Text to Columns dialog to get the results into a table. Then it is easy to change the scientific notation for the weights column to something readable, adjust the number of decimal places, and sort the table how you like. Or we can do it directly in R Markdown. First load the <code>pander</code> package.</p>
 <pre class="r"><code>library(pander)
-pander(aic.table[order(aic), ], caption = &quot;Table 1 AIC table of smithsim results.&quot;)</code></pre>
+pander(as.data.frame(at2), caption = &quot;Table 1 AIC table of smithsim results.&quot;)</code></pre>
 <p>When you click “Knit Word” in RStudio you get a word document that is completely editable, and the table is nicely produced and ready to go. Incidentally, <code>pander</code> does pretty cool things with other R objects too.</p>
 <pre class="r"><code>pander(truth)</code></pre>
 <p>Is there nothing R can’t do? Well, you still have to write the interpretation of the model!</p>
@@ -80,6 +84,13 @@ aictab(fits)</code></pre>
 <p>where fits is the list of fitted model objects we created before, and 1:16 is a vector of labels to use in the table. One line! Two, if you count loading the library. If you look closely you’ll see that the AIC values in this table are slightly different from the ones we calculated, because aictab() is using the 2nd order sample size correction by default. If you do:</p>
 <pre class="r"><code>aictab(fits, modnames = 1:16, second.ord = FALSE)</code></pre>
 <p>You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to <em>not</em> use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases. The table is even easier to understand if we put the model formulas into the table.</p>
-<pre class="r"><code>modnames &lt;- sapply(models, function(ff) deparse(ff[[3]]))
+<pre class="r"><code>modnames &lt;- map_chr(models, ~deparse(.x[[3]]))
 pander(aictab(fits, modnames = modnames), split.tables = Inf)</code></pre>
 <p>The <code>split.tables=Inf</code> argument to <code>pander</code> just tells pander to not try and be smart about dividing up the result to fit inside a fixed number of columns. While it pains me to admit it, Word is actually smarter than R when it comes to sizing the columns of the table to fit on a page.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>You might already be familiar with base R functions <code>lapply()</code>, <code>sapply()</code> etc.; the <code>map*()</code> functions do the same thing, but are more picky about the arguments they get and the values they return. This makes them safer to program with. The <code>map*()</code> functions are found in package <code>purrr</code> in the <code>tidyverse</code>.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>In fact, we could have done all in the individual calculations directly inside the call to <code>data_frame()</code>. In this case I needed to explain each line one by one, so that becomes awkward.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
