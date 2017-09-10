@@ -54,14 +54,12 @@ ggplot(data = spparea3,
        mapping = aes(x=Quadrat_Area, y=totspp)) + 
   geom_point(mapping=aes(color=fBurned),
              position = &quot;jitter&quot;)</code></pre>
-<p><img src="/classes/NRES222/nine_mile_ws_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>Adding the argument <code>position = &quot;jitter&quot;</code> to <code>geom_point()</code> just adds a small random number to each data point to avoid points plotting on top of each other. Another way to separate the sections that might be easier to answer Q1 is to make a separate subplot for each unit burned.</p>
 <pre class="r"><code>ggplot(data = spparea3,
        mapping = aes(x=Quadrat_Area, y=totspp)) + 
   geom_point(mapping=aes(color=fBurned),
              position = &quot;jitter&quot;) +
   facet_wrap(~fBurned)</code></pre>
-<p><img src="/classes/NRES222/nine_mile_ws_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <ol style="list-style-type: decimal">
 <li>Using the graphs with the raw data, rank the 3 fields (burned in 2015, 2016, or 2017) from most homogeneous (all student data sets similar) to most heterogeneous. You are looking at the spread vertically within a single size of quadrat. Why are some fields more variable (speculate)?</li>
 </ol>
@@ -82,8 +80,6 @@ spparea4 &lt;- summarize(spparea4,
        y = &quot;Cumulative species richness (95% CI)&quot;,
        caption = &quot;Figure 1: Cumulative species richness as a function of total quadrat area searched in three fields at 9 Mile Prairie, Nebraska.&quot;) + 
   theme(plot.caption = element_text(hjust=0))</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values (geom_errorbar).</code></pre>
-<p><img src="/classes/NRES222/nine_mile_ws_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <ol start="2" style="list-style-type: decimal">
 <li><p>Compare the average curves for the 3 fields. Does the species area curve appear to follow a smooth relationship? Is the shape of the curve the same for all four fields?</p></li>
 <li><p>Which of the 3 fields had the highest plant diversity?</p></li>
@@ -109,31 +105,34 @@ Log(S) = log c + z log(A)
   theme(plot.caption = element_text(hjust=0)) + 
     scale_x_log10() + scale_y_log10() + # here is the new bit
       geom_smooth(method=&quot;lm&quot;)</code></pre>
-<pre><code>## Warning in self$trans$transform(x): NaNs produced</code></pre>
-<pre><code>## Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
-<pre><code>## Warning: Removed 4 rows containing missing values (geom_errorbar).</code></pre>
-<p><img src="/classes/NRES222/nine_mile_ws_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <ol start="7" style="list-style-type: decimal">
-<li>Do the log10 – transformed data appear to follow a linear relationship? Is the slope of the line similar for all 3 areas?</li>
+<li><p>Do the log10 – transformed data appear to follow a linear relationship? Is the slope of the line similar for all 3 areas?</p></li>
+<li><p>Which of the 3 areas had the highest plant diversity? Do the differences among the grassland types change between small and large plots? (hint: might be easier if you remove <code>facet_wrap()</code> and get all three lines on same graph.)</p></li>
+<li><p>Pick the grassland type with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a 100m2 quadrat using the log10 – transformed data.</p></li>
 </ol>
-<p>Those lines look fine, but what if we want to know what the values of <span class="math inline">\(c\)</span> and <span class="math inline">\(z\)</span> actually are for each field? To do that we need the summary of the linear regressions shown in the graphs.</p>
-<ol start="8" style="list-style-type: decimal">
-<li><p>Which of the 3 areas had the highest plant diversity? Do the differences among the grassland types change between small and large plots?</p></li>
-<li><p>Pick the grassland type with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a 100m2 plot log10 – transformed data.</p></li>
-<li><p>What are the equations of your log-transformed relationships for the 3 areas (they can be on the graph) ?</p></li>
-<li><p>Do you think these relationships (the straight lines on the logS vs logA graph) would increase smoothly indefinitely? What would happen if the study area crossed into a different ecosystem type (for example a stand of trees or a corn field)?</p></li>
-<li><p>Use the equations to predict how many species each habitat would have at a scale of 1 m2? (Remember that the log of 1 =0, so your answer is the value of the intercept. BUT, you have to transform it from a log scale back to linear, so take 10 raised to the value of the intercept to give the average number of species in a 1m2 plot).</p></li>
+<hr />
+<p>Those lines look fine, but what if we want to know the values of <span class="math inline">\(c\)</span> and <span class="math inline">\(z\)</span> actually are for each field? To do that we need the summary of the linear regressions shown in the graphs.</p>
+<pre class="r"><code>burned2015 &lt;- filter(spparea3, fBurned == &quot;2015&quot;)
+b2015_lm &lt;- lm(log(totspp) ~ log(Quadrat_Area), data= burned2015)
+summary(b2015_lm)</code></pre>
+<p>The estimate labeled <code>(intercept)</code> is <span class="math inline">\(log(c)\)</span>, and the estimate labeled <code>log(Quadrat_Area)</code> is <span class="math inline">\(z\)</span>. Repeat for the other two groups. Each one needs to be in a new code chunk.</p>
+<ol start="10" style="list-style-type: decimal">
+<li><p>What are the equations of your log-transformed relationships for the 3 areas? Type the equations with the numbers to 2 decimal places only, and one equation to a line.</p></li>
+<li><p>Use the equations to predict how many species each habitat would have at a scale of <span class="math inline">\(1 m^2\)</span>? (Remember that <span class="math inline">\(log(1) =0\)</span>, so your answer is the value of the intercept. BUT, you have to transform it from a log scale back to linear, so take 10 raised to the value of the intercept to give the average number of species in a 1m2 plot).</p></li>
 <li><p>Use the equations to predict how many species each habitat would have at a scale of 100m2 plot?</p></li>
 </ol>
-<p>You can calculate this from your equation. Remember to raise your value of LogS to the power of 10 to transform it to number of species. In Excel you can use the function = power(10, ?) where ? is the number you want to transform.</p>
-<p>Example: let’s say your equation is</p>
-<p>LogS = 1.0332 + 0.1642 (logA)</p>
-<p>If A = 100, then logA = 2.</p>
-<p>Plug that into the equation and you get LogS = 1.362.</p>
-<p>Does that mean you expect to find 1.362 species in a 100 m2 plot? NO, the log of the number of species you predict is 1.362. How do you get rid of the log? Raise 10 to the number you have. 10 raised to the 1.263 is 21.9, which is the predicted number of species in a 100 m2 plot given the equation above. We’ll use logs (base 10) and natural logs quite a bit in this course, so it pays to review them. Mess around with excel until you figure out how to do this example.</p>
-<p>Big discussion questions (each answer should be 200 – 400 words) 14) Why do you think the various fields we studied differ in plant diversity? How does age of the field since planting, the number of species planted and the type of management appear to affect diversity? You will need to look at some other resources to answer this question well; there is no single correct answer.</p>
-<ol start="15" style="list-style-type: decimal">
-<li>Based on the results of our study of diversity in these 3 neighboring grassland areas, what new observations would you propose for future study? We only measured a few of the possible combinations of land-use history (unplowed prairie versus replanted crop land) and management (burning vs haying) for grasslands in the Nine-Mile Prairie area. Assuming you had enough time and money, design a bigger, long-term study of factors controlling plant diversity in prairies.</li>
+<p>You can calculate this using the equations you typed out above.<br />
+<em>Example:</em> let’s say your equation is</p>
+<p><span class="math inline">\(Log(S) = 1.0332 + 0.1642 log(A)\)</span></p>
+<p>If A = 100, then log(A) = 2.</p>
+<p>Plug that into the equation and you get Log(S) = 1.362.</p>
+<p>Does that mean you expect to find 1.362 species in a 100 m2 plot? NO, the log of the number of species you predict is 1.362. How do you get rid of the log? Raise 10 to the number you have. 10 raised to the 1.263 is 21.9, which is the predicted number of species in a 100 m2 plot given the equation above. We’ll use logs (base 10) and natural logs quite a bit in this course, so it pays to review them. You can do these calculations in R</p>
+<pre class="r"><code>logS &lt;- 1.0332 + 0.1642 * log10(100)
+10^logS</code></pre>
+<ol start="11" style="list-style-type: decimal">
+<li><p>Do you think these relationships (the straight lines on the logS vs logA graph) would increase smoothly indefinitely? What would happen if the study area crossed into a different ecosystem type (for example a stand of trees or a corn field)?</p></li>
+<li><p>Recall that most studies find <span class="math inline">\(0.25 &lt;= z &lt;=0.35\)</span>. Is our data consistent with these expectations?</p></li>
+<li><p>Why do you think the various fields we studied differ or do not differ in plant diversity? How does the time since fire affect diversity?</p></li>
 </ol>
 </div>
 <div id="turn-in" class="section level2">

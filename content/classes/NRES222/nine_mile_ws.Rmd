@@ -7,7 +7,7 @@ weight: 222041
 ---
 
 ```{r real_setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 library(tidyverse)
 plants <- read_csv("~/cheap_shots/static/classes/NRES222/nine_mile_ws/data/9mile_plants_all.csv")
 ```
@@ -150,42 +150,49 @@ ggplot(data = spparea4,
 
 7) Do the log10 – transformed data appear to follow a linear relationship?  Is the slope of the line similar for all 3 areas?
 
-Those lines look fine, but what if we want to know what the values of $c$ and $z$ actually are for each field? To do that we need the summary of the linear regressions shown in the graphs. 
+8) Which of the 3 areas had the highest plant diversity?  Do the differences among the grassland types change between small and large plots? (hint: might be easier if you remove `facet_wrap()` and get all three lines on same graph.)
 
+9) Pick the grassland type with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a 100m2 quadrat using the log10 – transformed data.
 
+----
 
-8) Which of the 3 areas had the highest plant diversity?  Do the differences among the grassland types change between small and large plots?
+Those lines look fine, but what if we want to know the values of $c$ and $z$ actually are for each field? To do that we need the summary of the linear regressions shown in the graphs. 
 
-9) Pick the grassland type with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a 100m2 plot log10 – transformed data.
+```{r}
+burned2015 <- filter(spparea3, fBurned == "2015")
+b2015_lm <- lm(log(totspp) ~ log(Quadrat_Area), data= burned2015)
+summary(b2015_lm)
+```
 
-10) What are the equations of your log-transformed relationships for the 3 areas (they can be on the graph) ?
+The estimate labeled `(intercept)` is $log(c)$, and the estimate labeled `log(Quadrat_Area)` is $z$. Repeat for the other two groups. Each one needs to be in a new code chunk.
 
-11) Do you think these relationships (the straight lines on the logS vs logA graph) would increase smoothly indefinitely?  What would happen if the study area crossed into a different ecosystem type (for example a stand of trees or a corn field)?
+10) What are the equations of your log-transformed relationships for the 3 areas? Type the equations with the numbers to 2 decimal places only, and one equation to a line. 
 
-12) Use the equations to predict how many species each habitat would have at a scale of 1 m2? (Remember that the log of 1 =0, so your answer is the value of the intercept.  BUT, you have to transform it from a log scale back to linear, so take 10 raised to the value of the intercept to give the average number of species in a 1m2 plot).
+12) Use the equations to predict how many species each habitat would have at a scale of $1 m^2$? (Remember that $log(1) =0$, so your answer is the value of the intercept.  BUT, you have to transform it from a log scale back to linear, so take 10 raised to the value of the intercept to give the average number of species in a 1m2 plot).
 
 13) Use the equations to predict how many species each habitat would have at a scale of 100m2 plot? 
 
-You can calculate this from your equation.  Remember to raise your value of LogS to the power of 10 to transform it to number of species.  In Excel you can use the function
-= power(10, ?) where ? is the number you want to transform.
+You can calculate this using the equations you typed out above.    
+*Example:* let’s say your equation is 
 
-Example: let’s say your equation is 
+$Log(S) = 1.0332 + 0.1642 log(A)$
 
-LogS = 1.0332 + 0.1642 (logA)
+If A = 100, then log(A) = 2.
 
-If A = 100, then logA = 2.
+Plug that into the equation and you get Log(S) = 1.362.
 
-Plug that into the equation and you get LogS = 1.362.
+Does that mean you expect to find 1.362 species in a 100 m2 plot? NO, the log of the number of species you predict is 1.362.  How do you get rid of the log?  Raise 10 to the number you have.  10 raised to the 1.263 is 21.9, which is the predicted number of species in a 100 m2 plot given the equation above.  We’ll use logs (base 10) and natural logs quite a bit in this course, so it pays to review them. You can do these calculations in R
 
-Does that mean you expect to find 1.362 species in a 100 m2 plot? NO, the log of the number of species you predict is 1.362.  How do you get rid of the log?  Raise 10 to the number you have.  10 raised to the 1.263 is 21.9, which is the predicted number of species in a 100 m2 plot given the equation above.  We’ll use logs (base 10) and natural logs quite a bit in this course, so it pays to review them.  Mess around with excel until you figure out how to do this example.
+```{r}
+logS <- 1.0332 + 0.1642 * log10(100)
+10^logS
+```
 
+11) Do you think these relationships (the straight lines on the logS vs logA graph) would increase smoothly indefinitely?  What would happen if the study area crossed into a different ecosystem type (for example a stand of trees or a corn field)?
 
-Big discussion questions (each answer should be 200 – 400 words)
-14) Why do you think the various fields we studied differ in plant diversity?  How does age of the field since planting, the number of species planted and the type of management appear to affect diversity?  You will need to look at some other resources to answer this question well; there is no single correct answer.
+12) Recall that most studies find $0.25 <= z <=0.35$. Is our data consistent with these expectations?
 
-15) Based on the results of our study of diversity in these 3 neighboring grassland areas, what new observations would you propose for future study? We only measured a few of the possible combinations of land-use history (unplowed prairie versus replanted crop land) and management (burning vs haying) for grasslands in the Nine-Mile Prairie area.  Assuming you had enough time and money, design a bigger, long-term study of factors controlling plant diversity in prairies.
-
-
+14) Why do you think the various fields we studied differ or do not differ in plant diversity?  How does the time since fire affect diversity?
 
 ## Turn in
 
