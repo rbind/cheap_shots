@@ -1,9 +1,9 @@
 ---
 title: 'Getting pedantic: should I always name arguments in function calls?'
 author: Drew Tyre
-date: '2017-08-29'
+date: '2017-09-10'
 slug: getting-pedantic-should-i-always-name-arguments-in-function-calls
-draft: true
+draft: false
 summary: "I've been teaching students `ggplot2` for graphics exclusively for a year or more now. One issue that seems to throw students is the specification of different data sets for some layers. Part of the confusion seems to arise from reversing the order of arguments between `ggplot()` and `geom_*()`. I'm trying to combat this by always naming my arguments. Is this a good idea?"
 categories:
   - R
@@ -21,4 +21,37 @@ tags: []
 <pre class="r"><code>data(iris)
 ggplot(iris, aes(x=Sepal.Width, y=Petal.Length)) +
   geom_point(aes(color=Species))</code></pre>
-<p><img src="/"https://drewtyre.rbind.io/"  # End your URL with a `/` trailing slash.post/getting-pedantic-should-i-always-name-arguments-in-function-calls_files/figure-html/example-no-names-1.png" width="672" /></p>
+<p><img src="/post/getting-pedantic-should-i-always-name-arguments-in-function-calls_files/figure-html/example-no-names-1.png" width="672" /></p>
+<p>For the most part this is just fine as long as each layer is using the same data frame. However, I frequently ask students to add predictions from a fitted model.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> Just as an example where vanilla <code>geom_smooth()</code> won’t work because there is a 3rd variable that I want to account for in the predictions.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<pre class="r"><code>irislm &lt;- lm(Petal.Length~(Sepal.Width + Sepal.Length + Species)^2, data=iris)
+nd &lt;- crossing(Species = factor(levels(iris$Species)),
+               Sepal.Width = seq(min(iris$Sepal.Width), max(iris$Sepal.Width), by = 0.01))
+sepalstats &lt;- iris %&gt;%
+  group_by(Species) %&gt;%
+  summarize(minsw = min(Sepal.Width),
+            maxsw = max(Sepal.Width),
+            medsl = median(Sepal.Length))
+nd &lt;- left_join(nd, sepalstats, by=&quot;Species&quot;) %&gt;%
+  mutate(Sepal.Length = medsl) %&gt;%
+  filter(Sepal.Width &gt; minsw,
+         Sepal.Width &lt; maxsw)
+library(broom)
+predicted &lt;-  augment(irislm, newdata = nd)
+ggplot(iris, aes(x=Sepal.Width, y=Petal.Length)) +
+  geom_point(aes(shape=Species, color=Sepal.Length)) + 
+  geom_line(aes(y = .fitted, linetype=Species, color=Sepal.Length), data = predicted)</code></pre>
+<p><img src="/post/getting-pedantic-should-i-always-name-arguments-in-function-calls_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>I can’t just change the data argument because the output from <code>augment()</code> uses <code>.fitted</code> instead of <code>Petal.Length</code>. I could rename the output of augment, but that’s a bit risky because then you have two conceptually different things (data vs. expected value) with the same name. So now I’m doing</p>
+<pre class="r"><code>ggplot(data = iris, 
+       mapping = aes(x=Sepal.Width, y=Petal.Length)) +
+  geom_point(mapping = aes(shape=Species, color=Sepal.Length)) + 
+  geom_line(data = predicted,
+            mapping = aes(y = .fitted, linetype=Species, color=Sepal.Length))</code></pre>
+<p>Other than making for excess typing, is there some reason I shouldn’t do this?</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Yes, I know I can just add <code>geom_smooth()</code>. Works great until you start using more complex models that include covariates not on the plot. Or if I want prediction intervals as well as confidence intervals.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>I’m getting a bit carried away here because I suddenly decided I also wanted to have the fitted lines not exceed the limits of Sepal Width for each group. But because I needed the medians for each species anyway this wasn’t too big a deal.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
