@@ -96,9 +96,28 @@ spparea4 &lt;- summarize(spparea4,
 <p>Mathematically, species-area curves can be fit with the non-linear equation <span class="math inline">\(S = cA^z\)</span> where S is species number, A is plot area, and c and z are constants. We won’t use this equation in lab; non-linear equations such as this are much more difficult to work with. However, if you transform the data for species number and plot area to log values, the relationship becomes linear. A line fit to the data averages across point to point irregularities to give the best description of the species area relationship in each area. The equation now has the form: <span class="math display">\[
 Log(S) = log c + z log(A)
 \]</span></p>
-<p>Copy the average species number results for each grassland area to a second worksheet. Add the functions to convert the data to log10 plot size. Create two graphs using the 3 data sets versus plots size, one with the original (linear) axes, and one with log10 – transformed data. Add linear trend lines, with the equation, for each data set.</p>
+<p>Create a new figure with log10 – transformed data. We can simply change the axes on the plot, and add some linear trendlines.</p>
+<pre class="r"><code>ggplot(data = spparea4,
+       mapping = aes(x=Quadrat_Area, y=meanspp)) + 
+  geom_point() +
+  facet_wrap(~fBurned) + 
+  geom_errorbar(mapping = aes(ymin = meanspp - qt(0.975, df = 3) * sespp, 
+                              ymax = meanspp + qt(0.975, df = 3) * sespp)) + 
+  labs(x = &quot;Quadrat Area [m^2]&quot;, 
+       y = &quot;Cumulative species richness (95% CI)&quot;,
+       caption = &quot;Figure 1: Cumulative species richness as a function of total quadrat area searched in three fields at 9 Mile Prairie, Nebraska.&quot;) + 
+  theme(plot.caption = element_text(hjust=0)) + 
+    scale_x_log10() + scale_y_log10() + # here is the new bit
+      geom_smooth(method=&quot;lm&quot;)</code></pre>
+<pre><code>## Warning in self$trans$transform(x): NaNs produced</code></pre>
+<pre><code>## Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_errorbar).</code></pre>
+<p><img src="/classes/NRES222/nine_mile_ws_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <ol start="7" style="list-style-type: decimal">
-<li><p>Does the log10 – transformed data appear to follow a linear relationship? Is the slope of the line similar for all 3 areas?</p></li>
+<li>Do the log10 – transformed data appear to follow a linear relationship? Is the slope of the line similar for all 3 areas?</li>
+</ol>
+<p>Those lines look fine, but what if we want to know what the values of <span class="math inline">\(c\)</span> and <span class="math inline">\(z\)</span> actually are for each field? To do that we need the summary of the linear regressions shown in the graphs.</p>
+<ol start="8" style="list-style-type: decimal">
 <li><p>Which of the 3 areas had the highest plant diversity? Do the differences among the grassland types change between small and large plots?</p></li>
 <li><p>Pick the grassland type with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a 100m2 plot log10 – transformed data.</p></li>
 <li><p>What are the equations of your log-transformed relationships for the 3 areas (they can be on the graph) ?</p></li>

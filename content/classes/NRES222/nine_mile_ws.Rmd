@@ -109,7 +109,6 @@ ggplot(data = spparea4,
 
 ```
 
-
 2) Compare the average curves for the 3 fields.  Does the species area curve appear to follow a smooth relationship?  Is the shape of the curve the same for all four fields?
 
 3) Which of the 3 fields had the highest plant diversity?
@@ -131,9 +130,29 @@ $$
 Log(S) = log c + z log(A)
 $$ 
 
-Copy  the average species number results for each grassland area to a second worksheet.  Add the functions to convert the data to log10 plot size.  Create two graphs using the 3 data sets versus plots size, one with the original (linear) axes, and one with log10 – transformed data.  Add linear trend lines, with the equation, for each data set.
+Create a new figure with log10 – transformed data. We can simply change the axes on the plot, and add some linear trendlines.
 
-7) Does the log10 – transformed data appear to follow a linear relationship?  Is the slope of the line similar for all 3 areas? 
+```{r}
+ggplot(data = spparea4,
+       mapping = aes(x=Quadrat_Area, y=meanspp)) + 
+  geom_point() +
+  facet_wrap(~fBurned) + 
+  geom_errorbar(mapping = aes(ymin = meanspp - qt(0.975, df = 3) * sespp, 
+                              ymax = meanspp + qt(0.975, df = 3) * sespp)) + 
+  labs(x = "Quadrat Area [m^2]", 
+       y = "Cumulative species richness (95% CI)",
+       caption = "Figure 1: Cumulative species richness as a function of total quadrat area searched in three fields at 9 Mile Prairie, Nebraska.") + 
+  theme(plot.caption = element_text(hjust=0)) + 
+    scale_x_log10() + scale_y_log10() + # here is the new bit
+      geom_smooth(method="lm")
+
+```
+
+7) Do the log10 – transformed data appear to follow a linear relationship?  Is the slope of the line similar for all 3 areas?
+
+Those lines look fine, but what if we want to know what the values of $c$ and $z$ actually are for each field? To do that we need the summary of the linear regressions shown in the graphs. 
+
+
 
 8) Which of the 3 areas had the highest plant diversity?  Do the differences among the grassland types change between small and large plots?
 
