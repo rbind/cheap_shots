@@ -20,7 +20,7 @@ We collected species occurence data in nested quadrats in 3 different parts of t
 
 Open RStudio and create a new project. I recommend creating a project for each week of class inside a folder called `NRES222` or whatever else works for you.
 
-Download the data from the link in Canvas, saving it into a subdirectory of your project called `data`. Make sure to keep the filename exactly the same: `9mile_plants_all.csv`!
+Download the data [from here](/classes/NRES222/nine_mile_ws/data/9mile_plants_all.csv), saving it into a subdirectory of your project called `data`. Make sure to keep the filename exactly the same: `9mile_plants_all.csv`!
 
 Create a new R Markdown file by clicking the button in the top left of RStudio with a `+` on it. Save this file into your project directory with a filename `yourlastname_ninemile.Rmd`. 
 
