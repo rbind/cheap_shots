@@ -1,7 +1,7 @@
 ---
 title: "9 Mile Prairie Worksheet"
 author: "Drew Tyre"
-date: "2017-09-11"
+date: "2017-09-22"
 type: "lab"
 weight: 222041
 ---
@@ -60,7 +60,7 @@ ggplot(data = spparea3,
   geom_point(mapping=aes(color=fBurned),
              position = &quot;jitter&quot;) +
   facet_wrap(~fBurned)</code></pre>
-<ol style="list-style-type: decimal">
+<ol class="example" style="list-style-type: decimal">
 <li>Using the graphs with the raw data, rank the 3 fields (burned in 2015, 2016, or 2017) from most homogeneous (all student data sets similar) to most heterogeneous. You are looking at the spread vertically within a single size of quadrat. Why are some fields more variable (speculate)?</li>
 </ol>
 <hr />
@@ -80,7 +80,7 @@ spparea4 &lt;- summarize(spparea4,
        y = &quot;Cumulative species richness (95% CI)&quot;,
        caption = &quot;Figure 1: Cumulative species richness as a function of total quadrat area searched in three fields at 9 Mile Prairie, Nebraska.&quot;) + 
   theme(plot.caption = element_text(hjust=0))</code></pre>
-<ol start="2" style="list-style-type: decimal">
+<ol start="2" class="example" style="list-style-type: decimal">
 <li><p>Compare the average curves for the 3 fields. Does the species area curve appear to follow a smooth relationship? Is the shape of the curve the same for all four fields?</p></li>
 <li><p>Which of the 3 fields had the highest plant diversity?</p></li>
 <li><p>In which size plots do we generally gain the most new species?</p></li>
@@ -105,7 +105,7 @@ Log(S) = log c + z log(A)
   theme(plot.caption = element_text(hjust=0)) + 
     scale_x_log10() + scale_y_log10() + # here is the new bit
       geom_smooth(method=&quot;lm&quot;)</code></pre>
-<ol start="7" style="list-style-type: decimal">
+<ol start="7" class="example" style="list-style-type: decimal">
 <li><p>Do the log10 – transformed data appear to follow a linear relationship? Is the slope of the line similar for all 3 areas?</p></li>
 <li><p>Which of the 3 areas had the highest plant diversity? Do the differences among the grassland types change between small and large plots? (hint: might be easier if you remove <code>facet_wrap()</code> and get all three lines on same graph.)</p></li>
 <li><p>Pick the grassland type with the highest diversity. Visually estimate (extrapolate) how many species you would expect to find in a 100m2 quadrat using the log10 – transformed data.</p></li>
@@ -116,7 +116,7 @@ Log(S) = log c + z log(A)
 b2015_lm &lt;- lm(log(totspp) ~ log(Quadrat_Area), data= burned2015)
 summary(b2015_lm)</code></pre>
 <p>The estimate labeled <code>(intercept)</code> is <span class="math inline">\(log(c)\)</span>, and the estimate labeled <code>log(Quadrat_Area)</code> is <span class="math inline">\(z\)</span>. Repeat for the other two groups. Each one needs to be in a new code chunk.</p>
-<ol start="10" style="list-style-type: decimal">
+<ol start="10" class="example" style="list-style-type: decimal">
 <li><p>What are the equations of your log-transformed relationships for the 3 areas? Type the equations with the numbers to 2 decimal places only, and one equation to a line.</p></li>
 <li><p>Use the equations to predict how many species each habitat would have at a scale of <span class="math inline">\(1 m^2\)</span>? (Remember that <span class="math inline">\(log(1) =0\)</span>, so your answer is the value of the intercept. BUT, you have to transform it from a log scale back to linear, so take 10 raised to the value of the intercept to give the average number of species in a 1m2 plot).</p></li>
 <li><p>Use the equations to predict how many species each habitat would have at a scale of 100m2 plot?</p></li>
@@ -129,7 +129,7 @@ summary(b2015_lm)</code></pre>
 <p>Does that mean you expect to find 1.362 species in a 100 m2 plot? NO, the log of the number of species you predict is 1.362. How do you get rid of the log? Raise 10 to the number you have. 10 raised to the 1.263 is 21.9, which is the predicted number of species in a 100 m2 plot given the equation above. We’ll use logs (base 10) and natural logs quite a bit in this course, so it pays to review them. You can do these calculations in R</p>
 <pre class="r"><code>logS &lt;- 1.0332 + 0.1642 * log10(100)
 10^logS</code></pre>
-<ol start="11" style="list-style-type: decimal">
+<ol start="13" class="example" style="list-style-type: decimal">
 <li><p>Do you think these relationships (the straight lines on the logS vs logA graph) would increase smoothly indefinitely? What would happen if the study area crossed into a different ecosystem type (for example a stand of trees or a corn field)?</p></li>
 <li><p>Recall that most studies find <span class="math inline">\(0.25 &lt;= z &lt;=0.35\)</span>. Is our data consistent with these expectations?</p></li>
 <li><p>Why do you think the various fields we studied differ or do not differ in plant diversity? How does the time since fire affect diversity?</p></li>

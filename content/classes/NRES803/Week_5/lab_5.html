@@ -97,7 +97,7 @@ pander(aictab(fits, c.hat = c_hat(fits[[11]]), modname = modnames),
 <ol class="example" style="list-style-type: decimal">
 <li>Which model or models do you think you should pay attention to and why?</li>
 </ol>
-<p>The top model includes pc2 and it’s interaction with vor. In fact, the four top models all include those terms. The second through fourth ranked models are all within 2 likelihood units of the top model, suggesting that nesting is playing a role here. Thus it seems justifiable to simply use the top model as our model for prediction. However, model averaging the predictions is quite easy given the AICcmodavg package, so lets try both ways and see how much it matters. As before, create some new data assuming pc1 and pc2 are at the median values:</p>
+<p>The top model includes pc2 and it’s interaction with vor. In fact, the four top models all include those terms. The second through fourth ranked models are all within 2 quasi-likelihood units of the top model, suggesting that nesting is playing a role here. Thus it seems justifiable to simply use the top model as our model for prediction. However, model averaging the predictions is quite easy given the AICcmodavg package, so lets try both ways and see how much it matters. As before, create some new data assuming pc1 and pc2 are at the median values:</p>
 <pre class="r"><code>nd &lt;- data.frame(vor = seq(2, 9, 0.1), pc1 = median(hanson_birds$pc1), 
     pc2 = median(hanson_birds$pc2))
 pred.dick &lt;- augment(fits[[6]], newdata = nd, type.predict = &quot;response&quot;)
@@ -129,7 +129,7 @@ etc &lt;- mutate(etc, Estimate = paste(formatC(estimate, digits = 3,
     &quot;)&quot;, sep = &quot;&quot;))
 tab &lt;- spread(etc[, c(1, 6, 7)], key = modname, value = Estimate)
 # arrange the models in order ...
-pander(tab[, 5:2], split.tables = Inf, caption = &quot;Table 2. Estimates (SE) for each of the top four models.&quot;)</code></pre>
+pander(tab[, c(1, 5:2)], split.tables = Inf, caption = &quot;Table 2. Estimates (SE) for each of the top four models.&quot;)</code></pre>
 <p>The row ordering of that table isn’t the best, but it’ll work for now. What I want to do is check to see if any of the coefficients from the second through fourth ranked models have estimates more than 2 SE from zero. For example, <code>pc1</code> is at most 2 times the SE in those models. The value of the other two coefficients <code>pc1:pc2</code> and <code>vor:pc1</code> also have small magnitudes relative to their SE. This increases our confidence that nesting effects are responsible for the model selection uncertainty. Ignoring the model selection uncertainty might make our predictions a bit too precise, but the parameters <code>vor</code>, <code>pc2</code> and <code>vor:pc2</code> are very similar across the four models.</p>
 <p>Finally, I want to make a plot showing the prediction from the top model that demonstrates the interaction with <code>pc2</code>. To do this, I’ll make predictions from the lower quartile, median and upper quartile of <code>pc2</code> for a range of vor.</p>
 <pre class="r"><code>nd &lt;- crossing(vor = seq(2, 9, 0.1), pc2 = quantile(hanson_birds$pc2))

@@ -139,7 +139,8 @@ pander(aictab(fits,c.hat=c_hat(fits[[11]]),modname=modnames), caption="Table 1. 
 
 (@) Which model or models do you think you should pay attention to and why? 
 
-The top model includes pc2 and it's interaction with vor. In fact, the four top models all include those terms. The second through fourth ranked models are all within 2 likelihood units of the top model, suggesting that nesting is playing a role here. Thus it seems justifiable to simply use the top model as our model for prediction. However, model averaging the predictions is quite easy given the AICcmodavg package, so lets try both ways and see how much it matters. As before, create some new data assuming pc1 and pc2 are at the median values:
+The top model includes pc2 and it's interaction with vor. In fact, the four top models all include those terms. The second through fourth ranked models are all within 2 quasi-likelihood units of the top model, suggesting that nesting is playing a role here. Thus it seems justifiable to simply use the top model as our model for prediction. However, model averaging the predictions is quite easy given the AICcmodavg package, so lets try both ways and see how much it matters. As before, create some new data assuming pc1 and pc2 are at the median values:
+
 ```{r ,eval=lab.eval, results=lab.results, fig.show=lab.results}
 nd = data.frame(vor=seq(2,9,0.1),
                 pc1=median(hanson_birds$pc1),
@@ -177,7 +178,7 @@ etc <- map2_df(fits[c(6,9,10,11)], modnames[c(6,9,10,11)], tidy_w_name)
 etc <- mutate(etc, Estimate = paste(formatC(estimate,digits=3, format="f")," (", formatC(std.error,digits=3, format="f"),")", sep=""))
 tab <- spread(etc[,c(1,6,7)], key=modname, value = Estimate )
 # arrange the models in order ... 
-pander(tab[,5:2], split.tables=Inf, caption="Table 2. Estimates (SE) for each of the top four models.")
+pander(tab[,c(1, 5:2)], split.tables=Inf, caption="Table 2. Estimates (SE) for each of the top four models.")
 ```
 
 The row ordering of that table isn't the best, but it'll work for now. What I want to do is check to see if any of the coefficients from the second through fourth ranked models have estimates more than 2 SE from zero. For example, `pc1` is at most 2 times the SE in those models. The value of the other two coefficients `pc1:pc2` and `vor:pc1` also have small magnitudes relative to their SE. This increases our confidence that nesting effects are responsible for the model selection uncertainty. Ignoring the model selection uncertainty might make our predictions a bit too precise, but the parameters `vor`, `pc2` and `vor:pc2` are very similar across the four models. 
