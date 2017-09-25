@@ -1,7 +1,7 @@
 ---
 title: "Week 6 Homework"
 author: "Drew Tyre"
-date: "2017-08-01"
+date: "`r Sys.Date()`"
 output: html_document
 weight: 803062
 ---
@@ -12,17 +12,40 @@ lab.eval=TRUE
 knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'hide', fig.show='hide', tidy.opts=list(arrow = TRUE, width.cutoff=60))
 ```
 
-In this homework assignment you will analyse a dataset on Forest Bird densities from 56 patches in south eastern Victoria, in Australia. The aim of the study was to relate bird density to 6 habitat covariates, patch area (AREA), distance to nearest patch (DIST), distance to nearest larger patch (LDIST), altitude (ALT), the year the patch was isolated by vegetation clearing (YEAR.ISOL), and a categorical index of stock grazing intensity (GRAZE; 1 = light, 5 = heavy). The data are in the package NRES803. Conduct a full analysis of these data, including data exploration. Be sure to identify non-linear relationships as appropriate, and think carefully about what the appropriate error distribution is for these data. What kind of model selection process are you going to use, if any? Submit the zipped project folder. Your R markdown file should contain a (brief; < 250 words) methods section describing your analytical process, and a results section describing the results. Figures can be embedded in the text where you reference them. These sections are written in complete, grammatically correct sentences. Imagine this is a draft of a paper you are going to submit to a journal.
+The discipline of landscape ecology frequently postulates that the spatial pattern of habitat is important, in addition to local characteristics such as patch area, vegetation type, and climate. [Westphal et al (2003)](https://link.springer.com/article/10.1023/A:1026115807529) analyzed data from the South Australian Bird Atlas using a series of landscape pattern metrics estimated at 3 spatial scales. They concluded that landscape structure had a positive effect on many bird species. However, this dataset was never designed to be analyzed using logistic regression, and consequently their conclusions were somewhat weak, and badly compromised by model selection uncertainty. They used AIC rather than AICc, because the number of datapoints was relatively large (n=499) compared to the number of parameters in the most complex model (K = 5) so n/K ~ 100 and AIC is probably adequate. However the number of models considered (R = 45) is quite large. In addition, because of the way the Atlas data were archived, it was not possible to directly compare the effect of local patch variables to landscape pattern covariates.
 
-Recall from island biogeography theory that species richness should increase with AREA and decrease with isolation (DIST, LDIST, and YR.ISOL). Grazing is expected to have a negative effect on forest bird abundance because of the effects on understory vegetation. All species are lumped together in this response. 
+At the same time, Dr. Scott Field and colleagues of the University of Adelaide collected an independent data set at 34 woodland sites in the Mt. Lofty Ranges using a standard 2 ha, 20 min timed count procedure in each of 2 years. [Field et al. (2002)](https://www.researchgate.net/publication/227505772_Estimating_bird_species_richness_How_should_repeat_surveys_be_organized_in_time) describe some of the issues related to designing this survey; we have data for 34 of the 38 sites in that study. The bird data has sites and years in rows, and bird species in columns; for a given site in a particular year, a 1 indicates that the species was observed at least once out of three visits to the site, and a zero indicates that the species was not observed in three visits. This provides some correction for the problem of false negatives. These data are in the comma delimited file mlrbird.csv. Both files can be downloaded from the course Canvas site. 
 
-Here's a bit of code to get you started. Issues to consider: what about the distribution of area? Do you expect abundance per count to scale linearly with area? Grazing is a category; does R think it is a category?
+We also have landscape pattern variables similar to those used by Westphal et al at 2 km, 5 km, and 10 km scales, as well as three “local” covariates. Each of the landscape variables starts with the name, followed by 2k, 5k, or 10K according to which buffer size was used. The variables used by Westphal et al are indicated with an asterix.
 
-```{r}
-library(NRES803)
-library(tidyverse)
-data(loyn)
-library(GGally) # for ggpairs
-ggpairs(loyn[,-(1:2)])
-```
+*TLA - total landscape area
+NumP - number of patches
+MPS - mean patch size
+LPI - largest patch index (% of TLA covered by largest patch)
+*LSI - landscape shape index (measure of edge) = 1.0 if one circular patch, increases with edge
+PSSD - patch size std. Dev.
+*MNN - mean nearest neighbor distance (not if NumP is 0, it should be NA not 0 - check)
+TE - total edge
+*MPAR = (TE/TLA/NumP) = mean patch perimeter area ratio
+
+Note that MPAR is a derived variable not found in the provided dataset. The following variables are “local” for each patch:
+
+MRF - mean annual rainfall
+PA - patch area
+PP - patch perimeter
+
+The data are in the comma delimited file mlrland.csv. Note that these data have NOT been modified to reduce correlations among the variables as Westphal et al described (This is a hint, maybe). The following list is a set of things you have to do, **NOT** an outline of the submission file.
+
+1) The patches were sampled in 2 years (68 rows of data). How will you deal with the two years of observations?
+
+2) The bird presence/absence data are in a seperate data.frame from the patch variables. How will you get these two data.frames together for analysis? (hint: `?left_join`)
+
+3) Describe a set of approximating models (i.e. combinations of covariates) that will allow you to compare patch vs. landscape explanations for variation in patch occupancy of woodland birds, and estimate the best scale for landscape effects. Westphal et al. (2003) found that the best model for SCRO was TLA2K+LSI2K−MPAR2K. Your model set should allow you to confirm or refute this prediction. Feel free to work in groups for this question. Assess the goodness of fit of your global (or most complex) model.
+
+4) Fit your selected models to the data using binomial GLMs for Scarlet Robins (SCRO). Use AIC – based model selection to compare your approximating models with each other, and draw conclusions about the relative importance of patch vs. landscape effects for Scarlet Robins.
+
+5) Calculate a model averaged estimate for one or more of the biologically important parameters in your models. For example, the effect of patch area (PA) is directly relevant to estimating the effects of proposed land use changes (e.g. vegetation clearance) on bird species.
+
+6) Provide an R Markdown file with your writeup of the analysis (methods <250 words focused on the *statistics*, results, and perhaps 250 words of discussion, skip the intro). Assessment of model assumptions should be at the end of the document, in a section called Appendix A. Submit the compressed project directory.
+
 
