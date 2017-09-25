@@ -19,19 +19,29 @@ At the same time, Dr. Scott Field and colleagues of the University of Adelaide c
 We also have landscape pattern variables similar to those used by Westphal et al at 2 km, 5 km, and 10 km scales, as well as three “local” covariates. Each of the landscape variables starts with the name, followed by 2k, 5k, or 10K according to which buffer size was used. The variables used by Westphal et al are indicated with an asterix.
 
 *TLA - total landscape area
+
 NumP - number of patches
+
 MPS - mean patch size
+
 LPI - largest patch index (% of TLA covered by largest patch)
+
 *LSI - landscape shape index (measure of edge) = 1.0 if one circular patch, increases with edge
+
 PSSD - patch size std. Dev.
+
 *MNN - mean nearest neighbor distance (not if NumP is 0, it should be NA not 0 - check)
+
 TE - total edge
+
 *MPAR = (TE/TLA/NumP) = mean patch perimeter area ratio
 
 Note that MPAR is a derived variable not found in the provided dataset. The following variables are “local” for each patch:
 
 MRF - mean annual rainfall
+
 PA - patch area
+
 PP - patch perimeter
 
 The data are in the comma delimited file mlrland.csv. Note that these data have NOT been modified to reduce correlations among the variables as Westphal et al described (This is a hint, maybe). The following list is a set of things you have to do, **NOT** an outline of the submission file.
