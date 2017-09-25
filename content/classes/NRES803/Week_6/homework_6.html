@@ -11,9 +11,19 @@ weight: 803062
 <p>The discipline of landscape ecology frequently postulates that the spatial pattern of habitat is important, in addition to local characteristics such as patch area, vegetation type, and climate. <a href="https://link.springer.com/article/10.1023/A:1026115807529">Westphal et al (2003)</a> analyzed data from the South Australian Bird Atlas using a series of landscape pattern metrics estimated at 3 spatial scales. They concluded that landscape structure had a positive effect on many bird species. However, this dataset was never designed to be analyzed using logistic regression, and consequently their conclusions were somewhat weak, and badly compromised by model selection uncertainty. They used AIC rather than AICc, because the number of datapoints was relatively large (n=499) compared to the number of parameters in the most complex model (K = 5) so n/K ~ 100 and AIC is probably adequate. However the number of models considered (R = 45) is quite large. In addition, because of the way the Atlas data were archived, it was not possible to directly compare the effect of local patch variables to landscape pattern covariates.</p>
 <p>At the same time, Dr. Scott Field and colleagues of the University of Adelaide collected an independent data set at 34 woodland sites in the Mt. Lofty Ranges using a standard 2 ha, 20 min timed count procedure in each of 2 years. <a href="https://www.researchgate.net/publication/227505772_Estimating_bird_species_richness_How_should_repeat_surveys_be_organized_in_time">Field et al. (2002)</a> describe some of the issues related to designing this survey; we have data for 34 of the 38 sites in that study. The bird data has sites and years in rows, and bird species in columns; for a given site in a particular year, a 1 indicates that the species was observed at least once out of three visits to the site, and a zero indicates that the species was not observed in three visits. This provides some correction for the problem of false negatives. These data are in the comma delimited file mlrbird.csv. Both files can be downloaded from the course Canvas site.</p>
 <p>We also have landscape pattern variables similar to those used by Westphal et al at 2 km, 5 km, and 10 km scales, as well as three “local” covariates. Each of the landscape variables starts with the name, followed by 2k, 5k, or 10K according to which buffer size was used. The variables used by Westphal et al are indicated with an asterix.</p>
-<p><em>TLA - total landscape area NumP - number of patches MPS - mean patch size LPI - largest patch index (% of TLA covered by largest patch) </em>LSI - landscape shape index (measure of edge) = 1.0 if one circular patch, increases with edge PSSD - patch size std. Dev. <em>MNN - mean nearest neighbor distance (not if NumP is 0, it should be NA not 0 - check) TE - total edge </em>MPAR = (TE/TLA/NumP) = mean patch perimeter area ratio</p>
+<p>*TLA - total landscape area</p>
+<p>NumP - number of patches</p>
+<p>MPS - mean patch size</p>
+<p>LPI - largest patch index (% of TLA covered by largest patch)</p>
+<p>*LSI - landscape shape index (measure of edge) = 1.0 if one circular patch, increases with edge</p>
+<p>PSSD - patch size std. Dev.</p>
+<p>*MNN - mean nearest neighbor distance (not if NumP is 0, it should be NA not 0 - check)</p>
+<p>TE - total edge</p>
+<p>*MPAR = (TE/TLA/NumP) = mean patch perimeter area ratio</p>
 <p>Note that MPAR is a derived variable not found in the provided dataset. The following variables are “local” for each patch:</p>
-<p>MRF - mean annual rainfall PA - patch area PP - patch perimeter</p>
+<p>MRF - mean annual rainfall</p>
+<p>PA - patch area</p>
+<p>PP - patch perimeter</p>
 <p>The data are in the comma delimited file mlrland.csv. Note that these data have NOT been modified to reduce correlations among the variables as Westphal et al described (This is a hint, maybe). The following list is a set of things you have to do, <strong>NOT</strong> an outline of the submission file.</p>
 <ol style="list-style-type: decimal">
 <li><p>The patches were sampled in 2 years (68 rows of data). How will you deal with the two years of observations?</p></li>
