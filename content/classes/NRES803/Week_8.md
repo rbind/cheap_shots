@@ -1,5 +1,5 @@
 +++
-title = "NRES / STAT 803 Week 6"
+title = "NRES / STAT 803 Week 8"
 date = "2017-08-21T00:00:00Z"
 math = false
 highlight = false
