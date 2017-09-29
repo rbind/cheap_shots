@@ -1,0 +1,232 @@
+---
+title: "Week 10 Lab"
+author: "Drew Tyre"
+date: "`r Sys.Date()`"
+output: html_document
+weight: 803101
+---
+```{r setup2, include=FALSE, echo=FALSE}
+# set eval = FALSE in the following line to make handout
+lab.eval=FALSE
+ # set to 'hide' to produce lab handout.
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'hide', fig.show='hide', tidy.opts=list(arrow = TRUE, width.cutoff=60))
+```
+
+# Sleep Study
+This is a great dataset to play with. From the help documentation: The average reaction time per day for subjects in a sleep deprivation study. On day 0 the subjects had their normal amount of sleep. Starting that night they were restricted to 3 hours of sleep per night. The observations represent the average reaction time on a series of tests given each day to each subject.
+
+```{r PrepareData, eval = lab.eval}
+library(NRES803)
+library(tidyverse)
+library(lme4) ## notice conflicts with tidyr
+summary(ss.lm <- lm(Reaction ~ Days,sleepstudy))
+```
+
+As you might expect, the longer one goes without sleep, the slower one’s reaction time gets. There is alot of variation in the relationship. 
+
+```{r, eval = lab.eval}
+ssBase <- ggplot(sleepstudy, aes(x = Days, y = Reaction)) + 
+  geom_point(aes(color=Subject)) + 
+  scale_color_discrete() + 
+  labs(x="Days with no sleep",
+       y="Reaction time [ms]")
+ssBase + geom_smooth(method="lm")
+```
+
+However, if the relationship is plotted seperately for each individual in the dataset, then the signal gets much stronger. Clearly people differ in their responses to sleep deprivation. One subject got faster as they missed out on sleep!
+
+```{r, eval = lab.eval}
+# group by subject
+ssBase + geom_smooth(method="lm") + facet_wrap(~Subject) + guides(color=FALSE)
+# suppress legend because facet labels do the job
+```
+
+We could fit a seperate model to each subject and combine them. This is effectively a Subject*Days interaction model.
+```{r, eval = lab.eval}
+fm1 <- lmList(Reaction ~ Days | Subject, sleepstudy)
+coef(fm1)
+```
+
+The `lmList()` function fits a different linear model to each subset of a data.frame defined by the variable after the “|”, in this case “Subject”. 
+
+(@) Calculate the mean intercept and Days coefficients from the matrix created by `coef(fm1)`. Compare these with the estimates from the single regression model. Use `summary(fm1)` to see the residual variance and degrees of freedom for the pooled list. Compare these values with the residual variance and degrees of freedom from the single regression model.
+
+```{r, eval=lab.eval, echo=lab.eval}
+cc <- coef(fm1)
+meancc <- sapply(cc, mean)
+all.equal(meancc, coef(ss.lm))
+```
+
+We can use a mixed model approach to get the best of both worlds - an estimate of the population average intercept and slope, and an idea of how much variation there is among individuals. The function lmer() in package lme4 is the method of choice here. The fixed effects part of the formula is identical to the lm() formula, with a response variable on the left of the ˜ and a covariate on the right. The new part specifies the random effects, and these are given in (). To the left of the | are the fixed effects that will vary among groups, and to the right of the | are the variable(s) that specify the groups. In this case the variable Subject defines the groups. As with other formulas, the intercept is implicit, so (Days | Subject) indicates that both the intercept and the slope are allowed to vary among subjects. This is the same as fitting a seperate line to each subject, as we did above.
+
+```{r MixedModel, eval=lab.eval}
+# fit a mixed model
+summary(ss.mm <- lmer(Reaction ~ Days + (Days | Subject),
+                      sleepstudy,REML=FALSE))
+```
+
+Looking at the summary of the mixed model, you should see a “fixed effects” section which is identical to that from a normal lm() fit, with one notable exception. There are no p-values reported for each coefficient. This isn’t a mistake, it is a deliberate choice by the software designer to avoid an argument over the correct number of degrees of freedom to use for the test! 
+
+(@) Compare the estimates and standard errors with those from the pooled data model.
+
+The new bit is the section labelled “Random effects”. We can see that the model has estimated not just one variance, but three, plus a correlation coefficient. One variance estimate is the residual variance, with the same interpretation as always. The other two variances indicate the variance of the “random effects” on the intercept and the slope. These random perturbations to the population are assumed to be correlated to some extent, so there
+is also a correlation parameter. In this case the random effects are relatively uncorrelated.
+
+We can also get the random perturbations for each group, and combining those with the population level coefficients gives us the coefficients for the line in each group, as shown in the following table. When the random effects (shown in the left 2 columns) are negative, the coefficients for the group are less than the population coefficients, and when they are positive, the group coefficients are greater.
+
+```{r TableCoeffcients, eval=lab.eval, echo=lab.eval}
+knitr::kable(cbind(ranef(ss.mm)$Subject, coef(ss.mm)$Subject))
+```
+
+In the following figure I’ve plotted the intercepts for each group from the mixed model against the intercepts from the list of models. If they were identical they would fall on the solid line. 
+
+```{r Shrinkage, eval = lab.eval}
+shrink <-  data.frame(Random=coef(ss.mm)$Subject, Fixed=cc)
+t1 <- shrink %>%
+  gather(coefficient, estimate) %>%
+  separate(coefficient, c("model","coefficient"), extra = "drop") %>%
+  group_by(model) %>%
+  mutate(id = row_number()) %>%
+  spread(model, estimate)
+
+# phew! that was more work than I expected. 
+
+# make a little dataframe for the average point
+meanpoint <- data.frame(coefficient = c("Intercept","Days"),
+           Random=fixef(ss.mm),
+           Fixed=coef(ss.lm))
+# now make the plot ... easier b/c of data manipulation?
+
+ggplot(t1, aes(x = Fixed, y = Random)) +
+  geom_point() +
+  facet_wrap(~coefficient, scales="free") + 
+  geom_smooth(method="lm") + 
+  geom_abline(slope=1, intercept=0, linetype=2) + 
+  geom_point(data=meanpoint, color="violetred1", size=2)
+
+```
+
+Random effects coefficients are slightly biased towards the mean value indicated by the red dot. Therefore the blue line (fit to the points) has a slope less than 1. The dashed line has a slope of 1 and an intercept of 0. This phenomenon
+is called “shrinkage”, because the estimates of the within group coefficients “shrink” towards the population mean.
+
+# Mouse Example 
+
+Let's look at January Frost's mouse dataset. These are morphological measurements of mice caught at various sites in the Niobrara Valley. Let's look at the breakdown of the relationship between ear size and foot length by geographic site. Sex also matters.
+
+```{r figureEarFootbySite, eval=lab.eval, fig.cap='Ear length vs. foot length in mm at a number of sites in the Northwest of Nebraska for two species of deer mouse.'}
+data(mice)
+mice = filter(mice, sex != "U")
+basemouse <- ggplot(mice, aes(x=foot, y=ear)) + 
+  geom_point(alpha=0.2) +
+  xlab('Foot Length [mm]') + ylab('Ear Length [mm]')
+
+basemouse + 
+  geom_smooth(method="lm") + 
+  facet_wrap(~site)
+```
+
+A few things are obvious from this plot. First, January collected alot of data at a few sites, and much less at others. Some of the sex size effects are clear in a few sites (two groups of points), but much less clear in others. But most interesting is the variation in slope. In many sites the bigger the feet the bigger the ears. But not everywhere! Put it all in one plot, adjusting the alpha level so overplotting is clearer.
+
+```{r FixedLmList, eval = lab.eval, fig.cap='Ear length by foot length with a predicted line for each site. Shading indicates overlapping points.'}
+
+basemouse +
+  geom_smooth(aes(group=site), method="lm", se=FALSE)
+```
+
+So we want to check a model that lets the relationship between feet and ears vary by species and sex. The sites are a random sample of possible places we could look for mice, so we'll treat site as a random effect. We can also see that the slope of the effect varies alot between sites, so we'll let the coefficient of foot vary between sites too, at least initially. Here's the global model, and check the residuals:
+```{r, eval=lab.eval}
+mice.global = lmer(ear ~ foot * species * sex + (foot | site), data = mice)
+
+rr <- broom::augment(mice.global)
+ggplot(rr, aes(x = .fitted, y = .resid)) + 
+    geom_point() + 
+    geom_smooth() + 
+    geom_hline(yintercept = 0, linetype=2)
+
+# get int and slope for qqline
+probs <- c(0.25,0.75)
+y <- quantile(rr$.resid, probs, names = FALSE, na.rm = TRUE)
+x <- qnorm(probs)
+  slope <- diff(y)/diff(x)
+  int <- y[1L] - slope * x[1L]
+ggplot(rr, aes(sample=.resid)) + 
+    geom_qq(size=rel(4)) + 
+    geom_abline(intercept = int, slope = slope, linetype = 2, size = 2)
+
+ ggplot(rr, aes(x = .fitted, y = sqrt(abs(.resid)))) + 
+    geom_point() + 
+    geom_smooth() + 
+    geom_hline(yintercept  = 1)
+
+```
+
+The residuals don't look too bad, although there are some large positive residuals which we'll ignore for now. So let's fit a range of models with different random effects structures, and compare using AIC. The problem with comparing different random effects using Likelihood Ratio tests is that our null hypothesis is "on the boundary" of the parameter space, because you can't have negative variances. Choosing a model that has the minimum AIC won't be bothered by this consideration, but this would affect the calculation of the weights. 
+
+```{r pickRandomEffect, eval = lab.eval}
+# uncorrelated random effects
+mice.1 = lmer(ear ~ foot * species * sex + (foot -1 | site)+(1 | site), data = mice)
+# only random slope
+mice.2 = lmer(ear ~ foot * species * sex + (foot -1 | site), data = mice)
+# only random intercept
+mice.3 = lmer(ear ~ foot * species * sex +(1 | site), data = mice)
+
+aic = sapply(list(mice.global,mice.1,mice.2,mice.3),AIC)
+knitr::kable(cbind(Model=c("Correlated","Uncorrelated","Slope","Intercept"),AIC=format(aic,digits=5)))
+```
+
+We're in luck, the model with both a random slope and intercept where the effects are correlated has the lowest AIC, and by a large margin. In the next phase of model selection we use package lmerTest to evaluate the fixed effects structures using backwards selection with F tests.
+
+```{r globalModelSummary, eval=lab.eval}
+library(lmerTest)
+mice.global = lmer(ear ~ foot * species * sex + (foot | site), data = mice)
+coefTable = summary(mice.global, ddf="Kenward-Roger")$coefficients
+knitr::kable(coefTable,digits=2,caption='Fixed effects coefficients from a global model of mouse ear length. Degrees of freedom from the Kenward-Roger approximation.')
+```
+
+Unlike the default `lmer()`, the extra functions in `lmerTest` push the p values out following the practices used in SAS. There is also a nice function that does automatic backwards selection. In order to stay within the R framework we have to change the default values to get a Type I sums of squares test.
+
+```{r backwardsSelection, eval=lab.eval}
+step(mice.global, ddf = "Kenward-Roger")
+```
+
+Our final model is simply `ear ~ foot + (1+foot|site)`. This means the relationship between ear and foot length is constant between sexes and species, but varies geographically. I find that quite fascinating. I'll fit this final model, and make a plot or two.
+
+```{r finalModelSummary, eval=lab.eval, result='hold'}
+mice.final = lmer(ear ~ foot + (foot | site), data = mice)
+summary(mice.final) # capture the output
+```
+
+You can make predictions from these models just as you would with other models. To use `broom::augment()` you have to specify both the fixed effects values *and* a value for the random effect. 
+
+```{r, eval=lab.eval}
+library(broom)
+nd <- data.frame(foot=seq(min(mice$foot),max(mice$foot),length=50), 
+                 site=factor("42", levels=levels(mice$site)))
+
+pred42 <- augment(mice.final, newdata=nd) %>%
+  rename(ear=.fitted)
+
+ggplot(mice, aes(x=foot, y=ear)) + 
+  geom_point(alpha=0.2) +
+  xlab('Foot Length [mm]') + ylab('Ear Length [mm]') + 
+  geom_point(data=filter(mice, site=="42"), alpha=1, color="red") + 
+  geom_line(data=pred42, size=2, color="red")
+```
+
+So you could get lines for every site, but that would be a bit messy. We say these predictions are "conditional" on the random effects, because they include the perturbations from the random effects. Another thing you might want are predictions "unconditional" on the random effects. We can get these too but not from `broom::augment()`. Package lme4 includes a `predict()` function for these fitted objects. 
+
+```{r, eval=lab.eval}
+# get predictions unconditional on random effect
+preduc <- cbind(nd, ear=predict(mice.final, newdata = nd, re.form = ~0))
+
+# make the plot above, but fade out the red line and add unconditional prediction
+ggplot(mice, aes(x=foot, y=ear)) + 
+  geom_point(alpha=0.2) +
+  xlab('Foot Length [mm]') + ylab('Ear Length [mm]') + 
+  geom_line(data=pred42, size=2, color="red", alpha=0.4) + 
+  geom_line(data=preduc, size=2)
+```
+
+That line represents the relationship between ears and feet we expect to find at a randomly chosen new site. 
+
+What about confidence intervals on our predictions? A very good question, young grasshopper, but one that will have to wait!
