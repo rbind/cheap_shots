@@ -41,6 +41,10 @@ Before the first week of class, you need to [install some software on your compu
 - Week 7 No Class Dr. Tyre away
 - [Week 8 Deciding what to do][Week_8]
 
+## Module 3
+
+- Week 9 FALL BREAK! No class
+- [Week 10 Mixing it up I][Week_10]
 
 [syllabus]: /classes/NRES803/syllabus/
 [computer-setup]: /classes/NRES803/computer-setup/
@@ -51,3 +55,4 @@ Before the first week of class, you need to [install some software on your compu
 [Week_5]: /classes/NRES803/Week_5/
 [Week_6]: /classes/NRES803/Week_6/
 [Week_8]: /classes/NRES803/Week_8/
+[Week_10]: /classes/NRES803/Week_10/
