@@ -3,7 +3,7 @@ title = "NRES / STAT 803 Week 6"
 date = "2017-08-21T00:00:00Z"
 math = false
 highlight = false
-weight = 803060
+weight = 803080
 
 # Optional featured image (relative to `static/img/` folder).
 [header]
