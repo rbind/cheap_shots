@@ -42,13 +42,9 @@ ggplot(sheep, aes(x = Population, y = Delta)) + geom_point() +
     ymax = u95ci), data = pred_gam, color = &quot;grey&quot;, alpha = 0.33)</code></pre>
 <p>The gam fit is kind of interesting, looks like there are two broad regimes of population growth within which the growth rate is pretty constant with respect to population size. So which is the better model? This is actually quite important to get right, as the dynamics implied by the non-linear model will be much different. Recall that we can use gam() to fit the simpler model as well.</p>
 <ol class="example" style="list-style-type: decimal">
-<li>Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?</li>
+<li><p>Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?</p></li>
+<li><p>Fit the linear model using gam() and use anova() to compare the two models. Which one would you choose and why?</p></li>
 </ol>
-<p>The residuals look OK from both models. There is a bit of structure in the residuals vs. fitted plot for the linear model, but always inside the confidence limits. These models appear pretty much equivalent, with a slight favor to the gam.</p>
-<ol start="2" class="example" style="list-style-type: decimal">
-<li>Fit the linear model using gam() and use anova() to compare the two models. Which one would you choose and why?</li>
-</ol>
-<p>So that’s a borderline case if ever there was one! This is actually apparent from the plot above. The straight line falls entirely within the confidence limits of the gam fit. Confidence limits don’t overlap everywhere, which is why we’re seeing a borderline p value for the anova.</p>
 <div id="ozone-data" class="section level2">
 <h2>Ozone data</h2>
 <p>Next we’ll take a look at an air quality dataset. Not ecological, but a good test of your ability to see patterns in residuals.</p>

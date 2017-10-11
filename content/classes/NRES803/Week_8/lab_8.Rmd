@@ -8,7 +8,8 @@ weight: 803081
 ```{r setup2, include=FALSE, echo=FALSE}
 # set eval = FALSE in the following line to make handout
 lab.eval=FALSE
- # set to 'hide' to produce lab handout.
+ # set results and fig.show to 'hide' to produce lab handout.
+# set results = 'markup' and fig.show = 'asis'
 knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'hide', fig.show='hide', tidy.opts=list(arrow = TRUE, width.cutoff=60))
 ```
 
@@ -67,12 +68,9 @@ that we can use gam() to fit the simpler model as well.
 
 (@) Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?
 
-```{r, echo=lab.eval}
+```{r answer01, echo=lab.eval}
 # tired of typing out all that crap. I made a function
-#source("check_assumptions.R")
-# install.packages("devtools")
-#devtools::source_gist("https://gist.github.com/atyre2/ff4e1ec24e42adda8dbd43cda99d6282")
-
+# in NRES803 package
 #check_assumptions(sheep.lm)
 # but won't work with gam objects :( 
 gam.check(sheep.gam) # this is ugly
@@ -83,7 +81,7 @@ ggplot(rr, aes(x=.fitted, y=.resid)) +
   geom_smooth()
 ```
 
-```{r, echo=FALSE, results='asis'}
+```{r, echo=FALSE}
 cat("The residuals look OK from both models. There is a bit of structure in the residuals vs. fitted plot for the linear model, but always inside the confidence limits. These models appear pretty much equivalent, with a slight favor to the gam.")
 ```
 
@@ -91,12 +89,12 @@ cat("The residuals look OK from both models. There is a bit of structure in the 
 (@) Fit the linear model using gam() and use anova() to compare the two
 models. Which one would you choose and why?
 
-```{r, echo=lab.eval}
+```{r answer02a, echo=lab.eval}
 sheep.lm2 = gam(Delta~Population,data=sheep)
 anova(sheep.lm2, sheep.gam, test="F")
 ```
 
-```{r, echo=FALSE, results='asis'}
+```{r answer02b, echo=FALSE}
 cat("So that's a borderline case if ever there was one! This is actually apparent from the plot above. The straight line falls entirely within the confidence limits of the gam fit. Confidence limits don't overlap everywhere, which is why we're seeing a borderline p value for the anova.")
 ```
 
