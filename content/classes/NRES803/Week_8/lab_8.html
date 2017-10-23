@@ -17,6 +17,7 @@ library(GGally)
 library(gridExtra)
 data(sheep)
 ggplot(sheep, aes(x = Year, y = Population)) + geom_point()</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>The goal is to identify a function relating growth rate Delta to population size. The simplest population model has this as a linear function, but there’s no a priori reason to suppose that it should be linear.</p>
 <pre class="r"><code>sheep.lm &lt;- lm(Delta ~ Population, data = sheep)
 sheep.gam &lt;- gam(Delta ~ s(Population), data = sheep)
@@ -40,23 +41,308 @@ ggplot(sheep, aes(x = Population, y = Delta)) + geom_point() +
     ymax = u95ci), data = pred_lm, color = &quot;grey&quot;, alpha = 0.33) + 
     geom_line(data = pred_gam, color = &quot;green&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci, 
     ymax = u95ci), data = pred_gam, color = &quot;grey&quot;, alpha = 0.33)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>The gam fit is kind of interesting, looks like there are two broad regimes of population growth within which the growth rate is pretty constant with respect to population size. So which is the better model? This is actually quite important to get right, as the dynamics implied by the non-linear model will be much different. Recall that we can use gam() to fit the simpler model as well.</p>
 <ol class="example" style="list-style-type: decimal">
-<li><p>Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?</p></li>
-<li><p>Fit the linear model using gam() and use anova() to compare the two models. Which one would you choose and why?</p></li>
+<li>Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?</li>
 </ol>
+<pre class="r"><code># tired of typing out all that crap. I made a function in
+# NRES803 package check_assumptions(sheep.lm) but won&#39;t work
+# with gam objects :(
+gam.check(sheep.gam)  # this is ugly</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/answer01-1.png" width="672" /></p>
+<pre><code>## 
+## Method: GCV   Optimizer: magic
+## Smoothing parameter selection converged after 5 iterations.
+## The RMS GCV score gradient at convergence was 4.2388e-07 .
+## The Hessian was positive definite.
+## Model rank =  10 / 10 
+## 
+## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+## indicate that k is too low, especially if edf is close to k&#39;.
+## 
+##                 k&#39;  edf k-index p-value
+## s(Population) 9.00 5.02    1.16     0.8</code></pre>
+<pre class="r"><code>rr &lt;- augment(sheep.gam)
+ggplot(rr, aes(x = .fitted, y = .resid)) + geom_point() + geom_hline(yintercept = 0, 
+    linetype = 2) + geom_smooth()</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/answer01-2.png" width="672" /></p>
+<pre><code>## &gt; The residuals look OK from both models. There is a bit of structure in the residuals vs. fitted plot for the linear model, but always inside the confidence limits. These models appear pretty much equivalent, with a slight favor to the gam.</code></pre>
+<ol start="2" class="example" style="list-style-type: decimal">
+<li>Fit the linear model using gam() and use anova() to compare the two models. Which one would you choose and why?</li>
+</ol>
+<pre class="r"><code>sheep.lm2 &lt;- gam(Delta ~ Population, data = sheep)
+anova(sheep.lm2, sheep.gam, test = &quot;F&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: Delta ~ Population
+## Model 2: Delta ~ s(Population)
+##   Resid. Df Resid. Dev     Df Deviance      F Pr(&gt;F)  
+## 1    42.000     3.0769                                
+## 2    36.858     2.3822 5.1419  0.69465 2.1541 0.0789 .
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>## &gt; So that&#39;s a borderline case if ever there was one! This is actually apparent from the plot above. The straight line falls entirely within the confidence limits of the gam fit. Confidence limits don&#39;t overlap everywhere, which is why we&#39;re seeing a borderline p value for the anova.</code></pre>
 <div id="ozone-data" class="section level2">
 <h2>Ozone data</h2>
 <p>Next we’ll take a look at an air quality dataset. Not ecological, but a good test of your ability to see patterns in residuals.</p>
 <pre class="r"><code>data(ozone)
 
 ggpairs(ozone)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>The goal here is to predict ozone readings from solar radiation levels, temperature, and wind. You can see from the pairs plot that temperature in particular looks quite non-linear, as does radiation.</p>
 <ol start="3" class="example" style="list-style-type: decimal">
-<li><p>Set up a <code>gam()</code> model with smooth terms for all three predictor variables. Evaluate this model graphically and interpret the results graphically (make a prediction plot) and in written form.</p></li>
-<li><p>log transform Ozone, and repeat the model with three smooth terms. Compare these two models graphically and numerically, choose which one is better, and explain why.</p></li>
-<li><p>Based on your conclusions from the initial model, fit one or more new models with either fewer smooth terms (possibly linear), or additional interaction terms. Evaluate and interpret these models graphically and numerically.</p></li>
+<li>Set up a <code>gam()</code> model with smooth terms for all three predictor variables. Evaluate this model graphically and interpret the results graphically (make a prediction plot) and in written form.</li>
 </ol>
+<pre class="r"><code>ogam1 &lt;- gam(ozone ~ s(rad) + s(temp) + s(wind), data = ozone)
+gam.check(ogam1)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre><code>## 
+## Method: GCV   Optimizer: magic
+## Smoothing parameter selection converged after 5 iterations.
+## The RMS GCV score gradient at convergence was 5.567617e-05 .
+## The Hessian was positive definite.
+## Model rank =  28 / 28 
+## 
+## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+## indicate that k is too low, especially if edf is close to k&#39;.
+## 
+##           k&#39;  edf k-index p-value   
+## s(rad)  9.00 2.76    0.96   0.300   
+## s(temp) 9.00 3.84    0.79   0.005 **
+## s(wind) 9.00 2.92    0.96   0.280   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>## &gt; There is a bit of upward curvature in the qq plot and a hint of heteroscedasticity in the residuals vs. linear predictor plot. Both of those suggest a log transformation of ozone is helpful, especially combined with the observation that ozone is always strictly greater than zero.</code></pre>
+<pre class="r"><code>summary(ogam1)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## ozone ~ s(rad) + s(temp) + s(wind)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    42.10       1.66   25.36   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##           edf Ref.df      F  p-value    
+## s(rad)  2.763  3.451  3.964   0.0085 ** 
+## s(temp) 3.841  4.762 11.612 8.19e-09 ***
+## s(wind) 2.918  3.666 13.770 1.39e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.724   Deviance explained = 74.8%
+## GCV =    338  Scale est. = 305.96    n = 111</code></pre>
+<pre><code>## &gt; All three smooth terms are significant at p &lt; 0.01, and all have estimated degrees of freedom greater than 2. All three variables are important and non-linear. Now make some prediction plots
+## I&#39;ll plot ozone vs each of the others, coloring by the second predictor, holding the third predictor at the median.</code></pre>
+<pre class="r"><code>ndrad &lt;- with(ozone, expand.grid(rad = seq(min(rad), max(rad), 
+    length = 100), temp = median(temp), wind = quantile(wind)))
+predvrad &lt;- augment(ogam1, newdata = ndrad) %&gt;% rename(ozone = .fitted)
+ovrad &lt;- ggplot(ozone, aes(x = rad, y = ozone, color = wind)) + 
+    geom_point()
+ovrad1 &lt;- ovrad + geom_line(aes(group = wind), data = predvrad)
+
+ndrad2 &lt;- with(ozone, expand.grid(rad = seq(min(rad), max(rad), 
+    length = 100), temp = quantile(temp), wind = median(wind)))
+predvrad2 &lt;- augment(ogam1, newdata = ndrad2) %&gt;% rename(ozone = .fitted)
+ovrad2 &lt;- ovrad + aes(color = temp) + geom_line(aes(group = temp), 
+    data = predvrad2)
+
+ndtemp1 &lt;- with(ozone, expand.grid(rad = quantile(rad), temp = seq(min(temp), 
+    max(temp), length = 100), wind = median(wind)))
+predvtemp1 &lt;- augment(ogam1, newdata = ndtemp1) %&gt;% rename(ozone = .fitted)
+ovtemp1 &lt;- ovrad + aes(x = temp, color = rad) + geom_line(aes(group = rad), 
+    data = predvtemp1)
+
+ndtemp2 &lt;- with(ozone, expand.grid(rad = median(rad), temp = seq(min(temp), 
+    max(temp), length = 100), wind = quantile(wind)))
+predvtemp2 &lt;- augment(ogam1, newdata = ndtemp2) %&gt;% rename(ozone = .fitted)
+ovtemp2 &lt;- ovrad + aes(x = temp, color = wind) + geom_line(aes(group = wind), 
+    data = predvtemp2)
+
+grid.arrange(ovrad1, ovrad2, ovtemp1, ovtemp2, nrow = 2)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre><code>## &gt; That was alot of typing but some pretty interesting results! The effect of changing radiation is fairly small compared to the effects of wind and temp. Check the top two plots. Look at the range of any one predicted line, and compare that to the range between lines. Similarly, compare the range of a single temperature line to the spread between lines in the bottom left plot (colored by radiation). Also, the model is doing a poor job of predicting the effect of high temperature when wind is high, and low temperature when wind is low.</code></pre>
+<ol start="4" class="example" style="list-style-type: decimal">
+<li>log transform Ozone, and repeat the model with three smooth terms. Compare these two models graphically and numerically, choose which one is better, and explain why.</li>
+</ol>
+<pre class="r"><code>ogam2 &lt;- gam(log10(ozone) ~ s(rad) + s(temp) + s(wind), data = ozone)
+gam.check(ogam2)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre><code>## 
+## Method: GCV   Optimizer: magic
+## Smoothing parameter selection converged after 6 iterations.
+## The RMS GCV score gradient at convergence was 5.577262e-08 .
+## The Hessian was positive definite.
+## Model rank =  28 / 28 
+## 
+## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+## indicate that k is too low, especially if edf is close to k&#39;.
+## 
+##           k&#39;  edf k-index p-value  
+## s(rad)  9.00 2.24    1.02    0.59  
+## s(temp) 9.00 4.50    1.00    0.48  
+## s(wind) 9.00 2.35    0.84    0.02 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>## &gt; The log transformed response gives better looking residuals. It is almost too strong -- the variance decreases with increasing mean, but not enough to worry about. There is one extreme negative outlier; the lowest observation is poorly predicted.</code></pre>
+<pre class="r"><code>summary(ogam2)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## log10(ozone) ~ s(rad) + s(temp) + s(wind)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.48352    0.01948   76.16   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##           edf Ref.df      F  p-value    
+## s(rad)  2.241  2.819  9.125 3.80e-05 ***
+## s(temp) 4.498  5.535 10.887 4.24e-09 ***
+## s(wind) 2.351  2.986  6.389 0.000503 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.702   Deviance explained = 72.7%
+## GCV = 0.04633  Scale est. = 0.042119  n = 111</code></pre>
+<pre><code>## &gt; This looks good too. I would pick the log transformed model on the basis of improved residuals and the observation that the response distribution is continuous and bounded at 0. Now I&#39;ll redo the prediction plots, hopefully I can reuse some of the objects from above! I&#39;m not going to use rad on the x axis, just wind and temp.</code></pre>
+<pre class="r"><code>ndtemp1 &lt;- with(ozone, expand.grid(rad = quantile(rad), temp = seq(min(temp), 
+    max(temp), length = 100), wind = median(wind)))
+
+# don&#39;t forget to backtransform predictions!
+predvtemp1 &lt;- augment(ogam2, newdata = ndtemp1) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+
+ovtemp1 &lt;- ovrad + aes(x = temp, color = rad) + geom_line(aes(group = rad), 
+    data = predvtemp1)
+
+ndtemp2 &lt;- with(ozone, expand.grid(rad = median(rad), temp = seq(min(temp), 
+    max(temp), length = 100), wind = quantile(wind)))
+predvtemp2 &lt;- augment(ogam2, newdata = ndtemp2) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+
+ovtemp2 &lt;- ovrad + aes(x = temp, color = wind) + geom_line(aes(group = wind), 
+    data = predvtemp2)
+
+ndwind1 &lt;- with(ozone, expand.grid(rad = quantile(rad), temp = median(temp), 
+    wind = seq(min(wind), max(wind), length = 100)))
+
+# don&#39;t forget to backtransform predictions!
+predvwind1 &lt;- augment(ogam2, newdata = ndwind1) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+
+ovwind1 &lt;- ovrad + aes(x = wind, color = rad) + geom_line(aes(group = rad), 
+    data = predvwind1)
+
+ndwind2 &lt;- with(ozone, expand.grid(rad = median(rad), temp = quantile(temp), 
+    wind = seq(min(wind), max(wind), length = 100)))
+
+# don&#39;t forget to backtransform predictions!
+predvwind2 &lt;- augment(ogam2, newdata = ndwind2) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+
+ovwind2 &lt;- ovrad + aes(x = wind, color = temp) + geom_line(aes(group = temp), 
+    data = predvwind2)
+
+grid.arrange(ovtemp1, ovtemp2, ovwind1, ovwind2, nrow = 2)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre><code>## &gt; Conclusions are similar here. The effect of changing radiation is fairly small compared to the effects of wind and temp. Also, the model is still doing a poor job of predicting the effect of high temperature when wind is high, and low temperature when wind is low.</code></pre>
+<ol start="5" class="example" style="list-style-type: decimal">
+<li>Based on your conclusions from the initial model, fit one or more new models with either fewer smooth terms (possibly linear), or additional interaction terms. Evaluate and interpret these models graphically and numerically.</li>
+</ol>
+<pre><code>## &gt; I can think of two possible explanations for the poor predictions at opposing extremes of temperature and wind. One is that there is an interaction between them. The other is that they are corrlated, and so we never see situations with low temps and low wind, or high temps and high wind. In that case the lines we are plotting just don&#39;t make sense in those regions, because those combinations don&#39;t occur. We can check the first explanation easily by adding a 2-D spline with wind and temperature.</code></pre>
+<pre class="r"><code>ogam3 &lt;- gam(log10(ozone) ~ s(rad) + s(temp) + s(wind) + s(temp, 
+    wind, bs = &quot;ts&quot;), data = ozone)
+gam.check(ogam3)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre><code>## 
+## Method: GCV   Optimizer: magic
+## Smoothing parameter selection converged after 36 iterations.
+## The RMS GCV score gradient at convergence was 7.332964e-08 .
+## The Hessian was positive definite.
+## Model rank =  55 / 55 
+## 
+## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
+## indicate that k is too low, especially if edf is close to k&#39;.
+## 
+##                 k&#39;   edf k-index p-value
+## s(rad)        9.00  1.94    0.97    0.33
+## s(temp)       9.00  2.46    0.99    0.46
+## s(wind)       9.00  1.00    1.01    0.47
+## s(temp,wind) 27.00 17.62    1.03    0.59</code></pre>
+<pre class="r"><code>summary(ogam3)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## log10(ozone) ~ s(rad) + s(temp) + s(wind) + s(temp, wind, bs = &quot;ts&quot;)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.48352    0.01661   89.34   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                 edf Ref.df     F  p-value    
+## s(rad)        1.938  2.416 8.165 0.000277 ***
+## s(temp)       2.458  2.625 1.866 0.119602    
+## s(wind)       1.000  1.000 0.012 0.913884    
+## s(temp,wind) 17.618 27.000 1.945 5.67e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.784   Deviance explained = 82.9%
+## GCV = 0.039057  Scale est. = 0.030607  n = 111</code></pre>
+<pre><code>## &gt; The residuals on that model look fantastic, and the new 2-D smooth is very strong. Both of the 1-D smooths on temp and wind are now not-signficant, suggesting that their effects have been absorbed into the 2-D smooth. So I&#39;ll pull those out, refit, and look at the predictions.</code></pre>
+<pre class="r"><code>ogam3 &lt;- update(ogam3, . ~ . - s(wind) - s(temp))
+plot(ogam3, select = 2, se = FALSE, pch = 19)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre class="r"><code># already have the newdataframes I need
+predvtemp2 &lt;- augment(ogam3, newdata = ndtemp2) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+
+ovrad + aes(x = temp, color = wind) + geom_line(aes(group = wind), 
+    data = predvtemp2)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
+<pre class="r"><code># don&#39;t forget to backtransform predictions!
+predvwind2 &lt;- augment(ogam3, newdata = ndwind2) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+
+ovrad + aes(x = wind, color = temp) + geom_line(aes(group = temp), 
+    data = predvwind2)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-20-3.png" width="672" /></p>
+<pre><code>## &gt; Those are some crazy looking plots. I think the problem is the second case -- temp and wind are correlated, and the predictions I am making ignore that, and essentially cut straight across the surface. Generating predictions that respect that relationship is a bit tricky. I&#39;m going to try, but note that this is in the &quot;beyond the scope of the course&quot; category.
+## 
+##  What I want is a new data.frame that has a range of values for wind that make sense for a particular temperature. If I was only interested in predicting the mean I could just use a linear model. But I want a range of values at particular quantiles. What I need is a quantile regression - how does the (say) 75th percentile of wind change as temperature changes. Enter package quantreg</code></pre>
+<pre class="r"><code>library(quantreg)
+windrq &lt;- rq(wind ~ temp, tau = c(0.1, 0.5, 0.9), data = ozone)
+nd &lt;- with(ozone, data.frame(rad = median(rad), temp = seq(min(temp), 
+    max(temp), length = 100)))
+predwind &lt;- augment(windrq, newdata = nd) %&gt;% rename(wind = .fitted)
+predvtemp3 &lt;- augment(ogam2, newdata = predwind) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+ovrad + aes(x = temp, color = wind) + geom_line(aes(group = .tau), 
+    data = predvtemp3)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<pre><code>## That&#39;s much better! Still, the prediction for the 90th percentile of wind is well outside the data. Let&#39;s see if the 2-D model does any better.</code></pre>
+<pre class="r"><code>predvtemp3 &lt;- augment(ogam3, newdata = predwind) %&gt;% rename(ozone = .fitted) %&gt;% 
+    mutate(ozone = 10^ozone)
+ovrad + aes(x = temp, color = wind) + geom_line(aes(group = .tau), 
+    data = predvtemp3, size = 1.5)</code></pre>
+<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<pre><code>## &gt; At the top end that&#39;s better, and the lines are a little less crazy. Hard to believe that&#39;s not overfitted though. I think this 2-D smooth is seriously stretching the value of the data. You know what is crazy cool? The lines are colored according to the value of wind for that temperature!</code></pre>
 </div>
 <div class="footnotes">
 <hr />

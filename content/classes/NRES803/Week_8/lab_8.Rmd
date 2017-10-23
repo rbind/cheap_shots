@@ -7,10 +7,10 @@ weight: 803081
 ---
 ```{r setup2, include=FALSE, echo=FALSE}
 # set eval = FALSE in the following line to make handout
-lab.eval=FALSE
+lab.eval=TRUE
  # set results and fig.show to 'hide' to produce lab handout.
 # set results = 'markup' and fig.show = 'asis'
-knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'hide', fig.show='hide', tidy.opts=list(arrow = TRUE, width.cutoff=60))
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'markup', fig.show='asis', tidy.opts=list(arrow = TRUE, width.cutoff=60))
 ```
 
 We'll play with a few datasets from Mick Crawley's "The R Book" [^1] to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.
