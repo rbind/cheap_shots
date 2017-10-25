@@ -1,0 +1,330 @@
+---
+title: "Week 11 Lab -- GLMM"
+author: "Drew Tyre"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    fig_caption: TRUE
+---
+```{r setup, echo=FALSE, results='hide'}
+lab.eval=FALSE
+# set to 'hide' to produce lab handout.
+# set to 'markup' to produce answers
+lab.results='hide' 
+knitr::opts_chunk$set(echo = TRUE, 
+                      eval = lab.eval, 
+                      results= lab.results,
+                      tidy = TRUE)
+```
+
+The first dataset we'll look at is from Zuur et al. (2009); the data are from Vicente et al. (2005) who looked at the distribution and faecal shedding patterns of 1st stage larvae of *Elaphostrongylus cervi* in red deer. Here we're interested in the presence and absence of larvae in deer as functions of size (length in cm), sex, and farm identity. 
+```{r loadData, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(NRES803)
+library(lme4)
+data(ecervi)
+head(ecervi)
+```
+
+The average number of larvae in a fecal sample is highly skewed to the right -- many zeros but also some very large values.
+
+```{r responseHist}
+hist(ecervi$Ecervi,xlab="Number of L1 E. cervi",main="")
+```
+
+The response variable is continuous, so we need to do some data manipulation in order to get presence/absence data. This is one way to handle highly skewed data like this. While we're doing that, we'll make sure sex is categorical and center the length variable to improve convergence, and make the intercept directly interpretable as the probability of presence for an average size deer. 
+
+```{r transformData}
+ecervi <- ecervi %>%
+  mutate(Ecervi.pa = Ecervi > 0,
+         fSex = factor(Sex, labels=c("Male","Female")),
+         cLength = Length - mean(Length))
+
+ggplot(ecervi, aes(x=cLength, y=Ecervi)) + 
+  geom_point() + facet_wrap(~fSex)
+
+```
+
+One issue that can affect a binomial model is called "complete seperation". This arises when one predictor is a "perfect" predictor of presence or absence. There is a value above which there are only presences and below which there are only absences. The plot above suggests that won't be an issue with our fixed effects, but there could be farms that are perfectly affected or unaffected.
+
+```{r checkFarmSeperation}
+with(ecervi, table(Farm, Ecervi.pa))
+```
+
+There are 3 farms with either all positive or all negative observations. We won't worry about that for now, but we will want to look for problems with that later. 
+
+As always, start with a global model to check residuals. The global model here has the interaction of sex and length. We clearly have a repeated measures design, so we will start with a mixed model using Farm as the random effect. It is also possible that the effects of sex and length could vary by farm.
+
+```{r checkGlobal}
+M0 <- glmer(Ecervi.pa~fSex*cLength+(1 + fSex * cLength | Farm), 
+            data=ecervi,family=binomial)
+summary(M0)
+```
+
+That model fails to converge. Asking for the sex by length interaction to vary among farms is probably too much given there are some farms with relatively few observations. Looking at the summary, especially the random effects estimates, it is clear that the scaling between Sex and Length is very different. A 1 cm change in length is a much smaller change than a change from male to female. This kind of discrepancy can make it harder for a model to converge. If I rescale Length by dividing through with the standard deviation the coefficients for those two variables will be closer, and this can help with convergence. I will also change the contrasts on Sex to "sum to zero" contrasts, which has a similar beneficial effect to centering a continuous variable.   
+
+```{r checkGlobal1}
+ecervi <- ecervi %>%
+  mutate(csLength = cLength / sd(Length))
+contrasts(ecervi$fSex) <- contr.sum(2)
+
+M0 <- glmer(Ecervi.pa~fSex*csLength+(1 + fSex * csLength | Farm), 
+            data=ecervi,family=binomial)
+summary(M0)
+```
+
+Still fails to converge. OK, let's try the next simplest model, leaving out the interaction in the random effect.
+
+```{r}
+M0 <- glmer(Ecervi.pa~fSex*csLength+(1 + fSex + csLength | Farm), 
+            data=ecervi,family=binomial)
+summary(M0)
+
+```
+
+That model also fails to converge! Let's check the two simpler models that allow fSex or csLength to vary across farms.
+
+```{r}
+M0a <- glmer(Ecervi.pa~fSex*csLength+(1 + csLength | Farm), 
+            data=ecervi,family=binomial)
+summary(M0a)
+M0b <- glmer(Ecervi.pa~fSex*csLength+(1 + fSex | Farm), 
+            data=ecervi,family=binomial)
+summary(M0b)
+
+```
+
+Both of those models converge. Check residuals for both. I will use the quantile residuals that I discussed in an earlier add on. 
+
+```{r residualM0a}
+library(statmod)
+library(broom)
+residM0a <- augment(M0a)
+#residM0a$qr <- qresiduals(M0a) # error prevents knitting
+```
+
+Well that sucks. A bit of digging around in source code followed and I fixed the underlying qres.binom so it works with S4 instead of S3 objects.
+
+```{r}
+qres.binom <- function (glmer.obj) 
+{
+    p <- fitted(glmer.obj)
+    y <- glmer.obj@resp$y
+    if (!is.null(glmer.obj@resp$weights)) 
+        n <- glmer.obj@resp$weights
+    else n <- rep(1, length(y))
+    y <- n * y
+    a <- pbinom(y - 1, n, p)
+    b <- pbinom(y, n, p)
+    u <- runif(n = length(y), min = a, max = b)
+    qnorm(u)
+}
+residM0a$qr <- qres.binom(M0a)
+```
+
+```{r residualPlotsA}
+ggplot(residM0a, aes(x = .fitted, y = qr)) + 
+    geom_point() + 
+    geom_smooth() + 
+    geom_hline(yintercept = 0, linetype=2)
+
+ggplot(residM0a, aes(x = csLength, y = qr)) + 
+    geom_point() + 
+    geom_smooth() + 
+    geom_hline(yintercept = 0, linetype=2)
+
+  probs <- c(0.25,0.75)
+  y <- quantile(residM0a$qr, probs, names = FALSE, na.rm = TRUE)
+  x <- qnorm(probs)
+  slope <- diff(y)/diff(x)
+  int <- y[1L] - slope * x[1L]
+  ggplot(residM0a, aes(sample=qr)) + 
+    geom_qq(size=rel(4)) + 
+    geom_abline(intercept = int, slope = slope, linetype = 2, size = 2)
+  
+ggplot(residM0a, aes(x = .fitted, y = sqrt(abs(qr)))) + 
+  geom_point() + 
+  geom_smooth() + 
+  geom_hline(yintercept  = 1)
+
+```
+
+Those all look fine.
+
+(@) Repeat the residual checks with M0b, the model with the other random effect. Are there any differences? Which one looks like a better model? 
+
+```{r residualPlotsB, echo=lab.eval}
+residM0b <- augment(M0b)
+residM0b$qr <- qres.binom(M0b)
+
+ggplot(residM0b, aes(x = .fitted, y = qr)) + 
+    geom_point() + 
+    geom_smooth() + 
+    geom_hline(yintercept = 0, linetype=2)
+
+ggplot(residM0b, aes(x = csLength, y = qr)) + 
+    geom_point() + 
+    geom_smooth() + 
+    geom_hline(yintercept = 0, linetype=2)
+
+  probs <- c(0.25,0.75)
+  y <- quantile(residM0b$qr, probs, names = FALSE, na.rm = TRUE)
+  x <- qnorm(probs)
+  slope <- diff(y)/diff(x)
+  int <- y[1L] - slope * x[1L]
+  ggplot(residM0b, aes(sample=qr)) + 
+    geom_qq(size=rel(4)) + 
+    geom_abline(intercept = int, slope = slope, linetype = 2, size = 2)
+  
+ggplot(residM0b, aes(x = .fitted, y = sqrt(abs(qr)))) + 
+  geom_point() + 
+  geom_smooth() + 
+  geom_hline(yintercept  = 1)
+
+```
+
+```{r answer1, echo=FALSE, results="asis"}
+cat(">  The residuals for the fSex random effect model look OK, but not quite as good as the csLength random effect. This is particularly noticeable in the plots of the residuals vs. fitted and residuals vs. csLength plots.")
+```
+
+So we have identified the global models and checked that they are adequate. Next we need to make up a set of models and identify the best ones using $AIC_c$. We need to build the set with all possible random effects, and all possible fixed effects models. The number of variables is small, so this will be a reasonable thing to do. 
+
+```{r modelSet}
+fe <- c("1","fSex","csLength","fSex + csLength","fSex * csLength")
+re <- c("(1 | Farm)", 
+        "(1 | Farm) + (0 + fSex | Farm)",
+        "(1 | Farm) + (0 + csLength | Farm)",
+        "(1 | Farm) + (0 + fSex | Farm) + (0 + csLength | Farm)",
+        "(1 + fSex | Farm)",
+        "(1 + csLength | Farm)")
+forms <- expand.grid(LHS="Ecervi.pa ~",fe=fe,re=re)
+models <- forms %>%
+  mutate(RHS = paste(fe, re, sep = "+"),
+         model = paste(LHS, RHS),
+         fits = map(model, ~glmer(as.formula(.x),
+                           data=ecervi, 
+                           family=binomial)))
+
+```
+
+A few of those models failed to converge. Figuring out which ones is a bit involved. Reading documentation for merMod objects there is a slot for information on the optimization, and a bit of experimenting determined that I could check for the object lme4 to have length > 0.
+
+```{r convergedModels}
+models <- mutate(models, 
+       converged = !map_lgl(fits,
+                           ~length(.x@optinfo$conv$lme4)>0))
+which(!models$converged)
+```
+
+Now we're ready to see which models are the best, keeping a wary eye out for models 6, 9, 18.
+
+```{r AICtable}
+library(MuMIn)
+library(pander)
+pander(model.sel(models$fits))
+```
+
+(@) Interpret the model selection table. Which model or models should we use going forward? 
+
+```{r answerModSel, echo=FALSE, results="asis"}
+cat(">  The first thing to check is where the non-converged models are. Way down in the table, so we can safely ignore those. The top 3 models all include the full set of fixed effects. The top random effect is one of our global models; the other global model is 6th with a delta AICc of 6.9. The top 2 models allow the effect of length to vary between farms. The only difference there is whether the random effects on the intercept and length are correlated. I will use the global model for inference and prediction.")
+```
+
+One difference from the "regular" linear mixed model with normal error distributions is that we don't have to switch off REML estimation to compare models with different fixed effects. `glmer()` is already using maximum likelihood for everything. 
+
+And here are the final estimates.
+```{r summaryFinal}
+summary(models$fit[[30]])
+```
+
+Next we want to make some plots of the effects so we can interpret what is going on. First we'll create some new data and go from there as we have in the past. The additional wrinkle is that we have to think about what we want predict to do with the random effects. The first option is to look at the "population average" response, which we do by setting `re.form=~0`.
+
+```{r predictedPlot}
+topmod <- models$fit[[30]]
+lr = range(ecervi$csLength)
+nd <- expand.grid(csLength = seq(lr[1], lr[2], length=20),
+                  fSex=factor(levels(ecervi$fSex)))
+
+nd$pp = predict(topmod,newdata=nd, 
+             type="response", re.form=~0)
+
+# ggplot(nd, aes(x=csLength, y=pp, col=fSex, group=Farm:fSex)) +
+#   geom_line(alpha=0.5) + 
+#    ylab("Probability of E. cervi infection") +
+#   geom_line(aes(x=csLength, y=pp, col=fSex), data=nd, inherit.aes = FALSE, size=2) +
+#     geom_rug(aes(x=csLength), data=filter(ecervi, Ecervi.pa),sides="t", inherit.aes = FALSE) +
+#   geom_rug(aes(x=csLength), data=filter(ecervi, !Ecervi.pa),sides="b", inherit.aes = FALSE)
+
+ggplot(nd, aes(x=csLength, y=pp, col=fSex)) + 
+  geom_line() + 
+  xlab("Centered and scaled Length") + 
+  ylab("Probability of E. cervi infection") +
+  geom_rug(aes(x=csLength), data=filter(ecervi, Ecervi.pa),sides="t", inherit.aes = FALSE) +
+  geom_rug(aes(x=csLength), data=filter(ecervi, !Ecervi.pa),sides="b", inherit.aes = FALSE)
+```
+
+These lines represent the effect of length and sex for a typical farm. 
+
+(@) Repeat the model selection process for fixed effects using `glm()`, i.e. ignoring the correlation within farms. Compare and contrast the results that you get, both the magnitude and direction of the coefficients, as well as their relative standard errors.
+
+## Inference with mixed models
+
+There is a significant and on-going debate about how best to do inference with this sort of model. One way around the debate is to use parametric bootstrapping to estimate things like the standard errors of the predictions and confidence intervals on the coefficients. `lme4` has a premade function to get confidence intervals on the coefficients. *WARNING* this line of code will take > 20 minutes to run. Forget about these unless you've got alot of time. 
+```{r bootCI, cache=TRUE, eval=FALSE}
+# returns a matrix with estimates plus confidence intervals for all fixed and random effects parameters
+topmod.CI <- confint(topmod, method="boot", oldNames=FALSE)
+topmod.CI
+```
+
+This function draws random samples of the random effects and the i.i.d. errors, generates a simulated response based on those error values, and then re-estimates the model. The confidence limits are based on the quantiles of the distribution of parameter estimates generated from 500 simulations. If fitting the original model takes a couple seconds, this routine will take 500 times as long to complete! You will also probably see warnings about convergence failures -- all this reminds us that we're out on the bleeding edge of computational statistics here. 
+
+Profile intervals are also good, slow, but not as bad as bootstrap.
+
+```{r confintPlot}
+topmod.profCI <- as.data.frame(confint(topmod, method="profile", oldNames=FALSE)) # profile limits
+topmod.WaldCI <- as.data.frame(confint(topmod, method="Wald", oldNames=FALSE))
+# get rid of rownames
+rownames(topmod.profCI)<-NULL
+rownames(topmod.WaldCI)<-NULL
+# and change names to include type of CI
+names(topmod.profCI)<-c("Profile_CI2.5","Profile_CI97.5")
+names(topmod.WaldCI)<-c("Wald_CI2.5","Wald_CI97.5")
+
+topmod.CI <- tidy(topmod) # from broom
+# add the profile intervals -- confint() uses a different order from tidy()
+topmod.CI <- cbind(topmod.CI,
+                   topmod.profCI[c(4:7,1,3,2),],
+                   topmod.WaldCI[c(4:7,1,3,2),])
+topmod.CI <- gather(topmod.CI, type_level, limit, contains(".5"))
+
+# now split type_level up
+topmod.CI <- separate(topmod.CI,type_level,
+         into=c("type","level"),
+         sep="_")
+
+# OMG I need the 2.5 and 97.5 values in seperate columns!
+topmod.CI <- spread(topmod.CI, level, limit)
+# that messed up the order of the rows, but looks like it all worked.
+
+ggplot(topmod.CI, aes(x=term, y=estimate, fill=type)) + 
+  geom_bar(stat="identity", position="dodge") + 
+  geom_errorbar(aes(ymin=CI2.5, ymax=CI97.5), position="dodge")
+```
+
+It can be hard to see what is going on unless you use the "zoom" to make this plot large enough for the term names to not overlap.
+So the intervals for the intercept and sex effects are pretty close to the "simple" Wald intervals. The intervals for csLength and the interaction are longer with profile intervals, but at least they still exclude zero. In addition, the profile method gives us intervals on the variance parameters as well. 
+
+The reason it is hard to get confidence intervals on predictions is because of the uncertainty in the variance parameters, which can be substantial. The correlation coefficient includes zero, for example. This makes sense, as the 2nd best model was a model that assumed the random effects were uncorrelated.
+
+## But what the heck *IS* a profile limit?
+
+The basic idea is best illustrated with a figure showing how the log-likelihood of a model changes as one of the parameter values is changed.
+
+```{r csLengthProfile}
+# get a profile for the fixed effect csLength
+lengthProf <- profile(topmod, which="csLength")
+library(lattice)
+xyplot(lengthProf, absVal=TRUE)
+```
+
+The x-axis on that figure are values of the coefficient csLength. The y-axis is a measure of the change in deviance as the coefficient is moved away from the maximum likelihood estimate (the peak at the bottom). The vertical and horizontal lines indicate 50%, 80%, 90%, 95%, and 99% confidence intervals. As the parameter value moves away from the MLE, the model's log-likehood gets worse. Particular points along that profile correspond to different critical points on chisquare distribution with one degree of freedom. 
