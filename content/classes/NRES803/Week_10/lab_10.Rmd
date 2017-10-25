@@ -202,7 +202,7 @@ You can make predictions from these models just as you would with other models. 
 ```{r, eval=lab.eval}
 library(broom)
 nd <- data.frame(foot=seq(min(mice$foot),max(mice$foot),length=50), 
-                 site=factor("42", levels=levels(mice$site)))
+                 site=factor("42", levels=unique(mice$site)))
 
 pred42 <- augment(mice.final, newdata=nd) %>%
   rename(ear=.fitted)

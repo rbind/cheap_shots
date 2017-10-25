@@ -118,7 +118,7 @@ summary(mice.final)  # capture the output</code></pre>
 <p>You can make predictions from these models just as you would with other models. To use <code>broom::augment()</code> you have to specify both the fixed effects values <em>and</em> a value for the random effect.</p>
 <pre class="r"><code>library(broom)
 nd &lt;- data.frame(foot = seq(min(mice$foot), max(mice$foot), length = 50), 
-    site = factor(&quot;42&quot;, levels = levels(mice$site)))
+    site = factor(&quot;42&quot;, levels = unique(mice$site)))
 
 pred42 &lt;- augment(mice.final, newdata = nd) %&gt;% rename(ear = .fitted)
 
