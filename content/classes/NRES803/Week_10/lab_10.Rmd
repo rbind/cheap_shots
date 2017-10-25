@@ -44,7 +44,8 @@ ssBase + geom_smooth(method="lm") + facet_wrap(~Subject) + guides(color=FALSE)
 We could fit a seperate model to each subject and combine them. This is effectively a Subject*Days interaction model.
 ```{r, eval = lab.eval}
 fm1 <- lmList(Reaction ~ Days | Subject, sleepstudy)
-coef(fm1)
+cc <- coef(fm1)
+cc
 ```
 
 The `lmList()` function fits a different linear model to each subset of a data.frame defined by the variable after the “|”, in this case “Subject”. 
@@ -52,7 +53,7 @@ The `lmList()` function fits a different linear model to each subset of a data.f
 (@) Calculate the mean intercept and Days coefficients from the matrix created by `coef(fm1)`. Compare these with the estimates from the single regression model. Use `summary(fm1)` to see the residual variance and degrees of freedom for the pooled list. Compare these values with the residual variance and degrees of freedom from the single regression model.
 
 ```{r, eval=lab.eval, echo=lab.eval}
-cc <- coef(fm1)
+
 meancc <- sapply(cc, mean)
 all.equal(meancc, coef(ss.lm))
 ```

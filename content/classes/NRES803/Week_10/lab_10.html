@@ -1,7 +1,7 @@
 ---
 title: "Week 10 Lab"
 author: "Drew Tyre"
-date: "2017-10-11"
+date: "2017-10-25"
 output: html_document
 weight: 803101
 ---
@@ -26,7 +26,8 @@ ssBase + geom_smooth(method = &quot;lm&quot;) + facet_wrap(~Subject) +
 # suppress legend because facet labels do the job</code></pre>
 <p>We could fit a seperate model to each subject and combine them. This is effectively a Subject*Days interaction model.</p>
 <pre class="r"><code>fm1 &lt;- lmList(Reaction ~ Days | Subject, sleepstudy)
-coef(fm1)</code></pre>
+cc &lt;- coef(fm1)
+cc</code></pre>
 <p>The <code>lmList()</code> function fits a different linear model to each subset of a data.frame defined by the variable after the “|”, in this case “Subject”.</p>
 <ol class="example" style="list-style-type: decimal">
 <li>Calculate the mean intercept and Days coefficients from the matrix created by <code>coef(fm1)</code>. Compare these with the estimates from the single regression model. Use <code>summary(fm1)</code> to see the residual variance and degrees of freedom for the pooled list. Compare these values with the residual variance and degrees of freedom from the single regression model.</li>
