@@ -14,17 +14,18 @@ caption = ""
 
 ### R
 
-Download and install the [R base system](http://cran.rstudio.com/). I assume you use the [Rstudio Desktop system](http://www.rstudio.com/products/rstudio/download/) to work with the base system. When installing you can accept all the default options.
+Download and install the [R base system](http://cran.rstudio.com/) for your operating system. I assume you use the [Rstudio Desktop system](http://www.rstudio.com/products/rstudio/download/) to work with the base system. You have to scroll down to find the installer for your operating system. When installing these you can accept all the default options.
 
-You should also install package `tidyverse`. While connected to the internet, go to the console prompt
+You should also install package `tidyverse`. While connected to the internet, start up RStudio, go to the console prompt
 
 ![screenshot of console prompt](img/console_prompt_at_startup.png)
 
-type
+at the `>` type
 
 ```r
 install.packages("tidyverse")
 ```
+and hit enter.
 
 [Here is a video](https://youtu.be/Ks3q0WSQ_eo) showing you how to install packages. There may be additional packages you should install prior to your first class or workshop. 
 

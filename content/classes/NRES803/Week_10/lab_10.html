@@ -1,7 +1,7 @@
 ---
 title: "Week 10 Lab"
 author: "Drew Tyre"
-date: "2017-10-25"
+date: "2017-11-02"
 output: html_document
 weight: 803101
 ---
@@ -111,7 +111,7 @@ mice.global &lt;- lmer(ear ~ foot * species * sex + (foot | site),
 coefTable &lt;- summary(mice.global, ddf = &quot;Kenward-Roger&quot;)$coefficients
 knitr::kable(coefTable, digits = 2, caption = &quot;Fixed effects coefficients from a global model of mouse ear length. Degrees of freedom from the Kenward-Roger approximation.&quot;)</code></pre>
 <p>Unlike the default <code>lmer()</code>, the extra functions in <code>lmerTest</code> push the p values out following the practices used in SAS. There is also a nice function that does automatic backwards selection. In order to stay within the R framework we have to change the default values to get a Type I sums of squares test.</p>
-<pre class="r"><code>step(mice.global, ddf = &quot;Kenward-Roger&quot;)</code></pre>
+<pre class="r"><code>step(mice.global, ddf = &quot;Satterthwaite&quot;)</code></pre>
 <p>Our final model is simply <code>ear ~ foot + (1+foot|site)</code>. This means the relationship between ear and foot length is constant between sexes and species, but varies geographically. I find that quite fascinating. I’ll fit this final model, and make a plot or two.</p>
 <pre class="r"><code>mice.final &lt;- lmer(ear ~ foot + (foot | site), data = mice)
 summary(mice.final)  # capture the output</code></pre>
