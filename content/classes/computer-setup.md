@@ -1,6 +1,6 @@
 +++
 title = "Computer Setup"
-date = "2017-08-01T00:00:00Z"
+date = "2017-11-02T00:00:00Z"
 math = false
 highlight = false
 weight = 100000
@@ -28,6 +28,8 @@ install.packages("tidyverse")
 and hit enter.
 
 [Here is a video](https://youtu.be/Ks3q0WSQ_eo) showing you how to install packages. There may be additional packages you should install prior to your first class or workshop. 
+
+I also have a short video on [Using RStudio](https://youtu.be/FNrCxTSzq6s).
 
 ### Create a markdown file
 

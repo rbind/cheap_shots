@@ -23,7 +23,7 @@ I am the instructor for the following courses at University of Nebraska-Lincoln:
 
 I sometimes give workshops on analyzing data with R:
 
-- [R for SAS users, Entomological Society of America, Denver, CO](/classes/esa2018_workshop/)
+- [Making the switch: A beginner’s guide to R for those familiar with other packages](/classes/esa2018_workshop/)
 
 
 Follow [these instructions](/classes/computer-setup/) to set up your computer to use R prior to the first class or start of your workshop.
