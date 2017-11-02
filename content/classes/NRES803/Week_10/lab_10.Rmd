@@ -187,7 +187,7 @@ knitr::kable(coefTable,digits=2,caption='Fixed effects coefficients from a globa
 Unlike the default `lmer()`, the extra functions in `lmerTest` push the p values out following the practices used in SAS. There is also a nice function that does automatic backwards selection. In order to stay within the R framework we have to change the default values to get a Type I sums of squares test.
 
 ```{r backwardsSelection, eval=lab.eval}
-step(mice.global, ddf = "Kenward-Roger")
+step(mice.global, ddf = "Satterthwaite")
 ```
 
 Our final model is simply `ear ~ foot + (1+foot|site)`. This means the relationship between ear and foot length is constant between sexes and species, but varies geographically. I find that quite fascinating. I'll fit this final model, and make a plot or two.
