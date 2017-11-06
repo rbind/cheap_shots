@@ -211,7 +211,8 @@ That doesn't look as good as I'd hoped. The idea here is to draw the eye closer 
 So now we want to redo the deer model from last week. 
 
 ```{r}
-ecervi = read.table("data/deerecervi.txt",header=TRUE)
+library(NRES803)
+data(ecervi)
 ecervi <- ecervi %>%
   mutate(Ecervi.pa = Ecervi > 0,
          fSex = factor(Sex, labels=c("Male","Female")),

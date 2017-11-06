@@ -1,7 +1,7 @@
 ---
 title: "Week 12 Lab -- Confidence Intervals in (G)LMM"
 author: "Drew Tyre"
-date: "2017-10-25"
+date: "2017-11-06"
 output: 
   html_document:
     fig_caption: true
@@ -111,7 +111,8 @@ guides(color = FALSE)</code></pre>
 <div id="doing-it-with-a-glmm" class="section level2">
 <h2>Doing it with a glmm</h2>
 <p>So now we want to redo the deer model from last week.</p>
-<pre class="r"><code>ecervi = read.table(&quot;data/deerecervi.txt&quot;, header = TRUE)
+<pre class="r"><code>library(NRES803)
+data(ecervi)
 ecervi &lt;- ecervi %&gt;% mutate(Ecervi.pa = Ecervi &gt; 0, fSex = factor(Sex, labels = c(&quot;Male&quot;, 
     &quot;Female&quot;)), cLength = Length - mean(Length), csLength = cLength/sd(Length))
 
