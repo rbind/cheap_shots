@@ -17,7 +17,8 @@ My goal is to take everyone through the process of importing a dataset, visualiz
 
 Before the workshop, you need to [install some software on your computer][computer-setup]. 
 
-You should also install packages `lme4`, `lsmeans`, `lmerTest`. 
+You should also install packages `lme4`, `lsmeans`, `lmerTest`. I will also use package `pander` to 
+make nice tables, but this is optional.
 
 If you want some help, watch these videos
 
