@@ -1,7 +1,7 @@
 ---
 title: "Week 12 Lab -- Confidence Intervals in (G)LMM"
 author: "Drew Tyre"
-date: "2017-11-06"
+date: "2017-11-10"
 output: 
   html_document:
     fig_caption: true
@@ -132,7 +132,7 @@ ggplot(nd, aes(x = csLength, y = pp, col = fSex)) + geom_line(alpha = 0.5) +
     data = filter(ecervi, Ecervi.pa), sides = &quot;t&quot;, inherit.aes = FALSE) + geom_rug(aes(x = csLength), 
     data = filter(ecervi, !Ecervi.pa), sides = &quot;b&quot;, inherit.aes = FALSE) + facet_wrap(~fSex) + 
     guides(color = FALSE)</code></pre>
-<p>I like this one with <code>facet_wrap()</code> better than the one from last week. OK, now we want to do the bootstrap. But fitting this model already is slow, so doing it 1000 times is even slower! Bootstrapping is one of the things that benefits from parallel computing very easily. There are some options to <code>bootMer()</code> that splits the computation up 4 ways. 4 times faster. Most modern CPU’s have multiple cores that can run independently. In normal operation R uses just one core. My office windows computer has <strong>8</strong> cores, so could speed up this computation by a factor of 8! This seems a bit fussy – use at own risk!</p>
+<p>I like this one with <code>facet_wrap()</code> better than the one from last week. OK, now we want to do the bootstrap. But fitting this model already is slow, so doing it 1000 times is even slower! Bootstrapping is one of the things that benefits from parallel computing very easily. There are some options to <code>bootMer()</code> that splits the computation up 4 ways. 4 times faster. Most modern CPU’s have multiple cores that can run independently. In normal operation R uses just one core. My office windows computer has <strong>8</strong> cores, so could speed up this computation by a factor of 8! This seems a bit fussy – use at own risk! You can download a binary file with my bigBoot2 object in it <a href="data/bigBoot2.RData">here</a>.</p>
 <pre class="r"><code># Don&#39;t run this code!  takes a loooong time ...
 bigBoot2 &lt;- bootMer(M0, myFunc, nsim = 1000, parallel = &quot;multicore&quot;, ncpus = 4)
 save(bigBoot2, file = &quot;data/bigBoot2.RData&quot;)</code></pre>
