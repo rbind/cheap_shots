@@ -45,6 +45,10 @@ Before the first week of class, you need to [install some software on your compu
 
 - Week 9 FALL BREAK! No class
 - [Week 10 Mixing it up I][Week_10]
+- [Week 11 Mixing it up II][Week_11]
+- [Week 12 Confidence Intervals on (g)lmms][Week_12]
+- [Week 13 Non-linear Models I][Week_13]
+- Week 14 THANKSGIVING WEEK! No Class.
 
 [syllabus]: /classes/NRES803/syllabus/
 [computer-setup]: /classes/NRES803/computer-setup/
@@ -56,3 +60,6 @@ Before the first week of class, you need to [install some software on your compu
 [Week_6]: /classes/NRES803/Week_6/
 [Week_8]: /classes/NRES803/Week_8/
 [Week_10]: /classes/NRES803/Week_10/
+[Week_11]: /classes/NRES803/Week_11/
+[Week_12]: /classes/NRES803/Week_12/
+[Week_13]: /classes/NRES803/Week_13/
