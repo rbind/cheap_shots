@@ -26,9 +26,9 @@ Help with Week 12 Lab
 
 Three videos to watch. This is the data, in case you want to follow along.
 
-* What makes it non-linear?
-* Fitting a species area curve
-* Maximizing the likelihood
+* [What makes it non-linear?](https://youtu.be/ifJOMEFc2uU)
+* [Fitting a species area curve](https://youtu.be/ViWhcq72laU)
+* [Maximizing the likelihood](https://youtu.be/ClJTx-_nRsA)
 
 Questions about non-linear models.
 
