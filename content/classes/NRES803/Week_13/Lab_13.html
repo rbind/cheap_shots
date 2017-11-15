@@ -1,0 +1,77 @@
+---
+title: "Week 13 - Non-linear models 1"
+author: "Drew Tyre"
+date: "11/15/2017"
+output: html_document
+---
+
+
+
+<p>In this exercise you will fit a non-linear model to some data simulated from information in Cousens (1985) paper on wheat yields in competition with barley. Unfortunately Cousens only reported the mean values and the residual sums of squares from the non-linear fits. So I have attempted to simulate data that has (at least approximately) the right means and variances. The script that simulates the data can be downloaded <a href="sim_cousens_data.r">here</a>, and the necessary data files are <a href="data/cousens_1985_tab_1_2.csv">here</a> and <a href="data/cousens_1985_RSS.csv">here</a>. You can skip all that and just get the file with the simulated results <a href="data/cousenssim.csv">here</a>.</p>
+<pre class="r"><code>library(tidyverse)
+cousens &lt;- read_csv(&quot;data/cousenssim.csv&quot;)
+## lot of variables focus on wheat yield
+ggplot(data = cousens, aes(x=barley_sr, y=wheat_yield)) + 
+  geom_point() +facet_wrap(~wheat_sr)</code></pre>
+<p>There are missing values because the rows with wheat seed rate of 0 have no wheat yield. Cousens proposed this model for a constant crop density</p>
+<p><span class="math display">\[
+Y = Y_{wf}\left[1 - \frac{iD}{100(1 + iD/a)}\right]
+\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is yield per unit area, <span class="math inline">\(Y_{wf}\)</span> is the weed free yield, <span class="math inline">\(D\)</span> is the density of the weed, <span class="math inline">\(i\)</span> and <span class="math inline">\(a\)</span> are parameters to be estimated. First try this model for a single seed rate of wheat. The hard part is finding good starting values. I will use the function <code>curve()</code> to get a sense of how the curve changes as I change the parameters.</p>
+<pre class="r"><code>ywf = 2.5
+i = 1
+a = 100
+curve(ywf * (1 - (i*x) / (100*(1 + i * x/a))),
+      from = 0, to = 400)</code></pre>
+<ol style="list-style-type: decimal">
+<li>Play around with each of the parameters, raising and lowering it. Describe how the curve changes with each parameter.</li>
+</ol>
+<pre class="r"><code>wheat_200 &lt;- filter(cousens, wheat_sr == 200)
+wheat_200_nl &lt;- nls(wheat_yield ~ ywf * (1 - (i*barley_sr) / (100*(1 + i * barley_sr/a))), 
+    data = wheat_200, 
+    start = list(ywf = 2.5, i = 1, a = 100))
+summary(wheat_200_nl)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Try at least two different starting values for one of the parameters. Compare the outputs. Does the fitting algorithm end up in the same place?</li>
+</ol>
+<p>We can make predictions from these fitted models just as with normal models, and get residuals etc.</p>
+<pre class="r"><code># residual plot
+w_200_resids &lt;- broom::augment(wheat_200_nl)
+ggplot(w_200_resids, aes(.fitted, .resid)) + geom_point() + geom_smooth()</code></pre>
+<p>Now add the predicted line to the plot above.</p>
+<pre class="r"><code>nd = data_frame(barley_sr = 0:400)
+wheat_200_pred &lt;- broom::augment(wheat_200_nl, newdata = nd)
+ggplot(data = wheat_200, aes(x=barley_sr, y=wheat_yield)) + 
+  geom_point() +
+  geom_line(data = wheat_200_pred, 
+            mapping = aes(x = barley_sr, y=.fitted))</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Fit this model to a different wheat seed rate. Compare the estimated coefficients. Did they change in the way you expected?</li>
+</ol>
+<p>Cousens goes on to fit models directly to yield, rather than percentage loss, and add crop density to enable fitting the entire model in one hit. He fit several different models but the best one was</p>
+<p><span class="math display">\[
+Y = \frac{aC}{1 + bC + fD}
+\]</span></p>
+<p>where <span class="math inline">\(C\)</span> is the density of the crop, and <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> and <span class="math inline">\(f\)</span> are parameters to be estimated. Again the hurdle is figuring out good starting values. I’ll plot the yield against wheat seed rate to get an idea about <span class="math inline">\(a\)</span>, the asymptotic yield when there is no barley.</p>
+<pre class="r"><code>ggplot(data = cousens, aes(x=wheat_sr, y=wheat_yield)) + 
+  geom_point() +facet_wrap(~barley_sr)</code></pre>
+<p>Those parameters are now per seed, so 3 / 400 = <code>3/400</code> seems like a good starting point for <code>a</code></p>
+<pre class="r"><code>wheat_nl &lt;- nls(wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr), 
+    data = cousens, 
+    start = list(a = 3/400, f = .001, b = 0.001))
+summary(wheat_nl)</code></pre>
+<p>Figuring out what those parameters mean is always a good trick! I think we can interpret <span class="math inline">\(f\)</span> and <span class="math inline">\(b\)</span> as per-seed competition coefficients for inter- and intra specific competition, respectively. So an additional barley seed has about 3 x the competitive effect of adding another wheat seed. Taking the limit as C goes to infinity for a fixed value of D, we get <span class="math inline">\(Y_{max} = a/b\)</span>, or about 3 kg.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Make a plot of the raw data for a single wheat seed rate, add the predicted lines for the model fitted above for question 3, and a predicted line for the model with both wheat and barley.</li>
+</ol>
+<div id="optional" class="section level1">
+<h1>Optional</h1>
+<p>Cousens also fit this model</p>
+<p><span class="math display">\[
+Y = \frac{aC}{(1 + bC + fD)^g}
+\]</span></p>
+<p>which has one more parameter. When <span class="math inline">\(g=1\)</span> you get the same model as before. Fitting this model is a bit tricky. I had to switch to a different algorithm and impose lower limits of 0 on all the parameters.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Compare the parameters with the 3 parameter model. Take a look at the estimate for <span class="math inline">\(g\)</span>, can we conclude that it is different from 1? Compare the residual standard errors – is the extra parameter worth it? What about comparing by the use of AIC?</li>
+</ol>
+</div>
