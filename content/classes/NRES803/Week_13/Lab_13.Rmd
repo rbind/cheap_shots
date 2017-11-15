@@ -1,7 +1,7 @@
 ---
 title: "Week 13 - Non-linear models 1"
 author: "Drew Tyre"
-date: "11/15/2017"
+date: "`r Sys.Date()`"
 output: html_document
 weight: 803131
 ---
@@ -83,7 +83,7 @@ ggplot(data = cousens, aes(x=wheat_sr, y=wheat_yield)) +
   geom_point() +facet_wrap(~barley_sr)
 ```
 
-Those parameters are now per seed, so 3 / 400 = `3/400` seems like a good starting point for `a`
+Those parameters are now per seed, so 3 / 400 = `r 3/400` seems like a good starting point for `a`
 ```{r}
 wheat_nl <- nls(wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr), 
     data = cousens, 
@@ -105,7 +105,7 @@ $$
 
 which has one more parameter. When $g=1$ you get the same model as before. Fitting this model is a bit tricky. I had to switch to a different algorithm and impose lower limits of 0 on all the parameters. 
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, eval=FALSE}
 wheat_nl2 <- nls(wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr)^g, 
     data = cousens, 
     start = list(a = 0.1, b = 0.1, f = .1, g=1), # trace = TRUE,

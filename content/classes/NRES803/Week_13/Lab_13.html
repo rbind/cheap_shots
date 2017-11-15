@@ -1,8 +1,9 @@
 ---
 title: "Week 13 - Non-linear models 1"
 author: "Drew Tyre"
-date: "11/15/2017"
+date: "2017-11-15"
 output: html_document
+weight: 803131
 ---
 
 
@@ -55,7 +56,7 @@ Y = \frac{aC}{1 + bC + fD}
 <p>where <span class="math inline">\(C\)</span> is the density of the crop, and <span class="math inline">\(a\)</span>, <span class="math inline">\(b\)</span> and <span class="math inline">\(f\)</span> are parameters to be estimated. Again the hurdle is figuring out good starting values. I’ll plot the yield against wheat seed rate to get an idea about <span class="math inline">\(a\)</span>, the asymptotic yield when there is no barley.</p>
 <pre class="r"><code>ggplot(data = cousens, aes(x=wheat_sr, y=wheat_yield)) + 
   geom_point() +facet_wrap(~barley_sr)</code></pre>
-<p>Those parameters are now per seed, so 3 / 400 = <code>3/400</code> seems like a good starting point for <code>a</code></p>
+<p>Those parameters are now per seed, so 3 / 400 = 0.0075 seems like a good starting point for <code>a</code></p>
 <pre class="r"><code>wheat_nl &lt;- nls(wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr), 
     data = cousens, 
     start = list(a = 3/400, f = .001, b = 0.001))
@@ -71,6 +72,11 @@ summary(wheat_nl)</code></pre>
 Y = \frac{aC}{(1 + bC + fD)^g}
 \]</span></p>
 <p>which has one more parameter. When <span class="math inline">\(g=1\)</span> you get the same model as before. Fitting this model is a bit tricky. I had to switch to a different algorithm and impose lower limits of 0 on all the parameters.</p>
+<pre class="r"><code>wheat_nl2 &lt;- nls(wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr)^g, 
+    data = cousens, 
+    start = list(a = 0.1, b = 0.1, f = .1, g=1), # trace = TRUE,
+    algorithm = &quot;port&quot;, lower = c(0,0,0,0))
+summary(wheat_nl2)</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Compare the parameters with the 3 parameter model. Take a look at the estimate for <span class="math inline">\(g\)</span>, can we conclude that it is different from 1? Compare the residual standard errors – is the extra parameter worth it? What about comparing by the use of AIC?</li>
 </ol>
