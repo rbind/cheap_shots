@@ -115,23 +115,20 @@ snb_lsm3 <- left_join(snb_lsm2, treatments)
 Now I want to make a plot with the predicted means and confidence limits similar to Figure 1.
 
 ```{r predicted-yields, fig.cap="Predicted yields and 95% confidence intervals. The point for Check is replicated on all panels. Other materials are ordered according to average yield across all timings."}
-# add back the variables Material and Timing
-snb_lsm <- left_join(snb_lsm, select(snapbeans3, Trt, Material, Timing))
-# warning because we filtered out some results earlier
 # break dataframe into 2 piece so we can add check to all facets
-snb_lsm_wo_check <- filter(snb_lsm, Material !="Check") %>% 
-  mutate(Material = reorder(Material,estimate)) # reorder by mean yield
+snb_lsm_wo_check <- filter(snb_lsm3, Material !="Check") %>% 
+  mutate(Material = reorder(Material,lsmean)) # reorder by mean yield
 
-snb_lsm_check <- filter(snb_lsm, Material =="Check") %>%
+snb_lsm_check <- filter(snb_lsm3, Material =="Check") %>%
   select(-Timing) ## remove Timing to force onto all panels
 
 ggplot(data = snb_lsm_wo_check,
-       mapping = aes(x = Material, y = estimate)) + 
+       mapping = aes(x = Material, y = lsmean)) + 
   geom_point() + 
-  geom_errorbar(mapping = aes(ymin = conf.low, ymax = conf.high)) + 
+  geom_errorbar(mapping = aes(ymin = lower.CL, ymax = upper.CL)) + 
   geom_point(data = snb_lsm_check, color="grey") + 
   geom_errorbar(data = snb_lsm_check,
-                mapping = aes(ymin = conf.low, ymax = conf.high), color="grey") + 
+                mapping = aes(ymin = lower.CL, ymax = upper.CL), color="grey") + 
   scale_x_discrete(limits=c("Exirel", "Brigade_2EC", "Belt_SC", "Besiege","Coragen","Check")) + 
   facet_wrap(~Timing) + 
   theme(axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5))
