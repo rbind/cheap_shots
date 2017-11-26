@@ -1,0 +1,140 @@
+---
+title: "Making the switch: A beginner’s guide to R for those familiar with other packages"
+date: "2017-11-02T00:00:00Z"
+weight: 200000
+---
+
+My goal is to take everyone through the process of importing a dataset, visualizing it, running a simple analysis (e.g. linear regression/ANOVA), examining the results and getting a publication quality report out at the end.
+
+## Setup
+
+Before the workshop, you need to [install some software on your computer][computer-setup]. 
+
+You should also install packages `lme4`, `lsmeans`, `lmerTest`. I will also use package `pander` to 
+make nice tables, but this is optional.
+
+If you want some help, watch these videos
+
+* [Introduction to RStudio](https://youtu.be/FNrCxTSzq6s)
+* [Installing packages](https://youtu.be/Ks3q0WSQ_eo)
+
+[computer-setup]: /classes/computer-setup/
+
+## Getting the data loaded
+
+The data for the workshop was generously provided by [Rebecca Schmidt-Jeffris](http://www.clemson.edu/cafls/faculty_staff/profiles/rschmi3). Workshop participants received a link to download the data. If you were not a workshop particpant, please contact Rebecca for permission to access the data.
+
+We first load some packages for running mixed models. Then we read in the data from a csv file. The extra argument `na = "."` is necessary because the data file uses the SAS standard for indicating missing values, not the default `NA` that R uses.
+
+```{r setup, message=FALSE, warning=FALSE}
+
+library("tidyverse") # excellent data munging and plotting packages
+library("lme4") # for mixed models
+library("lmerTest") # for SAS - like analyses of mixed models
+library("broom") # for getting predictions out of the models
+
+# load the plant damage and yield data
+snapbeans <- read_csv("data/snap_bean_ECB_dmg_yield.csv",
+                      na = ".")
+
+```
+
+We have to do a bit of data munging. Weight was recorded in pounds, and we would like it in kg. Also the Timing and Trt variables are numbers, and we would prefer them as factors. Finally, there are two Materials that were not applied at all timings, so we remove those rows from the data.frame.
+
+```{r}
+
+# add this after making the plot of the raw data
+# we will come back to add Trt after messing up below!
+snapbeans2 <- mutate(snapbeans, 
+                     Weight = Weight / 2.2,
+                    fTiming = factor(Timing),
+                    Trt = factor(Trt)) # leave out on first pass
+snapbeans3 <- filter(snapbeans2, !(Material %in% c("Intrepid_2F", "Radiant_SC")))
+
+```
+
+I like to start off by plotting the raw data. This is how we realized the need to make Timing into a factor, and that there were some incomplete treatments.
+
+```{r raw-data-plot, fig.cap="Yield of snapbeans by pesticide treatment and timing of application. Boxplots show median, interquartile range, and range of the data.", warning=FALSE}
+# warning = FALSE blocks the message from ggplot about missing values.
+# one output per code chunk
+# I like to plot the raw data
+ggplot(data = snapbeans3,
+       mapping = aes(x = Timing, y=Weight)) + 
+  geom_point() + 
+#  geom_boxplot() + 
+#  geom_jitter() + 
+  facet_wrap(~Material) +
+  labs(x="Timing of Application [Days before pod formation]",
+       y = "Yield [kg]")
+```
+
+Figure 1 shows us the raw data for snapbean yield. The two way interaction of Material and Timing was quite strong (Table 1), so we collapse all the treatments for the final analysis to include the control treatment.
+
+```{r}
+# fit the model without the check treatment to demonstrate interaction is significant.
+# describe the formula interface + vs. : vs. *
+snb_yield_0 <- lmer(Weight ~ Material * fTiming + (1 | Rep),
+                    data = snapbeans3)
+#summary(snb_yield_0, ddf = "Kenward-Roger")
+pander::pander(anova(snb_yield_0, ddf = "Kenward-Roger"),
+               caption = "Table 1: Analysis of variance table for Yield of snapbeans by material applied and timing. Type III Sums of Squares with Kenward-Roger approximations to Degrees of Freedom.")
+```
+
+```{r}
+snb_yield_1 <- lmer(Weight ~ Trt + (1 | Rep),
+                    data = snapbeans3)
+#summary(snb_yield_0, ddf = "Kenward-Roger")
+pander::pander(anova(snb_yield_1, ddf = "Kenward-Roger"),
+               caption = "Table 2: Analysis of variance table for Yield of snapbeans by treatment including the control. Type III Sums of Squares with Kenward-Roger approximations to Degrees of Freedom.")
+
+```
+
+Now we'd like to have the least squares means to compare treatments. This is about where we fizzled out in the workshop! There is more than one package for multiple comparisons, so I want to take a look at each and see if there are any reasons to prefer one over another. In the workshop I used `lsmeans`, but it turns out that package has been replaced with `emmeans`. So I'll start there.
+
+```{r}
+library(emmeans)
+snb_lsm <- lsmeans(snb_yield_1, ~Trt, ddf = "Kenward-Roger")
+plot(snb_lsm) # plot method works pretty well with this object
+#pairs(snb_lsm, Letters = letters)
+
+```
+
+That plot is easy to get, but lacks the information about which treatment corresponds with which material and timing. Also, we would like to have letters indicating different groups. First I create a data.frame that has the information about each treatment -- involves a subset of the original data.
+
+```{r}
+snb_lsm2 <- cld(snb_lsm, ddf = "Kenward-Roger",
+    Letters = letters)
+# add in the information about which treatments etc.
+treatments <- distinct(snapbeans3, Trt, Material, Timing)
+snb_lsm3 <- left_join(snb_lsm2, treatments)
+
+```
+
+
+Now I want to make a plot with the predicted means and confidence limits similar to Figure 1.
+
+```{r predicted-yields, fig.cap="Predicted yields and 95% confidence intervals. The point for Check is replicated on all panels. Other materials are ordered according to average yield across all timings."}
+# add back the variables Material and Timing
+snb_lsm <- left_join(snb_lsm, select(snapbeans3, Trt, Material, Timing))
+# warning because we filtered out some results earlier
+# break dataframe into 2 piece so we can add check to all facets
+snb_lsm_wo_check <- filter(snb_lsm, Material !="Check") %>% 
+  mutate(Material = reorder(Material,estimate)) # reorder by mean yield
+
+snb_lsm_check <- filter(snb_lsm, Material =="Check") %>%
+  select(-Timing) ## remove Timing to force onto all panels
+
+ggplot(data = snb_lsm_wo_check,
+       mapping = aes(x = Material, y = estimate)) + 
+  geom_point() + 
+  geom_errorbar(mapping = aes(ymin = conf.low, ymax = conf.high)) + 
+  geom_point(data = snb_lsm_check, color="grey") + 
+  geom_errorbar(data = snb_lsm_check,
+                mapping = aes(ymin = conf.low, ymax = conf.high), color="grey") + 
+  scale_x_discrete(limits=c("Exirel", "Brigade_2EC", "Belt_SC", "Besiege","Coragen","Check")) + 
+  facet_wrap(~Timing) + 
+  theme(axis.text.x = element_text(angle=90, hjust=1, vjust = 0.5))
+```
+
+Not sure why we can't get the same numbers. I'll keep working on it. 
