@@ -91,7 +91,7 @@ aq_attrib <- data.frame(
     NA,
     NA,
     NA,
-    NA,
+    "Team ID",
     NA,
     NA,
     NA,
@@ -161,7 +161,7 @@ aq_factors <- tribble(
   "Flag_NO2", "Out-of-range", "Exceeded maximum measurement on instrument",
   "Flag_NO3", "Bad", "Not good data",
   "Flag_NO3", "Good", "Good data",
-  "Flag_NO3", "Out-of-range", "Exceeded maximum measurement on instrument"
+  "Flag_NO3", "Out-of-range", "Exceeded maximum measurement on instrument",
   "Flag_P", "Bad", "Not good data",
   "Flag_P", "Good", "Good data",
   "Flag_P", "Out-of-range", "Exceeded maximum measurement on instrument"
@@ -171,7 +171,6 @@ aq_factors <- tribble(
 So that's described the data, now we create an object that EML knows about. I thought I could be clever about the classes, but I ran into a snag -- Time was brought in as class `hms` which inherits from `difftime`. I coerced it to a character vector and then my cleverness worked, but it turns out the set of values for col_class is *not* the same as the classes of the objects. So no way to avoid typing them out. 
 
 ```{r}
-aquariums$Time <- as.character(aquariums$Time)
 aq_attribList <- set_attributes(aq_attrib, aq_factors, 
                                 col_classes = c("Date",
                                                 "Date",
@@ -191,4 +190,24 @@ aq_attribList <- set_attributes(aq_attrib, aq_factors,
                                                 "factor",
                                                 "character"))
 ```
+
+`aq_attribList` is 2.6 Mb! That's ... quite something. Must be adding something extra. 
+
+The next step is to describe the physical  structure of the data. This was easy because the defaults for the EML function are for a csv file.
+
+```{r}
+aq_physical <- set_physical("aquarium_experiment_2017.csv",
+                            url = "https://ndownloader.figshare.com/files/9932452")
+```
+
+Now we put the whole thing together into a dataTable object.
+
+```{r}
+aq_dataTable <- new("dataTable",
+                    entityName = "aquarium_experiment_2017.csv",
+                    entityDescription = "Nutrient cycling in new aquaria",
+                    physical = aq_physical,
+                    attributeList = aq_attribList)
+```
+
 
