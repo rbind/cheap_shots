@@ -228,10 +228,12 @@ data_set <- new("dataset",
                 contact = new("contact", individualName = "Drew"),
                 methods = new("methods"),
                 dataTable = aq_dataTable)
+
 eml_222 <- new("eml",
                packageId = "b0efd6ed-3b61-40f7-b29e-318dad7eb095",
                system = "uuid",
                dataset = data_set)
+
 eml_validate(eml_222)
 ```
 
