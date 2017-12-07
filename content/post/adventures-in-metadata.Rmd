@@ -210,4 +210,29 @@ aq_dataTable <- new("dataTable",
                     attributeList = aq_attribList)
 ```
 
+Now there are a few more things to do, but I'm wondering if this is already sufficient to create an EML file. I need to create a "dataset", and then put that into an eml object.
 
+```{r}
+data_set <- new("dataset",
+                title = "Nutrient cycling experiment in NRES 222",
+                creator = as(as.person("Drew Tyre <atyre2@unl.edu> [cre]"), "creator"),
+                publisher = new("publisher"),
+                pubDate = "2017",
+                intellectualRights = "CC0",
+                distribution = new("distribution"),
+                purpose = new("purpose"),
+                maintenance = new("maintenance"),
+                abstract = "",
+                keywordSet = new("keywordSet"),
+                coverage = new("coverage"),
+                contact = new("contact", individualName = "Drew"),
+                methods = new("methods"),
+                dataTable = aq_dataTable)
+eml_222 <- new("eml",
+               packageId = "b0efd6ed-3b61-40f7-b29e-318dad7eb095",
+               system = "uuid",
+               dataset = data_set)
+eml_validate(eml_222)
+```
+
+OK, so not going to get off that easy! Validation is looking for lots of fields that I left out in my rush to get some kind of usable starting point. Some of them aren't described in the vignette, so I'm hoping I can skip those.
