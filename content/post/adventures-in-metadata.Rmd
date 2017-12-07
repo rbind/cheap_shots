@@ -1,0 +1,194 @@
+---
+title: Adventures in metadata ...
+author: Drew Tyre
+date: '2017-12-07'
+slug: adventures-in-metadata
+summary: "Metadata are good. Everyone should create metadata. But writing raw XML is bad. rOpenSci created the EML package to make this easier."
+categories:
+  - R
+tags:
+  - data manipulation
+  - ecology
+---
+
+Metadata are good. Everyone should create metadata. But writing raw XML is bad. [rOpenSci](https://ropensci.org/) has created the [EML package](https://github.com/ropensci/EML) to make this easier. 
+
+In theory. My first look at EML looked like it would be intimidating to a casual user of R. But the proof is in the pudding, and I thought I should give it a test drive with some actual data. I'm putting some data generated in my Ecology Lab classes up on [figshare](https://figshare.com), so this is an ideal opportunity to give it a test run. 
+
+```{r get_packages, eval=FALSE}
+install.packages("rfigshare")
+devtools::install_github("ropensci/EML")
+```
+
+I've put the [data on figshare](https://figshare.com/articles/Data_collected_by_NRES_222_University_of_Nebraska-Lincoln/5679241), so
+
+```{r load_data, message=FALSE}
+library(tidyverse)
+data_urls <- rfigshare::fs_download(5679241) # will ask for authorization?
+aquariums <- read_csv(data_urls[1,1])
+```
+
+OK. Now I want to make a metadata record for this data. 
+
+```{r}
+library(EML)
+```
+
+The first problem I'm running into is the absence of a vignette to tell me what to do. Even which function to start with! I thought there was one on GitHub ... OK the quickstart in the readme gets me going.
+
+```{r create_eml, message=FALSE}
+f <- system.file("xsd/test/eml.xml", package = "EML")
+eml <- read_eml(f)
+```
+Actually, that step was unnecessary. 
+
+There are vignettes, but they don't appear in the documentation. I can see the source on GitHub though, so I'm following along the creating EML vignette. It *looks* a bit intimidating because they are building it all up manually. There are 3 levels to this thing: The EML file which contains datatable elements, which have a variety of other specific elements. There are things besides the datatables in the EML, but that's the most important bit. We start from the bottom up. First we need an dataframe describing the attributes of our datatable. There will be one row for each variable in the dataframe. Some of the data depend on the type of the variable -- a definition for strings, format for dates etc. 
+
+```{r}
+aq_attrib <- data.frame(
+  attributeName = names(aquariums),
+  attributeDefinition = c(
+    "Year",
+    "Month",
+    "Day of month",
+    "Tank ID",
+    "Time 24 hour",
+    "Team ID",
+    "pH",
+    "Temperature, degrees celsius",
+    "Ammonium concentration, mg/L",
+    "Data quality Flag, Ammonium",
+    "Nitrite concentration, mg/L",
+    "Data quality Flag, Nitrite",
+    "Nitrate concentration, mg/L",
+    "Data quality Flag, Nitrate",
+    "Total Phosphorous concentration, mg/L",
+    "Data quality Flag, Phosphorous",
+    "Comments field"
+  ),
+  formatString = c(
+    "YYYY",
+    "MM",
+    "DD",
+    NA,
+    "HH:MM",
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA
+  ),
+  definition = c(
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    "Comments field"
+  ),
+  unit = c(
+    NA,
+    NA,
+    NA,
+    "number",
+    NA,
+    NA,
+    "dimensionless",
+    "celsius",
+    "milligramsPerLiter",
+    NA,
+    "milligramsPerLiter",
+    NA,
+    "milligramsPerLiter",
+    NA,
+    "milligramsPerLiter",
+    NA,
+    NA
+  ),
+  numberType = c(
+    NA,
+    NA,
+    NA,
+    "integer",
+    NA,
+    NA,
+    "real",
+    "real",
+    "real",
+    NA,
+    "real",
+    NA,
+    "real",
+    NA,
+    "real",
+    NA,
+    NA
+  ),
+  stringsAsFactors = FALSE  
+)
+```
+
+One thing that wasn't immediately obvious was how to specify the units. But there's a vignette for that! `get_unitlist()` gave me a list. Big. Mostly they were obvious, but pH gave me pause. After digging through definitions on wikipedia I believe it is dimensionless, but I could be wrong.
+
+By this point I was wishing I'd selected a smaller example! But onwards. The last type of variable in the data is a factor, or enumerated string. My data quality flags fall into that category, so I need to make a table describing all the levels of those. One row per level. This is a good spot for row-wise dataframe creation.
+
+```{r}
+aq_factors <- tribble(
+  ~attributeName, ~code, ~definition,
+  "Flag_NH4", "Bad", "Not good data",
+  "Flag_NH4", "Good", "Good data",
+  "Flag_NH4", "Out-of-range", "Exceeded maximum measurement on instrument",
+  "Flag_NO2", "Bad", "Not good data",
+  "Flag_NO2", "Good", "Good data",
+  "Flag_NO2", "Out-of-range", "Exceeded maximum measurement on instrument",
+  "Flag_NO3", "Bad", "Not good data",
+  "Flag_NO3", "Good", "Good data",
+  "Flag_NO3", "Out-of-range", "Exceeded maximum measurement on instrument"
+  "Flag_P", "Bad", "Not good data",
+  "Flag_P", "Good", "Good data",
+  "Flag_P", "Out-of-range", "Exceeded maximum measurement on instrument"
+  )
+```
+
+So that's described the data, now we create an object that EML knows about. I thought I could be clever about the classes, but I ran into a snag -- Time was brought in as class `hms` which inherits from `difftime`. I coerced it to a character vector and then my cleverness worked, but it turns out the set of values for col_class is *not* the same as the classes of the objects. So no way to avoid typing them out. 
+
+```{r}
+aquariums$Time <- as.character(aquariums$Time)
+aq_attribList <- set_attributes(aq_attrib, aq_factors, 
+                                col_classes = c("Date",
+                                                "Date",
+                                                "Date",
+                                                "numeric",
+                                                "Date",
+                                                "character",
+                                                "numeric",
+                                                "numeric",
+                                                "numeric",
+                                                "factor",
+                                                "numeric",
+                                                "factor",
+                                                "numeric",
+                                                "factor",
+                                                "numeric",
+                                                "factor",
+                                                "character"))
+```
+
