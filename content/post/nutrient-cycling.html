@@ -2,7 +2,7 @@
 title: Nutrient Cycling?
 author: Drew Tyre
 date: '2017-12-07'
-draft: true
+draft: false
 slug: nutrient-cycling
 summary: "I set up 4 10 gallon aquaria in the teaching lab this semester. The goal was to observe the nitrogen cycle as the tanks settled in. I also needed an excuse to try out the new Hach environmental water testing kit that we ordered. The data are on figshare."
 categories:
@@ -14,13 +14,10 @@ tags: []
 
 
 <p>I set up 4 10 gallon aquaria in the teaching lab this semester. The goal was to observe the nitrogen cycle as the tanks settled in. I also needed an excuse to try out the new Hach environmental water testing kit that we ordered. The data are on figshare.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## Warning: package &#39;tibble&#39; was built under R version 3.4.1</code></pre>
-<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 3.4.1</code></pre>
-<pre class="r"><code>library(stringr)
-aq &lt;- read_csv(&quot;https://ndownloader.figshare.com/files/9932452&quot;)</code></pre>
-<pre><code>## Warning: Missing column names filled in: &#39;X14&#39; [14]</code></pre>
-<pre class="r"><code># fix missing column name
+<pre class="r"><code>library(tidyverse)
+library(stringr)
+aq &lt;- read_csv(&quot;https://ndownloader.figshare.com/files/9932452&quot;)
+# fix missing column name
 names(aq)[14] &lt;- &quot;Flag_NO3&quot;</code></pre>
 <p>The students measured ammonium, nitrite, nitrate and phosphorous for the first 3 days. Then I took over and measured the first three for another 5 days. TIL: running these tests takes <strong>time</strong>. Ouch. Anyway, I finally entered all the data, and now I want to take a look. First I will gather it up so all the values are in one column. Makes faceting easier.</p>
 <pre class="r"><code>aq2 &lt;- gather(aq, key = nutrient, value = conc, NH4, NO2, NO3, P)</code></pre>
@@ -38,8 +35,6 @@ names(aq)[14] &lt;- &quot;Flag_NO3&quot;</code></pre>
          Data = as.numeric(Data),
          Tank = factor(Tank)) %&gt;%
   arrange(Tank, variable, Date)</code></pre>
-<pre><code>## Warning in as.POSIXlt.POSIXct(x, tz): unknown timezone &#39;zone/tz/2017c.1.0/
-## zoneinfo/America/Chicago&#39;</code></pre>
 <p>That got more involved because I needed to extract the “nutrient” part of <code>variable</code>. OK, let’s see what happened.</p>
 <pre class="r"><code>ggplot(data = aq2,
        mapping = aes(x = Date, y = Data)) + 
@@ -51,6 +46,6 @@ names(aq)[14] &lt;- &quot;Flag_NO3&quot;</code></pre>
                       labels = c(&quot;No snails&quot;,&quot;1 snail&quot;, &quot;3 snails&quot;, &quot;6 snails&quot;)) + 
   labs(x = &quot;&quot;, y = &quot;Concentration [mg / L]&quot;,
        caption = str_wrap(&quot;Nutrient dynamics in 10 gallon aquaria with different numbers of snails. Data collected by UNL NRES 222 students, Fall 2017.&quot;))</code></pre>
-<p><img src="/post/nutrient-cycling_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/post/nutrient-cycling_files/figure-html/nice_figure-1.png" width="672" /></p>
 <p>The only tank that did what I expected was the 1 snail treatment. Ammonia rises then falls as nitrifying bacteria ramp up. Nitrite rises, and if I’d gone on longer, presumably falls again. Nitrates start to rise and rise. I’d expected nothing to happen in the no snails treatment, but maybe there was enough Ammonium in the tap water that it drove the nitrogen cycle anyway. I let the tanks sit for 3 days before introducing the snails and starting the sampling on Oct 30. In the other two treatments the snails mostly died. Bad batch of snails I guess.</p>
 <p>It looks like this could work as a lab experiment. Better snails, and maybe better quality water to start. Using the one snail tank as a guide, looks like samples a week apart would capture the process.</p>
