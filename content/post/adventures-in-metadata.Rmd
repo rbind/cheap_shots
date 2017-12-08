@@ -17,7 +17,6 @@ Metadata are good. Everyone should create metadata. But writing raw XML is bad. 
 In theory. My first look at EML looked like it would be intimidating to a casual user of R. But the proof is in the pudding, and I thought I should give it a test drive with some actual data. I'm putting some data generated in my Ecology Lab classes up on [figshare](https://figshare.com), so this is an ideal opportunity to give it a test run. 
 
 ```{r get_packages, eval=FALSE}
-install.packages("rfigshare")
 devtools::install_github("ropensci/EML")
 ```
 
@@ -25,8 +24,7 @@ I've put the [data on figshare](https://figshare.com/articles/Data_collected_by_
 
 ```{r load_data, message=FALSE}
 library(tidyverse)
-data_urls <- rfigshare::fs_download(5679241) # will ask for authorization?
-aquariums <- read_csv(data_urls[1,1])
+aquariums <- read_csv("https://ndownloader.figshare.com/files/9932452")
 ```
 
 OK. Now I want to make a metadata record for this data. 

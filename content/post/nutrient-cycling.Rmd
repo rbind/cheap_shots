@@ -4,6 +4,7 @@ author: Drew Tyre
 date: '2017-12-07'
 draft: true
 slug: nutrient-cycling
+summary: "I set up 4 10 gallon aquaria in the teaching lab this semester. The goal was to observe the nitrogen cycle as the tanks settled in. I also needed an excuse to try out the new Hach environmental water testing kit that we ordered. The data are on figshare."
 categories:
   - Teaching
   - R
@@ -59,6 +60,6 @@ ggplot(data = aq2,
        caption = str_wrap("Nutrient dynamics in 10 gallon aquaria with different numbers of snails. Data collected by UNL NRES 222 students, Fall 2017."))
 ```
 
-The only tank that did what I expected was the 1 snail treatment. Ammonia rises then falls as nitrifying bacteria ramp up. Nitrite rises, and if I'd gone on longer, presumably falls again. Nitrates start to rise and rise. I'd expected nothing to happen in the no snails treatment, but maybe there was enough Ammonium in the tap water that it drove the nitrogen cycle anyway. In the other two treatments the snails mostly died. Bad batch of snails I guess. 
+The only tank that did what I expected was the 1 snail treatment. Ammonia rises then falls as nitrifying bacteria ramp up. Nitrite rises, and if I'd gone on longer, presumably falls again. Nitrates start to rise and rise. I'd expected nothing to happen in the no snails treatment, but maybe there was enough Ammonium in the tap water that it drove the nitrogen cycle anyway. I let the tanks sit for 3 days before introducing the snails and starting the sampling on Oct 30. In the other two treatments the snails mostly died. Bad batch of snails I guess. 
 
-It looks like this could work as a lab experiment. Better snails, and maybe better quality water. Using the one snail tank as a guide, looks like samples a week apart would capture the process. 
+It looks like this could work as a lab experiment. Better snails, and maybe better quality water to start. Using the one snail tank as a guide, looks like samples a week apart would capture the process. 
