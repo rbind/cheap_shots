@@ -1,7 +1,7 @@
 baseurl = "https://drewtyre.rbind.io/"  
 title = "A few cheap shots"
 copyright = "&copy; 2017 Andrew Tyre"
-theme = "hugo-academic"
+theme = "hugo-academic-master"
 enableEmoji = true
 footnotereturnlinkcontents = "<sup>^</sup>"
 
