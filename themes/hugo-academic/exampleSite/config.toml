@@ -1,21 +1,15 @@
-baseurl = "https://drewtyre.rbind.io/"  
-title = "A few cheap shots"
-copyright = "&copy; 2017 Andrew Tyre"
-theme = "hugo-academic"
+baseurl = "https://example.com/"  # End your URL with a `/` trailing slash.
+title = "Academic"
+copyright = "&copy; 2016 Your Name"
+theme = "academic"
 enableEmoji = true
 footnotereturnlinkcontents = "<sup>^</sup>"
 
-#[permalinks]
-#    post = "/:year/:month/:day/:slug/"
-
-
 # Enable comments by entering your Disqus shortname
-disqusShortname = "cheap-shots"
+disqusShortname = ""
 
 # Enable analytics by entering your Google Analytics tracking ID
-googleAnalytics = "UA-102783334-1"
-
-ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
+googleAnalytics = ""
 
 # Default language to use (if you setup multilingual support)
 defaultContentLanguage = "en"
@@ -25,17 +19,17 @@ defaultContentLanguageInSubdir = false
   hrefTargetBlank = true
 
 [params]
-  name = "Andrew Tyre"
-  role = "Professor of Wildlife Ecology"
-  organization = "University of Nebraska - Lincoln"
-  organization_url = "https://www.unl.edu"
+  name = "Lena Smith"
+  role = "Professor of Artificial Intelligence"
+  organization = "Stanford University"
+  organization_url = ""
   gravatar = false  # Get your avatar from Gravatar.com? (true/false)
-  avatar = "tyre_drew_mug_101116_square.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
-  email = "atyre2@unl.edu"
-  address = "416 Hardin Hall, 3310 Holdrege St, Lincoln, NE, 68583-0974"
-  office_hours = "email for appointment"
-  phone = "+1 402 472 4054"
-  skype = "drew_tyre"
+  avatar = "portrait.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
+  email = "test@example.org"
+  address = "Building 1 Room 1, Stanford University, California, 90210, USA"
+  office_hours = "Monday 10:00 to 13:00 or email for appointment"
+  phone = "888 888 88 88"
+  skype = "echo123"
   telegram = ""
 
   # Enable Keybase in Contact section by entering your keybase.io username.
@@ -47,7 +41,7 @@ defaultContentLanguageInSubdir = false
 
   # Enable global LaTeX math rendering?
   #   If false, you can enable it locally on a per page basis.
-  math = true
+  math = false
 
   # Highlight.js options
   #   highlight
@@ -83,7 +77,7 @@ defaultContentLanguageInSubdir = false
   #   For more info on the highlighting options, see:
   #   https://gcushen.github.io/hugo-academic-demo/post/writing-markdown-latex/#highlighting-options
   highlight = true
-  highlight_languages = ["r","yaml"]
+  highlight_languages = []
   # highlight_style = "github"
   # highlight_version = "9.9.0"
 
@@ -132,39 +126,22 @@ defaultContentLanguageInSubdir = false
   [[params.social]]
     icon = "envelope"
     icon_pack = "fa"
-    link = "mailto:atyre2@unl.edu"
+    link = "mailto:test@example.org"
 
   [[params.social]]
     icon = "twitter"
     icon_pack = "fa"
-    link = "//twitter.com/SNRatyre2"
-
-  [[params.social]]
-    icon = "instagram"
-    icon_pack = "fa"
-    link = "//www.instagram.com/atiretoo/"
-
-
-  [[params.social]]
-    icon = "linkedin"
-    icon_pack = "fa"
-    link = "//www.linkedin.com/in/drew-tyre"
+    link = "//twitter.com/GeorgeCushen"
 
   [[params.social]]
     icon = "google-scholar"
     icon_pack = "ai"
-    link = "//scholar.google.com/citations?user=WafwKngAAAAJ&hl=en"
-
-  [[params.social]]
-    icon = "researchgate"
-    icon_pack = "ai"
-    link = "//www.researchgate.net/profile/Andrew_Tyre"
-
+    link = "https://scholar.google.co.uk/citations?user=sIwtMXoAAAAJ"
 
   [[params.social]]
     icon = "github"
     icon_pack = "fa"
-    link = "//github.com/atyre2"
+    link = "//github.com/gcushen"
 
 
 # Navigation Links
@@ -177,20 +154,20 @@ defaultContentLanguageInSubdir = false
   url = "#about"
   weight = 1
 
-#[[menu.main]]
-#  name = "Publications"
-#  url = "#publications_selected"
-#  weight = 2
+[[menu.main]]
+  name = "Publications"
+  url = "#publications_selected"
+  weight = 2
 
 [[menu.main]]
   name = "Posts"
   url = "#posts"
   weight = 3
 
-#[[menu.main]]
-##  name = "Projects"
-#  url = "#projects"
-#  weight = 4
+[[menu.main]]
+  name = "Projects"
+  url = "#projects"
+  weight = 4
 
 [[menu.main]]
   name = "Teaching"
