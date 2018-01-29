@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Lecture Notes for Biology of Wildlife Populations</title>
   <meta name="description" content="These are the lecture notes for NRES 450 Biology of Wildlife populations at the University of Nebraska.">
-  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
   <meta property="og:title" content="Lecture Notes for Biology of Wildlife Populations" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Andrew Tyre">
 
 
-<meta name="date" content="2017-06-24">
+<meta name="date" content="2018-01-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -210,7 +210,7 @@ Figure 5.1: Total population size of pheasants on Einarsen Island. Filled circle
 <h3 id="the-many-flavors-of-carrying-capacity"><span class="header-section-number">5.1</span> The many flavors of carrying capacity</h3>
 <p>The term <em>carrying capacity</em> gets used loosely in many population management contexts. In addition to the very specific sense of the population size at which the rate of change is zero, there is at least one other meaning that is important. <strong>The <em>social carrying capacity</em> is the maximum population size that is tolerable to human populations living in the same area.</strong> This term usually gets used in the context of over-abundant populations. A population is over-abundant when (at least some) humans feel there are too many of a species. This is an area that is fraught with potential for conflict. Inevitably, there will be groups of people that disagree on what the suitable population size is for a certain species. The most prominent example of this in the national news is the Northern Rocky Mountain population of grey wolves. Conservationists want more wolves, while ranchers and others that live in the vicinity want fewer – ideally no – wolves. The only place where wolves are likely to reach their ecological carrying capacity is in Yellowstone National Park. Outside the park, social pressure has lead to harvesting, which in turn will lead to lower population size.</p>
 </div>
-<p></p>
+
 <div class="figure"><span id="fig:regulatedA"></span>
 <img src="NRES450-LectureNotes_files/figure-html/regulatedA-1.png" alt="Per capita birth and death rates for a model with birth rates affected by scramble competition" width="672" />
 <p class="caption">
@@ -259,7 +259,7 @@ Figure 5.5: Behavior of the discrete time Ricker model for two different values 
 <p>On the other hand were ecologists who thought that the effects of the environment, including weather and food resources, were paramount. This “density independent school” argued that populations were affected more by abiotic factors, and that the effects of these abiotic factors on populations did not depend on the population size. Herbert Andrewartha and Charles Birch, two Australian scientists who worked on insects, were the chief architects of this view. They had followed the numbers of thrips and aphids on a rose bush outside their office building for many, many years, and observed that the population size was strongly influenced by the amount of rainfall, and not by the population size in previous weeks. (That bush was outside my office when I worked at the Waite campus of the University of Adelaide. It still has thrips and aphids. There should be a shrine there.)</p>
 <p>So who is right? To some extent, both camps are, but the density independent camp is more wrong. It is quite easy to show that a population that is subject to random shocks (ie. weather), but otherwise has a constant population growth rate <span class="math inline">\(r\)</span>, will eventually either decay to zero (if <span class="math inline">\(r&lt;0\)</span>) or grow to infinity (if <span class="math inline">\(r&gt;0\)</span>). In order for a population to persist at some finite size, the rate of population growth <em>must</em> eventually decrease with increasing population size. However, it does not have to exactly match the logistic equation. What confused many, many ecologists thoughout the 20<sup>th</sup> century was the derivation of the logistic function from the assumption that per capita birth and death rates were straight lines. This makes the math easy, but it isn’t necessary to have a regulated population. The functions <span class="math inline">\(b(N)\)</span> and <span class="math inline">\(d(N)\)</span> can, and do, have many different shapes (Figure <a href="chap-regulation.html#fig:songsparrows">5.6</a>). In particular, if there is a portion of the curve that is flat, then when a population is within that region birth rates remain constant with apparently no relationship to population size - density independence! However, if a population grows large enough, density dependence will, indeed must, appear.</p>
 <div class="figure"><span id="fig:songsparrows"></span>
-<img src="images/songsparrowreproduction.png" alt="The mean number of independent young as a function of the number of breeding females in the Mandarte Island Song Sparrow population. In 1985 some females received supplementary feeding, which increased their reproductive output. The rate of change in reproductive output is lower, almost flat, when the number of females is less than 40. Adapted from Arcese and Smith (1988)"  />
+<img src="images/songsparrowreproduction.png" alt="The mean number of independent young as a function of the number of breeding females in the Mandarte Island Song Sparrow population. In 1985 some females received supplementary feeding, which increased their reproductive output. The rate of change in reproductive output is lower, almost flat, when the number of females is less than 40. Adapted from Arcese and Smith (1988)" width="208" />
 <p class="caption">
 Figure 5.6: The mean number of independent young as a function of the number of breeding females in the Mandarte Island Song Sparrow population. In 1985 some females received supplementary feeding, which increased their reproductive output. The rate of change in reproductive output is lower, almost flat, when the number of females is less than 40. Adapted from Arcese and Smith (1988)
 </p>
@@ -371,7 +371,7 @@ Figure 5.11: Ricker dynamics with and without a trend in carrying capacity. <spa
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
 <script>
-require(["gitbook"], function(gitbook) {
+gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,

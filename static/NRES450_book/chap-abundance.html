@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Lecture Notes for Biology of Wildlife Populations</title>
   <meta name="description" content="These are the lecture notes for NRES 450 Biology of Wildlife populations at the University of Nebraska.">
-  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
   <meta property="og:title" content="Lecture Notes for Biology of Wildlife Populations" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Andrew Tyre">
 
 
-<meta name="date" content="2017-06-24">
+<meta name="date" content="2018-01-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -275,7 +275,7 @@ Figure 3.4: The variance of the counts does not systematically decrease as the s
 \end{equation}\]</span>
 <p>With the sample variance for the counts calculated, we follow the same procedure to get the the variance of <span class="math inline">\(\hat{D}\)</span></p>
 <span class="math display" id="eq:densityvarwrRatio">\[\begin{equation}
-  s_{\hat{D}^2} = \left(\frac{u}{\sum_{i=1}^u{a_i}}\right)^2\frac{s_y^2}{u}
+  s_{\hat{D}}^2 = \left(\frac{u}{\sum_{i=1}^u{a_i}}\right)^2\frac{s_y^2}{u}
   \tag{3.10}
 \end{equation}\]</span>
 <p>The finite sample size correction for sampling without replacement is similar - now instead of the fraction of sample units we use the fraction of the area:</p>
@@ -285,7 +285,7 @@ Figure 3.4: The variance of the counts does not systematically decrease as the s
 \end{equation}\]</span>
 <p>Finally, the conversion to the <span class="math inline">\(s_{\hat{N}}^2\)</span> is always the same, simply multiplying the variance by the square of total area, <span class="math inline">\(A\)</span>.</p>
 <p><span class="math display">\[
-  s_{\hat{N}} = s_{\hat{D}}^2 A^2 
+  s_{\hat{N}}^2 = s_{\hat{D}}^2 A^2 
 \]</span></p>
 <p>The second alternative is to select sample units with a probability proportional to their size; this leads to a <em>probability-proportional-to-size</em> or PPS estimate. For example, if our sample units are defined in a GIS layer with different size polygons, and we select the units to be sampled by throwing random points onto the map, then each unit will be selected with a probability proportional to it’s size. In addition, it will also be sampling with replacement, and this is the only type of sampling that works for this estimator.</p>
 </div>
@@ -332,7 +332,7 @@ Figure 3.4: The variance of the counts does not systematically decrease as the s
 \]</span></p>
 It is possible to use simple linear regression to estimate the constants <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> if you have estimates of the density from areas with a range of densities. The constant <span class="math inline">\(b\)</span> can be shown to be equal to 1 when the organisms are distributed at random. Values of <span class="math inline">\(b\)</span> less than one are indications of underdispersion, or even spacing between individuals, while values of <span class="math inline">\(b &gt; 1\)</span> indicate aggregation between individuals. Thus, <strong>if the variance of the counts is greater than the mean of the counts, we say the population is “overdispersed”</strong>, or equivalently, that individuals are clumped together more than we expect from a random distribution.
 </div>
-<p></p>
+
 </div>
 <div id="further-reading" class="section level2 unnumbered">
 <h2>Further Reading</h2>
@@ -444,7 +444,7 @@ It is possible to use simple linear regression to estimate the constants <span c
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
 <script>
-require(["gitbook"], function(gitbook) {
+gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
