@@ -151,6 +151,12 @@ pre {
   overflow: auto;
 }
 
+pre code{
+  overflow: auto;
+  word-wrap: normal;
+  white-space: pre;
+}
+
 hr {
   border: 0;
   height: 1px;
