@@ -1,11 +1,26 @@
 ---
 title: Mental health -- it is important
 author: Drew Tyre
-date: '2017-12-07'
+date: "`r format(Sys.Date(), '%b %d, %Y')`"
 slug: mental-health
 draft: true
 summary: ""
 categories:
 tags:
 ---
+
+Mental health is a huge issue in academia right now (see this, this, or this, or that). 
+Many say the most important thing to normalize this, to get over thinking of it as stigma, is to own up to it.
+And so to do my bit, I suffer clinical depression. 
+
+Before I go any farther, *right now*, I am doing very well, thank you.
+
+Some close to me were alarmed that I would tell people about experiencing depression. 
+Last fall I told my boss. 
+Now I'm telling everyone! 
+Surely there will be negative consequences?
+
+Which is entirely the point. There could be, and there shouldn't be. It's no different from saying I'm a Type 2 diabetic. 
+It is a chronic condition that affects my behavior and life expectancy. Also, for the same reason, I should speak up. 
+If I can't weather the blow back (if any) as a cisgender heterosexual white male fully promoted professor, then there really *is* a problem. The privilege is leaking out of my ears. 
 
