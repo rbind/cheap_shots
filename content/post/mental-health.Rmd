@@ -1,15 +1,13 @@
 ---
 title: Mental health -- it is important
 author: Drew Tyre
-date: "`r format(Sys.Date(), '%b %d, %Y')`"
+date: '2018-2-10'
 slug: mental-health
 draft: true
 summary: ""
-categories: 
-  - Mental Health
-  - Acadamia
 tags:
-  - Disclosure
+  - Mental Health
+  - Higher Ed
 ---
 
 Mental health is a huge issue in academia right now (see 
