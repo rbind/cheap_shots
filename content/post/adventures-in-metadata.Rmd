@@ -5,9 +5,8 @@ date: '2017-12-07'
 slug: adventures-in-metadata
 draft: true
 summary: "Metadata are good. Everyone should create metadata. But writing raw XML is bad. rOpenSci created the EML package to make this easier."
-categories:
-  - R
 tags:
+  - R
   - data manipulation
   - ecology
 ---
