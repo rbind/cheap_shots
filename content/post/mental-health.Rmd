@@ -5,8 +5,11 @@ date: "`r format(Sys.Date(), '%b %d, %Y')`"
 slug: mental-health
 draft: true
 summary: ""
-categories:
+categories: 
+  - Mental Health
+  - Acadamia
 tags:
+  - Disclosure
 ---
 
 Mental health is a huge issue in academia right now (see 
