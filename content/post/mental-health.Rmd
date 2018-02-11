@@ -31,21 +31,6 @@ Still, its taken me a long time to get to the point where I could write this.
 
 [^1]: I am!
 
-When I read about others' experience of mental health issues, I'm blown away by the terrible situations that develop. 
-My own situation is so privileged, I often think "how can I complain?" 
-I should just suck it up. 
-But I can't. It is an illness. 
-Yes, there is a lot of personal work that I can, and am, doing to improve my mental state. 
-But there's no switch I can flip, no magic bullet. 
-I take medication, and that helps. A lot. But it isn't enough.
-The medication helps me put a floor on how far I fall when things go bad. 
-
-I'm not going to try and describe what it's like to be in the grip of depression. 
-I could never do as well as 
-[Andrew Solomon's TED talk](https://www.ted.com/talks/andrew_solomon_depression_the_secret_we_share?utm_campaign=tedspread--a&utm_medium=referral&utm_source=tedcomshare). 
-Trigger warning: I burst into tears the first time I watched this -- the description was so spot on.
-Or [this great essay by Katie Rose Guest Pryal](https://chroniclevitae.com/news/1203-working-when-your-brain-isn-t)
-
 In 2012, three years after getting tenure, I was at the peak of my career. 
 I had brought in some big(-ish) grants, my students were successful, papers were churning out and I had stimulating collaborations. 
 Then I just fell apart. More or less. 
@@ -61,6 +46,21 @@ $Suicidal thoughts / day > 0$ is a sign something is off.
 In hindsight, it's a good thing I've never owned a gun.
 I'm also incredibly lucky to have a loving family. 
 Thinking about what my suicide would do to them kept me alive. 
+
+When I read about others' experience of mental health issues, I'm blown away by the terrible situations that develop. 
+My own situation is so privileged, I often think "how can I complain?" 
+I should just suck it up. 
+But I can't. It is an illness. 
+Yes, there is a lot of personal work that I can, and am, doing to improve my mental state. 
+But there's no switch I can flip, no magic bullet. 
+I take medication, and that helps. A lot. But it isn't enough.
+The medication helps me put a floor on how far I fall when things go bad. 
+
+I'm not going to try and describe what it's like to be in the grip of depression. 
+I could never do as well as 
+[Andrew Solomon's TED talk](https://www.ted.com/talks/andrew_solomon_depression_the_secret_we_share?utm_campaign=tedspread--a&utm_medium=referral&utm_source=tedcomshare). 
+Trigger warning: I burst into tears the first time I watched this -- the description was so spot on.
+Or [this great essay by Katie Rose Guest Pryal](https://chroniclevitae.com/news/1203-working-when-your-brain-isn-t)
 
 In hindsight, it seems pretty clear that I was experiencing depression for many years prior to that total collapse. 
 Maybe I'd have spotted it sooner if mental illness was more widely discussed and acknowledged.
@@ -82,4 +82,5 @@ Sitting here in my privileged bubble, having dug out of another fight with Churc
 This essay is one thing. 
 Together with a few colleagues who also experience mental health issues, I've been looking around for ways to support students. We've added lists of resources to our course homepages, posted signs on doors indicating we are willing to listen, and ... 
 I recently learned there is a UNL chapter of [Active Minds](http://www.activeminds.org/), an organization advocating for mental health on campus. 
+
 All seems like weak tea. 
