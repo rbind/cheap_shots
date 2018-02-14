@@ -1,13 +1,16 @@
 ---
-title: Mental health -- it is important
-author: Drew Tyre
+title: "Mental health -- it is important"
+author: "Drew Tyre"
 date: '2018-02-10'
+output: word_document
 slug: mental-health
-draft: true
-summary: "Mental health is a huge issue in academia right now (see this, this, or this, or that). Many say the most important thing to normalize this, to get over thinking of it as stigma, is to own up to it. And so to do my bit, I suffer clinical depression."
+summary: Mental health is a huge issue in academia right now (see this, this, or this,
+  or that). Many say the most important thing to normalize this, to get over thinking
+  of it as stigma, is to own up to it. And so to do my bit, I suffer clinical depression.
 tags:
-  - Mental Health
-  - Higher Ed
+- Mental Health
+- Higher Ed
+draft: yes
 ---
 
 Mental health is a huge issue in academia right now (see 
@@ -65,7 +68,9 @@ I take medication, and that helps. A lot. But it isn't enough.
 The medication helps me put a floor on how far I fall when things go bad. 
 I practice mindfulness meditation. 
 I exercise. 
-
+Late last year I made some tough decisions about what I could and couldn't continue to do. 
+Cutting back created the space for me to start healing again. 
+But telling colleagues that some things were not going to happen was the hardest thing I've had to do for a long time. 
 
 In hindsight, it seems pretty clear that I was experiencing depression for many years prior to that total collapse. 
 Maybe I'd have spotted it sooner if mental illness was more widely discussed and acknowledged.
@@ -74,7 +79,7 @@ I might have thought to ask my physician about a normal frequency of suicidal th
 I told my Facebook friends I was experiencing a relapse last year. 
 A colleague was surprised, and wrote "You've always seems one of the most well balanced people I've known."
 Which was a great compliment, and I said thanks! 
-But, outward appearances are deceiving.  
+But, outward appearances are deceiving. 
 Even in the grip of the deepest depression I can walk into a room full of people and lead a meeting. 
 But in my office? 
 I stare at the wall. 
@@ -93,5 +98,6 @@ I recently learned there is a UNL chapter of [Active Minds](http://www.activemin
 
 Just today I found my equilibrium knocked askew, negative thoughts boiling up like storm clouds. 
 Take some deep breaths -- mindfully watch the clouds roll by. There is always blue sky up above. 
+Above all else, be kind.
 
 
