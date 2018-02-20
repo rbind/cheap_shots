@@ -2,14 +2,14 @@
 title: "Mental health -- it is important"
 author: "Drew Tyre"
 date: '2018-02-20'
-output: html_document
+output: word_document
 slug: mental-health
-summary: "Awareness of student's mental health is growing in academia right now. Unsurprisingly, faculty suffer mental illness too, and many do not seek help from their institutions. The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help."
+summary: "Awareness of students' mental health is growing in academia right now. Unsurprisingly, faculty suffer mental illness too, and many do not seek help from their institutions. The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help."
 tags: [mental health, higher ed]
 draft: yes
 ---
 
-Awareness of student's mental health is growing in academia right now (see 
+Awareness of students' mental health is growing in academia right now (see 
 [this](https://www.theatlantic.com/education/archive/2016/07/why-do-so-many-graduate-students-quit/490094/), 
 [this](https://dynamicecology.wordpress.com/2016/07/13/life-as-an-anxious-scientist/), or 
 [this](https://www.theguardian.com/society/2017/may/23/number-university-dropouts-due-to-mental-health-problems-trebles?CMP=Share_iOSApp_Other). 
@@ -82,7 +82,7 @@ Maybe I'd have spotted it sooner if mental illness was more widely discussed and
 I might have thought to ask my physician about the normal frequency of suicidal thoughts (zero!). 
 
 I told my Facebook friends I was experiencing a relapse last year. 
-A colleague was surprised, and wrote "You've always seemed one of the most well balanced people I've known."
+A colleague was surprised, and wrote "I always thought you were a well adjusted thoughtful and caring person. Still do btw."
 But, outward appearances are deceiving. 
 Even in the grip of the deepest depression I can walk into a room full of people and lead a meeting. 
 But in my office? 
