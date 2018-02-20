@@ -13,3 +13,62 @@ tags: [rstats]
 <p>Thank you for this post. I have difficulties understanding it though because the text below the first R output seems not to match with the model output. At first, one cannot see which species is species1,2 etc. Second the numbers are also not correct… Would be cool if you could check it and correct it because then it would be a useful post!</p>
 </blockquote>
 <p>oops. Maybe didn’t get all the bugs out. I’ll re-run everything there and fix it. Also, I’ve recently figured out why setting sum to zero contrasts looses the names of the species in the summary, so I’ll add that description here.</p>
+<p>So the problem is:</p>
+<pre class="r"><code>data(iris)
+library(dplyr)  #Stay in the tidyverse! 
+iris &lt;- iris %&gt;% mutate(cSepal.Length = Sepal.Length - mean(Sepal.Length))
+iris$szSpecies &lt;- iris$Species
+contrasts(iris$szSpecies) &lt;- contr.sum(3)
+m2 &lt;- lm(Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+(summary_m2 &lt;- summary(m2))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.72394 -0.16327 -0.00289  0.16457  0.60954 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)               3.21278    0.04098  78.395  &lt; 2e-16 ***
+## cSepal.Length             0.45005    0.04900   9.185 4.11e-16 ***
+## szSpecies1                0.88386    0.07086  12.473  &lt; 2e-16 ***
+## szSpecies2               -0.47240    0.04680 -10.094  &lt; 2e-16 ***
+## cSepal.Length:szSpecies1  0.34848    0.08038   4.335 2.72e-05 ***
+## cSepal.Length:szSpecies2 -0.13033    0.06553  -1.989   0.0486 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2723 on 144 degrees of freedom
+## Multiple R-squared:  0.6227, Adjusted R-squared:  0.6096 
+## F-statistic: 47.53 on 5 and 144 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notice that instead of Speciessetosa I have Species1 in the coefficient names.</p>
+<pre class="r"><code>contr.matrix &lt;- contr.sum(3)
+colnames(contr.matrix) &lt;- c(&quot;setosa&quot;, &quot;versicolor&quot;)
+contrasts(iris$szSpecies) &lt;- contr.matrix
+m2 &lt;- lm(Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+(summary_m2 &lt;- summary(m2))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.72394 -0.16327 -0.00289  0.16457  0.60954 
+## 
+## Coefficients:
+##                                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                        3.21278    0.04098  78.395  &lt; 2e-16 ***
+## cSepal.Length                      0.45005    0.04900   9.185 4.11e-16 ***
+## szSpeciessetosa                    0.88386    0.07086  12.473  &lt; 2e-16 ***
+## szSpeciesversicolor               -0.47240    0.04680 -10.094  &lt; 2e-16 ***
+## cSepal.Length:szSpeciessetosa      0.34848    0.08038   4.335 2.72e-05 ***
+## cSepal.Length:szSpeciesversicolor -0.13033    0.06553  -1.989   0.0486 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2723 on 144 degrees of freedom
+## Multiple R-squared:  0.6227, Adjusted R-squared:  0.6096 
+## F-statistic: 47.53 on 5 and 144 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>And now we have the names back!</p>

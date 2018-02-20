@@ -13,3 +13,28 @@ In 2016 I started thinking about using sum to zero contrasts and wrote [a brief 
 >Would be cool if you could check it and correct it because then it would be a useful post!
 
 oops. Maybe didn't get all the bugs out. I'll re-run everything there and fix it. Also, I've recently figured out why setting sum to zero contrasts looses the names of the species in the summary, so I'll add that description here. 
+
+So the problem is:
+
+```{r, message = FALSE}
+data(iris)
+library(dplyr)  #Stay in the tidyverse! 
+iris <- iris %>% mutate(cSepal.Length = Sepal.Length - mean(Sepal.Length))
+iris$szSpecies <- iris$Species
+contrasts(iris$szSpecies) <- contr.sum(3)
+m2 <- lm(Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+(summary_m2 <- summary(m2))
+```
+
+Notice that instead of Speciessetosa I have Species1 in the coefficient names. 
+
+```{r}
+contr.matrix <- contr.sum(3)
+colnames(contr.matrix) <- c("setosa", "versicolor")
+contrasts(iris$szSpecies) <- contr.matrix
+m2 <- lm(Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+(summary_m2 <- summary(m2))
+
+```
+
+And now we have the names back!
