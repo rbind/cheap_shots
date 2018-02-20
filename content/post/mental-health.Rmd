@@ -2,22 +2,21 @@
 title: "Mental health -- it is important"
 author: "Drew Tyre"
 date: '2018-02-10'
-output: word_document
+output: html_document
 slug: mental-health
-summary: Mental health is a huge issue in academia right now (see this, this, or this,
-  or that). Many say the most important thing to normalize this, to get over thinking
-  of it as stigma, is to own up to it. And so to do my bit, I suffer clinical depression.
+summary: "Awareness of student's mental health is growing in academia right now. Unsurprisingly, faculty suffer mental illness too, and many do not seek help from their institutions.
+The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help."
 tags:
 - Mental Health
 - Higher Ed
 draft: yes
 ---
 
-Mental health is a growing issue in academia right now (see 
+Awareness of student's mental health is growing in academia right now (see 
 [this](https://www.theatlantic.com/education/archive/2016/07/why-do-so-many-graduate-students-quit/490094/), 
 [this](https://dynamicecology.wordpress.com/2016/07/13/life-as-an-anxious-scientist/), or 
 [this](https://www.theguardian.com/society/2017/may/23/number-university-dropouts-due-to-mental-health-problems-trebles?CMP=Share_iOSApp_Other). 
-[Faculty suffer mental illness too](https://www.insidehighered.com/news/2017/06/08/study-faculty-members-mental-health-issues-finds-mix-attitudes-disclosing-and), and many do not seek help from their institutions.
+[Unsurprisingly, faculty suffer mental illness and disability too](https://www.insidehighered.com/news/2017/06/08/study-faculty-members-mental-health-issues-finds-mix-attitudes-disclosing-and), and many do not seek help from their institutions.
 The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help.
 I believe normalizing mental illness and disability could eliminate the stigma, reduce the fear, and get more people the help they need.
 
@@ -25,46 +24,50 @@ And so to do my bit, I suffer from clinical depression.
 
 Before I go any farther, *right now*, I am doing very well, thank you.
 
-Some close to me are alarmed when I tell people about experiencing depression. 
+Some close to me are alarmed that I am disclosing my experience of depression. 
 Last fall I told my boss. 
 Now I'm telling everyone! 
 Surely there will be negative consequences?
 
 Which is entirely the point. There could be, but there shouldn't be. It's no different from saying I'm a Type 2 diabetic.[^1] 
-It is a chronic condition that affects my behavior and life expectancy. For the same reason, I should speak up. 
-If I can't weather the blow back (if any) as an atheist, cisgender, heterosexual, white, male, fully promoted professor, then there really *is* a problem. Privilege is leaking out of my ears.
+Clinical depression (and other mental maladies) is a chronic condition that affects my behavior, life expectancy, and quality of life. For the same reason, I should speak up. 
+**If I can't weather the blow back (if any) as an atheist, cisgender, heterosexual, white, male, fully promoted professor, then there really *is* a problem.** Privilege is leaking out of my ears.
 Still, its taken me a long time to get to the point where I could write this. 
 
 [^1]: I am!
 
 In 2012, three years after getting tenure, I was at the peak of my career. 
 I had brought in some big(-ish) grants, my students were successful, papers were churning out, and I had stimulating collaborations. 
-My children were growing, healthy, happy (as far as I could tell!), and my spouse's career was also going well. 
+My children were growing, healthy and happy (as far as I could tell!), and my spouse's career was moving equally well. 
 Then I just fell apart. More or less. 
-I vividly recall sitting in the parking lot of my building one day, calling a collaborator and saying I couldn't make a meeting. 
-I couldn't do anything except sit there and cry. 
-Luckily I was familiar with UNL's employee assistance program. I visited with a counselor a few years before to talk about stress management, and felt comfortable calling for an appointment. 
-Within a few minutes, the counselor diagnosed me as clinically depressed. 
+I vividly recall sitting in the car outside my office, calling a collaborator and saying I couldn't make a meeting. 
+I couldn't do anything except sit there, crying. 
 
-TIL: it is not normal to think about suicide or dying on a daily basis. Who knew! I sure didn't. 
+Luckily I was already familiar with my institution's employee assistance program. I visited with a counselor a few years before to talk about stress management, and felt comfortable calling for an appointment. 
+Within a few minutes[^2], the counselor diagnosed me as clinically depressed. 
+
+[^2]: Turns out, there is a very specific set of questions to answer that diagnose depression. Doesn't take long to figure it out if you're willing to answer honestly!
+
+TIL:[^TIL] it is not normal to think about suicide or dying on a daily basis. Who knew! I sure didn't. 
 Now I know that those thoughts are just symptoms. 
 I treat them as such, just like measuring a high glucose reading is a symptom that my diet isn't controlling my diabetes. 
 $Suicidal thoughts / day > 0$ is a sign something is off.
 I'm incredibly lucky to have a loving family --
-Thinking about what my suicide would do to them kept me alive. 
+thinking about what my suicide would do to them kept me alive. 
+
+[^TIL]: I think of this as "Thing I Learned", but [urban dictionary](https://www.urbandictionary.com/define.php?term=TIL) says "Today I learned" which doesn't work in this sentence. Tough, I like mine better.
 
 I'm not going to try and describe what it's like to be in the grip of depression. 
 I could not describe it as well as 
 [Andrew Solomon in his TED talk](https://www.ted.com/talks/andrew_solomon_depression_the_secret_we_share?utm_campaign=tedspread--a&utm_medium=referral&utm_source=tedcomshare). 
 Trigger warning: I burst into tears the first time I watched this -- the description was so spot on.
-Or [this great essay by Katie Rose Guest Pryal](https://chroniclevitae.com/news/1203-working-when-your-brain-isn-t)
+Or [this great essay by Katie Rose Guest Pryal](https://chroniclevitae.com/news/1203-working-when-your-brain-isn-t) on working while depressed.
 
 When I read about others' experience of mental health issues, I'm blown away by the terrible situations that develop. 
-My own situation is so privileged, I often think "how can I complain?" 
-I should just suck it up. 
+**My own situation is so privileged, I often think "how can I complain?" I should just suck it up.**
 That kind of thinking is part of the problem!
 I can't just suck it up. It is an illness. 
-Yes, there is a lot of personal work that I can and am doing to improve my mental state. 
+Yes, there is a lot of personal work that I do to improve my mental state. 
 But there's no switch I can flip, no magic bullet. 
 I take medication, and that helps. A lot. But it isn't enough.
 The medication helps me put a floor on how far I fall when things go bad. 
@@ -74,7 +77,7 @@ I regularly meet with a mental health professional. The combination of counselin
 I practice mindfulness meditation. 
 I exercise. 
 Late last year I made some tough decisions about what I could and couldn't continue to do. 
-Cutting back created the space for me to start healing again. 
+Cutting back on work created the space for me to start healing again. 
 But telling colleagues that some things were not going to happen was the hardest thing I've had to do for a long time. 
 
 In hindsight, it is pretty clear I was experiencing depression for many years prior to that total collapse. 
@@ -83,7 +86,6 @@ I might have thought to ask my physician about the normal frequency of suicidal 
 
 I told my Facebook friends I was experiencing a relapse last year. 
 A colleague was surprised, and wrote "You've always seemed one of the most well balanced people I've known."
-Which was a great compliment, and I said thanks! 
 But, outward appearances are deceiving. 
 Even in the grip of the deepest depression I can walk into a room full of people and lead a meeting. 
 But in my office? 
@@ -93,16 +95,21 @@ Some people wear their depression on their sleeves.
 You can tell they are suffering.
 But others, like me, show nothing. We're still suffering.
 
-Sitting here in my privileged bubble, having dug out of another fight with Churchill's Black Dog, I've been asking "what can I do to make things better?". 
+Sitting here in my privileged bubble, having dug out of the latest relapse, I've been asking "what can I do to make things better for others?". 
 This essay is one thing. 
 Together with a few colleagues who also experience mental health issues, I've been looking around for ways to support students. We've added lists of resources to our course homepages and posted signs on doors indicating we are willing to listen.
 Meghan Duffy posted [about supporting students with mental illness at Dynamic Ecology](https://dynamicecology.wordpress.com/2018/01/29/how-to-support-undergraduate-students-experiencing-mental-health-concerns/).
 I recently learned there is a UNL chapter of [Active Minds](http://www.activeminds.org/), an organization advocating for mental health on campus. 
 It is for students, but I'll keep an eye on their activities and support what I can.
-There is also [a report on supporting faculty with mental health issues](http://tucollaborative.org/sdm_downloads/supportive-academic-environments-for-faculty-with-mental-illnesses/) that I need to dig into.
+There is also [a report on fostering a supportive workplace for faculty with mental health issues](http://tucollaborative.org/sdm_downloads/supportive-academic-environments-for-faculty-with-mental-illnesses/) that I need to dig into. 
+I'm really lucky to have supportive and understanding colleagues; we're building that supportive workplace bit by bit! 
 
-Just today I found my equilibrium knocked askew, negative thoughts boiling up like storm clouds. 
-Take some deep breaths -- mindfully watch the clouds roll by. There is always blue sky up above. 
+One of the hardest bits was coming to the realization that I am never going to be "better". 
+I must work on my mental health every. single. day. 
+Just the other day I found my equilibrium knocked askew by a random event.
+It was no reflection on me; just part of the job. 
+Nonetheless the negative thoughts boiled up like storm clouds, sapping my productivity even after I had done all I could. 
+I take some deep breaths -- mindfully watch the clouds roll by. There is always blue sky up above. 
 Above all else, be kind, especially to myself.
 
 
