@@ -4,11 +4,8 @@ author: "Drew Tyre"
 date: '2018-02-20'
 output: html_document
 slug: mental-health
-summary: "Awareness of student's mental health is growing in academia right now. Unsurprisingly, faculty suffer mental illness too, and many do not seek help from their institutions.
-The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help."
-tags:
-- Mental Health
-- Higher Ed
+summary: "Awareness of student's mental health is growing in academia right now. Unsurprisingly, faculty suffer mental illness too, and many do not seek help from their institutions. The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help."
+tags: [mental health, higher ed]
 draft: yes
 ---
 
