@@ -1,0 +1,205 @@
+--- 
+title:  Should I use sum-to-zero contrasts? 
+author: Drew Tyre
+date: '2016-09-03'
+slug: sum-to-zero
+draft: false
+summary: "Should ecologists use sum-to-zero contrasts?"
+tags: [rstats, teaching] 
+---
+
+
+
+<p>A sum-to-zero contrast codes a categorical variable as deviations from a grand mean. Social scientists use them extensively. Should ecologists?</p>
+<p><strong>EDIT</strong> the first version of this post that went up had some bugs in it. Hopefully all fixed now.</p>
+<p><strong>EDIT2</strong> Annnd the second version still had bugs. Maybe fixed now.</p>
+<p>More accurately, should I tell my students in Ecological Statistics to use them? Sum-to-zero contrasts are conceptually similar to centering a continuous variable by subtracting the mean from your predictor variable prior to analysis. Discussions of centering often end up conflated with <em>scaling</em>, which is dividing your predictor variable by a constant, usually the standard deviation, prior to analysis. <em>Always scaling</em> covariates prior to regression analysis is controversial advice. See for example <a href="http://andrewgelman.com/2009/07/11/when_to_standar/">Andrew Gelman’s blogpost and comments</a>, or many crossvalidated questions <a href="http://stats.stackexchange.com/q/29781/12258">such as this one</a> which has links to many others. There is a good reference as well as some useful discussion in the comments of <a href="http://stats.stackexchange.com/questions/179732/motivation-to-center-continuous-predictor-in-multiple-regression-for-sake-of-mul">this question</a>. In this post I focus on the effects of sum to zero contrasts for categorical variables and interactions with continuous variables.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>Here is my summary of the pros and cons of centering drawn from those references above.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<ul>
+<li>Centering continuous variables eliminates collinearity between interaction and polynomial terms and the individual covariates that make them up.</li>
+<li>Centering does not affect inference about the covariates.</li>
+<li>Centering can improve the interpretability of the coefficients in a regression model, particularly because the intercept represents the value of the response at the mean of the predictor variables.</li>
+<li>Predicting out of sample data with a model fitted to centered data must be done carefully because the center of the out of sample data will be different from the fitted data.</li>
+<li>There may be some constant value other than the sample mean that makes more sense based on domain knowledge.</li>
+</ul>
+<p>To make the discussion concrete, let me demonstrate with an example of the interaction between a continuous covariate and a categorical one. In the following I refer to the effect of individual covariates outside the interaction as the “simple effect” of that covariate.</p>
+<pre class="r"><code>data(iris)
+m0 &lt;- lm(Sepal.Width ~ Sepal.Length * Species, data = iris)
+(summary_m0 &lt;- summary(m0))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Width ~ Sepal.Length * Species, data = iris)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.72394 -0.16327 -0.00289  0.16457  0.60954 
+## 
+## Coefficients:
+##                                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                     -0.5694     0.5539  -1.028 0.305622    
+## Sepal.Length                     0.7985     0.1104   7.235 2.55e-11 ***
+## Speciesversicolor                1.4416     0.7130   2.022 0.045056 *  
+## Speciesvirginica                 2.0157     0.6861   2.938 0.003848 ** 
+## Sepal.Length:Speciesversicolor  -0.4788     0.1337  -3.582 0.000465 ***
+## Sepal.Length:Speciesvirginica   -0.5666     0.1262  -4.490 1.45e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2723 on 144 degrees of freedom
+## Multiple R-squared:  0.6227, Adjusted R-squared:  0.6096 
+## F-statistic: 47.53 on 5 and 144 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>The intercept of this model isn’t directly interpretable because it gives the average width at a length of zero, which is impossible. In addition, both the intercept and simple effect of length represent the change in width for only one species, <em>setosa</em>. The default contrast in R estimates coefficients for <span class="math inline">\(k - 1\)</span> levels of a factor. In the simple effect of a factor each coefficient is the difference between the first level (estimated by the intercept), and the named level. In the above, <code>Speciesversicolor</code> has sepals that are 1.4 mm wider than <em>setosa</em>. The interaction coefficients such as <code>Sepal.Length:Speciesversicolor</code> tell us how much the effect of Sepal.Length in <em>versicolor</em> changes from that in <em>setosa</em>. So every mm of sepal length in versicolor increases sepal width by <span class="math inline">\(0.8 - 0.48 = 0.32\)</span> mm.</p>
+<p>Maybe a plot will help.</p>
+<pre class="r"><code>library(ggplot2)
+base_iris &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(aes(shape = Species)) + 
+    xlab(&quot;Sepal Length [mm]&quot;) + ylab(&quot;Sepal Width [mm]&quot;)
+library(broom)
+nd &lt;- expand.grid(Sepal.Length = seq(-1, 8, 0.1), Species = factor(levels(iris$Species)))
+pred.0 &lt;- augment(m0, newdata = nd)
+base_iris + geom_line(aes(y = .fitted, linetype = Species), data = pred.0)</code></pre>
+<p><img src="/post/2016-09-03-sum-to-zero-contrasts_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>I did something rather silly looking there because I wanted to see where the curves cross x = 0. That is where the estimates for the intercept and simple effect of species are calculated. The intercept is negative, and the line for <em>setosa</em> crosses x = 0 well below y = 0. The simple effect estimates of Species are both positive, with <em>virginica</em> being larger, and indeed the line for <em>virginica</em> crosses x = 0 at the highest point. Similarly, the simple effect of length is the slope of the line for <em>setosa</em>, and it is larger than the slopes of the other two species because the estimated interactions are both negative. But not centering really makes things ugly for direct interpretation of the estimated coefficients.</p>
+<p>Centering the continuous variable gives us</p>
+<pre class="r"><code>library(dplyr)  #Stay in the tidyverse! </code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>iris &lt;- iris %&gt;% mutate(cSepal.Length = Sepal.Length - mean(Sepal.Length))
+m1 &lt;- lm(Sepal.Width ~ cSepal.Length * Species, data = iris)
+(summary_m1 &lt;- summary(m1))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Width ~ cSepal.Length * Species, data = iris)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.72394 -0.16327 -0.00289  0.16457  0.60954 
+## 
+## Coefficients:
+##                                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                       4.0966     0.1001  40.916  &lt; 2e-16 ***
+## cSepal.Length                     0.7985     0.1104   7.235 2.55e-11 ***
+## Speciesversicolor                -1.3563     0.1075 -12.616  &lt; 2e-16 ***
+## Speciesvirginica                 -1.2953     0.1165 -11.114  &lt; 2e-16 ***
+## cSepal.Length:Speciesversicolor  -0.4788     0.1337  -3.582 0.000465 ***
+## cSepal.Length:Speciesvirginica   -0.5666     0.1262  -4.490 1.45e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2723 on 144 degrees of freedom
+## Multiple R-squared:  0.6227, Adjusted R-squared:  0.6096 
+## F-statistic: 47.53 on 5 and 144 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Estimates and t-statistics for the continuous covariate, including the interaction terms, do not change. The t-statistics for the intercept and simple effect of species do change because now the model estimates the differences between the species at the mean length.</p>
+<pre class="r"><code>zapsmall(summary_m1$coefficients[, 3] - summary_m0$coefficients[, 3])</code></pre>
+<pre><code>##                     (Intercept)                   cSepal.Length 
+##                        41.94445                         0.00000 
+##               Speciesversicolor                Speciesvirginica 
+##                       -14.63795                       -14.05196 
+## cSepal.Length:Speciesversicolor  cSepal.Length:Speciesvirginica 
+##                         0.00000                         0.00000</code></pre>
+<p>That’s OK, because they are really testing something quite different from before. Just to confirm that the graph isn’t different.</p>
+<pre class="r"><code># remember to center the newdata values by the original mean!
+nd &lt;- nd %&gt;% filter(Sepal.Length &gt; 4) %&gt;% mutate(cSepal.Length = Sepal.Length - 
+    mean(iris$Sepal.Length))
+pred.1 &lt;- augment(m1, newdata = nd)
+base_iris + geom_line(aes(y = .fitted, linetype = Species), data = pred.1)</code></pre>
+<p><img src="/post/2016-09-03-sum-to-zero-contrasts_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>What happens if we use sum to zero contrasts for species?</p>
+<pre class="r"><code>iris$szSpecies &lt;- iris$Species
+contrasts(iris$szSpecies) &lt;- contr.sum(3)
+m2 &lt;- lm(Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+(summary_m2 &lt;- summary(m2))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.72394 -0.16327 -0.00289  0.16457  0.60954 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)               3.21278    0.04098  78.395  &lt; 2e-16 ***
+## cSepal.Length             0.45005    0.04900   9.185 4.11e-16 ***
+## szSpecies1                0.88386    0.07086  12.473  &lt; 2e-16 ***
+## szSpecies2               -0.47240    0.04680 -10.094  &lt; 2e-16 ***
+## cSepal.Length:szSpecies1  0.34848    0.08038   4.335 2.72e-05 ***
+## cSepal.Length:szSpecies2 -0.13033    0.06553  -1.989   0.0486 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2723 on 144 degrees of freedom
+## Multiple R-squared:  0.6227, Adjusted R-squared:  0.6096 
+## F-statistic: 47.53 on 5 and 144 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>I can now directly interpret the intercept as the average width at the average length, averaged over species. Similarly the simple effect of length as the change in width averaged across species. This seems like a very useful set of coefficients to look at, particularly if my categorical covariate has many levels. You might ask (I did), what do the categorical coefficients mean? They represent deviations from the mean intercept for each species. But what is species 1 and species 2? With sum to zero contrasts those coefficient refer to the first k-1 levels, so species 1 is <em>setosa</em> and species 2 is <em>versicolor</em>. OK, you say (I did), then where’s species <em>virginica</em>? After much head scratching, the answer is that it is the negative of the <strong>sum</strong> of the other two coefficients.</p>
+<p>I just thought of something else. Are those “average” intercept and slope the same as what I would get if I only use <code>cSepal.Length</code>?</p>
+<pre class="r"><code>m3 &lt;- lm(Sepal.Width ~ cSepal.Length, data = iris)
+(summary_m3 &lt;- summary(m3))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Width ~ cSepal.Length, data = iris)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.1095 -0.2454 -0.0167  0.2763  1.3338 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    3.05733    0.03546   86.22   &lt;2e-16 ***
+## cSepal.Length -0.06188    0.04297   -1.44    0.152    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4343 on 148 degrees of freedom
+## Multiple R-squared:  0.01382,    Adjusted R-squared:  0.007159 
+## F-statistic: 2.074 on 1 and 148 DF,  p-value: 0.1519</code></pre>
+<p>Whoa! It is not the same, in fact it is radically different. Totally different conclusion about the “average” effect.</p>
+<pre class="r"><code>m4 &lt;- lm(Sepal.Width ~ cSepal.Length + szSpecies, data = iris)
+(summary_m4 &lt;- summary(m4))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Sepal.Width ~ cSepal.Length + szSpecies, data = iris)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.95096 -0.16522  0.00171  0.18416  0.72918 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    3.05733    0.02360 129.571  &lt; 2e-16 ***
+## cSepal.Length  0.34988    0.04630   7.557 4.19e-12 ***
+## szSpecies1     0.66363    0.05115  12.974  &lt; 2e-16 ***
+## szSpecies2    -0.31976    0.03364  -9.504  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.289 on 146 degrees of freedom
+## Multiple R-squared:  0.5693, Adjusted R-squared:  0.5604 
+## F-statistic: 64.32 on 3 and 146 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>This is closer to the conclusion obtained with the interaction model.</p>
+<p>I have seen assertions in some papers (particularly from social sciences), that using sum to zero contrasts (also called effects coding, I believe), allows the direct interpretation of lower order terms in an ANOVA table even in the presence of interactions.</p>
+<pre class="r"><code>anova(m2)  # doesn&#39;t matter which model I use</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: Sepal.Width
+##                          Df  Sum Sq Mean Sq  F value    Pr(&gt;F)    
+## cSepal.Length             1  0.3913  0.3913   5.2757   0.02307 *  
+## szSpecies                 2 15.7225  7.8613 105.9948 &lt; 2.2e-16 ***
+## cSepal.Length:szSpecies   2  1.5132  0.7566  10.2011  7.19e-05 ***
+## Residuals               144 10.6800  0.0742                       
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>If so, in this case I could say “Sepal Width differs significantly between species.” I’m not sure I believe that. The ANOVA table is identical between all 3 models, whether I use sum-to-zero contrasts or not. Why should the interpretation differ if I just change the parameterization of the model?</p>
+<p>Explaining treatment contrasts to students is a pain. I’m not sure that these are any easier. I have a few thoughts about the effects of sum-to-zero contrasts and model averaging, but that will have to wait for a different post.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>All the code for this post, including that not shown, <a href="https://github.com/atyre2/atyre2.github.io/raw/master/_drafts/sum-to-zero-contrasts.Rmd">can be found here</a>.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>This stuff first appeared <a href="http://stats.stackexchange.com/questions/188852/centering-in-the-presence-of-interactions-with-categorical-predictors">as a question on CrossValidated</a>, but received no attention.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
