@@ -40,7 +40,7 @@ Then I just fell apart. More or less.
 I vividly recall sitting in the car outside my office, calling a collaborator and saying I couldn't make a meeting. 
 I couldn't do anything except sit there, crying. 
 
-Luckily, I was already familiar with my institution's employee assistance program. I visited with a counselor a few years before to talk about stress management and felt comfortable calling for an appointment. 
+Luckily, I was already familiar with my institution's employee assistance program. A few years before I visited with a counselor to talk about stress management and felt comfortable calling for an appointment. 
 Within a few minutes[^2], the counselor diagnosed me as clinically depressed. 
 
 [^2]: Turns out, there is a very specific set of questions to diagnose depression. Doesn't take long to figure it out if you're willing to answer honestly!
@@ -48,11 +48,11 @@ Within a few minutes[^2], the counselor diagnosed me as clinically depressed.
 TIL:[^TIL] it is not normal to think about suicide or dying on a daily basis. Who knew! I sure didn't. 
 Now I know that those thoughts are just symptoms. 
 I treat them as such, just like measuring a high glucose reading is a symptom that my diet isn't controlling my diabetes. 
-$Suicidal thoughts / day > 0$ is a sign something is off.
+*# Suicidal thoughts / day > 0* is a sign something is off.
 I'm incredibly lucky to have a loving family --
 thinking about what my suicide would do to them kept me alive. 
 
-[^TIL]: I think of this as "Thing I Learned", but [urban dictionary](https://www.urbandictionary.com/define.php?term=TIL) says "Today I learned" which doesn't work in this sentence. Tough, I like mine better.
+[^TIL]: I think of this as "Thing I Learned", but [urban dictionary](https://www.urbandictionary.com/define.php?term=TIL) says "Today I learned" which doesn't work in this sentence. Tough, I like my definition better.
 
 I'm not going to try and describe what it's like to be in the grip of depression. 
 I could not describe it as well as 
@@ -75,6 +75,13 @@ I made some tough decisions about what I could and couldn't continue to do.
 Telling colleagues that some things were not going to happen was the hardest thing I've had to do for a long time. 
 Choosing to give up the courses I created to focus on teaching required courses was just as hard. 
 But, cutting back on work created space for me to start healing again. 
+
+About work -- I'd like to say you can be productive and depressed, but my own story isn't good evidence of that.
+If you look at [my CV](https://scholar.google.com/citations?hl=en&user=WafwKngAAAAJ&view_op=list_works&authuser=1&sortby=pubdate) my paper output runs into a brick wall in 2015. 
+That's when the pre-2012 pipeline finally ran dry. 
+I've always managed to meet my teaching and administrative obligations, but the self-confident creativity necessary for research largely evaporated. 
+Whenever I'm well, it comes rushing back! My notebook starts to fill up with ideas.
+This time, I'm determined to *stay well*. 
 
 I told my Facebook friends I was experiencing a relapse last year. 
 A colleague was surprised and wrote "I always thought you were a well-adjusted thoughtful and caring person. Still do btw."[^quote]
@@ -101,9 +108,7 @@ I regularly meet with a mental health professional. The combination of counselin
 (see [this](https://well.blogs.nytimes.com/2015/01/08/to-treat-depression-drugs-or-therapy/) or
 [this](https://news.vanderbilt.edu/2014/08/20/drugs-therapy-nonchronic-depression/)).
 I practice mindfulness meditation. 
-I exercise.
-
-
+I exercise. It all helps.
 
 Sitting here in my privileged bubble, having dug out of the latest relapse, I've been asking "what can I do to make things better for others?". 
 This essay is one thing. 
@@ -112,12 +117,15 @@ Meghan Duffy posted [about supporting students with mental illness at Dynamic Ec
 I recently learned there is a UNL chapter of [Active Minds](http://www.activeminds.org/), a national organization advocating for mental health on campus. 
 It is for students, but I'll keep an eye on their activities and support what I can.
 There is also [a report on fostering a supportive workplace for faculty with mental health issues](http://tucollaborative.org/sdm_downloads/supportive-academic-environments-for-faculty-with-mental-illnesses/) that I need to dig into. 
-I'm really lucky to have supportive and understanding colleagues; we're building that supportive workplace bit by bit! 
+I'm really lucky to have supportive and understanding colleagues[^Acknowledgements]; we're building that supportive workplace bit by bit! 
 
 The realization that I am never going to be "better" was the hardest bit. 
+*Staying well* is a process, not a state.
 I must work on my mental health every. single. day. 
 Just the other day I found my equilibrium knocked askew by a random event.
 It was no reflection on me; just part of the job. 
 Nonetheless the negative thoughts boiled up like storm clouds, sapping my productivity even after I had done all I could. 
 I take some deep breaths -- mindfully watch the clouds roll by. There is always blue sky up above. 
 Above all else, be kind, especially to myself.
+
+[^Acknowledgements]: Many of those colleagues read this prior to posting, and it is infinitely better because of Lisa Pennisi, Leon Higley and Jessica Burnett. My counselor Peter Allman helped purge the more self-destructive bits. And I can't find words to thank my patient and loving spouse and "Genius German Mother" (inside joke) Brigitte Tenhumberg. 
