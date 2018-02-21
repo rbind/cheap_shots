@@ -13,11 +13,11 @@ Awareness of students' mental health is growing in academia right now (see
 [this](https://www.theatlantic.com/education/archive/2016/07/why-do-so-many-graduate-students-quit/490094/), 
 [this](https://dynamicecology.wordpress.com/2016/07/13/life-as-an-anxious-scientist/), or 
 [this](https://www.theguardian.com/society/2017/may/23/number-university-dropouts-due-to-mental-health-problems-trebles?CMP=Share_iOSApp_Other). 
-[Unsurprisingly, faculty suffer mental illness and disability too](https://www.insidehighered.com/news/2017/06/08/study-faculty-members-mental-health-issues-finds-mix-attitudes-disclosing-and), and many do not seek help from their institutions.
+Unsurprisingly, [faculty suffer mental illness and disability too](https://www.insidehighered.com/news/2017/06/08/study-faculty-members-mental-health-issues-finds-mix-attitudes-disclosing-and), and many do not seek help from their institutions.
 The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help.
 I believe normalizing mental illness and disability could eliminate the stigma, reduce the fear, and get more people the help they need.
 
-And so to do my bit, I suffer from clinical depression. 
+And so, to do my bit towards normalization, I suffer from clinical depression. 
 
 Before I go any farther, *right now*, I am doing very well, thank you.
 
@@ -29,7 +29,7 @@ Surely there will be negative consequences?
 Which is entirely the point. There could be, but there shouldn't be. It's no different from saying I'm a Type 2 diabetic.[^1] 
 Clinical depression (and other mental maladies) is a chronic condition that affects my behavior, life expectancy, and quality of life. For the same reason, I should speak up. 
 **If I can't weather the blow back (if any) as an atheist, cisgender, heterosexual, white, male, fully promoted professor, then there really *is* a problem.** Privilege is leaking out of my ears.
-Still, its taken me a long time to get to the point where I could write this. 
+Still, I have taken a long time to get to the point where I could write this. 
 
 [^1]: I am!
 
@@ -40,10 +40,10 @@ Then I just fell apart. More or less.
 I vividly recall sitting in the car outside my office, calling a collaborator and saying I couldn't make a meeting. 
 I couldn't do anything except sit there, crying. 
 
-Luckily I was already familiar with my institution's employee assistance program. I visited with a counselor a few years before to talk about stress management, and felt comfortable calling for an appointment. 
+Luckily, I was already familiar with my institution's employee assistance program. I visited with a counselor a few years before to talk about stress management and felt comfortable calling for an appointment. 
 Within a few minutes[^2], the counselor diagnosed me as clinically depressed. 
 
-[^2]: Turns out, there is a very specific set of questions to answer that diagnose depression. Doesn't take long to figure it out if you're willing to answer honestly!
+[^2]: Turns out, there is a very specific set of questions to diagnose depression. Doesn't take long to figure it out if you're willing to answer honestly!
 
 TIL:[^TIL] it is not normal to think about suicide or dying on a daily basis. Who knew! I sure didn't. 
 Now I know that those thoughts are just symptoms. 
@@ -74,15 +74,17 @@ I regularly meet with a mental health professional. The combination of counselin
 I practice mindfulness meditation. 
 I exercise. 
 Late last year I made some tough decisions about what I could and couldn't continue to do. 
-Cutting back on work created the space for me to start healing again. 
+Cutting back on work created space for me to start healing again. 
 But telling colleagues that some things were not going to happen was the hardest thing I've had to do for a long time. 
 
 In hindsight, it is pretty clear I was experiencing depression for many years prior to that total collapse. 
 Maybe I'd have spotted it sooner if mental illness was more widely discussed and acknowledged.
 I might have thought to ask my physician about the normal frequency of suicidal thoughts (zero!). 
 
+Paragraph on remaining successful while depressed. 
+
 I told my Facebook friends I was experiencing a relapse last year. 
-A colleague was surprised, and wrote "I always thought you were a well adjusted thoughtful and caring person. Still do btw."
+A colleague was surprised and wrote "I always thought you were a well-adjusted thoughtful and caring person. Still do btw."[^quote]
 But, outward appearances are deceiving. 
 Even in the grip of the deepest depression I can walk into a room full of people and lead a meeting. 
 But in my office? 
@@ -92,11 +94,13 @@ Some people wear their depression on their sleeves.
 You can tell they are suffering.
 But others, like me, show nothing. We're still suffering.
 
+[^quote]: So many reactions to this comment! I chose to focus on the compliment that I am a thoughtful and caring person. But why can't a depressed person be thoughtful and caring? Thinking otherwise is part of the stigma of mental illness.
+
 Sitting here in my privileged bubble, having dug out of the latest relapse, I've been asking "what can I do to make things better for others?". 
 This essay is one thing. 
 Together with a few colleagues who also experience mental health issues, I've been looking around for ways to support students. We've added lists of resources to our course homepages and posted signs on doors indicating we are willing to listen.
 Meghan Duffy posted [about supporting students with mental illness at Dynamic Ecology](https://dynamicecology.wordpress.com/2018/01/29/how-to-support-undergraduate-students-experiencing-mental-health-concerns/).
-I recently learned there is a UNL chapter of [Active Minds](http://www.activeminds.org/), an organization advocating for mental health on campus. 
+I recently learned there is a UNL chapter of [Active Minds](http://www.activeminds.org/), a national organization advocating for mental health on campus. 
 It is for students, but I'll keep an eye on their activities and support what I can.
 There is also [a report on fostering a supportive workplace for faculty with mental health issues](http://tucollaborative.org/sdm_downloads/supportive-academic-environments-for-faculty-with-mental-illnesses/) that I need to dig into. 
 I'm really lucky to have supportive and understanding colleagues; we're building that supportive workplace bit by bit! 
