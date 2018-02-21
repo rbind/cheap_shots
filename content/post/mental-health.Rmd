@@ -5,10 +5,7 @@ date: '2018-02-20'
 output: 
   html_document: default
 slug: mental-health
-summary: Awareness of students' mental health is growing in academia right now. Unsurprisingly,
-  faculty suffer mental illness too, and many do not seek help from their institutions.
-  The fear that disclosure, even to the disability office, will have negative effects
-  on one's professional career is a common reason for not seeking help.
+summary: "Awareness of students' mental health is growing in academia right now. Unsurprisingly, faculty suffer mental illness too, and many do not seek help from their institutions. The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help."
 tags:
 - mental health
 - higher ed
@@ -84,7 +81,9 @@ But, cutting back on work created space for me to start healing again.
 
 About work -- I'd like to say you can be productive and depressed, but my own story isn't good evidence of that.
 If you look at [my CV](https://scholar.google.com/citations?hl=en&user=WafwKngAAAAJ&view_op=list_works&authuser=1&sortby=pubdate) my paper output runs into a brick wall in 2015. 
-That's when the pre-2012 pipeline finally ran dry. 
+That's when the pre-2012 pipeline finally ran dry.
+I'm super grateful to the students that brought me problems post-2012, and paid my help back with co-authorship. 
+Without those opportunities I'd have nothing to show for the past few years.
 I've always managed to meet my teaching and administrative obligations, but the self-confident creativity necessary for research largely evaporated. 
 Whenever I'm well, it comes rushing back! My notebook starts to fill up with ideas.
 This time, I'm determined to *stay well*. 
@@ -134,4 +133,4 @@ Nonetheless the negative thoughts boiled up like storm clouds, sapping my produc
 I take some deep breaths -- mindfully watch the clouds roll by. There is always blue sky up above. 
 Above all else, be kind, especially to myself.
 
-[^Acknowledgements]: Many of those colleagues read this prior to posting, and it is infinitely better because of Lisa Pennisi, Leon Higley and Jessica Burnett. My counselor Peter Allman helped purge the more self-destructive bits. And I can't find words to thank my patient and loving spouse and "Genius German Mother" (inside joke) Brigitte Tenhumberg. 
+[^Acknowledgements]: Some of those colleagues read this prior to posting, and it is infinitely better because of John Carroll, Lisa Pennisi, Leon Higley and Jessica Burnett. My counselor Peter Allman helped purge the more self-destructive bits. And I can't find words to thank my patient and loving spouse and "Genius German Mother" (inside joke) Brigitte Tenhumberg. 
