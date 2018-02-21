@@ -2,10 +2,14 @@
 title: "Mental health -- it is important"
 author: "Drew Tyre"
 date: '2018-02-20'
-output: 
+output:
+  word_document: default
   html_document: default
 slug: mental-health
-summary: "Awareness of students' mental health is growing in academia right now. Unsurprisingly, faculty suffer mental illness too, and many do not seek help from their institutions. The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help."
+summary: Awareness of students' mental health is growing in academia right now. Unsurprisingly,
+  faculty suffer mental illness too, and many do not seek help from their institutions.
+  The fear that disclosure, even to the disability office, will have negative effects
+  on one's professional career is a common reason for not seeking help.
 tags:
 - mental health
 - higher ed
@@ -78,12 +82,16 @@ I made some tough decisions about what I could and couldn't continue to do.
 Telling colleagues that some things were not going to happen was the hardest thing I've had to do for a long time. 
 Choosing to give up the courses I created to focus on teaching required courses was just as hard. 
 But, cutting back on work created space for me to start healing again. 
+In part I could cut back because of my privelege. 
+I was also trying to do too much. I'm still working 40+ hours a week. 
+My days are full.
 
 About work -- I'd like to say you can be productive and depressed, but my own story isn't good evidence of that.
 If you look at [my CV](https://scholar.google.com/citations?hl=en&user=WafwKngAAAAJ&view_op=list_works&authuser=1&sortby=pubdate) my paper output runs into a brick wall in 2015. 
 That's when the pre-2012 pipeline finally ran dry.
 I'm super grateful to the students that brought me problems post-2012, and paid my help back with co-authorship. 
-Without those opportunities I'd have nothing to show for the past few years.
+Brigitte Tenhumberg pushed along a joint project when I was unable to.
+Without their help I'd have nothing to show for the past few years.
 I've always managed to meet my teaching and administrative obligations, but the self-confident creativity necessary for research largely evaporated. 
 Whenever I'm well, it comes rushing back! My notebook starts to fill up with ideas.
 This time, I'm determined to *stay well*. 
@@ -97,7 +105,9 @@ I stare at the wall.
 My own work, or more distant tasks like grading all those low-stakes lab assignments, sit undone.
 Some people wear their depression on their sleeves. 
 You can tell they are suffering.
-But others, like me, show nothing. We're still suffering.
+But others, like me, show nothing in public. We're still suffering. 
+Those close to us probably see it all too well.
+
 
 [^quote]: So many reactions to this comment! I chose to focus on the compliment that I am a thoughtful and caring person. But why can't a depressed person be thoughtful and caring? Thinking otherwise is part of the stigma of mental illness.
 
