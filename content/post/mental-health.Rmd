@@ -19,7 +19,7 @@ draft: yes
 Awareness of students' mental health is growing in academia right now (see 
 [this](https://www.theatlantic.com/education/archive/2016/07/why-do-so-many-graduate-students-quit/490094/), 
 [this](https://dynamicecology.wordpress.com/2016/07/13/life-as-an-anxious-scientist/), or 
-[this](https://www.theguardian.com/society/2017/may/23/number-university-dropouts-due-to-mental-health-problems-trebles?CMP=Share_iOSApp_Other). 
+[this](https://www.theguardian.com/society/2017/may/23/number-university-dropouts-due-to-mental-health-problems-trebles?CMP=Share_iOSApp_Other)). 
 Unsurprisingly, [faculty suffer mental illness and disability too](https://www.insidehighered.com/news/2017/06/08/study-faculty-members-mental-health-issues-finds-mix-attitudes-disclosing-and), and many do not seek help from their institutions.
 The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help.
 I believe normalizing mental illness and disability could eliminate the stigma, reduce the fear, and get more people the help they need.
@@ -89,12 +89,14 @@ My days are full.
 About work -- I'd like to say you can be productive and depressed, but my own story isn't good evidence of that.
 If you look at [my CV](https://scholar.google.com/citations?hl=en&user=WafwKngAAAAJ&view_op=list_works&authuser=1&sortby=pubdate) my paper output runs into a brick wall in 2015. 
 That's when the pre-2012 pipeline finally ran dry.
-I'm super grateful to the students that brought me problems post-2012, and paid my help back with co-authorship. 
+I'm super grateful to students that brought me problems post-2012, and paid my help back with co-authorship. 
 Brigitte Tenhumberg pushed along a joint project when I was unable to.
 Without their help I'd have nothing to show for the past few years.
-I've always managed to meet my teaching and administrative obligations, but the self-confident creativity necessary for research largely evaporated. 
+I've always managed to meet my teaching[^students] and administrative obligations, but the self-confident creativity necessary for research largely evaporated. 
 Whenever I'm well, it comes rushing back! My notebook starts to fill up with ideas.
 This time, I'm determined to *stay well*. 
+
+[^students]: Students may beg to differ! 
 
 I told my Facebook friends I was experiencing a relapse last year. 
 A colleague was surprised and wrote "I always thought you were a well-adjusted thoughtful and caring person. Still do btw."[^quote]
@@ -123,7 +125,9 @@ I regularly meet with a mental health professional. The combination of counselin
 (see [this](https://well.blogs.nytimes.com/2015/01/08/to-treat-depression-drugs-or-therapy/) or
 [this](https://news.vanderbilt.edu/2014/08/20/drugs-therapy-nonchronic-depression/)).
 I practice mindfulness meditation. 
-I exercise. It all helps.
+I exercise. It all helps. 
+I'm getting faster at recognizing when a major depressive episode starts, and I'm quicker at pulling out all the stops to change things. 
+The latest relapse only lasted a few weeks. 
 
 Sitting here in my privileged bubble, having dug out of the latest relapse, I've been asking "what can I do to make things better for others?". 
 This essay is one thing. 
@@ -143,4 +147,4 @@ Nonetheless the negative thoughts boiled up like storm clouds, sapping my produc
 I take some deep breaths -- mindfully watch the clouds roll by. There is always blue sky up above. 
 Above all else, be kind, especially to myself.
 
-[^Acknowledgements]: Some of those colleagues read this prior to posting, and it is infinitely better because of John Carroll, Lisa Pennisi, Leon Higley and Jessica Burnett. My counselor Peter Allman helped purge the more self-destructive bits. And I can't find words to thank my patient and loving spouse and "Genius German Mother" (inside joke) Brigitte Tenhumberg. 
+[^Acknowledgements]: Some of those colleagues read this prior to posting, and it is infinitely better because of John Carroll, Lisa Pennisi, Leon Higley and Jessica Burnett. My counselor Peter Allman helped purge the more self-destructive bits. And I can't find words to thank my patient and loving spouse Brigitte Tenhumberg. 
