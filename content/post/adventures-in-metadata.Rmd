@@ -32,15 +32,9 @@ OK. Now I want to make a metadata record for this data.
 library(EML)
 ```
 
-The first problem I'm running into is the absence of a vignette to tell me what to do. Even which function to start with! I thought there was one on GitHub ... OK the quickstart in the readme gets me going.
+The first problem I'm running into is the absence of a vignette to tell me what to do. Even which function to start with! I thought there was one on GitHub ... 
 
-```{r create_eml, message=FALSE}
-f <- system.file("xsd/test/eml.xml", package = "EML")
-eml <- read_eml(f)
-```
-Actually, that step was unnecessary. 
-
-There are vignettes, but they don't appear in the documentation. I can see the source on GitHub though, so I'm following along the creating EML vignette. It *looks* a bit intimidating because they are building it all up manually. There are 3 levels to this thing: The EML file which contains datatable elements, which have a variety of other specific elements. There are things besides the datatables in the EML, but that's the most important bit. We start from the bottom up. First we need an dataframe describing the attributes of our datatable. There will be one row for each variable in the dataframe. Some of the data depend on the type of the variable -- a definition for strings, format for dates etc. 
+Ah, there are vignettes, but they don't appear in the documentation. I can see the source on GitHub though, so I'm following along the creating EML vignette. It *looks* a bit intimidating because they are building it all up manually. There are 3 levels to this thing: The EML file which contains datatable elements, which have a variety of other specific elements. There are things besides the datatables in the EML, but that's the most important bit. We start from the bottom up. First we need an dataframe describing the attributes of our datatable. There will be one row for each variable in the dataframe. Some of the data depend on the type of the variable -- a definition for strings, format for dates etc. 
 
 ```{r}
 aq_attrib <- data.frame(
@@ -191,7 +185,7 @@ aq_attribList <- set_attributes(aq_attrib, aq_factors,
 
 `aq_attribList` is 2.6 Mb! That's ... quite something. Must be adding something extra. 
 
-The next step is to describe the physical  structure of the data. This was easy because the defaults for the EML function are for a csv file.
+The next step is to describe the physical structure of the data. This was easy because the defaults for the EML function are for a csv file.
 
 ```{r}
 aq_physical <- set_physical("aquarium_experiment_2017.csv",
@@ -213,7 +207,7 @@ Now there are a few more things to do, but I'm wondering if this is already suff
 ```{r}
 data_set <- new("dataset",
                 title = "Nutrient cycling experiment in NRES 222",
-                creator = as(as.person("Drew Tyre <atyre2@unl.edu> [cre]"), "creator"),
+                creator = new("creator"), # as(as.person("Drew Tyre <atyre2@unl.edu> [cre]"), "creator"),
                 publisher = new("publisher"),
                 pubDate = "2017",
                 intellectualRights = "CC0",
@@ -235,4 +229,4 @@ eml_222 <- new("eml",
 eml_validate(eml_222)
 ```
 
-OK, so not going to get off that easy! Validation is looking for lots of fields that I left out in my rush to get some kind of usable starting point. Some of them aren't described in the vignette, so I'm hoping I can skip those.
+OK, so not going to get off that easy! Validation is looking for lots of fields that I left out in my rush to get some kind of usable starting point. Some of them aren't described in the vignette, so I was hoping I could skip those. So I've created some EML but it isn't valid.

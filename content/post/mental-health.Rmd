@@ -3,7 +3,6 @@ title: "Mental health -- it is important"
 author: "Drew Tyre"
 date: '2018-02-20'
 output:
-  word_document: default
   html_document: default
 slug: mental-health
 summary: Awareness of students' mental health is growing in academia right now. Unsurprisingly,
@@ -13,7 +12,7 @@ summary: Awareness of students' mental health is growing in academia right now. 
 tags:
 - mental health
 - higher ed
-draft: yes
+draft: no
 ---
 
 Awareness of students' mental health is growing in academia right now (see 
@@ -24,7 +23,7 @@ Unsurprisingly, [faculty suffer mental illness and disability too](https://www.i
 The fear that disclosure, even to the disability office, will have negative effects on one's professional career is a common reason for not seeking help.
 I believe normalizing mental illness and disability could eliminate the stigma, reduce the fear, and get more people the help they need.
 
-And so, to do my bit towards normalization, I suffer from clinical depression. 
+And so, to do my bit towards normalization, **I suffer from clinical depression.** 
 
 Before I go any farther, *right now*, I am doing very well, thank you.
 
@@ -73,7 +72,7 @@ I might have thought to ask my physician about the normal frequency of suicidal 
 
 By 2014, the combination of counseling and medication had set me right. 
 I was better! So I stopped the medication and the counseling. 
-And then my sabbatical leave disappeared into a black hole of despair. 
+And then my sabbatical leave disappeared into a haze of despair. 
 Back to counseling, and I chose a different medication with fewer side effects. I got better. 
 Then things slid sideways again in 2016! More counseling, and I improved again. 
 Just enough to say, sure, I'll teach those extra courses and take on an administrative appointment. 
@@ -92,7 +91,7 @@ That's when the pre-2012 pipeline finally ran dry.
 I'm super grateful to students that brought me problems post-2012, and paid my help back with co-authorship. 
 Brigitte Tenhumberg pushed along a joint project when I was unable to.
 Without their help I'd have nothing to show for the past few years.
-I've always managed to meet my teaching[^students] and administrative obligations, but the self-confident creativity necessary for research largely evaporated. 
+I've always managed to meet my teaching[^students] and administrative obligations, but **the self-confident creativity necessary for research largely evaporated**. 
 Whenever I'm well, it comes rushing back! My notebook starts to fill up with ideas.
 This time, I'm determined to *stay well*. 
 
