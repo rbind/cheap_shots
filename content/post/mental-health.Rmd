@@ -2,8 +2,6 @@
 title: "Mental health -- it is important"
 author: "Drew Tyre"
 date: '2018-02-26'
-output:
-  html_document: default
 slug: mental-health
 summary: Awareness of students' mental health is growing in academia right now. Unsurprisingly,
   faculty suffer mental illness too, and many do not seek help from their institutions.
