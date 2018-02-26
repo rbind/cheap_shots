@@ -1,7 +1,7 @@
 ---
 title: "Mental health -- it is important"
 author: "Drew Tyre"
-date: '2018-02-20'
+date: '2018-02-26'
 output:
   html_document: default
 slug: mental-health
@@ -12,7 +12,6 @@ summary: Awareness of students' mental health is growing in academia right now. 
 tags:
 - mental health
 - higher ed
-draft: no
 ---
 
 Awareness of students' mental health is growing in academia right now (see 
