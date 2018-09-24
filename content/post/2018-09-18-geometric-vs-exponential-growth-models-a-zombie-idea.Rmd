@@ -9,7 +9,7 @@ tags:
   - ecology
 ---
 
-5 out of 10 ecology textbooks on my shelves make this distinction: geometric models are for populations with discrete pulses of births, while exponential models are for populations with continuous births. This idea needs to die. It is both wrong and enourmously confusing to students. 
+5 out of 10 ecology textbooks on my shelves make this distinction: geometric models are for populations with discrete pulses of births, while exponential models are for populations with continuous births. This [zombie idea](https://dynamicecology.wordpress.com/2011/06/17/zombie-ideas-in-ecology/) needs to die. It is both wrong and enourmously confusing to students. 
 
 Distinguish
 Ricklefs and Relyea
@@ -42,11 +42,12 @@ A typical explanation goes like this: some species, like deer, give birth over a
 
 The same textbook uses aphids as the paradigmatic example of an exponentially growing population because their births are continuous. But, exponential growth assumes deaths and births occur at the same rate, and aphids birth and death rates vary wildly with age. Also, I could make a discrete time model with a time step of 1 day, and then my model is "approximately" continuous at time steps of 1 week or longer. 
 
+Moreover, I can start with continuous rates, and calculate the equivalent discrete time model that *makes identical predictions*.[^2] If you don't believe me, check Hal Caswell's "Matrix Population Models", which has an explicit formulation of "continuous" reproduction for discrete time matrix projection models (birth flow models). 
 
-Moreover, I can start with continuous rates, and calculate the equivalent discrete time model that *makes identical predictions*. 
+This is [Bonini's paradox](https://en.wikipedia.org/wiki/Bonini's_paradox) in action. Or, as George Box put it, "All models are wrong, but some are useful".
 
-This is Bonini's paradox in action. Or, as George Box put it, "All models are wrong, but some are useful".
-
-I call this error of conflating mathematical differences with ecological difference a 'map-territory error'. We are mistaking a difference in the map (discrete vs. continuous time) with an ecological difference. 
+I call this error of conflating mathematical differences with ecological difference a 'map-territory error', after the [map-territory relation](https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation). We are mistaking a difference in the map (discrete vs. continuous time) with an ecological difference. 
 
 [^1]: The question is altered to protect copyright and prevent releasing the correct answer "into the wild".
+
+[^2]: This is only true for density independent models. 
