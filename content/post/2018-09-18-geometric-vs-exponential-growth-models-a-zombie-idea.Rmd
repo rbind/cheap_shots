@@ -1,0 +1,52 @@
+---
+title: 'Geometric vs. Exponential growth models: a zombie idea'
+author: Drew Tyre
+date: '2018-09-18'
+slug: geometric-vs-exponential-growth-models-a-zombie-idea
+categories:
+  - Teaching
+tags:
+  - ecology
+---
+
+5 out of 10 ecology textbooks on my shelves make this distinction: geometric models are for populations with discrete pulses of births, while exponential models are for populations with continuous births. This idea needs to die. It is both wrong and enourmously confusing to students. 
+
+Distinguish
+Ricklefs and Relyea
+Begon, Harper and Townsend
+Rockwood
+Hastings
+Gotelli
+
+Sort of
+Mills
+
+Not
+Sinclair et al
+Donovan and Welden
+Neal
+Smith (but only because he confuses geometric growth for exponential)
+
+The textbook that we are using in NRES 220 Principles of Ecology has online questions. After reading about the distinction between geometric and exponential growth students were asked this question[^1] :
+
+Which of the following is true:
+
+a) ...
+b) 
+c)
+d) 
+
+All students were able to distinguish between density independent and density dependent growth accurately. But half chose discrete time and half chose continuous time. However, this distinction is ecologically unimportant. You can model *any* population using discrete time or continuous time. Different math, and sometimes one is more convienent than the other, but no ecological difference. 
+
+A typical explanation goes like this: some species, like deer, give birth over a relatively short period of time within a year. Therefore, we can best model this using discrete time steps that project from one birth pulse to the next. But what about deaths? Deer die continuously! There are pulses of death (like rifle season for male deer), but they don't occur at the same time as the birth pulses.  
+
+The same textbook uses aphids as the paradigmatic example of an exponentially growing population because their births are continuous. But, exponential growth assumes deaths and births occur at the same rate, and aphids birth and death rates vary wildly with age. Also, I could make a discrete time model with a time step of 1 day, and then my model is "approximately" continuous at time steps of 1 week or longer. 
+
+
+Moreover, I can start with continuous rates, and calculate the equivalent discrete time model that *makes identical predictions*. 
+
+This is Bonini's paradox in action. Or, as George Box put it, "All models are wrong, but some are useful".
+
+I call this error of conflating mathematical differences with ecological difference a 'map-territory error'. We are mistaking a difference in the map (discrete vs. continuous time) with an ecological difference. 
+
+[^1]: The question is altered to protect copyright and prevent releasing the correct answer "into the wild".
