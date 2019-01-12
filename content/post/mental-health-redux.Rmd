@@ -1,0 +1,15 @@
+---
+title: Mental Health Redux
+author: Drew Tyre
+date: '2019-01-12'
+draft: true
+slug: mental-health-redux
+categories: []
+tags:
+  - Higher Ed
+  - mental health
+---
+
+About a year ago [I disclosed my depression to the interwebs](https://drewtyre.rbind.io/mental-health/). 
+It seems timely to revisit the topic.
+
