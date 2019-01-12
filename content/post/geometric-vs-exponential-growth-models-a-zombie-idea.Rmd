@@ -30,7 +30,7 @@ This is [Bonini's paradox](https://en.wikipedia.org/wiki/Bonini's_paradox) in ac
 
 I call this error of conflating mathematical differences with ecological difference a 'map-territory error', after the [map-territory relation](https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation). We are mistaking a difference in the map (discrete vs. continuous time) with an ecological difference. Ecologists seem particularly prone to map-territory errors (maybe more on that later). Maybe this is because of our physics envy.
 
-So, I've stopped making this distinction in my classes. I use discrete time models almost exclusively, because the math is a bit easier to communicate (IMO). 
+So, I've stopped making this distinction in my classes. I use discrete time models almost exclusively, because the math is a bit easier to communicate (IMO). Student learning will benefit if we all follow suit and textbooks are revised accordingly.
 
 [^1]: Distinguish: Ricklefs and Relyea, Begon, Harper and Townsend, Rockwood, Hastings, and Gotelli. Sort of: Mills. Not: Sinclair et al., Donovan and Welden, Neal, and Smith (but only because he confuses geometric growth for exponential).
 
