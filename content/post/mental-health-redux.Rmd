@@ -1,7 +1,7 @@
 ---
 title: Mental Health Redux
 author: Drew Tyre
-date: '2019-01-12'
+date: '2019-01-21'
 draft: true
 slug: mental-health-redux
 categories: []
@@ -13,3 +13,16 @@ tags:
 About a year ago [I disclosed my depression to the interwebs](https://drewtyre.rbind.io/mental-health/). 
 It seems timely to revisit the topic.
 
+Consequences? Mostly outpouring of support! 
+
+Leading Discussion of mental health. Symptoms of stigma. 
+
+Current state
+
+I have to remind myself that wellness is a process. I'm struggling now, but 
+there is hope. I've surrounded myself with living things[^things], and my 
+family is always close at hand. 
+
+[^things]: Mushrooms, yeast, and lactic acid bacteria are alive! Our windows 
+block too much light to grow plants indoors. I plan to start some outdoor herb 
+planters as the weather warms up. And there is always this critter. 
