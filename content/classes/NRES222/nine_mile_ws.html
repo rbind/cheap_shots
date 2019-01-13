@@ -1,7 +1,7 @@
 ---
 title: "9 Mile Prairie Worksheet"
 author: "Drew Tyre"
-date: "2018-02-26"
+date: "2019-01-13"
 type: "lab"
 weight: 222041
 ---
@@ -89,7 +89,10 @@ spparea4 &lt;- summarize(spparea4,
 </ol>
 <hr />
 <p>Ecologists often present species-area curves on log10 axes (both the X and Y axes) or transform the data by taking logs before graphing. This generally turns the curve into a straight line (See the discussion of species-area curves in your ecology textbook). It also allows the viewer to compare changes in diversity in small plots equally with changes in large plots. On regular (linear) axes, the changes in big plots dwarf changes seen in small plots.</p>
-<p>Mathematically, species-area curves can be fit with the non-linear equation <span class="math inline">\(S = cA^z\)</span> where S is species number, A is plot area, and c and z are constants. We won’t use this equation in lab; non-linear equations such as this are much more difficult to work with. However, if you transform the data for species number and plot area to log values, the relationship becomes linear. A line fit to the data averages across point to point irregularities to give the best description of the species area relationship in each area. The equation now has the form: <span class="math display">\[
+<p>Mathematically, species-area curves can be fit with the non-linear equation
+<span class="math inline">\(S = cA^z\)</span> where S is species number, A is plot area, and c and z are constants.
+We won’t use this equation in lab; non-linear equations such as this are much more difficult to work with. However, if you transform the data for species number and plot area to log values, the relationship becomes linear. A line fit to the data averages across point to point irregularities to give the best description of the species area relationship in each area. The equation now has the form:
+<span class="math display">\[
 Log(S) = log c + z log(A)
 \]</span></p>
 <p>Create a new figure with log10 – transformed data. We can simply change the axes on the plot, and add some linear trendlines.</p>

@@ -13,14 +13,22 @@ tags: [rstats, teaching]
 <p>A sum-to-zero contrast codes a categorical variable as deviations from a grand mean. Social scientists use them extensively. Should ecologists?</p>
 <p><strong>EDIT</strong> the first version of this post that went up had some bugs in it. Hopefully all fixed now.</p>
 <p><strong>EDIT2</strong> Annnd the second version still had bugs. Maybe fixed now.</p>
-<p>More accurately, should I tell my students in Ecological Statistics to use them? Sum-to-zero contrasts are conceptually similar to centering a continuous variable by subtracting the mean from your predictor variable prior to analysis. Discussions of centering often end up conflated with <em>scaling</em>, which is dividing your predictor variable by a constant, usually the standard deviation, prior to analysis. <em>Always scaling</em> covariates prior to regression analysis is controversial advice. See for example <a href="http://andrewgelman.com/2009/07/11/when_to_standar/">Andrew Gelman’s blogpost and comments</a>, or many crossvalidated questions <a href="http://stats.stackexchange.com/q/29781/12258">such as this one</a> which has links to many others. There is a good reference as well as some useful discussion in the comments of <a href="http://stats.stackexchange.com/questions/179732/motivation-to-center-continuous-predictor-in-multiple-regression-for-sake-of-mul">this question</a>. In this post I focus on the effects of sum to zero contrasts for categorical variables and interactions with continuous variables.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
-<p>Here is my summary of the pros and cons of centering drawn from those references above.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>More accurately, should I tell my students in Ecological Statistics to use them? Sum-to-zero contrasts are conceptually similar to centering a continuous variable by subtracting the mean from your predictor variable prior to analysis. Discussions of centering often end up conflated with <em>scaling</em>, which is dividing your predictor variable by a constant, usually the standard deviation, prior to analysis. <em>Always scaling</em> covariates prior to regression analysis is controversial advice. See for example <a href="http://andrewgelman.com/2009/07/11/when_to_standar/">Andrew Gelman’s blogpost and comments</a>, or many crossvalidated questions <a href="http://stats.stackexchange.com/q/29781/12258">such as this one</a> which has links to many others. There is a good reference as well as some useful discussion in the comments of <a href="http://stats.stackexchange.com/questions/179732/motivation-to-center-continuous-predictor-in-multiple-regression-for-sake-of-mul">this question</a>. In this post I focus on the effects of sum to zero contrasts for categorical variables and interactions with continuous variables.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>Here is my summary of the pros and cons of centering drawn from those references above.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 <ul>
-<li>Centering continuous variables eliminates collinearity between interaction and polynomial terms and the individual covariates that make them up.</li>
+<li>Centering continuous variables eliminates collinearity between
+interaction and polynomial terms and the individual covariates
+that make them up.</li>
 <li>Centering does not affect inference about the covariates.</li>
-<li>Centering can improve the interpretability of the coefficients in a regression model, particularly because the intercept represents the value of the response at the mean of the predictor variables.</li>
-<li>Predicting out of sample data with a model fitted to centered data must be done carefully because the center of the out of sample data will be different from the fitted data.</li>
-<li>There may be some constant value other than the sample mean that makes more sense based on domain knowledge.</li>
+<li>Centering can improve the interpretability of the coefficients in
+a regression model, particularly because the intercept
+represents the value of the response at the mean of the
+predictor variables.</li>
+<li>Predicting out of sample data with a model fitted to centered
+data must be done carefully because the center of the out of
+sample data will be different from the fitted data.</li>
+<li>There may be some constant value other than the sample mean
+that makes more sense based on domain knowledge.</li>
 </ul>
 <p>To make the discussion concrete, let me demonstrate with an example of the interaction between a continuous covariate and a categorical one. In the following I refer to the effect of individual covariates outside the interaction as the “simple effect” of that covariate.</p>
 <pre class="r"><code>data(iris)
@@ -48,7 +56,8 @@ m0 &lt;- lm(Sepal.Width ~ Sepal.Length * Species, data = iris)
 ## Residual standard error: 0.2723 on 144 degrees of freedom
 ## Multiple R-squared:  0.6227, Adjusted R-squared:  0.6096 
 ## F-statistic: 47.53 on 5 and 144 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>The intercept of this model isn’t directly interpretable because it gives the average width at a length of zero, which is impossible. In addition, both the intercept and simple effect of length represent the change in width for only one species, <em>setosa</em>. The default contrast in R estimates coefficients for <span class="math inline">\(k - 1\)</span> levels of a factor. In the simple effect of a factor each coefficient is the difference between the first level (estimated by the intercept), and the named level. In the above, <code>Speciesversicolor</code> has sepals that are 1.4 mm wider than <em>setosa</em>. The interaction coefficients such as <code>Sepal.Length:Speciesversicolor</code> tell us how much the effect of Sepal.Length in <em>versicolor</em> changes from that in <em>setosa</em>. So every mm of sepal length in versicolor increases sepal width by <span class="math inline">\(0.8 - 0.48 = 0.32\)</span> mm.</p>
+<p>The intercept of this model isn’t directly interpretable because it gives the average width at a length of zero, which is impossible. In addition, both the intercept and simple effect of length represent the change in width for only one species, <em>setosa</em>. The default contrast in R estimates coefficients for <span class="math inline">\(k - 1\)</span> levels of a factor. In the simple effect of a factor each coefficient is the difference between the first level (estimated by the intercept), and the named level. In the above, <code>Speciesversicolor</code> has sepals that are 1.4 mm wider than <em>setosa</em>. The interaction coefficients
+such as <code>Sepal.Length:Speciesversicolor</code> tell us how much the effect of Sepal.Length in <em>versicolor</em> changes from that in <em>setosa</em>. So every mm of sepal length in versicolor increases sepal width by <span class="math inline">\(0.8 - 0.48 = 0.32\)</span> mm.</p>
 <p>Maybe a plot will help.</p>
 <pre class="r"><code>library(ggplot2)
 base_iris &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(aes(shape = Species)) + 
@@ -136,7 +145,8 @@ m2 &lt;- lm(Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
 ## Residual standard error: 0.2723 on 144 degrees of freedom
 ## Multiple R-squared:  0.6227, Adjusted R-squared:  0.6096 
 ## F-statistic: 47.53 on 5 and 144 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>I can now directly interpret the intercept as the average width at the average length, averaged over species. Similarly the simple effect of length as the change in width averaged across species. This seems like a very useful set of coefficients to look at, particularly if my categorical covariate has many levels. You might ask (I did), what do the categorical coefficients mean? They represent deviations from the mean intercept for each species. But what is species 1 and species 2? With sum to zero contrasts those coefficient refer to the first k-1 levels, so species 1 is <em>setosa</em> and species 2 is <em>versicolor</em>. OK, you say (I did), then where’s species <em>virginica</em>? After much head scratching, the answer is that it is the negative of the <strong>sum</strong> of the other two coefficients.</p>
+<p>I can now directly interpret the intercept as the average width at the average length, averaged over species. Similarly the simple effect of length as the change in width averaged across species. This seems like a very useful set of coefficients to look at, particularly if my categorical covariate has many levels.
+You might ask (I did), what do the categorical coefficients mean? They represent deviations from the mean intercept for each species. But what is species 1 and species 2? With sum to zero contrasts those coefficient refer to the first k-1 levels, so species 1 is <em>setosa</em> and species 2 is <em>versicolor</em>. OK, you say (I did), then where’s species <em>virginica</em>? After much head scratching, the answer is that it is the negative of the <strong>sum</strong> of the other two coefficients.</p>
 <p>I just thought of something else. Are those “average” intercept and slope the same as what I would get if I only use <code>cSepal.Length</code>?</p>
 <pre class="r"><code>m3 &lt;- lm(Sepal.Width ~ cSepal.Length, data = iris)
 (summary_m3 &lt;- summary(m3))</code></pre>
@@ -199,7 +209,7 @@ m2 &lt;- lm(Sepal.Width ~ cSepal.Length * szSpecies, data = iris)
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>All the code for this post, including that not shown, <a href="https://github.com/atyre2/atyre2.github.io/raw/master/_drafts/sum-to-zero-contrasts.Rmd">can be found here</a>.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>This stuff first appeared <a href="http://stats.stackexchange.com/questions/188852/centering-in-the-presence-of-interactions-with-categorical-predictors">as a question on CrossValidated</a>, but received no attention.<a href="#fnref2">↩</a></p></li>
+<li id="fn1"><p>All the code for this post, including that not shown, <a href="https://github.com/atyre2/atyre2.github.io/raw/master/_drafts/sum-to-zero-contrasts.Rmd">can be found here</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>This stuff first appeared <a href="http://stats.stackexchange.com/questions/188852/centering-in-the-presence-of-interactions-with-categorical-predictors">as a question on CrossValidated</a>, but received no attention.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

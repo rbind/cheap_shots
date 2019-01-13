@@ -1,7 +1,7 @@
 ---
 title: "Week 11 Lab -- GLMM"
 author: "Drew Tyre"
-date: "2018-02-26"
+date: "2019-01-13"
 output: 
   html_document:
     fig_caption: TRUE
@@ -163,7 +163,8 @@ topmod.CI &lt;- spread(topmod.CI, level, limit)
 
 ggplot(topmod.CI, aes(x = term, y = estimate, fill = type)) + geom_bar(stat = &quot;identity&quot;, 
     position = &quot;dodge&quot;) + geom_errorbar(aes(ymin = CI2.5, ymax = CI97.5), position = &quot;dodge&quot;)</code></pre>
-<p>It can be hard to see what is going on unless you use the “zoom” to make this plot large enough for the term names to not overlap. So the intervals for the intercept and sex effects are pretty close to the “simple” Wald intervals. The intervals for csLength and the interaction are longer with profile intervals, but at least they still exclude zero. In addition, the profile method gives us intervals on the variance parameters as well.</p>
+<p>It can be hard to see what is going on unless you use the “zoom” to make this plot large enough for the term names to not overlap.
+So the intervals for the intercept and sex effects are pretty close to the “simple” Wald intervals. The intervals for csLength and the interaction are longer with profile intervals, but at least they still exclude zero. In addition, the profile method gives us intervals on the variance parameters as well.</p>
 <p>The reason it is hard to get confidence intervals on predictions is because of the uncertainty in the variance parameters, which can be substantial. The correlation coefficient includes zero, for example. This makes sense, as the 2nd best model was a model that assumed the random effects were uncorrelated.</p>
 </div>
 <div id="but-what-the-heck-is-a-profile-limit" class="section level2">

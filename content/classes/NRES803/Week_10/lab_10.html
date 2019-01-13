@@ -1,7 +1,7 @@
 ---
 title: "Week 10 Lab"
 author: "Drew Tyre"
-date: "2018-02-26"
+date: "2019-01-13"
 output: html_document
 weight: 803101
 ---
@@ -40,7 +40,8 @@ summary(ss.mm &lt;- lmer(Reaction ~ Days + (Days | Subject), sleepstudy,
 <ol start="2" class="example" style="list-style-type: decimal">
 <li>Compare the estimates and standard errors with those from the pooled data model.</li>
 </ol>
-<p>The new bit is the section labelled “Random effects”. We can see that the model has estimated not just one variance, but three, plus a correlation coefficient. One variance estimate is the residual variance, with the same interpretation as always. The other two variances indicate the variance of the “random effects” on the intercept and the slope. These random perturbations to the population are assumed to be correlated to some extent, so there is also a correlation parameter. In this case the random effects are relatively uncorrelated.</p>
+<p>The new bit is the section labelled “Random effects”. We can see that the model has estimated not just one variance, but three, plus a correlation coefficient. One variance estimate is the residual variance, with the same interpretation as always. The other two variances indicate the variance of the “random effects” on the intercept and the slope. These random perturbations to the population are assumed to be correlated to some extent, so there
+is also a correlation parameter. In this case the random effects are relatively uncorrelated.</p>
 <p>We can also get the random perturbations for each group, and combining those with the population level coefficients gives us the coefficients for the line in each group, as shown in the following table. When the random effects (shown in the left 2 columns) are negative, the coefficients for the group are less than the population coefficients, and when they are positive, the group coefficients are greater.</p>
 <p>In the following figure I’ve plotted the intercepts for each group from the mixed model against the intercepts from the list of models. If they were identical they would fall on the solid line.</p>
 <pre class="r"><code>shrink &lt;- data.frame(Random = coef(ss.mm)$Subject, Fixed = cc)
@@ -59,7 +60,8 @@ ggplot(t1, aes(x = Fixed, y = Random)) + geom_point() + facet_wrap(~coefficient,
     scales = &quot;free&quot;) + geom_smooth(method = &quot;lm&quot;) + geom_abline(slope = 1, 
     intercept = 0, linetype = 2) + geom_point(data = meanpoint, 
     color = &quot;violetred1&quot;, size = 2)</code></pre>
-<p>Random effects coefficients are slightly biased towards the mean value indicated by the red dot. Therefore the blue line (fit to the points) has a slope less than 1. The dashed line has a slope of 1 and an intercept of 0. This phenomenon is called “shrinkage”, because the estimates of the within group coefficients “shrink” towards the population mean.</p>
+<p>Random effects coefficients are slightly biased towards the mean value indicated by the red dot. Therefore the blue line (fit to the points) has a slope less than 1. The dashed line has a slope of 1 and an intercept of 0. This phenomenon
+is called “shrinkage”, because the estimates of the within group coefficients “shrink” towards the population mean.</p>
 </div>
 <div id="mouse-example" class="section level1">
 <h1>Mouse Example</h1>

@@ -8,7 +8,7 @@ weight: 803081
 
 
 
-<p>We’ll play with a few datasets from Mick Crawley’s “The R Book” <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.</p>
+<p>We’ll play with a few datasets from Mick Crawley’s “The R Book” <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.</p>
 <pre class="r"><code>library(NRES803)
 library(tidyverse)
 library(mgcv)
@@ -18,7 +18,8 @@ library(gridExtra)
 data(sheep)
 ggplot(sheep, aes(x = Year, y = Population)) + geom_point()</code></pre>
 <p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>The goal is to identify a function relating growth rate Delta to population size. The simplest population model has this as a linear function, but there’s no a priori reason to suppose that it should be linear.</p>
+<p>The goal is to identify a function relating growth rate Delta to population size. The simplest population model has this as a linear
+function, but there’s no a priori reason to suppose that it should be linear.</p>
 <pre class="r"><code>sheep.lm &lt;- lm(Delta ~ Population, data = sheep)
 sheep.gam &lt;- gam(Delta ~ s(Population), data = sheep)
 
@@ -42,7 +43,10 @@ ggplot(sheep, aes(x = Population, y = Delta)) + geom_point() +
     geom_line(data = pred_gam, color = &quot;green&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci, 
     ymax = u95ci), data = pred_gam, color = &quot;grey&quot;, alpha = 0.33)</code></pre>
 <p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>The gam fit is kind of interesting, looks like there are two broad regimes of population growth within which the growth rate is pretty constant with respect to population size. So which is the better model? This is actually quite important to get right, as the dynamics implied by the non-linear model will be much different. Recall that we can use gam() to fit the simpler model as well.</p>
+<p>The gam fit is kind of interesting, looks like there are two broad regimes of population growth within which the growth rate is pretty constant with respect to population size.
+So which is the better model? This is actually quite important to get right,
+as the dynamics implied by the non-linear model will be much different. Recall
+that we can use gam() to fit the simpler model as well.</p>
 <ol class="example" style="list-style-type: decimal">
 <li>Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?</li>
 </ol>
@@ -62,14 +66,15 @@ gam.check(sheep.gam)  # this is ugly</code></pre>
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
 ##                 k&#39;  edf k-index p-value
-## s(Population) 9.00 5.02    1.16    0.86</code></pre>
+## s(Population) 9.00 5.02    1.16    0.85</code></pre>
 <pre class="r"><code>rr &lt;- augment(sheep.gam)
 ggplot(rr, aes(x = .fitted, y = .resid)) + geom_point() + geom_hline(yintercept = 0, 
     linetype = 2) + geom_smooth()</code></pre>
 <p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/answer01-2.png" width="672" /></p>
 <pre><code>## &gt; The residuals look OK from both models. There is a bit of structure in the residuals vs. fitted plot for the linear model, but always inside the confidence limits. These models appear pretty much equivalent, with a slight favor to the gam.</code></pre>
 <ol start="2" class="example" style="list-style-type: decimal">
-<li>Fit the linear model using gam() and use anova() to compare the two models. Which one would you choose and why?</li>
+<li>Fit the linear model using gam() and use anova() to compare the two
+models. Which one would you choose and why?</li>
 </ol>
 <pre class="r"><code>sheep.lm2 &lt;- gam(Delta ~ Population, data = sheep)
 anova(sheep.lm2, sheep.gam, test = &quot;F&quot;)</code></pre>
@@ -90,7 +95,8 @@ anova(sheep.lm2, sheep.gam, test = &quot;F&quot;)</code></pre>
 
 ggpairs(ozone)</code></pre>
 <p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>The goal here is to predict ozone readings from solar radiation levels, temperature, and wind. You can see from the pairs plot that temperature in particular looks quite non-linear, as does radiation.</p>
+<p>The goal here is to predict ozone readings from solar radiation levels, temperature, and wind. You can see from the pairs plot that temperature in particular
+looks quite non-linear, as does radiation.</p>
 <ol start="3" class="example" style="list-style-type: decimal">
 <li>Set up a <code>gam()</code> model with smooth terms for all three predictor variables. Evaluate this model graphically and interpret the results graphically (make a prediction plot) and in written form.</li>
 </ol>
@@ -107,10 +113,10 @@ gam.check(ogam1)</code></pre>
 ## Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
-##           k&#39;  edf k-index p-value  
-## s(rad)  9.00 2.76    0.96    0.27  
-## s(temp) 9.00 3.84    0.79    0.02 *
-## s(wind) 9.00 2.92    0.96    0.31  
+##           k&#39;  edf k-index p-value   
+## s(rad)  9.00 2.76    0.96   0.240   
+## s(temp) 9.00 3.84    0.79   0.005 **
+## s(wind) 9.00 2.92    0.96   0.295   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre><code>## &gt; There is a bit of upward curvature in the qq plot and a hint of heteroscedasticity in the residuals vs. linear predictor plot. Both of those suggest a log transformation of ozone is helpful, especially combined with the observation that ozone is always strictly greater than zero.</code></pre>
@@ -185,9 +191,9 @@ gam.check(ogam2)</code></pre>
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
 ##           k&#39;  edf k-index p-value  
-## s(rad)  9.00 2.24    1.02   0.520  
-## s(temp) 9.00 4.50    1.00   0.475  
-## s(wind) 9.00 2.35    0.84   0.025 *
+## s(rad)  9.00 2.24    1.02    0.59  
+## s(temp) 9.00 4.50    1.00    0.49  
+## s(wind) 9.00 2.35    0.84    0.08 .
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre><code>## &gt; The log transformed response gives better looking residuals. It is almost too strong -- the variance decreases with increasing mean, but not enough to worry about. There is one extreme negative outlier; the lowest observation is poorly predicted.</code></pre>
@@ -258,7 +264,9 @@ grid.arrange(ovtemp1, ovtemp2, ovwind1, ovwind2, nrow = 2)</code></pre>
 <p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <pre><code>## &gt; Conclusions are similar here. The effect of changing radiation is fairly small compared to the effects of wind and temp. Also, the model is still doing a poor job of predicting the effect of high temperature when wind is high, and low temperature when wind is low.</code></pre>
 <ol start="5" class="example" style="list-style-type: decimal">
-<li>Based on your conclusions from the initial model, fit one or more new models with either fewer smooth terms (possibly linear), or additional interaction terms. Evaluate and interpret these models graphically and numerically.</li>
+<li>Based on your conclusions from the initial model, fit one or more new
+models with either fewer smooth terms (possibly linear), or additional
+interaction terms. Evaluate and interpret these models graphically and numerically.</li>
 </ol>
 <pre><code>## &gt; I can think of two possible explanations for the poor predictions at opposing extremes of temperature and wind. One is that there is an interaction between them. The other is that they are corrlated, and so we never see situations with low temps and low wind, or high temps and high wind. In that case the lines we are plotting just don&#39;t make sense in those regions, because those combinations don&#39;t occur. We can check the first explanation easily by adding a 2-D spline with wind and temperature.</code></pre>
 <pre class="r"><code>ogam3 &lt;- gam(log10(ozone) ~ s(rad) + s(temp) + s(wind) + s(temp, 
@@ -276,10 +284,10 @@ gam.check(ogam3)</code></pre>
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
 ##                 k&#39;   edf k-index p-value
-## s(rad)        9.00  1.94    0.97    0.30
-## s(temp)       9.00  2.46    0.99    0.42
-## s(wind)       9.00  1.00    1.01    0.51
-## s(temp,wind) 27.00 17.62    1.03    0.62</code></pre>
+## s(rad)        9.00  1.94    0.97    0.33
+## s(temp)       9.00  2.46    0.99    0.41
+## s(wind)       9.00  1.00    1.01    0.47
+## s(temp,wind) 27.00 17.62    1.03    0.59</code></pre>
 <pre class="r"><code>summary(ogam3)</code></pre>
 <pre><code>## 
 ## Family: gaussian 
@@ -347,6 +355,6 @@ ovrad + aes(x = temp, color = wind) + geom_line(aes(group = .tau),
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>This is an excellent book if you are looking for a second reference book on statistics for ecology in R. The code and data for the book are available <a href="http://www.bio.ic.ac.uk/research/mjcraw/therbook/">here</a>.<a href="#fnref1">↩</a></p></li>
+<li id="fn1"><p>This is an excellent book if you are looking for a second reference book on statistics for ecology in R. The code and data for the book are available <a href="http://www.bio.ic.ac.uk/research/mjcraw/therbook/">here</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

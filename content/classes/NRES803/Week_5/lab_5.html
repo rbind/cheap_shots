@@ -181,9 +181,11 @@ ggplot(data = pred.p, mapping = aes(x = area)) + geom_line(mapping = aes(y = .fi
     xlab(&quot;Island Area [km^2]&quot;) + ylab(&quot;Probability of Presence&quot;)</code></pre>
 <p>The “rug plots” are a way to show where the data points are located along the x-axis without cluttering up the graph too much.</p>
 <p>Make a plot of the effect of isolation on incidence when island area is held at the median value.</p>
-<p>Adding confidence limits to this sort of plot requires making the prediction on the linear predictor scale, constructing the confidence limits, and then back-transforming the predictions to the response scale using the inverse link function. There are several ways to write the inverse link function for a logit link model, but the easiest to use in my opinion is <span class="math display">\[
+<p>Adding confidence limits to this sort of plot requires making the prediction on the linear predictor scale, constructing the confidence limits, and then back-transforming the predictions to the response scale using the inverse link function. There are several ways to write the inverse link function for a logit link model, but the easiest to use in my opinion is
+<span class="math display">\[
   \hat{p} = \frac{1}{1+e^{-\beta X}}
-\]</span> where <span class="math inline">\(\beta X\)</span> is the prediction on the link scale.</p>
+\]</span>
+where <span class="math inline">\(\beta X\)</span> is the prediction on the link scale.</p>
 <pre class="r"><code>nd &lt;- data.frame(area = seq(0, 9, 0.01), isolation = median(isolation$isolation))
 pred.p &lt;- augment(isolation.2, newdata = nd, type.predict = &quot;link&quot;, 
     se.fit = TRUE) %&gt;% mutate(p = 1/(1 + exp(-.fitted)), lowerci = 1/(1 + 

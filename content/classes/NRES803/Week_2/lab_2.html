@@ -87,7 +87,8 @@ nd &lt;- data.frame(fweek=factor(levels(RIKZ$fweek)))</code></pre>
 <p>Whenever you come across a bit of R code that is doing something complicated, you can use this approach to decompose what is going on. This is a very powerful way to learn R.</p>
 <p>Now we need to use the nd data.frame, together with the fitted model object, to get the predicted values:</p>
 <pre class="r"><code>augment(RIKZ_model.3,newdata=nd)</code></pre>
-<p>This gives us a dataframe of mean species richness in each week and the standard errors. So the mean species richness in week 3 is 4.2±0.96 (SE). That’s nice, but it would be nicer if we could plot it on a figure. Save the predicted means and standard errors to an object named ‘predicted.Richness’ and make the plot again.</p>
+<p>This gives us a dataframe of mean species richness in each week and the standard errors.
+So the mean species richness in week 3 is 4.2±0.96 (SE). That’s nice, but it would be nicer if we could plot it on a figure. Save the predicted means and standard errors to an object named ‘predicted.Richness’ and make the plot again.</p>
 <pre class="r"><code>predicted.Richness &lt;- augment(RIKZ_model.3, newdata=nd)
 
 # have to set color explicitly otherwise looks for fbeach in predicted.Richness

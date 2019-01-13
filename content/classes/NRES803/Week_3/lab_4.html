@@ -15,7 +15,12 @@ weight: 803041
 <li><p>Include the following line in your first code chunk, before you run anything else.</p></li>
 </ol>
 <p><code>source(knitr::purl(&quot;yourname_lab3.rmd&quot;, output = tempfile()))</code></p>
-<p>The function knitr::purl() pulls all the code chunks out of the Rmd file and puts them in an R script. source() then runs that script. To be super clean, add include = FALSE, echo=FALSE to the code chunk options, which go at the start of the code chunk like this <code>```{r}</code> change to <code>```{r , include = FALSE, echo=FALSE}</code> that will not show the code or results in the output document.</p>
+<p>The function knitr::purl() pulls all the code chunks out of the Rmd file and puts them in an R script. source() then runs that script.
+To be super clean, add include = FALSE, echo=FALSE to the code chunk options, which go at the start of the code chunk like this
+<code>```{r}</code>
+change to
+<code>```{r , include = FALSE, echo=FALSE}</code>
+that will not show the code or results in the output document.</p>
 <p>As before, answer the numbered questions in the regular text section of your R markdown file.</p>
 <div id="manually-model-average-the-intercept" class="section level2">
 <h2>Manually model average the intercept</h2>
@@ -99,7 +104,8 @@ mavg.var.amount2 &lt;- with(amount_allrows, sum(weights * (var_est +
 </div>
 <div id="model-average-all-the-things" class="section level2">
 <h2>Model average all the things</h2>
-<p>Ideally we want to get a table with the model averaged coefficients for every parameter in the model. We could copy and paste the calculations above for each parameter, then bind them all together into a data.frame. Or we could do all the calculations at once. We start by simply not filtering when we create our table of parameter estimates.</p>
+<p>Ideally we want to get a table with the model averaged coefficients for every parameter in the model. We could copy and paste the calculations above for each parameter, then bind them all together into a data.frame. Or we could do all the calculations at once.
+We start by simply not filtering when we create our table of parameter estimates.</p>
 <pre class="r"><code># get all the things
 estimates &lt;- map_df(fits, tidy, .id = &quot;modname&quot;)</code></pre>
 <p>Start with the version that conditions the weights on the models containing each parameter. First we need to get the weights associated with each model attached to the right rows. Back to <code>left_join()</code></p>

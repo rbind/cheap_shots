@@ -40,7 +40,8 @@ anova(smaller.model, truth)</code></pre>
     Hetero, Y ~ Amount + Edge + Hetero, Y ~ Amount + Edge + MnPatch, 
     Y ~ Amount + MnPatch + Hetero, Y ~ Edge + MnPatch + Hetero, 
     Y ~ Amount + Edge + MnPatch + Hetero)</code></pre>
-<p>This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually. Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using <code>map()</code> <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. This function takes a list as it’s first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to <code>map()</code> to the function. In this case I give the argument <code>data=smithsim</code> to make sure the data are available to <code>lm()</code>.</p>
+<p>This amounts to 16 possible models. This may seem time consuming, but in fact you have to write out all the models at some point in order to check them, and by doing it in a list we gain a lot of flexibility and speed later on. For example, we don’t need to fit each model individually.
+Putting all our model formulas in a list makes it dead easy to fit all the models with one line of code using <code>map()</code> <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This function takes a list as it’s first argument, and passes each item in the list to the function defined in the 2nd argument. It also passes any additional arguments given to <code>map()</code> to the function. In this case I give the argument <code>data=smithsim</code> to make sure the data are available to <code>lm()</code>.</p>
 <pre class="r"><code>fits &lt;- map(models, lm, data = smithsim)</code></pre>
 <p>Next we want to get the AIC values for each of these models. We use <code>map_dbl()</code>, which is similar to <code>map()</code>, but returns a numeric vector:</p>
 <pre class="r"><code>aic &lt;- map_dbl(fits, AIC)
@@ -55,7 +56,7 @@ weights &lt;- weights/sum(weights)  # so we can do this</code></pre>
 <p>In this step we’re really taking advantage of R’s “vectorizing” of calculations to automatically repeat the same calculation across an entire vector.</p>
 <p>We also want the number of estimated parameters in each model.</p>
 <pre class="r"><code>npars &lt;- map_dbl(fits, ~length(coef(.x)) + 1)</code></pre>
-<p>Recall that the second argument to <code>map_dbl()</code> is a function. Here I’ve defined an <em>anonymous</em> function (it has no name) just to use here. If that looks intimidating – start with <code>coef(global)</code> and build out and you’ll see what the function does with a single fitted model object. Finally, use <code>data_frame()</code> to show all the results together.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>Recall that the second argument to <code>map_dbl()</code> is a function. Here I’ve defined an <em>anonymous</em> function (it has no name) just to use here. If that looks intimidating – start with <code>coef(global)</code> and build out and you’ll see what the function does with a single fitted model object. Finally, use <code>data_frame()</code> to show all the results together.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 <pre class="r"><code>data_frame(AIC = aic, k = npars, deltas = deltas, weights = weights)</code></pre>
 <p>This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:</p>
 <pre class="r"><code>aic.table &lt;- data_frame(model = 1:16, AIC = aic, k = npars, deltas = deltas, 
@@ -72,25 +73,29 @@ at2</code></pre>
 <pre class="r"><code>clip &lt;- pipe(&quot;pbcopy&quot;, &quot;w&quot;)
 write.table(aic.table, file = clip)
 close(clip)</code></pre>
-<p>should work. In both cases, change to Excel and paste. You could also sort it before doing the write.table() but that’s not essential. Once in Excel you will have to use the Text to Columns dialog to get the results into a table. Then it is easy to change the scientific notation for the weights column to something readable, adjust the number of decimal places, and sort the table how you like. Or we can do it directly in R Markdown. First load the <code>pander</code> package.</p>
+<p>should work. In both cases, change to Excel and paste. You could also sort it before doing the write.table() but that’s not essential. Once in Excel you will have to use the Text to Columns dialog to get the results into a table. Then it is easy to change the scientific notation for the weights column to something readable, adjust the number of decimal places, and sort the table how you like.
+Or we can do it directly in R Markdown. First load the <code>pander</code> package.</p>
 <pre class="r"><code>library(pander)
 pander(as.data.frame(at2), caption = &quot;Table 1 AIC table of smithsim results.&quot;)</code></pre>
-<p>When you click “Knit Word” in RStudio you get a word document that is completely editable, and the table is nicely produced and ready to go. Incidentally, <code>pander</code> does pretty cool things with other R objects too.</p>
+<p>When you click “Knit Word” in RStudio you get a word document that is completely editable, and the table is nicely produced and ready to go.
+Incidentally, <code>pander</code> does pretty cool things with other R objects too.</p>
 <pre class="r"><code>pander(truth)</code></pre>
 <p>Is there nothing R can’t do? Well, you still have to write the interpretation of the model!</p>
-<p>And here is the easy way to do all of the above. First, make sure you have the AICcmodavg package installed on your computer.</p>
+<p>And here is the easy way to do all of the above.
+First, make sure you have the AICcmodavg package installed on your computer.</p>
 <pre class="r"><code>library(AICcmodavg)
 aictab(fits)</code></pre>
 <p>where fits is the list of fitted model objects we created before, and 1:16 is a vector of labels to use in the table. One line! Two, if you count loading the library. If you look closely you’ll see that the AIC values in this table are slightly different from the ones we calculated, because aictab() is using the 2nd order sample size correction by default. If you do:</p>
 <pre class="r"><code>aictab(fits, modnames = 1:16, second.ord = FALSE)</code></pre>
-<p>You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to <em>not</em> use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases. The table is even easier to understand if we put the model formulas into the table.</p>
+<p>You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to <em>not</em> use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases.
+The table is even easier to understand if we put the model formulas into the table.</p>
 <pre class="r"><code>modnames &lt;- map_chr(models, ~deparse(.x[[3]]))
 pander(aictab(fits, modnames = modnames), split.tables = Inf)</code></pre>
 <p>The <code>split.tables=Inf</code> argument to <code>pander</code> just tells pander to not try and be smart about dividing up the result to fit inside a fixed number of columns. While it pains me to admit it, Word is actually smarter than R when it comes to sizing the columns of the table to fit on a page.</p>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>You might already be familiar with base R functions <code>lapply()</code>, <code>sapply()</code> etc.; the <code>map*()</code> functions do the same thing, but are more picky about the arguments they get and the values they return. This makes them safer to program with. The <code>map*()</code> functions are found in package <code>purrr</code> in the <code>tidyverse</code>.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>In fact, we could have done all in the individual calculations directly inside the call to <code>data_frame()</code>. In this case I needed to explain each line one by one, so that becomes awkward.<a href="#fnref2">↩</a></p></li>
+<li id="fn1"><p>You might already be familiar with base R functions <code>lapply()</code>, <code>sapply()</code> etc.; the <code>map*()</code> functions do the same thing, but are more picky about the arguments they get and the values they return. This makes them safer to program with. The <code>map*()</code> functions are found in package <code>purrr</code> in the <code>tidyverse</code>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>In fact, we could have done all in the individual calculations directly inside the call to <code>data_frame()</code>. In this case I needed to explain each line one by one, so that becomes awkward.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

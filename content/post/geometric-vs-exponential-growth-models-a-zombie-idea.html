@@ -1,0 +1,37 @@
+---
+title: 'Geometric vs. Exponential growth models: a zombie idea'
+author: Drew Tyre
+date: '2019-01-12'
+slug: geometric-vs-exponential-growth-models-a-zombie-idea
+summary: '5 out of 10 ecology textbooks on my shelves make this distinction: geometric models are for populations with discrete pulses of births, while exponential models are for populations with continuous births. This zombie idea needs to die. It is both wrong and enourmously confusing to students.'
+categories:
+  - Teaching
+tags:
+  - ecology
+---
+
+
+
+<p>5 out of 10 ecology textbooks<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> on my shelves make this distinction: geometric models are for populations with discrete pulses of births, while exponential models are for populations with continuous births. This <a href="https://dynamicecology.wordpress.com/2011/06/17/zombie-ideas-in-ecology/">zombie idea</a> needs to die. It is both wrong and enourmously confusing to students.</p>
+<p>The textbook that we used in NRES 220 Principles of Ecology has online questions. After reading about the distinction between geometric and exponential growth students were asked this question<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> :</p>
+<p>Which of the following populations will grow geometrically (ignoring species interactions):</p>
+<ol style="list-style-type: lower-alpha">
+<li>A large population of deer that breeds once per year on a small island with limited food</li>
+<li>A large population of humans that breed continuously on a small island with limited food</li>
+<li>A small population of deer that breeds once per year just arrived on a large island with unlimited food</li>
+<li>A small population of humans that breed continuously just arrived on a large island with unlimited food</li>
+</ol>
+<p>Half of the students choose c, and half d (with a few stragglers elsewhere); the textbook’s answer is c. So students accurately distinguish between density independent and density dependent growth. But half chose discrete time and half chose continuous time. However, this distinction is ecologically unimportant. You can model <em>any</em> population using discrete time or continuous time. Different math, and sometimes one is more convienent than the other, but no ecological difference.</p>
+<p>A typical explanation goes like this: some species, like deer, give birth over a relatively short period of time within a year. Therefore, we can best model this using discrete time steps that project from one birth pulse to the next. But what about deaths? Deer die continuously! There are pulses of death (like rifle season for male deer), but they don’t occur at the same time as the birth pulses.</p>
+<p>The same textbook uses aphids as the paradigmatic example of an exponentially growing population because their births are continuous. But, exponential growth assumes deaths and births occur at the same rate, and <a href="http://digitalcommons.unl.edu/bioscifacpub/94/">aphid birth and death rates vary wildly with age</a>. Also, I could make a discrete time model with a time step of 1 day, and then my model is “approximately” continuous at time steps of 1 week or longer. If I chose a time step of an hour, then the births would be pulsed again. Moreover, I can start with continuous rates, and calculate the equivalent discrete time model that <em>makes identical predictions</em>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> If you don’t believe me, check Hal Caswell’s “Matrix Population Models”, which has an explicit formulation of “continuous” reproduction for discrete time matrix projection models (birth flow models). Neither model is perfectly correct.</p>
+<p>This is <a href="https://en.wikipedia.org/wiki/Bonini&#39;s_paradox">Bonini’s paradox</a> in action. Or, as George Box put it, “All models are wrong, but some are useful”.</p>
+<p>I call this error of conflating mathematical differences with ecological difference a ‘map-territory error’, after the <a href="https://en.wikipedia.org/wiki/Map%E2%80%93territory_relation">map-territory relation</a>. We are mistaking a difference in the map (discrete vs. continuous time) with an ecological difference. Ecologists seem particularly prone to map-territory errors (maybe more on that later). Maybe this is because of our physics envy.</p>
+<p>So, I’ve stopped making this distinction in my classes. I use discrete time models almost exclusively, because the math is a bit easier to communicate (IMO). Student learning will benefit if we all follow suit and textbooks are revised accordingly.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Distinguish: Ricklefs and Relyea, Begon, Harper and Townsend, Rockwood, Hastings, and Gotelli. Sort of: Mills. Not: Sinclair et al., Donovan and Welden, Neal, and Smith (but only because he confuses geometric growth for exponential).<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>The question is altered to protect copyright and prevent releasing the correct answer “into the wild”.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>This is only true for density independent models.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
