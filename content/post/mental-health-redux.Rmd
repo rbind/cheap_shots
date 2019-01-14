@@ -15,11 +15,11 @@ About a year ago [I disclosed my depression to the interwebs](https://drewtyre.r
 It seems timely to revisit the topic.
 
 On the whole, telling people about my experience of depression was a positive 
-experience. This is likely a result of my priveleged position -- not everyone
+experience. This is likely a result of my privileged position -- not everyone
 would have experienced such an outcome. My colleagues were very supportive. 
 I made new friends as people reached out to have lunch and talk about science 
 fiction novels and cooking. I didn't hear any official reaction, but through the
-grapevine came rumbles of my blogpost triggering discussions in various student
+grapevine came rumbles of my blog post triggering discussions in various student
 support groups throughout the university.
 
 One thing I didn't anticipate was the number of people who wanted to talk to me 
@@ -36,7 +36,7 @@ qualification is a lack of the quantity in question! I asked for suggestions on
 twitter -- that turned out to be a mixed benefit. On the one hand, lots of 
 supportive replies telling me to just tell my story, and it'll be great. On the 
 other were outright critical replies telling me to turn it over to a mental 
-health professional, or worrying that the discussion would dilute the lived 
+health professional, or worrying that graduate student complaints would dilute the lived 
 experience of genuinely ill people. I left twitter alone for the better part of
 a month after that. 
 
@@ -51,9 +51,14 @@ found on the CAPS website](https://caps.unl.edu/big-red-folder) to a "myth or fa
 activity. I told my story, did the exercise, and let the discussion flow after 
 that. It went really well. 
 
-Symptoms of stigma. 
-
-On the whole, a positive outcome. 
+During the discussion one of my colleagues asked a great question to which I had 
+no answer. I still don't, but I've since realized the question itself reflects the
+stigma attached to mental health. Paraphrased, "What do we do when a student suffers 
+depression, and is unable to complete the work required by the funding agency?" 
+The answer is, the same thing you'd do if the student was diagnosed with cancer,
+or became pregnant! Which probably still doesn't help with most funding agencies,
+but the point is that it isn't any different from a physical illness or condition
+that leaves a student unable to complete the work. 
 
 Current state
 
