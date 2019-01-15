@@ -1,19 +1,17 @@
 ---
-title: "Mental Health Redux"
-author: "Drew Tyre"
+title: Mental Health Redux
+author: Drew Tyre
 date: '2019-01-21'
-output: word_document
-draft: yes
+draft: true
 slug: mental-health-redux
-summary: About a year ago I disclosed my depression to the interwebs. It seems timely
-  to revisit the topic.
-tags:
-- Higher Ed
-- mental health
+summary: 'About a year ago I disclosed my depression to the interwebs. It seems timely to revisit the topic.'
 categories: []
+tags:
+  - Higher Ed
+  - mental health
 ---
 
-About a year ago [I disclosed my depression to the interwebs](https://drewtyre.rbind.io/post/mental-health/). 
+About a year ago [I disclosed my depression to the interwebs](https://drewtyre.rbind.io/mental-health/). 
 It seems timely to revisit the topic.
 
 On the whole, telling people about my experience of depression was a positive 
