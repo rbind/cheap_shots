@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .Rproj.user
 .Rhistory
 .RData
@@ -6,3 +7,9 @@ blogdown
 public/
 .DS_Store
 Thumbs.db
+=======
+# IDE specific
+.idea/
+.vscode/
+resources/
+>>>>>>> 55e1d6a12cfb7c7fcbe6dd6d825d8505426834ee
