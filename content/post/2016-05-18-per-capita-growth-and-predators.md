@@ -1,10 +1,11 @@
 --- 
 title:  How do predators change population growth? 
 date: 2016-05-18
-tags: [population regulation, ecology] 
+tags_include: [population regulation, ecology] 
 summary: "Predators are one of the factors contributing to death rates, and so if a
 species has any predators at all, predation is part of the logistic model."
 slug: per-capita-growth-and-predation
+categories: []
 ---
 
 

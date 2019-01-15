@@ -8,7 +8,7 @@ summary: "I've been teaching students `ggplot2` for graphics exclusively for a y
 categories:
   - R
   - Teaching
-tags: []
+tags_include: []
 ---
 
 I've been teaching students `ggplot2` for graphics exclusively for a couple years now. One issue that seems to throw students is the specification of different data sets for some layers. Part of the confusion seems to arise from reversing the order of arguments between `ggplot()` and `geom_*()`. I'm trying to combat this by always naming my arguments. Is this a good idea?

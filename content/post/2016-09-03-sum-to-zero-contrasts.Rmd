@@ -5,7 +5,8 @@ date: '2016-09-03'
 slug: sum-to-zero
 draft: false
 summary: "Should ecologists use sum-to-zero contrasts?"
-tags: [rstats, teaching] 
+tags_include: [rstats, teaching]
+categories: [Teaching]
 ---
 
 A sum-to-zero contrast codes a categorical variable as deviations from a grand mean. Social scientists use them extensively. Should ecologists?

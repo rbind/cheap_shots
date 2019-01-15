@@ -6,7 +6,7 @@ highlight = false
 weight = 222003
 # Optional featured image (relative to `static/img/` folder).
 [header]
-image = ""
+
 caption = ""
 
 +++

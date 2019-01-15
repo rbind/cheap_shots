@@ -3,7 +3,8 @@ title:  Scaling and Centering
 date: 2016-05-01 16:49:07
 summary: "Centering and rescaling covariates is a common task"
 slug: scaling-and-center
-tags: ["R", "data manipulation"]
+tags_include: ["R", "data manipulation"]
+categories: []
 ---
 
 Centering and rescaling covariates is a common task prior to building

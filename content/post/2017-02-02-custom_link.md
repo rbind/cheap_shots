@@ -2,7 +2,8 @@
 title:  Accounting for exposure days 
 date: '2017-02-02'
 comments: true
-tags: [statistics, R, ecology] 
+tags_include: [statistics, R, ecology] 
+categories: []
 bibliography: references.bib
 slug: custom-link-funcs
 summary: "Every year I suggest a student use Terry Shaffer's log exposure models

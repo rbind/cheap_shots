@@ -4,7 +4,8 @@ date: '2016-12-07'
 comments: true
 slug: slow_science
 summary: "I've heard a number of calls for faculty to slow down, think, and write. [This is the latest](http://www.chronicle.com/article/Helping-Professors-Find-Time/238569), by Allison Adams from Emory University. I'm trying, but it's hard."
-tags: [Higher Ed] 
+tags_include: [Higher Ed]
+categories: []
 ---
 
 I've heard a number of calls for faculty to slow down, think, and write. [This is the latest](http://www.chronicle.com/article/Helping-Professors-Find-Time/238569), by Allison Adams from Emory University. I'm trying, but it's hard.

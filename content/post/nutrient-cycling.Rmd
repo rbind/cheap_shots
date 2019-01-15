@@ -8,7 +8,7 @@ summary: "I set up 4 10 gallon aquaria in the teaching lab this semester. The go
 categories:
   - Teaching
   - R
-tags: []
+tags_include: []
 ---
 
 I set up 4 10 gallon aquaria in the teaching lab this semester. The goal was to observe the nitrogen cycle as the tanks settled in. I also needed an excuse to try out the new Hach environmental water testing kit that we ordered. The data are on figshare.

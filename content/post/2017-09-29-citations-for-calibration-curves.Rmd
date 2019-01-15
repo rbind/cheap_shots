@@ -6,7 +6,7 @@ slug: citations-for-calibration-curves
 draft: true
 categories:
   - R
-tags:
+tags_include:
   - Simulation
   - models
   - Testing

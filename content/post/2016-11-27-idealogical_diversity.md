@@ -4,7 +4,8 @@ date: '2016-11-27'
 slug: idealogical_diversity
 summary: "Yesterday a colleague posted a link to [an article in The Federalist](http://thefederalist.com/2016/11/18/liberals-should-stop-ranting-and-seek-out-silent-trump-voters-like-me/) calling out liberals for not listening. I think the author has a point."
 comments: true
-tags: [politics] 
+tags_include: [politics]
+categories: []
 ---
 
 Yesterday a colleague posted a link to [an article in The Federalist](http://thefederalist.com/2016/11/18/liberals-should-stop-ranting-and-seek-out-silent-trump-voters-like-me/) calling out liberals for not listening. I think the author has a point.

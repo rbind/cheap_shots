@@ -1,10 +1,11 @@
 --- 
 title:  Testing disqus comments 
 comments: true
-tags: [keyword1, keyword2] 
+tags_include: [keyword1, keyword2] 
 date: '2016-11-25'
 slug: testing_disqus
 summary: "At a reader's request I'm attempting to add disqus comments to my blog posts. Ignore this post!"
+categories: []
 ---
 
 At a reader's request I'm attempting to add disqus comments to my blog posts. Ignore this post!

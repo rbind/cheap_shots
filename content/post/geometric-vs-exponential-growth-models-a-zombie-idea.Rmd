@@ -6,7 +6,7 @@ slug: geometric-vs-exponential-growth-models-a-zombie-idea
 summary: '5 out of 10 ecology textbooks on my shelves make this distinction: geometric models are for populations with discrete pulses of births, while exponential models are for populations with continuous births. This zombie idea needs to die. It is both wrong and enourmously confusing to students.'
 categories:
   - Teaching
-tags:
+tags_include:
   - ecology
 ---
 

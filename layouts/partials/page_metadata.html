@@ -45,6 +45,7 @@
   <a href="{{ $.RelPermalink }}#disqus_thread"><!-- Count will be inserted here --></a>
   {{ end}}
 
+  {{/*
   {{ if $.Params.categories }}
   {{ $categoriesLen := len $.Params.categories }}
   {{ if gt $categoriesLen 0 }}
@@ -58,7 +59,7 @@
   </span>
   {{ end }}
   {{ end }}
-
+  */}}
   {{ if ne $is_list 1 }}
   {{ partial "share.html" $ }}
   {{ end }}

@@ -1,6 +1,7 @@
 --- 
 title:  Lists of models in a data.frame
-tags: [R, multimodel inference, AIC] 
+tags_include: [R, multimodel inference, AIC]
+categories: []
 date: '2016-05-29'
 slug: lists-of-models
 summary: "So a couple weeks ago [I had a stab at putting a list of fitted models into a data.frame](http://atyre2.github.io/2016/05/11/happy-houR-one.html). I didn't succeed. So, here's another try. 

@@ -7,7 +7,7 @@ weight = 803120
 
 # Optional featured image (relative to `static/img/` folder).
 [header]
-image = ""
+
 caption = ""
 
 +++

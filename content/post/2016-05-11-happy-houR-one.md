@@ -3,7 +3,8 @@ title:  Happy houR!
 date: 2016-05-11 18:01:47
 slug: happy-hour
 summary: "Can a combination of `purrr` and `broom` can make my approach to multi-model inference easier?"
-tags: [R, model selection, TIL]
+tags_include: [R, model selection, TIL]
+categories: []
 ---
 
 It's happy houR. I'm in a happy place, and I'm going to spend an hour trying 

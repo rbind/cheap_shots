@@ -3,11 +3,12 @@ title:  The sex ratio of chickens
 date: 2016-04-26 16:44:36
 summary: "How many hens in a batch of straight run chicks? or How to get carried away answering an email from the public!"
 slug: the-sex-ratio-of-chickens
-tags:
+tags_include:
   - R
   - Outreach
   - Simulation
   - Mixed Models
+categories: []
 ---
 
 I got the following email the other day

@@ -4,7 +4,8 @@ date: "2017-06-16 10:18:27"
 slug: rebutting_cade
 summary: "Brian Cade [published a scathing condemnation of current statistical practices in ecology.](http://onlinelibrary.wiley.com/doi/10.1890/14-1639.1/full) It promises to be highly influential; I have seen it cited by reviewers already. I agree with a great many points Brian raised. I also disagree with one very central point. 
 "
-tags: 
+categories: []
+tags_include: 
   - model selection
   - R 
   - ecology

@@ -3,7 +3,8 @@ title: Naming sum-to-zero contrasts
 author: Drew Tyre
 date: '2018-02-20'
 slug: naming-sum-to-zero-contrasts
-tags: [rstats]
+tags_include: [rstats]
+categories: []
 ---
 
 In 2016 I started thinking about using sum to zero contrasts and wrote [a brief blog post about them](https://drewtyre.rbind.io/post/sum-to-zero/). Someone read it! I got this email the other day:

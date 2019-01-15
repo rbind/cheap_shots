@@ -5,7 +5,8 @@ date: '2017-12-07'
 slug: adventures-in-metadata
 draft: true
 summary: "Metadata are good. Everyone should create metadata. But writing raw XML is bad. rOpenSci created the EML package to make this easier."
-tags:
+categories: []
+tags_include:
   - R
   - data manipulation
   - ecology
@@ -17,8 +18,9 @@ tags:
 <p>In theory. My first look at EML looked like it would be intimidating to a casual user of R. But the proof is in the pudding, and I thought I should give it a test drive with some actual data. I’m putting some data generated in my Ecology Lab classes up on <a href="https://figshare.com">figshare</a>, so this is an ideal opportunity to give it a test run.</p>
 <pre class="r"><code>devtools::install_github(&quot;ropensci/EML&quot;)</code></pre>
 <p>I’ve put the <a href="https://figshare.com/articles/Data_collected_by_NRES_222_University_of_Nebraska-Lincoln/5679241">data on figshare</a>, so</p>
-<pre class="r"><code>library(tidyverse)
-aquariums &lt;- read_csv(&quot;https://ndownloader.figshare.com/files/9932452&quot;)</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tibble&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>aquariums &lt;- read_csv(&quot;https://ndownloader.figshare.com/files/9932452&quot;)</code></pre>
 <pre><code>## Warning: Missing column names filled in: &#39;X14&#39; [14]</code></pre>
 <p>OK. Now I want to make a metadata record for this data.</p>
 <pre class="r"><code>library(EML)</code></pre>

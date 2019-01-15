@@ -1,7 +1,8 @@
 --- 
 title:  Can you sum the sensitivities?  
 date: '2016-08-19'
-tags: [model, structured population] 
+tags_include: [model, structured population] 
+categories: []
 slug: sum-of-sensitivities
 summary: "TL;DR No."
 ---

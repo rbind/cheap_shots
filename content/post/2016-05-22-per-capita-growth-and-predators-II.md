@@ -1,7 +1,8 @@
 --- 
 title:  How do predators change population growth, part II?
 date: 2016-05-22
-tags: [population regulation, ecology] 
+tags_include: [population regulation, ecology] 
+categories: []
 slug: per-capita-growth-and-predators
 summary: "Last week [I starting thinking about how predation might affect a species that otherwise experiences logistic growth](http://atyre2.github.io/2016/05/18/per-capita-growth-and-predators.html) due to intra-specific competition. I looked at predators with both Type I and Type II functional responses to their prey. What about predators with Type III responses?"
 ---

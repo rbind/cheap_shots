@@ -3,7 +3,8 @@ title:  Statistical training in ecology
 date: '2016-09-18'
 slug: Training_need_mismatch
 summary: "[This article](http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/abstract) made the rounds of twitter recently. I agree. There is a mismatch between statistical practice and training. Almost the first thing I did was flip to the appended data and see how they categorized UNL. I was relieved to see that we have a course beyond linear models; mine!"
-tags: [teaching, statistics] 
+tags_include: [teaching, statistics]
+categories: []
 ---
 
 [This article](http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/abstract) made the rounds of twitter recently. I agree. There is a mismatch between statistical practice and training. Almost the first thing I did was flip to the appended data and see how they categorized UNL. I was relieved to see that we have a course "beyond linear models"; mine! 

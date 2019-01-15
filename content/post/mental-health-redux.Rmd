@@ -5,8 +5,8 @@ date: '2019-01-21'
 draft: true
 slug: mental-health-redux
 summary: 'About a year ago I disclosed my depression to the interwebs. It seems timely to revisit the topic.'
-categories: []
-tags:
+categories: ["Personal"]
+tags_include:
   - Higher Ed
   - mental health
 ---

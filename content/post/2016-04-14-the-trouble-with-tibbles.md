@@ -3,7 +3,8 @@ title:  The trouble with tibbles
 date: 2016-04-25 14:07:33
 summary: "You can use tbls everywhere you use data.frames. 
 Except when you can't."
-tags: ["R", "data manipulation"]
+tags_include: ["R", "data manipulation"]
+categories: []
 ---
 
 Hadley Wickham's `dplyr` package makes complex 

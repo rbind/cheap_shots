@@ -6,7 +6,7 @@ slug: growing-pains
 draft: false
 summary: "So I've kicked the ball on migrating to blogdown/hugo/netlify!"
 categories: []
-tags:
+tags_include:
   - hugo
   - R Markdown
 ---
