@@ -1,9 +1,8 @@
 ---
 title: Citations for Calibration Curves
 author: Drew Tyre
-date: '2017-09-29'
+date: '2019-01-21'
 slug: citations-for-calibration-curves
-draft: true
 categories:
   - R
 tags_include:
@@ -14,4 +13,6 @@ tags_include:
 
 I now regularly test models using cross validation. I use a "calibration curve" to see whether the predictions from independent data fit the observed data. What I don't have is a good citation for why this should be so. It's a bit like asking for a citation for breathing. *Of course*, the expected values are $\beta_0 = 0$ and $\beta_1 = 1$! 
 
-But, I need to find a citation. In my brief search so far I found David Cox [(1958)](https://www.nuffield.ox.ac.uk/users/cox/cox49.pdf) wrote about this hypothesis for a binary regression model. That wasn't in the context of cross validation however. 
+But, I need to find a citation. In my brief search so far I found David Cox [(1958)](https://www.nuffield.ox.ac.uk/users/cox/cox49.pdf) wrote about this hypothesis for a binary regression model. That wasn't in the context of cross validation however. A brief look at Web of Science indicates that papers in clinical sciences are still citing it when they test models, so maybe that's good enough?
+
+Are there any other ideas out there?
