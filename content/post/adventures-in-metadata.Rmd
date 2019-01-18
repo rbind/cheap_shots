@@ -198,8 +198,7 @@ aq_physical <- set_physical("data/aquarium_experiment_2017.csv",
 Now we put the whole thing together into a dataTable object.
 
 ```{r}
-aq_dataTable <- new("dataTable",
-                    entityName = "aquarium_experiment_2017.csv",
+aq_dataTable <- eml$dataTable(entityName = "aquarium_experiment_2017.csv",
                     entityDescription = "Nutrient cycling in new aquaria",
                     physical = aq_physical,
                     attributeList = aq_attribList)
@@ -208,9 +207,10 @@ aq_dataTable <- new("dataTable",
 Now there are a few more things to do, but I'm wondering if this is already sufficient to create an EML file. I need to create a "dataset", and then put that into an eml object.
 
 ```{r}
-data_set <- new("dataset",
+data_set <- eml$dataset(
                 title = "Nutrient cycling experiment in NRES 222",
-                creator = new("creator"), # as(as.person("Drew Tyre <atyre2@unl.edu> [cre]"), "creator"),
+                creator = eml$creator(givenName = "Drew Tyre",
+                                      atyre2@unl.edu),
                 publisher = new("publisher"),
                 pubDate = "2017",
                 intellectualRights = "CC0",
