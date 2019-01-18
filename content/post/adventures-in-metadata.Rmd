@@ -1,11 +1,11 @@
 ---
 title: Adventures in metadata ...
 author: Drew Tyre
-date: '2017-12-07'
+date: '2019-01-28'
 slug: adventures-in-metadata
 draft: true
 summary: "Metadata are good. Everyone should create metadata. But writing raw XML is bad. rOpenSci created the EML package to make this easier."
-categories: []
+categories: [Research]
 tags_include:
   - R
   - data manipulation
@@ -14,7 +14,7 @@ tags_include:
 
 Metadata are good. Everyone should create metadata. But writing raw XML is bad. [rOpenSci](https://ropensci.org/) has created the [EML package](https://github.com/ropensci/EML) to make this easier. 
 
-In theory. My first look at EML looked like it would be intimidating to a casual user of R. But the proof is in the pudding, and I thought I should give it a test drive with some actual data. I'm putting some data generated in my Ecology Lab classes up on [figshare](https://figshare.com), so this is an ideal opportunity to give it a test run. 
+In theory. My first look at EML looked like it would be intimidating to a casual user of R. But the proof is in the pudding, and I thought I should give it a test drive with some actual data. I've put some data generated in my Ecology Lab classes up on [figshare](https://figshare.com), so this is an ideal opportunity to give it a test run. 
 
 ```{r get_packages, eval=FALSE}
 devtools::install_github("ropensci/EML")
@@ -25,7 +25,11 @@ I've put the [data on figshare](https://figshare.com/articles/Data_collected_by_
 ```{r load_data, message=FALSE}
 library(tidyverse)
 aquariums <- read_csv("https://ndownloader.figshare.com/files/9932452")
+#write out the data file for later 
+write_csv(aquariums, "data/aquarium_experiment_2017.csv")
 ```
+
+
 
 OK. Now I want to make a metadata record for this data. 
 
@@ -184,12 +188,10 @@ aq_attribList <- set_attributes(aq_attrib, aq_factors,
                                                 "character"))
 ```
 
-`aq_attribList` is 2.6 Mb! That's ... quite something. Must be adding something extra. 
-
 The next step is to describe the physical structure of the data. This was easy because the defaults for the EML function are for a csv file.
 
 ```{r}
-aq_physical <- set_physical("aquarium_experiment_2017.csv",
+aq_physical <- set_physical("data/aquarium_experiment_2017.csv",
                             url = "https://ndownloader.figshare.com/files/9932452")
 ```
 

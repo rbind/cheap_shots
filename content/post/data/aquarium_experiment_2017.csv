@@ -1,0 +1,33 @@
+Year,Month,Day,Tank,Time,Team,pH,temp,NH4,Flag_NH4,NO2,Flag_NO2,NO3,X14,P,Flag_P,Comment
+2017,10,30,3,15:30:00,NA,8.35,21.4,0,Good,0.264,Good,0.43,Good,9.8,Bad,Used too much liquid for Nitrate
+2017,10,31,3,15:00:00,NA,8.47,28.7,0.01,Good,0.221,Good,0.4,Good,0.5,Good,NA
+2017,11,1,3,15:00:00,NA,8.68,21,0.03,Good,0.246,Good,0.5,Out-of-range,0.65,Good,NA
+2017,11,2,3,18:00:00,NA,NA,19.6,0,Good,NA,NA,NA,NA,NA,NA,NA
+2017,10,30,2,15:25:00,NA,8.27,20.3,0.03,Good,0.29,Good,0.45,Good,7.4,Bad,NA
+2017,10,31,2,15:20:00,NA,8.57,21.4,0.06,Good,0.292,Good,0.45,Good,0.46,Good,NA
+2017,11,1,2,15:00:00,NA,8.61,21.3,0.04,Good,0.267,Good,0.4,Good,2.5,Out-of-range,NA
+2017,11,2,2,18:00:00,NA,NA,19.6,0,Good,NA,NA,NA,NA,NA,NA,NA
+2017,10,30,1,15:30:00,NA,7.8,21.7,0.22,Good,0.278,Good,0,Bad,5.22,Bad,NA
+2017,10,31,1,15:10:00,NA,8.6,20.9,0.33,Good,0.077,Good,0.52,Good,0.6,Good,NA
+2017,11,1,1,14:57:00,NA,8.6,21.1,0.35,Good,0.311,Good,0.5,Out-of-range,0.59,Good,NA
+2017,11,2,1,10:30:00,NA,NA,19.9,0.39,Good,NA,NA,NA,NA,NA,NA,NA
+2017,11,3,1,15:30:00,NA,8.5,19.3,0.17,Good,0.658,Good,NA,NA,NA,NA,Nitrite diluted 2:1
+2017,11,3,2,15:30:00,NA,8.6,NA,0.04,Good,0.278,Good,NA,NA,NA,NA,Nitrite diluted 2:1
+2017,11,3,3,15:30:00,NA,NA,NA,0.13,Good,0.246,Good,NA,NA,NA,NA,Nitrite diluted 2:1
+2017,11,3,4,15:30:00,NA,NA,NA,0.07,Good,0.246,Good,NA,NA,NA,NA,Nitrite diluted 2:1
+2017,11,4,1,14:25:00,NA,NA,19.4,0.1,Good,0.763,Good,2.45,Good,NA,NA,"Nitrite diluted 4:1, Nitrate diluted 5:1"
+2017,11,4,2,14:25:00,NA,NA,NA,0.08,Good,0.272,Good,2.75,Good,NA,NA,"NO2 2:1, NO3 5:1"
+2017,11,4,3,14:25:00,NA,NA,NA,0.19,Good,0.218,Good,2.7,Good,NA,NA,"NO2 2:1, NO3 5:1"
+2017,11,4,4,14:25:00,NA,NA,NA,0.02,Good,0.24,Good,1.6,Good,NA,NA,"NO2 2:1, NO3 5:1"
+2017,10,30,4,15:10:00,NA,8.37,21,0.07,Good,0.23,Good,0.41,Good,56.5,Bad,P shaken entire time
+2017,10,31,4,15:37:00,NA,8.55,22.2,0.32,Good,0.213,Good,0.42,Good,2.5,Out-of-range,NA
+2017,11,1,4,15:00:00,NA,8.66,21.3,0.02,Good,0.216,Good,0.5,Out-of-range,0.32,Good,NA
+2017,11,2,4,NA,NA,NA,NA,0.06,Good,NA,NA,NA,NA,NA,NA,NA
+2017,11,5,1,12:30:00,NA,8.82,19.6,0.09,Good,0.92,Good,5,Good,NA,NA,"NO2 5:1, NO3 15:1"
+2017,11,5,2,12:30:00,NA,8.76,NA,0.11,Good,0.269,Good,3.2,Good,NA,NA,"NO2 5:1, NO3 15:1"
+2017,11,5,3,12:30:00,NA,8.72,NA,0.22,Good,0.211,Good,2.7,Good,NA,NA,"NO2 5:1, NO3 15:1"
+2017,11,5,4,12:30:00,NA,8.71,NA,0.07,Good,0.233,Good,7.2,Good,NA,NA,"NO2 5:1, NO3 15:1"
+2017,11,6,1,14:50:00,NA,8.74,NA,0.02,Good,0.91,Good,4.05,Good,NA,NA,"NO2 5:1, NO3 15:1"
+2017,11,6,2,14:50:00,NA,8.7,NA,0.22,Good,0.255,Good,7.5,Out-of-range,NA,NA,"NO2 5:1, NO3 15:1"
+2017,11,6,3,14:50:00,NA,8.7,NA,0.2,Good,0.23,Good,7.35,Good,NA,NA,"NO2 5:1, NO3 15:1"
+2017,11,6,4,14:50:00,NA,8.75,NA,0.05,Good,0.2,Good,3.6,Good,NA,NA,"NO2 5:1, NO3 15:1"
