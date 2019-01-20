@@ -37,7 +37,7 @@ But our individually tiny bites add up.
 The problem is more acute for an atheist. Believers in a superhuman deity accept
 their existence as a gift from that deity. Yuval Harari, in *Sapiens*, asserts that atheists too believe in a superhuman order, that humanity is unique and most important among species. 
 
-How do buddhists solve this problem? Confucianists?
+How do Buddhists solve this problem? Confucians?
 
 # My first solution
 
@@ -50,6 +50,16 @@ species, including humans, have this right. We (may be) the first species with
 the (dubious) ability to question this right. 
 
 Essentially this is Harari's belief that humanity is unique and most important 
-among species. I believe that any living thing, concious enough to concieve of 
+among species. I believe that any living thing, conscious enough to conceive of 
 the question, would come to the same conclusion. 
 
+Harari goes farther. He asserts that the "Worship of Humanity" includes the belief
+that the Universe is given meaning by humanity. Personally, I'm willing to accept
+that the Universe existed before us, and will continue to exist without us. It did
+not arise to give us a place to be. 
+
+# Relation to Camus' solution
+
+No idea yet
+
+# 
