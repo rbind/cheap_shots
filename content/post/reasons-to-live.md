@@ -17,7 +17,7 @@ image:
 At my darkest point, a single question dominated my thinking. Why continue to 
 exist? Why continue consuming resources?  I hope sharing 
 how I answered those questions will help someone else, and perhaps, strengthen
-my own connection to life. 
+my own connection to life[^life]. 
 
 Check quote:
 
@@ -39,8 +39,8 @@ their existence as a gift from that deity. Atheists lack this comfort!
 
 # My first solution
 
-I have a right to exist. Without this bedrock assumption, suicide is the only
-logical action. But who granted me that right? This is a fundamental precursor
+I have a right[^right] to exist. Without this bedrock assumption, suicide is the only
+logical action. But who granted me that right? The right to exist is a fundamental precursor
 of a living thing. Those earliest of living things that did not assert this right
 did not persist. Those that did, continued to evolve. They did not question this
 right, they merely asserted it by existing, consuming, and reproducing. So all
@@ -57,7 +57,9 @@ that the Universe is given meaning by humanity. Personally, I'm willing to accep
 that the Universe existed before us, and will continue to exist without us. It did
 not arise to give us a place to be. 
 
-Is this existentialism? Does that matter? 
+# Connections to existentialism
+
+Does this matter?
 
 # What is a right?
 
@@ -89,7 +91,10 @@ conflict, usually, with the right of zebras as a group to exist.
 # Conclusion
 
 For now, I'm satisfied with my answers to these questions. I may never have a 
-perfect answer, but satisfication is good enough. I think the fundamental principle
-of existensialism is sound. 
+perfect answer, but satisfication is good enough. 
+
+[^life]: I couldn't sleep because I was having trouble reconstructing these arguments in my head. Writing them down makes them better.
+
+[^right]: I use this word in the sense of [an ethical principle of entitlement](https://en.wikipedia.org/wiki/Rights). 
 
 [^zebrafood]: [Madagascar crabgrass was preferred by zebras in a cafeteria trial](https://journals.uair.arizona.edu/index.php/jrm/article/viewFile/6641/6251)
