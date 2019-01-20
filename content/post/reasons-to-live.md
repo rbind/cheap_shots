@@ -15,8 +15,8 @@ image:
 ---
 
 At my darkest point, a single question dominated my thinking. Why continue to 
-exist? Why continue consuming resources? Here I want to address how I answered 
-those questions. I hope by sharing to help someone else, and perhaps, strengthen
+exist? Why continue consuming resources?  I hope sharing 
+how I answered those questions will help someone else, and perhaps, strengthen
 my own connection to life. 
 
 Check quote:
@@ -57,6 +57,8 @@ that the Universe is given meaning by humanity. Personally, I'm willing to accep
 that the Universe existed before us, and will continue to exist without us. It did
 not arise to give us a place to be. 
 
+Is this existentialism? Does that matter? 
+
 # What is a right?
 
 
@@ -77,3 +79,17 @@ dilemma that in order to exist, I must "take" individuals of other species. I us
 lead plants  (*Amorph spp.*) space to exist and reproduce. The roads I use to 
 get to my office. The supermarket where I forage. All these things "take", 
 indirectly. 
+
+I think this is an example of the tension between individual and group rights. A
+lion's (*Panthera leo*) individual right to exist conflicts with a Zebra's (*Equus 
+burchelli*). A Zebra's right to exist conflicts with that of individual Madagascar 
+crabgrass (*Digitaria milanjiana*)[^zebrafood]. But, a lion's right to exist doesn't
+conflict, usually, with the right of zebras as a group to exist. 
+
+# Conclusion
+
+For now, I'm satisfied with my answers to these questions. I may never have a 
+perfect answer, but satisfication is good enough. I think the fundamental principle
+of existensialism is sound. 
+
+[^zebrafood]: [Madagascar crabgrass was preferred by zebras in a cafeteria trial](https://journals.uair.arizona.edu/index.php/jrm/article/viewFile/6641/6251)
