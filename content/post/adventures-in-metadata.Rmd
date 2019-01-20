@@ -3,7 +3,7 @@ title: Adventures in metadata ...
 author: Drew Tyre
 date: '2019-01-28'
 slug: adventures-in-metadata
-draft: true
+draft: false
 summary: "Metadata are good. Everyone should create metadata. But writing raw XML is bad. rOpenSci created the EML package to make this easier."
 categories: [Research]
 tags_include:
@@ -232,3 +232,9 @@ eml_validate(eml_222)
 ```
 
 OK, so not going to get off that easy! Validation is looking for lots of fields that I left out in my rush to get some kind of usable starting point. Some of them aren't described in the vignette, so I was hoping I could skip those. So I've created some EML but it isn't valid.
+
+EML is a great idea; I love that I could create metadata programmatically for a dataset. This 
+will make updating really easy. The package has progressed enormously from the first time I tried
+this, although it still has a ways to go. The documentation in particular seems neglected. In an
+ideal world I'd fork the repository and start pounding out documentation. Unfortunately the world
+isn't ideal, and I have to shelve this for now. 

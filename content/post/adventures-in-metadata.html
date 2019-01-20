@@ -1,11 +1,11 @@
 ---
 title: Adventures in metadata ...
 author: Drew Tyre
-date: '2017-12-07'
+date: '2019-01-28'
 slug: adventures-in-metadata
-draft: true
+draft: false
 summary: "Metadata are good. Everyone should create metadata. But writing raw XML is bad. rOpenSci created the EML package to make this easier."
-categories: []
+categories: [Research]
 tags_include:
   - R
   - data manipulation
@@ -15,13 +15,15 @@ tags_include:
 
 
 <p>Metadata are good. Everyone should create metadata. But writing raw XML is bad. <a href="https://ropensci.org/">rOpenSci</a> has created the <a href="https://github.com/ropensci/EML">EML package</a> to make this easier.</p>
-<p>In theory. My first look at EML looked like it would be intimidating to a casual user of R. But the proof is in the pudding, and I thought I should give it a test drive with some actual data. I’m putting some data generated in my Ecology Lab classes up on <a href="https://figshare.com">figshare</a>, so this is an ideal opportunity to give it a test run.</p>
+<p>In theory. My first look at EML looked like it would be intimidating to a casual user of R. But the proof is in the pudding, and I thought I should give it a test drive with some actual data. I’ve put some data generated in my Ecology Lab classes up on <a href="https://figshare.com">figshare</a>, so this is an ideal opportunity to give it a test run.</p>
 <pre class="r"><code>devtools::install_github(&quot;ropensci/EML&quot;)</code></pre>
 <p>I’ve put the <a href="https://figshare.com/articles/Data_collected_by_NRES_222_University_of_Nebraska-Lincoln/5679241">data on figshare</a>, so</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## Warning: package &#39;tibble&#39; was built under R version 3.5.2</code></pre>
 <pre class="r"><code>aquariums &lt;- read_csv(&quot;https://ndownloader.figshare.com/files/9932452&quot;)</code></pre>
 <pre><code>## Warning: Missing column names filled in: &#39;X14&#39; [14]</code></pre>
+<pre class="r"><code>#write out the data file for later 
+write_csv(aquariums, &quot;data/aquarium_experiment_2017.csv&quot;)</code></pre>
 <p>OK. Now I want to make a metadata record for this data.</p>
 <pre class="r"><code>library(EML)</code></pre>
 <p>The first problem I’m running into is the absence of a vignette to tell me what to do. Even which function to start with! I thought there was one on GitHub …</p>
@@ -161,40 +163,45 @@ tags_include:
                                                 &quot;numeric&quot;,
                                                 &quot;factor&quot;,
                                                 &quot;character&quot;))</code></pre>
-<p><code>aq_attribList</code> is 2.6 Mb! That’s … quite something. Must be adding something extra.</p>
 <p>The next step is to describe the physical structure of the data. This was easy because the defaults for the EML function are for a csv file.</p>
-<pre class="r"><code>aq_physical &lt;- set_physical(&quot;aquarium_experiment_2017.csv&quot;,
+<pre class="r"><code>aq_physical &lt;- set_physical(&quot;data/aquarium_experiment_2017.csv&quot;,
                             url = &quot;https://ndownloader.figshare.com/files/9932452&quot;)</code></pre>
+<pre><code>## Automatically calculated file size using file.size(&quot;data/aquarium_experiment_2017.csv&quot;)</code></pre>
+<pre><code>## Automatically calculated authentication size using digest::digest(&quot;data/aquarium_experiment_2017.csv&quot;, algo = &quot;md5&quot;, file = TRUE)</code></pre>
 <p>Now we put the whole thing together into a dataTable object.</p>
-<pre class="r"><code>aq_dataTable &lt;- new(&quot;dataTable&quot;,
-                    entityName = &quot;aquarium_experiment_2017.csv&quot;,
+<pre class="r"><code>aq_dataTable &lt;- eml$dataTable(entityName = &quot;aquarium_experiment_2017.csv&quot;,
                     entityDescription = &quot;Nutrient cycling in new aquaria&quot;,
                     physical = aq_physical,
                     attributeList = aq_attribList)</code></pre>
 <p>Now there are a few more things to do, but I’m wondering if this is already sufficient to create an EML file. I need to create a “dataset”, and then put that into an eml object.</p>
-<pre class="r"><code>data_set &lt;- new(&quot;dataset&quot;,
-                title = &quot;Nutrient cycling experiment in NRES 222&quot;,
-                creator = new(&quot;creator&quot;), # as(as.person(&quot;Drew Tyre &lt;atyre2@unl.edu&gt; [cre]&quot;), &quot;creator&quot;),
-                publisher = new(&quot;publisher&quot;),
-                pubDate = &quot;2017&quot;,
-                intellectualRights = &quot;CC0&quot;,
-                distribution = new(&quot;distribution&quot;),
-                purpose = new(&quot;purpose&quot;),
-                maintenance = new(&quot;maintenance&quot;),
-                abstract = &quot;&quot;,
-                keywordSet = new(&quot;keywordSet&quot;),
-                coverage = new(&quot;coverage&quot;),
-                contact = new(&quot;contact&quot;, individualName = &quot;Drew&quot;),
-                methods = new(&quot;methods&quot;),
-                dataTable = aq_dataTable)
+<pre class="r"><code>creator &lt;- eml$creator(
+  individualName = list(givenName = &quot;Andrew&quot;, surName = &quot;Tyre&quot;),
+  electronicMailAddress = &quot;atyre2@unl.edu&quot;)
 
-eml_222 &lt;- new(&quot;eml&quot;,
-               packageId = &quot;b0efd6ed-3b61-40f7-b29e-318dad7eb095&quot;,
-               system = &quot;uuid&quot;,
-               dataset = data_set)
+data_set &lt;- eml$dataset(
+  title = &quot;Nutrient cycling experiment in NRES 222&quot;,
+  creator = creator,
+  pubDate = &quot;2017&quot;,
+  intellectualRights = &quot;CC0&quot;,
+  distribution = eml$distribution(),
+  coverage = eml$coverage(), 
+  purpose = eml$purpose(),
+  maintenance = eml$maintenance(),
+  contact = creator,
+  dataTable = aq_dataTable)
+
+eml_222 &lt;- list(
+  packageId = &quot;b0efd6ed-3b61-40f7-b29e-318dad7eb095&quot;,
+  system = &quot;uuid&quot;,
+  dataset = data_set)
 
 eml_validate(eml_222)</code></pre>
 <pre><code>## [1] FALSE
 ## attr(,&quot;errors&quot;)
-## [1] &quot;Element &#39;pubDate&#39;: This element is not expected. Expected is one of ( title, creator ).&quot;</code></pre>
+## [1] &quot;Element &#39;enumeratedDomain&#39;: Missing child element(s). Expected is one of ( codeDefinition, externalCodeSet, entityCodeList ).&quot;</code></pre>
 <p>OK, so not going to get off that easy! Validation is looking for lots of fields that I left out in my rush to get some kind of usable starting point. Some of them aren’t described in the vignette, so I was hoping I could skip those. So I’ve created some EML but it isn’t valid.</p>
+<p>EML is a great idea; I love that I could create metadata programmatically for a dataset. This
+will make updating really easy. The package has progressed enormously from the first time I tried
+this, although it still has a ways to go. The documentation in particular seems neglected. In an
+ideal world I’d fork the repository and start pounding out documentation. Unfortunately the world
+isn’t ideal, and I have to shelve this for now.</p>
