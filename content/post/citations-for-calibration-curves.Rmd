@@ -1,14 +1,14 @@
 ---
 title: Citations for Calibration Curves
 author: Drew Tyre
-date: '2019-01-21'
+date: '2019-01-22'
 slug: citations-for-calibration-curves
 categories:
-  - R
+  - Research
 tags_include:
-  - Simulation
+  - simulation
   - models
-  - Testing
+  - testing
 ---
 
 I now regularly test models using cross validation. I use a "calibration curve" to see whether the predictions from independent data fit the observed data. What I don't have is a good citation for why this should be so. It's a bit like asking for a citation for breathing. *Of course*, the expected values are $\beta_0 = 0$ and $\beta_1 = 1$! 
