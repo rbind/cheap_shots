@@ -35,9 +35,7 @@ My home is a tiny fraction of the original $970000 km^2$, about $6 x 10^{-7} \%$
 But our individually tiny bites add up. 
 
 The problem is more acute for an atheist. Believers in a superhuman deity accept
-their existence as a gift from that deity. Yuval Harari, in *Sapiens*, asserts that atheists too believe in a superhuman order, that humanity is unique and most important among species. 
-
-How do Buddhists solve this problem? Confucians?
+their existence as a gift from that deity. Atheists lack this comfort!  
 
 # My first solution
 
@@ -49,8 +47,9 @@ right, they merely asserted it by existing, consuming, and reproducing. So all
 species, including humans, have this right. We (may be) the first species with 
 the (dubious) ability to question this right. 
 
-Essentially this is Harari's belief that humanity is unique and most important 
-among species. I believe that any living thing, conscious enough to conceive of 
+Yuval Harari, in *Sapiens*, asserts that atheists believe in a superhuman order,
+that humanity is unique and most important among species. This belief is my right
+to exist. I believe that any living thing, conscious enough to conceive of 
 the question, would come to the same conclusion. 
 
 Harari goes farther. He asserts that the "Worship of Humanity" includes the belief
@@ -58,8 +57,23 @@ that the Universe is given meaning by humanity. Personally, I'm willing to accep
 that the Universe existed before us, and will continue to exist without us. It did
 not arise to give us a place to be. 
 
+# What is a right?
+
+
+
 # Relation to Camus' solution
 
 No idea yet
 
-# 
+# How do Buddhists solve this problem? Confucians?
+
+
+
+# The problem of taking
+
+I have a right to exist, but so does every other species. How do I resolve the
+dilemma that in order to exist, I must "take" individuals of other species. I use
+"take" here, because existing involves more than eating. My home denies individual
+lead plants  (*Amorph spp.*) space to exist and reproduce. The roads I use to 
+get to my office. The supermarket where I forage. All these things "take", 
+indirectly. 
