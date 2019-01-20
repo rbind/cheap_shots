@@ -206,28 +206,27 @@ aq_dataTable <- eml$dataTable(entityName = "aquarium_experiment_2017.csv",
 
 Now there are a few more things to do, but I'm wondering if this is already sufficient to create an EML file. I need to create a "dataset", and then put that into an eml object.
 
-```{r}
-data_set <- eml$dataset(
-                title = "Nutrient cycling experiment in NRES 222",
-                creator = eml$creator(givenName = "Drew Tyre",
-                                      atyre2@unl.edu),
-                publisher = new("publisher"),
-                pubDate = "2017",
-                intellectualRights = "CC0",
-                distribution = new("distribution"),
-                purpose = new("purpose"),
-                maintenance = new("maintenance"),
-                abstract = "",
-                keywordSet = new("keywordSet"),
-                coverage = new("coverage"),
-                contact = new("contact", individualName = "Drew"),
-                methods = new("methods"),
-                dataTable = aq_dataTable)
+```{r, error = TRUE}
+creator <- eml$creator(
+  individualName = list(givenName = "Andrew", surName = "Tyre"),
+  electronicMailAddress = "atyre2@unl.edu")
 
-eml_222 <- new("eml",
-               packageId = "b0efd6ed-3b61-40f7-b29e-318dad7eb095",
-               system = "uuid",
-               dataset = data_set)
+data_set <- eml$dataset(
+  title = "Nutrient cycling experiment in NRES 222",
+  creator = creator,
+  pubDate = "2017",
+  intellectualRights = "CC0",
+  distribution = eml$distribution(),
+  coverage = eml$coverage(), 
+  purpose = eml$purpose(),
+  maintenance = eml$maintenance(),
+  contact = creator,
+  dataTable = aq_dataTable)
+
+eml_222 <- list(
+  packageId = "b0efd6ed-3b61-40f7-b29e-318dad7eb095",
+  system = "uuid",
+  dataset = data_set)
 
 eml_validate(eml_222)
 ```
