@@ -16,7 +16,7 @@ It seems timely to revisit the topic.
 
 On the whole, telling people about my experience of depression was a positive 
 experience. This is likely a result of my privileged position -- not everyone
-would have experienced such an outcome. My colleagues were very supportive. 
+would experience such an outcome. My colleagues were very supportive. 
 I made new friends as people reached out to have lunch and talk about science 
 fiction novels and cooking. I didn't hear any official reaction, but through the
 grapevine came rumbles of my blog post triggering discussions in various student
@@ -27,11 +27,14 @@ about their mental health. I listened attentively, encouraged them to seek
 professional help, and worked my butt off trying not to get attached to their 
 outcomes! I have a much greater appreciation for the work of therapists and 
 councilors now. One such meeting leaves me exhausted, head spinning with 
-questions about what I said, what should I have said, did I do enough. 
+questions about what I said, what should I have said, did I do enough. I'll still say 
+yes everytime I'm asked. 
 
-Last fall the Natural Resources Diversity Initiative invited me to lead a 
-discussion on mental health. As I was feeling so much better, sure! Great Idea!
-It turned out great, but the week before I was an anxious wreck. My only 
+## Creating an environment of access
+
+Last summer the Natural Resources Diversity Initiative invited me to lead a 
+discussion on mental health during fall semester. As I was feeling so much better, 
+sure! Great Idea! It turned out great, but the week before I was an anxious wreck. My only 
 qualification is a lack of the quantity in question! I asked for suggestions on
 twitter -- that turned out to be a mixed benefit. On the one hand, lots of 
 supportive replies telling me to just tell my story, and it'll be great. On the 
@@ -60,9 +63,10 @@ or became pregnant! Which probably still doesn't help with most funding agencies
 but the point is that it isn't any different from a physical illness or condition
 that leaves a student unable to complete the work. 
 
-Current state
+## Current state
 
-Last summer a colleague was diagnosed with cancer. Joe Dauer and I took over 
+Last summer a colleague was diagnosed with cancer. 
+[Joe Dauer](http://snr.unl.edu/aboutus/who/people/faculty-member.asp?pid=1921) and I took over 
 the Intro ecology course to allow him to focus on healing and recovery. I was doing well
 and it seemed like a doable thing, co-teaching ecology and organizing the lab at
 the same time. I was super excited to teach
@@ -70,12 +74,12 @@ with Joe, one of the DBER faculty at UNL. I expected to learn a lot. I wasn't
 disappointed! It was an awesome experience. Unfortunately it was also a little too
 much.  
 
-I'd also agreed to organize the lab for the spring semester on top of my regular
+I'd also agreed to organize the ecology lab for the spring semester on top of my regular
 teaching. It was a good idea, really. We need to bring the fall and spring versions
 into greater alignment, and having me take over the spring semester as well
 would facilitate that. I was self-aware enough to recognize that a 2nd semester 
 of double teaching would do me in, so I had started working with John, my boss, to delegate
-and transfer some other responsibilities. I made it through the semester, but 
+and transfer some other responsibilities. I made it through the fall semester, but 
 once grades were in, the pressure came off, and my mood slipped day by day. 
 
 Some involuntary twitching[^twitch] developed over the last few weeks of the semester.
@@ -94,7 +98,12 @@ That was a wakeup call for sure.
 
 Next stop, back to my GP to see about medication. I sat there, twitching, rubbing my hands
 together anxiously, barely holding back tears while describing the situation to
-the nurse. 
+the nurse. My GP took one look and started me on a low dose of Aripiprazole (Brand name Abilify). 
+Remarkably, that shut off the depression symptoms like flipping a switch. The drawback is I'm 
+tired and foggy all the time. I'm now working with a psychiatrist to review and
+evaluate all my medication, and I'm hopeful that with a greater effort a 
+effective combination with few side effects can be found. I'm really tired of
+this merry-go-round. 
 
 I have to remind myself that wellness is a process. I'm struggling now, but 
 there is hope. I've surrounded myself with living things[^things], and my 
