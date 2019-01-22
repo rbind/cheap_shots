@@ -66,7 +66,7 @@ gam.check(sheep.gam)  # this is ugly</code></pre>
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
 ##                 k&#39;  edf k-index p-value
-## s(Population) 9.00 5.02    1.16    0.85</code></pre>
+## s(Population) 9.00 5.02    1.16    0.81</code></pre>
 <pre class="r"><code>rr &lt;- augment(sheep.gam)
 ggplot(rr, aes(x = .fitted, y = .resid)) + geom_point() + geom_hline(yintercept = 0, 
     linetype = 2) + geom_smooth()</code></pre>
@@ -114,9 +114,9 @@ gam.check(ogam1)</code></pre>
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
 ##           k&#39;  edf k-index p-value   
-## s(rad)  9.00 2.76    0.96   0.240   
-## s(temp) 9.00 3.84    0.79   0.005 **
-## s(wind) 9.00 2.92    0.96   0.295   
+## s(rad)  9.00 2.76    0.96    0.34   
+## s(temp) 9.00 3.84    0.79    0.01 **
+## s(wind) 9.00 2.92    0.96    0.24   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre><code>## &gt; There is a bit of upward curvature in the qq plot and a hint of heteroscedasticity in the residuals vs. linear predictor plot. Both of those suggest a log transformation of ozone is helpful, especially combined with the observation that ozone is always strictly greater than zero.</code></pre>
@@ -191,9 +191,9 @@ gam.check(ogam2)</code></pre>
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
 ##           k&#39;  edf k-index p-value  
-## s(rad)  9.00 2.24    1.02    0.59  
-## s(temp) 9.00 4.50    1.00    0.49  
-## s(wind) 9.00 2.35    0.84    0.08 .
+## s(rad)  9.00 2.24    1.02    0.60  
+## s(temp) 9.00 4.50    1.00    0.55  
+## s(wind) 9.00 2.35    0.84    0.04 *
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <pre><code>## &gt; The log transformed response gives better looking residuals. It is almost too strong -- the variance decreases with increasing mean, but not enough to worry about. There is one extreme negative outlier; the lowest observation is poorly predicted.</code></pre>
@@ -284,10 +284,10 @@ gam.check(ogam3)</code></pre>
 ## indicate that k is too low, especially if edf is close to k&#39;.
 ## 
 ##                 k&#39;   edf k-index p-value
-## s(rad)        9.00  1.94    0.97    0.33
-## s(temp)       9.00  2.46    0.99    0.41
-## s(wind)       9.00  1.00    1.01    0.47
-## s(temp,wind) 27.00 17.62    1.03    0.59</code></pre>
+## s(rad)        9.00  1.94    0.97    0.35
+## s(temp)       9.00  2.46    0.99    0.43
+## s(wind)       9.00  1.00    1.01    0.45
+## s(temp,wind) 27.00 17.62    1.03    0.62</code></pre>
 <pre class="r"><code>summary(ogam3)</code></pre>
 <pre><code>## 
 ## Family: gaussian 
