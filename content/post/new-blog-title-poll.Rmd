@@ -25,7 +25,7 @@ poll <- tribble(
   "Small things done great", 0,
   "Where the rubber meets the road", 6
 )
-ggplot(data = poll, aes(x=reorder(Title,-votes), y = votes)) + 
+ggplot(data = poll, aes(x=reorder(Title, votes), y = votes)) + 
   geom_col() +
   theme_minimal() + 
   coord_flip() + 
@@ -37,7 +37,26 @@ sample size is small, and I couldn't help wondering if there was a statistically
 significant difference between that and "Where the rubber meets the road"[^attributionwtrmtr]. 
 
 ```{r}
+library("EMT")
+mt <- multinomial.test(poll$votes, prob = rep(1/4, 4))
+mt$p.value
+```
 
+But that's not a terribly interesting hypothesis -- it says that my voters care
+what title I use. What I really want to know 
+is if there is any that beats all the others. I discovered [a post-hoc test for 
+for the Exact GOF](http://www.biostathandbook.com/chigof.html), essentially
+testing each category against the sum of the others, and using Bonferroni corrections.
+So I'll have 4 comparisons, and thus my p value should be less than 0.05/4 = 0.0125. 
+
+```{r}
+pvals <- tribble(
+  ~Comparison, ~p,
+  "Irregularly Tyre-annical vs. others",  multinomial.test(c(2,13), prob = c(0.25, 0.75))$p.value,
+  "Tyre Repair vs. others",  multinomial.test(c(7,8), prob = c(0.25, 0.75))$p.value,
+  "Small things done great vs. others",  multinomial.test(c(0,15), prob = c(0.25, 0.75))$p.value,
+  "Where the rubber meets the road vs. others",  multinomial.test(c(6,9), prob = c(0.25, 0.75))$p.value
+)
 ```
 
 
