@@ -5,7 +5,7 @@ date: '2019-01-23'
 slug: new-blog-title-poll
 categories:
   - Personal
-tags:
+tags_include:
   - R
 draft: no
 image:
@@ -16,8 +16,10 @@ image:
 I'd like to change the title of this blog, so [I solicited suggestions on Twitter](https://twitter.com/atiretoo/status/1087407091252449283) and Facebook.
 There were some great ones! Then I [held a poll](https://twitter.com/atiretoo/status/1087694051221024768).
 
-```{r message=FALSE}
-library("tidyverse")
+```{r message=FALSE, warning=FALSE}
+# WARNING: public use of this package can lead to social media abuse. 
+library("tidyverse") 
+
 poll <- tribble(
   ~Title, ~votes,
   "Irregularly Tyre-annical", 2,
@@ -25,6 +27,7 @@ poll <- tribble(
   "Small things done great", 0,
   "Where the rubber meets the road", 6
 )
+
 ggplot(data = poll, aes(x=reorder(Title, votes), y = votes)) + 
   geom_col() +
   theme_minimal() + 
@@ -35,11 +38,11 @@ ggplot(data = poll, aes(x=reorder(Title, votes), y = votes)) +
 Boo. My personal contribution scored 0. Although the winner is "Tyre Repair"[^attributionTR], the
 sample size is small, and I couldn't help wondering if there was a statistically
 significant difference between that and "Where the rubber meets the road"[^attributionwtrmtr]. 
+This is a blog partly about statistics after all. 
 
 ```{r}
 library("EMT")
 mt <- multinomial.test(poll$votes, prob = rep(1/4, 4))
-mt$p.value
 ```
 
 But that's not a terribly interesting hypothesis -- it says that my voters care
@@ -49,7 +52,7 @@ for the Exact GOF](http://www.biostathandbook.com/chigof.html), essentially
 testing each category against the sum of the others, and using Bonferroni corrections.
 So I'll have 4 comparisons, and thus my p value should be less than 0.05/4 = 0.0125. 
 
-```{r}
+```{r, results = 'hide'}
 pvals <- tribble(
   ~Comparison, ~p,
   "Irregularly Tyre-annical vs. others",  multinomial.test(c(2,13), prob = c(0.25, 0.75))$p.value,
@@ -59,7 +62,23 @@ pvals <- tribble(
 )
 ```
 
+I had to hide the results of that code chunk because package EMT isn't very nice
+about output. 
+
+```{r}
+knitr::kable(pvals)
+```
+
+So, basically none of the individual titles can be ruled out! Hmmm. Maybe I have 
+the wrong hypotheses here. 
+
+Well, there
+was also a great write-in candidate "Entyrely Optional"[^attributioneo], and protests to re-open
+the polls erupted. So I think I will try again with the top two from the first
+round plus the new candidate.  
 
 [^attributionTR]: contributed by Poet extraordinaire Larkin Powell
 
 [^attributionwtrmtr]: contributed by my stellar boss John Carroll 
+
+[^attributioneo]: contributed by the inestimable journalist-scientist Kelly Helm-Smith

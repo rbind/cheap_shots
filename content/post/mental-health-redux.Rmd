@@ -1,7 +1,7 @@
 ---
 title: Mental Health Redux
 author: Drew Tyre
-date: '2019-01-21'
+date: '2019-02-21'
 draft: true
 slug: mental-health-redux
 summary: 'About a year ago I disclosed my depression to the interwebs. It seems timely to revisit the topic.'

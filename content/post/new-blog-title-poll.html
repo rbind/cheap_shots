@@ -1,0 +1,103 @@
+---
+title: New blog title poll!
+author: Drew Tyre
+date: '2019-01-23'
+slug: new-blog-title-poll
+categories:
+  - Personal
+tags_include:
+  - R
+draft: no
+image:
+  caption: ''
+  focal_point: ''
+---
+
+
+
+<p>I’d like to change the title of this blog, so <a href="https://twitter.com/atiretoo/status/1087407091252449283">I solicited suggestions on Twitter</a> and Facebook.
+There were some great ones! Then I <a href="https://twitter.com/atiretoo/status/1087694051221024768">held a poll</a>.</p>
+<pre class="r"><code># WARNING: public use of this package can lead to social media abuse. 
+library(&quot;tidyverse&quot;) 
+
+poll &lt;- tribble(
+  ~Title, ~votes,
+  &quot;Irregularly Tyre-annical&quot;, 2,
+  &quot;Tyre Repair&quot;, 7,
+  &quot;Small things done great&quot;, 0,
+  &quot;Where the rubber meets the road&quot;, 6
+)
+
+ggplot(data = poll, aes(x=reorder(Title, votes), y = votes)) + 
+  geom_col() +
+  theme_minimal() + 
+  coord_flip() + 
+  labs(y = &quot;Title&quot;, x = &quot;Votes&quot;)</code></pre>
+<p><img src="/post/new-blog-title-poll_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Boo. My personal contribution scored 0. Although the winner is “Tyre Repair”<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, the
+sample size is small, and I couldn’t help wondering if there was a statistically
+significant difference between that and “Where the rubber meets the road”<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.
+This is a blog partly about statistics after all.</p>
+<pre class="r"><code>library(&quot;EMT&quot;)
+mt &lt;- multinomial.test(poll$votes, prob = rep(1/4, 4))</code></pre>
+<pre><code>## 
+##  Exact Multinomial Test, distance measure: p
+## 
+##     Events    pObs    p.value
+##        816   2e-04     0.0171</code></pre>
+<p>But that’s not a terribly interesting hypothesis – it says that my voters care
+what title I use. What I really want to know
+is if there is any that beats all the others. I discovered <a href="http://www.biostathandbook.com/chigof.html">a post-hoc test for
+for the Exact GOF</a>, essentially
+testing each category against the sum of the others, and using Bonferroni corrections.
+So I’ll have 4 comparisons, and thus my p value should be less than 0.05/4 = 0.0125.</p>
+<pre class="r"><code>pvals &lt;- tribble(
+  ~Comparison, ~p,
+  &quot;Irregularly Tyre-annical vs. others&quot;,  multinomial.test(c(2,13), prob = c(0.25, 0.75))$p.value,
+  &quot;Tyre Repair vs. others&quot;,  multinomial.test(c(7,8), prob = c(0.25, 0.75))$p.value,
+  &quot;Small things done great vs. others&quot;,  multinomial.test(c(0,15), prob = c(0.25, 0.75))$p.value,
+  &quot;Where the rubber meets the road vs. others&quot;,  multinomial.test(c(6,9), prob = c(0.25, 0.75))$p.value
+)</code></pre>
+<p>I had to hide the results of that code chunk because package EMT isn’t very nice
+about output.</p>
+<pre class="r"><code>knitr::kable(pvals)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Comparison</th>
+<th align="right">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Irregularly Tyre-annical vs. others</td>
+<td align="right">0.3845</td>
+</tr>
+<tr class="even">
+<td align="left">Tyre Repair vs. others</td>
+<td align="right">0.0700</td>
+</tr>
+<tr class="odd">
+<td align="left">Small things done great vs. others</td>
+<td align="right">0.0307</td>
+</tr>
+<tr class="even">
+<td align="left">Where the rubber meets the road vs. others</td>
+<td align="right">0.2285</td>
+</tr>
+</tbody>
+</table>
+<p>So, basically none of the individual titles can be ruled out! Hmmm. Maybe I have
+the wrong hypotheses here.</p>
+<p>Well, there
+was also a great write-in candidate “Entyrely Optional”<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, and protests to re-open
+the polls erupted. So I think I will try again with the top two from the first
+round plus the new candidate.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>contributed by Poet extraordinaire Larkin Powell<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>contributed by my stellar boss John Carroll<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>contributed by the inestimable journalist-scientist Kelly Helm-Smith<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
