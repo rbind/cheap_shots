@@ -1,0 +1,46 @@
+---
+title: New blog title poll!
+author: Drew Tyre
+date: '2019-01-23'
+slug: new-blog-title-poll
+categories:
+  - Personal
+tags:
+  - R
+draft: no
+image:
+  caption: ''
+  focal_point: ''
+---
+
+I'd like to change the title of this blog, so [I solicited suggestions on Twitter](https://twitter.com/atiretoo/status/1087407091252449283) and Facebook.
+There were some great ones! Then I [held a poll](https://twitter.com/atiretoo/status/1087694051221024768).
+
+```{r message=FALSE}
+library("tidyverse")
+poll <- tribble(
+  ~Title, ~votes,
+  "Irregularly Tyre-annical", 2,
+  "Tyre Repair", 7,
+  "Small things done great", 0,
+  "Where the rubber meets the road", 6
+)
+ggplot(data = poll, aes(x=reorder(Title,-votes), y = votes)) + 
+  geom_col() +
+  theme_minimal() + 
+  coord_flip() + 
+  labs(y = "Title", x = "Votes")
+```
+
+Boo. My personal contribution scored 0. Although the winner is "Tyre Repair"[^attributionTR], the
+sample size is small, and I couldn't help wondering if there was a statistically
+significant difference between that and "Where the rubber meets the road"[^attributionwtrmtr]. 
+
+```{r}
+
+```
+
+
+[^attributionTR]: contributed by Poet extraordinaire Larkin Powell
+
+[^attributionwtrmtr]: contributed by my stellar boss John Carroll 
