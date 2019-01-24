@@ -35,7 +35,9 @@ yes everytime I'm asked.
 Last summer the Natural Resources Diversity Initiative invited me to lead a 
 discussion on mental health during fall semester. As I was feeling so much better, 
 sure! Great Idea! It turned out great, but the week before I was an anxious wreck. My only 
-qualification is a lack of the quantity in question! I asked for suggestions on
+qualification is a lack of the quantity in question! 
+
+I asked for suggestions on
 twitter -- that turned out to be a mixed benefit. On the one hand, lots of 
 supportive replies telling me to just tell my story, and it'll be great. On the 
 other were outright critical replies telling me to turn it over to a mental 
@@ -60,15 +62,17 @@ stigma attached to mental health. Paraphrased, "What do we do when a student suf
 depression, and is unable to complete the work required by the funding agency?" 
 The answer is, the same thing you'd do if the student was diagnosed with cancer,
 or became pregnant! Which probably still doesn't help with most funding agencies,
-but the point is that it isn't any different from a physical illness or condition
-that leaves a student unable to complete the work. 
+but mental illness isn't any different from a physical illness or condition
+that leaves a student unable to complete the work. In fact, with proper support and
+treatment, a mentally ill student may well be able to complete the work. The "proper 
+support" is where non-professionals like myself struggle. 
 
 ## Current state
 
-Last summer a colleague was diagnosed with cancer. 
+Last summer my colleague Leon was diagnosed with cancer. [ask leon if he is ok with this]
 [Joe Dauer](http://snr.unl.edu/aboutus/who/people/faculty-member.asp?pid=1921) and I took over 
-the Intro ecology course to allow him to focus on healing and recovery. I was doing well
-and it seemed like a doable thing, co-teaching ecology and organizing the lab at
+the Intro ecology course to allow Leon to focus on healing and recovery. I was doing well
+and it seemed like a doable thing, co-teaching ecology and organizing the ecology lab at
 the same time. I was super excited to teach
 with Joe, one of the DBER faculty at UNL. I expected to learn a lot. I wasn't 
 disappointed! It was an awesome experience. Unfortunately it was also a little too
@@ -87,7 +91,7 @@ In hindsight that was an early warning sign that I'd stretched myself beyond
 capacity. As it was, the random crying jags struck about 4 days after I turned in
 my grades. On a whim, I stopped in to see John and update him on my plans for the 
 spring semester. What I didn't plan on was bursting into tears in his office.
-I left more or less completely deflated, but with strict orders that I would
+I left completely deflated, but with strict orders that I would
 not be teaching ecology lab or doing several other things this spring. 
 
 I arranged an emergency visit with my counselor. It was only 5 minutes into the 
@@ -107,7 +111,7 @@ this merry-go-round.
 
 I have to remind myself that wellness is a process. I'm struggling now, but 
 there is hope. I've surrounded myself with living things[^things], and my 
-family is always close at hand. 
+family is close at hand. 
 
 [^twitch]: These are sharp, sudden spasms of a majority of muscles in my upper body.
 They are particularly likely when I bump into something or someone touches me, but
