@@ -25,4 +25,4 @@ weight = 3
 +++
 
 <div style="height: 300px"></div>
-Image by Dolan Halbrook
+Image by [Dolan Halbrook](https://www.flickr.com/photos/reneeanddolan/)
