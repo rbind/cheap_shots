@@ -1,6 +1,6 @@
 baseurl = "https://drewtyre.rbind.io/"  
-title = "A few cheap shots"
-copyright = "&copy; 2018 Andrew Tyre"
+title = "EnTyrely Too Much"
+copyright = "&copy; 2019 Andrew Tyre"
 theme = "hugo-academic"
 enableEmoji = true
 footnotereturnlinkcontents = "<sup>^</sup>"
