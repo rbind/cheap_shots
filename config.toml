@@ -111,7 +111,7 @@ enableGitInfo = false
   #   Examples: "3:04 pm" or "15:04"
   time_format = "3:04 PM"
   # estimated reading time (breaking change with v2?)
-  reading_time = false
+  reading_time = true
   # Display comment count? Requires commenting to be enabled.
   comment_count = true
  # Display next/previous section pager?
