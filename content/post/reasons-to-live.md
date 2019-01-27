@@ -26,9 +26,8 @@ logical arguments were the weapons I chose to deploy against these feelings.
 By searching for bedrock reasons why I should continue in the face of 
 the worst storm of emotional anguish, I did. Continue, that is. 
 
-Check quote:
-
-> A philosopher must apply this logic to himself - Albert Camus
+> There is but one truly serious philosophical problem, and that is suicide. ... 
+[I]f ... a philosopher, to deserve our respect, must preach by example, you can appreciate the importance of that reply, for it will precede the definitive act. - Albert Camus
 
 ## The basic problem
 
@@ -99,7 +98,13 @@ convenience. Is the right of another species to exist just a convenient fig leaf
 ## Conclusion
 
 For now, I'm satisfied with my answers to these questions. I may never have a 
-perfect answer, but satisfaction is good enough. When my brain is throwing up
+perfect answer, but satisfaction is good enough. Albert Camus agreed:
+
+> But it is bad to stop, hard to be satisfied with a single way of seeing, to go 
+without contradiction, perhaps the most subtle of all spiritual forces. 
+The precedign merely defines a way of thinking. But the point is to live. - Albert Camus, p. 65 The Myth of Sisyphus
+
+When my brain is throwing up
 the worst thoughts, when my own mood regulation is so damaged I can't help but
 feel worthless, I fall back on arguments like these. It helps remind me that the
 worthlessness, the constant thoughts of self-annihilation, are not me, but symptoms.
