@@ -48,31 +48,19 @@ species, including humans, have this right. We (may be) the first species with
 the (dubious) ability to question this right. 
 
 Yuval Harari, in *Sapiens*, asserts that atheists believe in a superhuman order,
-that humanity is unique and most important among species. This belief is my right
+that humanity is unique and most important among species[^more]. This belief is my right
 to exist. I believe that any living thing, conscious enough to conceive of 
 the question, would come to the same conclusion. 
-
-Harari goes farther. He asserts that the "Worship of Humanity" includes the belief
-that the Universe is given meaning by humanity. Personally, I'm willing to accept
-that the Universe existed before us, and will continue to exist without us. It did
-not arise to give us a place to be. 
-
-## Connections to existentialism
-
-Does this matter?
-
-## Relation to Camus' solution
-
-No idea yet
 
 ## The problem of taking
 
 I have a right to exist, but so does every other species. How do I resolve the
-dilemma that in order to exist, I must "take" individuals of other species. I use
+dilemma that in order to exist, I must "take" individuals of other species? I use
 "take" here, because existing involves more than eating. My home denies individual
 lead plants  (*Amorph spp.*) space to exist and reproduce. The roads I use to 
 get to my office. The supermarket where I forage. All these things "take", 
-indirectly. How can I morally justify this taking of individuals who also have
+indirectly. Eating a vegan diet doesn't get you off the hook here. How can I 
+morally justify this taking of individuals who also have
 a right to exist?
 
 This tension between individuals' right to exist is ubiquitous. A
@@ -84,9 +72,18 @@ one individual. A lion's individual right to exist doesn't
 conflict, usually, with the right of zebras as a species to exist. Individual zebras 
 die, but the species persists. 
 
-Enter *Homo sapiens*. 
+Enter *Homo sapiens*. At least since the last glacial maximim our species is the
+apex predator on the planet. Human overkill is the dominant hypothesis for the 
+[Quaternery extinction of the megafauna](https://en.wikipedia.org/wiki/Quaternary_extinction_event). 
+[Nearly a quarter of Net Primary Production on the *planet*](https://en.wikipedia.org/wiki/Primary_production#Human_impact_and_appropriation) 
+is directly or indirectly appropriated by us. As a moral agent, the egregious 
+abolition of other species by my species is horrifying.  
 
-# Conclusion
+I see a problem with this solution. Where does the right to exist for other 
+species come from? A species is not a natural category, but one created for our
+convience. 
+
+## Conclusion
 
 For now, I'm satisfied with my answers to these questions. I may never have a 
 perfect answer, but satisfication is good enough. 
