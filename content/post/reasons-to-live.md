@@ -38,7 +38,7 @@ is breathe and stand still, I will not exist for long! I must eat. Construct
 shelter. My home stands on Tall grass prairie, perhaps one of the most endangered 
 ecosystems on the planet. 
 [Less than 2% of the Tallgrass ecosystem remains intact](https://en.wikipedia.org/wiki/Tallgrass_prairie#Boundaries).
-My home is a tiny fraction of the original $970000 km^2$, about $6 x 10^{-7} \%$! 
+My home is a tiny fraction of the original $970000\\:km^2$, about $6 \times 10^{-7} \%$! 
 But our individually tiny bites add up. 
 
 The problem is more acute for an atheist. Believers in a superhuman deity accept
@@ -61,39 +61,45 @@ the question, would come to the same conclusion.
 
 ## The problem of taking
 
-I have a right to exist, but so do individuals of every other species. How do I resolve the
-dilemma that in order to exist, I must "take" individuals of other species? I use
-"take" here, because existing involves more than eating. My home denies individual
+I have a right to exist, but by my reasoning so do individuals of every other 
+species. How do I resolve the dilemma that in order to exist, I must "take" 
+individuals of other species? I use "take" here, because existing involves 
+more than eating. My home denies individual
 lead plants  (*Amorph spp.*) space to exist and reproduce. The roads I use to 
 get to my office. The supermarket where I forage. All these things "take", 
-indirectly. Eating a vegan diet doesn't get you off the hook here. How can I 
-morally justify this taking of individuals who also have
-a right to exist?
+indirectly. Eating a vegan diet doesn't get you off the hook here. And besides,
+individual plants have a right to exist too. How can I morally justify this taking of 
+individuals who also have a right to exist?
 
 This tension between individuals' right to exist is ubiquitous. A
 lion's (*Panthera leo*) individual right to exist conflicts with a Zebra's (*Equus 
 burchelli*). A Zebra's right to exist conflicts with that of individual Madagascar 
-crabgrass (*Digitaria milanjiana*)[^zebrafood]. One 
+crabgrass (*Digitaria milanjiana*)[^zebrafood]. My current 
 solution posits a right of a species to exist, that is more important than any
 one individual. A lion's individual right to exist doesn't
 conflict, usually, with the right of zebras as a species to exist. Individual zebras 
 die, but the species persists. 
 
-Enter *Homo sapiens*. At least since the last glacial maximim our species is the
+Enter *Homo sapiens*. At least since the last glacial maximum our species is the
 apex predator on the planet. Human overkill is the dominant hypothesis for the 
 [Quaternery extinction of the megafauna](https://en.wikipedia.org/wiki/Quaternary_extinction_event). 
 [Nearly a quarter of Net Primary Production on the *planet*](https://en.wikipedia.org/wiki/Primary_production#Human_impact_and_appropriation) 
-is directly or indirectly appropriated by us. As a moral agent, the egregious 
-abolition of other species by my species is horrifying.  
+is directly or indirectly appropriated by us. 
+[The current wave of extinctions in modern times may be a 6th mass exinction event](https://en.wikipedia.org/wiki/Holocene_extinction). 
+As a moral agent, the egregious 
+abolition of other species by my species is horrifying. Nonetheless, I accept
+that my own individual right to exist is more important. I simply have to. And,
+I choose to work on helping my species do a better job of taking less
+while still managing to exist.
 
 I see a problem with this solution. Where does the right to exist for other 
 species come from? A species is not a natural category, but one created for our
-convience. Is the right of another species to exist just a convienent fig leaf?
+convenience. Is the right of another species to exist just a convenient fig leaf?
 
 ## Conclusion
 
 For now, I'm satisfied with my answers to these questions. I may never have a 
-perfect answer, but satisfication is good enough. When my brain is throwing up
+perfect answer, but satisfaction is good enough. When my brain is throwing up
 the worst thoughts, when my own mood regulation is so damaged I can't help but
 feel worthless, I fall back on arguments like these. It helps remind me that the
 worthlessness, the constant thoughts of self-annihilation, are not me, but symptoms.
