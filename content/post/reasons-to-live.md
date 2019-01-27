@@ -19,7 +19,7 @@ exist? Why continue consuming resources? I hope sharing
 how I answered those questions will help someone else, and perhaps, strengthen
 my own connection to life[^life]. 
 
-When I discussed these with a friend, she was surprised that the issue was 
+When I discussed these reasons with a friend, she was surprised that the issue was 
 not one of pure emotion. And certainly the darkest times are ones of low mood,
 feelings of worthlessness and despair. Feelings, not logical arguments. Nonetheless
 logical arguments were the weapons I chose to deploy against these feelings.
