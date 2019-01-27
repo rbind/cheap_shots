@@ -15,9 +15,16 @@ image:
 ---
 
 At my darkest point, a single question dominated my thinking. Why continue to 
-exist? Why continue consuming resources?  I hope sharing 
+exist? Why continue consuming resources? I hope sharing 
 how I answered those questions will help someone else, and perhaps, strengthen
 my own connection to life[^life]. 
+
+When I discussed these with a friend, she was surprised that the issue was 
+not one of pure emotion. And certainly the darkest times are ones of low mood,
+feelings of worthlessness and despair. Feelings, not logical arguments. Nonetheless
+logical arguments were the weapons I chose to deploy against these feelings.
+By searching for bedrock reasons why I should continue in the face of 
+the worst storm of emotional anguish, I did. Continue, that is. 
 
 Check quote:
 
@@ -54,7 +61,7 @@ the question, would come to the same conclusion.
 
 ## The problem of taking
 
-I have a right to exist, but so does every other species. How do I resolve the
+I have a right to exist, but so do individuals of every other species. How do I resolve the
 dilemma that in order to exist, I must "take" individuals of other species? I use
 "take" here, because existing involves more than eating. My home denies individual
 lead plants  (*Amorph spp.*) space to exist and reproduce. The roads I use to 
@@ -81,12 +88,15 @@ abolition of other species by my species is horrifying.
 
 I see a problem with this solution. Where does the right to exist for other 
 species come from? A species is not a natural category, but one created for our
-convience. 
+convience. Is the right of another species to exist just a convienent fig leaf?
 
 ## Conclusion
 
 For now, I'm satisfied with my answers to these questions. I may never have a 
-perfect answer, but satisfication is good enough. 
+perfect answer, but satisfication is good enough. When my brain is throwing up
+the worst thoughts, when my own mood regulation is so damaged I can't help but
+feel worthless, I fall back on arguments like these. It helps remind me that the
+worthlessness, the constant thoughts of self-annihilation, are not me, but symptoms.
 
 [^life]: I couldn't sleep because I was having trouble reconstructing these arguments in my head. Writing them down makes them better.
 
