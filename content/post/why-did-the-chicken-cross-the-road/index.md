@@ -7,7 +7,7 @@ categories:
   - Research
 draft: yes
 image:
-  caption: ''
+  caption: 'Photo by [Howard Patterson](https://flic.kr/p/UDXru1) CC BY-NC-SA 2.0'
   focal_point: ''
 tags_include: 
   - ecology
@@ -16,7 +16,7 @@ tags_include:
 And why did she leave her nest to do it? TL;DR: She wouldn't, or at least, not
 for long. 
 
-We investigated nest-attendance patterns of 25 female Prairie-
+We[^we] investigated nest-attendance patterns of 25 female Prairie-
 Chickens in the Nebraska Sandhills, USA, to identify the proximate
 cues that they use to make behavioral decisions with respect
 to incubation. We used iButtons to measure changes in nest temperature every
@@ -35,3 +35,10 @@ off-bout duration at nests with greater vegetation cover
 and (or) at greater distances from roads because of lower risk of
 predation in these conditions.
 
+## Temperature differences reduce off-bout duration
+
+Hens stay off their nests the longest when the difference between the nest temperature
+and air temperature is close to zero. As the air temperature rises over the nest
+temperature, hens spend less time off the nest each time they leave. 
+
+[^we]: "We" in the sense of the co-authors, and not all of us at that. My primary role here was to introduce Ian to generalized linear mixed models! I have seen, and even (briefly) held, a prairie chicken. Neither I nor the chicken were permanently injured.
