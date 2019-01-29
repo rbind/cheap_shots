@@ -49,3 +49,15 @@ s1 <- function(N = 100, M = 10, effects = c(1, 0.5, 0.25)){
 glm(y~x, family = binomial, data =s1())
 ```
 
+```{r}
+s2 <- function(N = 100, M = 10, effects = list(e0 = 1, rate = -0.9)){
+  x <- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
+  effects <- with(effects, e0 * exp(rate * 0:(M-1)))
+  logity <- x %*% effects
+  y <- rbinom(N, size = 1, prob = 1/(1 + exp(-logity)))
+  return(tibble(y = y, x = x))
+}
+glm(y~x, family = binomial, data =s2())
+
+```
+
