@@ -15,7 +15,7 @@ image:
 ---
 
 At my darkest point, a single question dominated my thinking. Why continue to 
-exist? Why continue consuming resources? I hope sharing 
+exist? In particular, why continue consuming resources? I hope sharing 
 how I answered those questions will help someone else, and perhaps, strengthen
 my own connection to life[^life]. 
 
@@ -27,7 +27,7 @@ By searching for bedrock reasons why I should continue in the face of
 the worst storm of emotional anguish, I did. Continue, that is. 
 
 > There is but one truly serious philosophical problem, and that is suicide. ... 
-[I]f ... a philosopher, to deserve our respect, must preach by example, you can appreciate the importance of that reply, for it will precede the definitive act. - Albert Camus
+[I]f ... a philosopher, to deserve our respect, must preach by example, you can appreciate the importance of that reply, for it will precede the definitive act. - Albert Camus, pg 1, The myth of Sisyphus
 
 ## The basic problem
 
@@ -54,7 +54,7 @@ species, including humans, have this right. We (may be) the first species with
 the (dubious) ability to question this right. 
 
 Yuval Harari, in *Sapiens*, asserts that atheists believe in a superhuman order,
-that humanity is unique and most important among species[^more]. This belief is my right
+that humanity is unique and most important among species[^more]. I agree, this belief is my right
 to exist. I believe that any living thing, conscious enough to conceive of 
 the question, would come to the same conclusion. 
 
@@ -102,14 +102,14 @@ perfect answer, but satisfaction is good enough. Albert Camus agreed:
 
 > But it is bad to stop, hard to be satisfied with a single way of seeing, to go 
 without contradiction, perhaps the most subtle of all spiritual forces. 
-The precedign merely defines a way of thinking. But the point is to live. - Albert Camus, p. 65 The Myth of Sisyphus
+The preceding merely defines a way of thinking. But the point is to live. - Albert Camus, p. 65 The Myth of Sisyphus
 
 When my brain is throwing up
 the worst thoughts, when my own mood regulation is so damaged I can't help but
 feel worthless, I fall back on arguments like these. It helps remind me that the
 worthlessness, the constant thoughts of self-annihilation, are not me, but symptoms.
 
-[^life]: I couldn't sleep because I was having trouble reconstructing these arguments in my head. Writing them down makes them better.
+[^life]: I couldn't sleep the other night because I was having trouble reconstructing these arguments in my head. Writing them down makes them better.
 
 [^right]: I use this word in the sense of [an ethical principle of entitlement](https://en.wikipedia.org/wiki/Rights). 
 
