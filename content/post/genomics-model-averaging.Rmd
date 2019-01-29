@@ -37,7 +37,7 @@ all the others are zero, and all of the predictors are in the model set.
 In the second scenario many variables matter with exponentially decreasing effect
 sizes, and a random sample of the variables are included in the model set. 
 
-```{r intro, message=FALSE}
+```{r intro, message=FALSE, warning=FALSE}
 library(tidyverse)
 s1 <- function(N = 100, M = 10, effects = c(1, 0.5, 0.25)){
   x <- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
