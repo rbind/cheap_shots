@@ -1,0 +1,29 @@
+---
+title: Model Averaging in Genomics?
+author: Drew Tyre
+date: '2019-02-11'
+draft: yes
+categories:
+  - Research
+tags:
+  - reply
+  - statistics
+slug: model-averaging-genomics
+---
+
+Over a year ago I received an email about my [model averaging post](https://drewtyre.rbind.io/post/rebutting_cade)
+
+> I came across your blog post https://drewtyre.rbind.io/post/rebutting_cade/ searching for information about model combination and model averaging.
+
+> I work in human genomics, developing risk scores for predicting disease based on genetic markers (SNPs). We have now run into this ‘problem’ where we have multiple such scores from different sources, that when assessed in a regression model (cox or logistic) are all highly significant at the same time and their effect size is not completely attenuated by the inclusion of the other predictions (I am assessing the association of each score, which is a vector, with a specific disease outcome, say binary). Each score is standardised to zero-mean and unit variance.
+
+> This observation has lead us to try combining these different predictions into one ‘composite’ prediction, which seems to substantially outperform any one of the individual predictions (i.e., combining three weakly-correlated predictions, with hazard ratios of 1.3, 1.4, and 1.5, respectively, gives a hazard ratio of 1.8 for the composite score). I believe this is due to Jensen’s inequality, as you explain in your blog.
+
+> My question is, are you aware of good mainstream literature on this topic explaining why combining predictions is a good idea? In statistical genetics and human genomics this practice has not caught on so the concept seems like voodoo to them.
+
+I’m not that familiar with genomics data, although I know big sample sizes and many predictors create unique problems!
+
+It’s not clear to me what is meant by a composite prediction. When model averaging it would be unlikely for the odds ratio of the prediction to increase over what the individual models predict. Maybe impossible.
+
+In any case, from a Bayesian perspective [Hooten et al.](https://projecteuclid.org/euclid.ss/1009212519) is the go to source, and for more details on using AIC I would look at
+[Burnham and Anderson](http://www.springer.com/us/book/9780387953649).
