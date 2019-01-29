@@ -16,39 +16,46 @@ categories: Personal
 About a year ago [I disclosed my depression to the interwebs](https://drewtyre.rbind.io/mental-health/). 
 It seems timely to revisit the topic.
 
-On the whole, telling people about my experience of depression was a positive 
-experience. This is likely a result of my privileged position -- not everyone
-would experience such an outcome. My colleagues were very supportive. 
+On the whole, telling people about my depression was a positive 
+experience. My colleagues were very supportive. 
 I made new friends as people reached out to have lunch and talk about science 
-fiction novels and cooking. I didn't hear any official reaction, but through the
+fiction and cooking. I didn't hear any official reaction, but through the
 grapevine came rumbles of my blog post triggering discussions in various student
 support groups throughout the university.
+
+Despite my positive experience, disclosure isn't the right move for everyone.
+I am so lucky to be surrounded by nice people. But someone else may not be in 
+such a safe place. I am also at a point in my career where I can remain 
+successful even if some people choose not to work with me because of my 
+mental health issues, or my public stance on those issues. I expect I have
+lost research opportunities because of my previous post, and this one won't help. 
 
 One thing I didn't anticipate was the number of people who wanted to talk to me 
 about their mental health. I listened attentively, encouraged them to seek 
 professional help, and worked my butt off trying not to get attached to their 
-outcomes! I have a much greater appreciation for the work of therapists and 
-councilors now. One such meeting leaves me exhausted, head spinning with 
+outcomes. I have a much greater appreciation for the work of therapists and 
+counselors now. One such meeting leaves me exhausted, head spinning with 
 questions about what I said, what should I have said, did I do enough. I'll still say 
-yes everytime I'm asked. 
+yes every time I'm asked. 
 
 ## Creating an environment of access
 
 Last summer the Natural Resources Diversity Initiative invited me to lead a 
 discussion on mental health during fall semester. As I was feeling so much better, 
-sure! Great Idea! It turned out great, but the week before I was an anxious wreck. My only 
-qualification is a lack of the quantity in question! 
+sure! Great idea! It turned out great, but the week before I was an anxious wreck. 
+Normally when I speak in public I am an expert in the topic. My only 
+qualification was personal experience. 
 
 I asked for suggestions on
-twitter -- that turned out to be a mixed benefit. On the one hand, lots of 
-supportive replies telling me to just tell my story, and it'll be great. On the 
+Twitter -- that turned out to be a mixed benefit. On the one hand, lots of 
+supportive replies to just tell my story, and it'll be great. On the 
 other were outright critical replies telling me to turn it over to a mental 
 health professional, or worrying that graduate student complaints would dilute the lived 
-experience of genuinely ill people. I left twitter alone for the better part of
+experience of genuinely ill people. I left Twitter alone for the better part of
 a month after that. 
 
-The thing is, we've had presentations from "the proper authorities". This was my
-colleagues saying "we want even more discussion!". I reached out to our university 
+The thing is, we've had presentations from "the proper authorities." This was my
+colleagues saying "we want even more discussion!" I reached out to our university 
 Counseling and Psychological Services about this discussion and got no reply -- 
 they are swamped. And at the 
 meeting a few genuinely ill people spoke up and shared their experience. People 
@@ -63,11 +70,10 @@ no answer. I still don't, but I've since realized the question itself reflects t
 stigma attached to mental health. Paraphrased, "What do we do when a student suffers 
 depression, and is unable to complete the work required by the funding agency?" 
 The answer is, the same thing you'd do if the student was diagnosed with cancer,
-or became pregnant! Which probably still doesn't help with most funding agencies,
-but mental illness isn't any different from a physical illness or condition
+or became pregnant! Mental illness isn't any different from a physical illness or condition
 that leaves a student unable to complete the work. In fact, with proper support and
 treatment, a mentally ill student may well be able to complete the work. The "proper 
-support" is where non-professionals like myself struggle. 
+support" is where mental health professionals play a key role. 
 
 ## Current state
 
@@ -75,39 +81,37 @@ Last summer my colleague Leon was diagnosed with cancer. [ask leon if he is ok w
 [Joe Dauer](http://snr.unl.edu/aboutus/who/people/faculty-member.asp?pid=1921) and I took over 
 the Intro ecology course to allow Leon to focus on healing and recovery. I was doing well
 and it seemed like a doable thing, co-teaching ecology and organizing the ecology lab at
-the same time. I was super excited to teach
-with Joe, one of the DBER faculty at UNL. I expected to learn a lot. I wasn't 
+the same time. I was super-excited to teach
+with Joe, one of the educational research faculty at UNL. I expected to learn a lot. I wasn't 
 disappointed! It was an awesome experience. Unfortunately it was also a little too
 much.  
 
 I'd also agreed to organize the ecology lab for the spring semester on top of my regular
 teaching. It was a good idea, really. We need to bring the fall and spring versions
 into greater alignment, and having me take over the spring semester as well
-would facilitate that. I was self-aware enough to recognize that a 2nd semester 
+would facilitate that. I was self-aware enough to recognize that a second semester 
 of double teaching would do me in, so I had started working with John, my boss, to delegate
 and transfer some other responsibilities. I made it through the fall semester, but 
 once grades were in, the pressure came off, and my mood slipped day by day. 
 
-Some involuntary twitching[^twitch] developed over the last few weeks of the semester.
-In hindsight that was an early warning sign that I'd stretched myself beyond
-capacity. As it was, the random crying jags struck about 4 days after I turned in
+The random crying jags struck about four days after I turned in
 my grades. On a whim, I stopped in to see John and update him on my plans for the 
 spring semester. What I didn't plan on was bursting into tears in his office.
 I left completely deflated, but with strict orders that I would
 not be teaching ecology lab or doing several other things this spring. 
 
-I arranged an emergency visit with my counselor. It was only 5 minutes into the 
+I arranged an emergency visit with my counselor. It was only five minutes into the 
 conversation when he asked if I would check myself in to the psychiatric ward at
 our local hospital. That really drove home how bad I was. More discussion
 of that option revealed I wasn't actively suicidal, so not needed, but ouch. 
-That was a wakeup call for sure. 
+That was a wake up call for sure. 
 
-Next stop, back to my GP to see about medication. I sat there, twitching, rubbing my hands
+Next stop, back to my GP to see about medication. I sat there, twitching[^twitch], rubbing my hands
 together anxiously, barely holding back tears while describing the situation to
-the nurse. My GP took one look and started me on a low dose of Aripiprazole (Brand name Abilify). 
+the nurse. My GP took one look and started me on a low dose of an atypical anti-psychotic[^antipsychotic]. 
 Remarkably, that shut off the depression symptoms like flipping a switch. The drawback is I'm 
 tired and foggy all the time. I'm now working with a psychiatrist to review and
-evaluate all my medication, and I'm hopeful that with a greater effort a 
+evaluate all my medication, and I'm hopeful that with a greater effort an 
 effective combination with few side effects can be found. I'm really tired of
 this merry-go-round. 
 
@@ -118,6 +122,8 @@ family is close at hand.
 [^twitch]: These are sharp, sudden spasms of a majority of muscles in my upper body.
 They are particularly likely when I bump into something or someone touches me, but
 happen all the time. 
+
+[^antipsychotic]: My GP took pains to point out that I wasn't psychotic! 
 
 [^things]: Mushrooms, yeast, and lactic acid bacteria are alive! Our windows 
 block too much light to grow plants indoors. I plan to start some outdoor herb 
