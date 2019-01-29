@@ -5,13 +5,13 @@ date: '2019-02-11'
 draft: yes
 categories:
   - Research
-tags:
+tags_include:
   - reply
   - statistics
 slug: model-averaging-genomics
 ---
 
-Over a year ago I received an email about my [model averaging post](https://drewtyre.rbind.io/post/rebutting_cade)
+Over a year ago I received an email about my model averaging post:
 
 > I came across your blog post https://drewtyre.rbind.io/post/rebutting_cade/ searching for information about model combination and model averaging.
 
@@ -21,9 +21,31 @@ Over a year ago I received an email about my [model averaging post](https://drew
 
 > My question is, are you aware of good mainstream literature on this topic explaining why combining predictions is a good idea? In statistical genetics and human genomics this practice has not caught on so the concept seems like voodoo to them.
 
+My answer then: 
+
 I’m not that familiar with genomics data, although I know big sample sizes and many predictors create unique problems!
 
 It’s not clear to me what is meant by a composite prediction. When model averaging it would be unlikely for the odds ratio of the prediction to increase over what the individual models predict. Maybe impossible.
 
 In any case, from a Bayesian perspective [Hooten et al.](https://projecteuclid.org/euclid.ss/1009212519) is the go to source, and for more details on using AIC I would look at
 [Burnham and Anderson](http://www.springer.com/us/book/9780387953649).
+
+But, is it impossible? 
+
+Two scenarios about reality. In one, there is a small set of weak predictors, 
+all the others are zero, and all of the predictors are in the model set.
+In the second scenario many variables matter with exponentially decreasing effect
+sizes, and a random sample of the variables are included in the model set. 
+
+```{r intro, message=FALSE}
+library(tidyverse)
+s1 <- function(N = 100, M = 10, effects = c(1, 0.5, 0.25)){
+  x <- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
+  effects <- c(effects, rep(0, M-length(effects)))
+  logity <- x %*% effects
+  y <- rbinom(N, size = 1, prob = 1/(1 + exp(-logity)))
+  return(tibble(y = y, x = x))
+}
+glm(y~x, family = binomial, data =s1())
+```
+
