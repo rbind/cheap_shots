@@ -162,6 +162,5 @@ So that *is* higher, but not by much. I guess I could get a single hazard ratio 
 a model averaged prediction and then using it in a glm. 
 
 ```{r}
-
 ```
 
