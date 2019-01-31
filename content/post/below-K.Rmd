@@ -1,0 +1,17 @@
+---
+title: What does it mean for a population to be Below K?
+author: Drew Tyre
+date: '2019-02-25'
+draft: yes
+categories:
+  - Research
+tags_include:
+  - ecology
+slug: below-K
+---
+
+I often hear the phrase, "This population is below K so ...". But what does the
+trajectory of such a population look like? It should be increasing. But apparently 
+not everyone agrees. 
+
+Does K include the effects of predation disease hunting etc. 
