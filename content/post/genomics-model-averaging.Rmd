@@ -39,6 +39,7 @@ sizes, and a random sample of the variables are included in the model set.
 
 ```{r intro, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(AICcmodavg) # for convienence
 s1 <- function(N = 100, M = 10, effects = c(1, 0.5, 0.25)){
   x <- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
   effects <- c(effects, rep(0, M-length(effects)))
@@ -55,9 +56,53 @@ s2 <- function(N = 100, M = 10, effects = list(e0 = 1, rate = -0.9)){
   effects <- with(effects, e0 * exp(rate * 0:(M-1)))
   logity <- x %*% effects
   y <- rbinom(N, size = 1, prob = 1/(1 + exp(-logity)))
-  return(tibble(y = y, x = x))
+  return(tibble(y = y, x = x)) # experiment -- this puts a matrix in a column
 }
 glm(y~x, family = binomial, data =s2())
 
+```
+
+`s1()` generates data according to the view of reality behind BIC. `s2()` generates
+data according to the view of reality behind AIC. Now I need a plausible model
+set. I don't know what genomics people do, but I imagine they test individual
+genes first. I will also put in a null model to bound the set. Normally I would 
+put in a global model, but if there are hundreds or thousands of genes that would
+be impractical.
+
+```{r}
+models <- list(y~x[,1], # this is a weird construction but it works
+               y~x[,2],
+               y~x[,3],
+               y~x[,4],
+               y~x[,5],
+               y~x[,6],
+               y~x[,7],
+               y~x[,8],
+               y~x[,9],
+               y~x[,10],
+               y~1)
+set.seed(83849035)
+df <- s1()
+s1fits <- map(models, glm, data = df, family=binomial)
+modnames <- map_chr(models, deparse)
+knitr::kable(aictab(s1fits, modnames = modnames), digits = 2)
+```
+
+I had to play around with different random seeds to get a set that had all three "true" predictors in
+the top set. 1 is always the top, but 2 and 3 often drop way down along with the
+null model. So how does a model average prediction stack up against the top model? First i'll extract
+the "hazard ratios", which I believe is just $e^{\beta_1}$
+
+```{r}
+hr <- map_dfr(s1fits[1:10], broom::tidy, conf.int = TRUE) %>% 
+  filter(term != "(Intercept)") %>% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high),
+         AICc = map_dbl(s1fits, AICc)[1:10])
+ggplot(data = hr,
+       mapping = aes(x = term, y = hr)) + 
+  geom_point() + 
+  geom_errorbar(mapping = aes(ymin = lcl, ymax = hcl), width = 0.1)
 ```
 
