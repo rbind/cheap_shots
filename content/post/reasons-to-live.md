@@ -1,7 +1,7 @@
 ---
 title: Reasons to live
 author: 'Drew Tyre'
-date: '2019-03-20'
+date: '2019-03-25'
 slug: reasons-to-live
 categories:
   - Personal
