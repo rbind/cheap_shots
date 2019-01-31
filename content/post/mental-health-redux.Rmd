@@ -1,7 +1,7 @@
 ---
 title: "Mental Health Redux"
 author: "Drew Tyre"
-date: '2019-02-21'
+date: '2019-02-18'
 output: word_document
 draft: yes
 slug: mental-health-redux
@@ -78,7 +78,7 @@ that leaves a student unable to complete the work. In fact, with proper support 
 treatment, a mentally ill student may well be able to complete the work. The "proper 
 support" is where mental health professionals play a key role. 
 
-## Current state
+## Meltdown
 
 Last summer my colleague Leon was diagnosed with cancer. [ask leon if he is ok with this]
 [Joe Dauer](http://snr.unl.edu/aboutus/who/people/faculty-member.asp?pid=1921) and I took over 
@@ -112,23 +112,31 @@ That was a wake up call for sure.
 Next stop, back to my GP to see about medication. I sat there, twitching[^twitch], rubbing my hands
 together anxiously, barely holding back tears while describing the situation to
 the nurse. My GP took one look and started me on a low dose of an atypical anti-psychotic[^antipsychotic]. 
-Remarkably, that shut off the depression symptoms like flipping a switch. The drawback is I'm 
-tired and foggy all the time. I'm now working with a psychiatrist to review and
-evaluate all my medication, and I'm hopeful that with a greater effort an 
-effective combination with few side effects can be found. I'm really tired of
-this merry-go-round. 
+Remarkably, that shut off the depression symptoms like flipping a switch. Unfortunately I was 
+tired and foggy all the time. I started working with a psychiatrist to review and
+evaluate all my medication, hopeful that an 
+effective combination with few side effects can be found. I was really tired of
+the merry-go-round. 
 
-I have to remind myself that wellness is a process. I'm struggling now, but 
-there is hope. I've surrounded myself with living things[^things], and my 
-family is close at hand. (write some more stuff about what health looks like here)
+## Current State and the Future
 
-## The Future
+I'm experiencing some fairly immediate improvements from a couple of medication changes. 
+I've often had short term gains followed by long term mediocrity, so the jury is still out. 
+The changes are based on a genetic test which I'll write about elsewhere. But I'm 
+kind of excited. 
 
 My counselor reminds me often that thoughts create reality. Words are thoughts pinned in space-time 
 by sound or text. I want to create a reality of health, so here's what that looks like.
 My "quietly confident"[^quiet] mind generates new ideas and readily produces clear descriptions of 
-those ideas. I get through an 8 hour day with energy and motivation to spare. I have the willpower to 
-exercise daily. 
+those ideas. I get through an 8 hour day with energy and motivation to spare. 
+I use that excess energy to spend quality time with friends and family, and on
+activities that refresh me. I have the willpower to 
+exercise daily. I manage my time effectively, helping others, but also making time to
+do the things that advance my interests. 
+
+Wellness is a process. I'm struggling now, but 
+on an upward path. I've surrounded myself with living things[^things], and my 
+family is close at hand.
 
 [^twitch]: These are sharp, sudden spasms of a majority of muscles in my upper body.
 They are particularly likely when I bump into something or someone touches me, but
