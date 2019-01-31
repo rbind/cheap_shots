@@ -101,8 +101,23 @@ hr <- map_dfr(s1fits[1:10], broom::tidy, conf.int = TRUE) %>%
          hcl = exp(conf.high),
          AICc = map_dbl(s1fits, AICc)[1:10])
 ggplot(data = hr,
-       mapping = aes(x = term, y = hr)) + 
+#       mapping = aes(x = fct_reorder(term, AICc), y = hr)) + 
+       mapping = aes(x = AICc, y = hr)) + 
   geom_point() + 
-  geom_errorbar(mapping = aes(ymin = lcl, ymax = hcl), width = 0.1)
+  geom_errorbar(mapping = aes(ymin = lcl, ymax = hcl), width = 0.1) + 
+  labs(x = "Term ordered by AICc",
+       y = "Hazard Ratio") + 
+  geom_hline(yintercept = 1, linetype = 2)
+```
+
+That's kind of a cool plot. The two predictors that give the strongest results are well separated
+from the rest. Now, what is a "compound prediction"? If it is a model averaged prediction, I think
+that has to be necessarily worse than the top predictor because the model averaging will shrink the 
+prediction back towards zero. Also, I'm not really sure how to get a single hazard ratio. Reading 
+between the lines, I wonder if they are doing something with the predictor variables, like using
+the sum of the top predictors. 
+
+```{r}
+
 ```
 
