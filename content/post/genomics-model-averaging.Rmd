@@ -115,7 +115,51 @@ from the rest. Now, what is a "compound prediction"? If it is a model averaged p
 that has to be necessarily worse than the top predictor because the model averaging will shrink the 
 prediction back towards zero. Also, I'm not really sure how to get a single hazard ratio. Reading 
 between the lines, I wonder if they are doing something with the predictor variables, like using
-the sum of the top predictors. 
+the sum of the top predictors. I'll use the top 3 because they had hazard ratios significantly 
+different from 1.
+
+```{r}
+df$compound <- with(df, x[,1] + x[,3] + x[,5]) # dplyr doesn't like matrix columns
+s1cmpd <- glm(y~compound, data = df, family = binomial)
+broom::tidy(s1cmpd, conf.int = TRUE) %>% 
+  filter(term != "(Intercept)") %>% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high)) %>% 
+  select(hr, lcl, hcl)
+```
+
+Hmmm. That's also worse than either of the single predictors. But it could be that it happens sometimes. 
+
+I wonder what happens if I use the sum of the true predictors.
+
+```{r}
+df$true <- with(df, x[,1] + x[,2] + x[,3]) # dplyr doesn't like matrix columns
+s1true<- glm(y~true, data = df, family = binomial)
+broom::tidy(s1true, conf.int = TRUE) %>% 
+  filter(term != "(Intercept)") %>% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high)) %>% 
+  select(hr, lcl, hcl)
+```
+
+The top predictor has a hazard ratio of 2.23, so this is slightly worse. What about the
+two variables that had AICc values far below the others?
+
+```{r}
+df$true <- with(df, x[,1] + x[,3]) # dplyr doesn't like matrix columns
+s1true<- glm(y~true, data = df, family = binomial)
+broom::tidy(s1true, conf.int = TRUE) %>% 
+  filter(term != "(Intercept)") %>% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high)) %>% 
+  select(hr, lcl, hcl)
+```
+
+So that *is* higher, but not by much. I guess I could get a single hazard ratio by calculating
+a model averaged prediction and then using it in a glm. 
 
 ```{r}
 
