@@ -23,6 +23,29 @@ if a disease arrives that reduces recruitment [(e.g. by killing newborns)](https
 $K$ (and maybe $r_{max}$) is reduced because the birth rate curve shifts downwards.
 But apparently not everyone thinks of $K$ in this arbitrary mathematical way.
 
+I know there are many flavors of the term "carrying capacity". For example, "social 
+carrying capacity" as used by wildlife managers describes how many individuals of 
+a species humans are prepared to accept.[^social] I think of my use of carrying 
+capacity as "ecological carrying capacity", the size of a population that growth
+tends towards in the absence of stochastic effects. But maybe this needs to be 
+unpacked a bit more. 
+
+Thinking of $K$ as a single thing creates a problem: my mathematical point
+does not stay constant. It bounces around in response to environmental stochasticity.
+In years with good rainfall $K$ is higher for deer than in drought years. 
+It trends over time in response to slow variables like landuse change. But the 
+common usage suggests that $K$ does *not* change. I think we need two concepts: 
+$K_t$ and $K_{max}$. 
+
+$K_t$ is the mathematical point I just described, and includes all the vagries of
+the environment, disease, predators etc. It is specific to a point in time and 
+indeed, space. In contrast, $K_{max}$ is constant, a feature of the species' life
+history. In a given habitat[^habitat], at what population size do birth rates equal
+death rates equal given only intra-specific competition.
 
 
-[^spectrum]: I just made this up.
+[^spectrum]: I just made this up. I love being an academic and getting to coin new jargon.
+
+[^social]: The concept is not without criticism - [this is a fascinating read.](https://www.counterpunch.org/2016/01/08/the-politspeak-of-social-carrying-capacity/)
+
+[^habitat]: introducing another vague term here! Here, I think of habitat as a type of vegetation in a particular location, averaged at a resolution of at least the home range of the species in question. This works just fine for big horn sheep, but what about predators?
