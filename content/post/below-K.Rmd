@@ -1,5 +1,5 @@
 ---
-title: What does it mean for a population to be Below K?
+title: Introducing $K_{max}$!
 author: Drew Tyre
 date: '2019-02-25'
 draft: yes
@@ -10,8 +10,19 @@ tags_include:
 slug: below-K
 ---
 
-I often hear the phrase, "This population is below K so ...". But what does the
-trajectory of such a population look like? It should be increasing. But apparently 
-not everyone agrees. 
+I often hear the phrase, "This population is below $K$ so ...". But what does the
+trajectory of such a population look like? I think it should be increasing. But apparently 
+not everyone agrees. The usual context of this statement is interpreting what 
+kind of birth and death rates to expect. If a population is "below $K$", then birth
+rates should exceed death rates. If they are not, then *something* (disease, 
+predation, hunting) is causing birth rates to fall or death rates to rise. 
 
-Does K include the effects of predation disease hunting etc. 
+I've always thought of $K$ as an abstract point, the position on the population
+size spectrum[^spectrum] where birth and death rates are equal. In my thinking,
+if a disease arrives that reduces recruitment [(e.g. by killing newborns)](https://www.omaha.com/outdoors/pneumonia-wreaking-havoc-among-bighorn-sheep-in-nebraska-s-pine/article_ce95d13b-1d0c-5b47-ba02-316daa969d56.html), then
+$K$ (and maybe $r_{max}$) is reduced because the birth rate curve shifts downwards.
+But apparently not everyone thinks of $K$ in this arbitrary mathematical way.
+
+
+
+[^spectrum]: I just made this up.
