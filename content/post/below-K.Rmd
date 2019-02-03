@@ -1,7 +1,7 @@
 ---
-title: Introducing $K_{max}$!
+title: Introducing $\rho_{max}$ and $K_{max}$!
 author: Drew Tyre
-date: '2019-02-25'
+date: '2019-02-11'
 draft: yes
 categories:
   - Research
@@ -42,6 +42,29 @@ the environment, disease, predators etc. It is specific to a point in time and
 indeed, space. In contrast, $K_{max}$ is constant, a feature of the species' life
 history. In a given habitat[^habitat], at what population size do birth rates equal
 death rates equal given only intra-specific competition.
+
+I picked the $K_{max}$ notation to correspond to $r_{max}$, the intrinsic rate of
+growth, or the difference in birth and death rates when intra-specific competition
+is absent. This has a pleasing conceptual symmetry, but actually creates a problem. 
+I use $r_{max}$ in the sense of $K_t$, that is, the maximum rate of growth including
+all the vagaries of the ecosystem. I use $r_t$ as the observed per capita rate of growth at
+a particular point in time. So, if $r_{max}$ is now the life history constant, $r_t$ is the 
+particular maximum growth rate at $t$, then what is $ln\left(\frac{N_{t+1}}{N_t}\right)$?
+
+My constants $K_{max}$ and $r_{max}$ have an interesting property. They are unobservable. 
+Given two population estimates you can "observe" $ln\left(\frac{N_{t+1}}{N_t}\right)$.
+By analogy with the distinction between population and sample statistics, I could use
+$\rho_{max}$ for the life history constant, $\rho_t$ for the value at a specific 
+time, and then $r_t = ln\left(\frac{N_{t+1}}{N_t}\right)$ just makes sense! Maybe. 
+Conceptually $r_t$ is not the same beast as $\rho_t$ because the latter is independent 
+of $N_t$. 
+
+Getting this notation right is not a triviality. It affects how students learn.
+I've noticed many of my students struggle with this exact conceptual distinction 
+between $r_t$ and $\rho_t$. One is an unobservable property of the system, and the
+other is an estimated quantity. Maybe I should put a hat on $\hat{r}$. 
+Another interesting connection: 
+$\hat{r}_t = f\left(\hat{N}_t | \rho_t, K_t\right)$. 
 
 
 [^spectrum]: I just made this up. I love being an academic and getting to coin new jargon.
