@@ -1,0 +1,73 @@
+---
+title: Introducing $\rho_{max}$ and $K_{max}$!
+author: Drew Tyre
+date: '2019-02-11'
+draft: no
+categories:
+  - Research
+tags_include:
+  - ecology
+slug: below-K
+---
+
+
+
+<p>I often hear the phrase, “This population is below <span class="math inline">\(K\)</span> so …”. But what does the
+trajectory of such a population look like? I think it should be increasing. But apparently
+not everyone agrees. The usual context of this statement is interpreting what
+kind of birth and death rates to expect. If a population is “below <span class="math inline">\(K\)</span>”, then birth
+rates should exceed death rates. If they are not, then <em>something</em> (disease,
+predation, hunting) is causing birth rates to fall or death rates to rise.</p>
+<p>I’ve always thought of <span class="math inline">\(K\)</span> as an abstract point, the position on the population
+size spectrum<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> where birth and death rates are equal. In my thinking,
+if a disease arrives that reduces recruitment <a href="https://www.omaha.com/outdoors/pneumonia-wreaking-havoc-among-bighorn-sheep-in-nebraska-s-pine/article_ce95d13b-1d0c-5b47-ba02-316daa969d56.html">(e.g. by killing newborns)</a>, then
+<span class="math inline">\(K\)</span> (and maybe <span class="math inline">\(r_{max}\)</span>) is reduced because the birth rate curve shifts downwards.
+But apparently not everyone thinks of <span class="math inline">\(K\)</span> in this arbitrary mathematical way.</p>
+<p>I know there are many flavors of the term “carrying capacity”. For example, “social
+carrying capacity” as used by wildlife managers describes how many individuals of
+a species humans are prepared to accept.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> I think of my use of carrying
+capacity as “ecological carrying capacity”, the size of a population that growth
+tends towards in the absence of stochastic effects. But maybe this needs to be
+unpacked a bit more.</p>
+<p>Thinking of <span class="math inline">\(K\)</span> as a single thing creates a problem: my mathematical point
+does not stay constant. It bounces around in response to environmental stochasticity.
+In years with good rainfall <span class="math inline">\(K\)</span> is higher for deer than in drought years.
+It trends over time in response to slow variables like landuse change. But the
+common usage suggests that <span class="math inline">\(K\)</span> does <em>not</em> change. I think we need two concepts:
+<span class="math inline">\(K_t\)</span> and <span class="math inline">\(K_{max}\)</span>.</p>
+<p><span class="math inline">\(K_t\)</span> is the mathematical point I just described, and includes all the vagries of
+the environment, disease, predators etc. It is specific to a point in time and
+indeed, space. In contrast, <span class="math inline">\(K_{max}\)</span> is constant, a feature of the species’ life
+history. In a given habitat<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, at what population size do birth rates equal
+death rates equal given only intra-specific competition.</p>
+<p>I picked the <span class="math inline">\(K_{max}\)</span> notation to correspond to <span class="math inline">\(r_{max}\)</span>, the intrinsic rate of
+growth, or the difference in birth and death rates when intra-specific competition
+is absent. This has a pleasing conceptual symmetry, but actually creates a problem.
+I use <span class="math inline">\(r_{max}\)</span> in the sense of <span class="math inline">\(K_t\)</span>, that is, the maximum rate of growth including
+all the vagaries of the ecosystem. I use <span class="math inline">\(r_t\)</span> as the observed per capita rate of growth at
+a particular point in time. So, if <span class="math inline">\(r_{max}\)</span> is now the life history constant, <span class="math inline">\(r_t\)</span> is the
+particular maximum growth rate at <span class="math inline">\(t\)</span>, then what is <span class="math inline">\(ln\left(\frac{N_{t+1}}{N_t}\right)\)</span>?</p>
+<p>My constants <span class="math inline">\(K_{max}\)</span> and <span class="math inline">\(r_{max}\)</span> have an interesting property. They are unobservable.
+Given two population estimates you can “observe” <span class="math inline">\(ln\left(\frac{N_{t+1}}{N_t}\right)\)</span>.
+By analogy with the distinction between population and sample statistics, I could use
+<span class="math inline">\(\rho_{max}\)</span> for the life history constant, <span class="math inline">\(\rho_t\)</span> for the value at a specific
+time, and then <span class="math inline">\(r_t = ln\left(\frac{N_{t+1}}{N_t}\right)\)</span> just makes sense! Maybe.
+Conceptually <span class="math inline">\(r_t\)</span> is not the same beast as <span class="math inline">\(\rho_t\)</span> because the latter is independent
+of <span class="math inline">\(N_t\)</span>.</p>
+<p>Getting this notation right is not a triviality. It affects how students learn.
+I’ve noticed many of my students struggle with this exact conceptual distinction
+between <span class="math inline">\(r_t\)</span> and <span class="math inline">\(\rho_t\)</span>. One is an unobservable property of the system, and the
+other is an estimated quantity. Maybe I should put a hat on <span class="math inline">\(\hat{r}\)</span>.
+Another interesting connection:
+<span class="math inline">\(\hat{r}_t = f\left(\hat{N}_t | \rho_t, K_t\right)\)</span>.</p>
+<p>Nothing to see here, really. I suspect the vague notation and terminology is so
+deeply engrained in generations of ecologists that clarifying it at this point
+is well nigh impossible. What do you think? Comments welcome below!</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>I just made this up. I love being an academic and getting to coin new jargon.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>The concept is not without criticism - <a href="https://www.counterpunch.org/2016/01/08/the-politspeak-of-social-carrying-capacity/">this is a fascinating read.</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>introducing another vague term here! Here, I think of habitat as a type of vegetation in a particular location, averaged at a resolution of at least the home range of the species in question. This works just fine for big horn sheep, but what about predators?<a href="#fnref3" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

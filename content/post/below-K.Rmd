@@ -2,7 +2,7 @@
 title: Introducing $\rho_{max}$ and $K_{max}$!
 author: Drew Tyre
 date: '2019-02-11'
-draft: yes
+draft: no
 categories:
   - Research
 tags_include:
@@ -66,6 +66,9 @@ other is an estimated quantity. Maybe I should put a hat on $\hat{r}$.
 Another interesting connection: 
 $\hat{r}_t = f\left(\hat{N}_t | \rho_t, K_t\right)$. 
 
+Nothing to see here, really. I suspect the vague notation and terminology is so 
+deeply engrained in generations of ecologists that clarifying it at this point 
+is well nigh impossible. What do you think? Comments welcome below!
 
 [^spectrum]: I just made this up. I love being an academic and getting to coin new jargon.
 
