@@ -1,0 +1,312 @@
+---
+title: Model Averaging in Genomics?
+author: Drew Tyre
+date: '2019-02-25'
+draft: yes
+categories:
+  - Research
+tags_include:
+  - reply
+  - statistics
+slug: model-averaging-genomics
+---
+
+
+
+<p>Over a year ago I received an email about my model averaging post:</p>
+<blockquote>
+<p>I came across your blog post <a href="https://drewtyre.rbind.io/post/rebutting_cade/" class="uri">https://drewtyre.rbind.io/post/rebutting_cade/</a> searching for information about model combination and model averaging.</p>
+</blockquote>
+<blockquote>
+<p>I work in human genomics, developing risk scores for predicting disease based on genetic markers (SNPs). We have now run into this ‘problem’ where we have multiple such scores from different sources, that when assessed in a regression model (cox or logistic) are all highly significant at the same time and their effect size is not completely attenuated by the inclusion of the other predictions (I am assessing the association of each score, which is a vector, with a specific disease outcome, say binary). Each score is standardised to zero-mean and unit variance.</p>
+</blockquote>
+<blockquote>
+<p>This observation has lead us to try combining these different predictions into one ‘composite’ prediction, which seems to substantially outperform any one of the individual predictions (i.e., combining three weakly-correlated predictions, with hazard ratios of 1.3, 1.4, and 1.5, respectively, gives a hazard ratio of 1.8 for the composite score). I believe this is due to Jensen’s inequality, as you explain in your blog.</p>
+</blockquote>
+<blockquote>
+<p>My question is, are you aware of good mainstream literature on this topic explaining why combining predictions is a good idea? In statistical genetics and human genomics this practice has not caught on so the concept seems like voodoo to them.</p>
+</blockquote>
+<p>My answer then:</p>
+<p>I’m not that familiar with genomics data, although I know big sample sizes and many predictors create unique problems!</p>
+<p>It’s not clear to me what is meant by a composite prediction. When model averaging it would be unlikely for the odds ratio of the prediction to increase over what the individual models predict. Maybe impossible.</p>
+<p>In any case, from a Bayesian perspective <a href="https://projecteuclid.org/euclid.ss/1009212519">Hooten et al.</a> is the go to source, and for more details on using AIC I would look at
+<a href="http://www.springer.com/us/book/9780387953649">Burnham and Anderson</a>.</p>
+<p>But, is it impossible?</p>
+<p>Two scenarios about reality. In one, there is a small set of weak predictors,
+all the others are zero, and all of the predictors are in the model set.
+In the second scenario many variables matter with exponentially decreasing effect
+sizes, and a random sample of the variables are included in the model set.</p>
+<pre class="r"><code>library(tidyverse)
+library(AICcmodavg) # for convienence
+s1 &lt;- function(N = 100, M = 10, effects = c(1, 0.5, 0.25)){
+  x &lt;- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
+  effects &lt;- c(effects, rep(0, M-length(effects)))
+  logity &lt;- x %*% effects
+  y &lt;- rbinom(N, size = 1, prob = 1/(1 + exp(-logity)))
+  return(tibble(y = y, x = x))
+}
+glm(y~x, family = binomial, data =s1())</code></pre>
+<pre><code>## 
+## Call:  glm(formula = y ~ x, family = binomial, data = s1())
+## 
+## Coefficients:
+## (Intercept)           x1           x2           x3           x4  
+##     0.44050      1.59987      1.10360     -0.15157      0.12501  
+##          x5           x6           x7           x8           x9  
+##     0.01395      0.04366      0.01698      0.12626     -0.36231  
+##         x10  
+##    -0.51461  
+## 
+## Degrees of Freedom: 99 Total (i.e. Null);  89 Residual
+## Null Deviance:       137.2 
+## Residual Deviance: 90.8  AIC: 112.8</code></pre>
+<pre class="r"><code>s2 &lt;- function(N = 100, M = 10, effects = list(e0 = 1, rate = -0.9)){
+  x &lt;- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
+  effects &lt;- with(effects, e0 * exp(rate * 0:(M-1)))
+  logity &lt;- x %*% effects
+  y &lt;- rbinom(N, size = 1, prob = 1/(1 + exp(-logity)))
+  return(tibble(y = y, x = x)) # experiment -- this puts a matrix in a column
+}
+glm(y~x, family = binomial, data =s2())</code></pre>
+<pre><code>## 
+## Call:  glm(formula = y ~ x, family = binomial, data = s2())
+## 
+## Coefficients:
+## (Intercept)           x1           x2           x3           x4  
+##     0.13774      0.93115      0.30671     -0.05183     -0.28310  
+##          x5           x6           x7           x8           x9  
+##     0.32937      0.25106     -0.02809      0.33333     -0.17235  
+##         x10  
+##    -0.04998  
+## 
+## Degrees of Freedom: 99 Total (i.e. Null);  89 Residual
+## Null Deviance:       138.5 
+## Residual Deviance: 113.7     AIC: 135.7</code></pre>
+<p><code>s1()</code> generates data according to the view of reality behind BIC. <code>s2()</code> generates
+data according to the view of reality behind AIC. Now I need a plausible model
+set. I don’t know what genomics people do, but I imagine they test individual
+genes first. I will also put in a null model to bound the set. Normally I would
+put in a global model, but if there are hundreds or thousands of genes that would
+be impractical.</p>
+<pre class="r"><code>models &lt;- list(y~x[,1], # this is a weird construction but it works
+               y~x[,2],
+               y~x[,3],
+               y~x[,4],
+               y~x[,5],
+               y~x[,6],
+               y~x[,7],
+               y~x[,8],
+               y~x[,9],
+               y~x[,10],
+               y~1)
+set.seed(83849035)
+df &lt;- s1()
+s1fits &lt;- map(models, glm, data = df, family=binomial)
+modnames &lt;- map_chr(models, deparse)
+knitr::kable(aictab(s1fits, modnames = modnames), digits = 2)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="left">Modnames</th>
+<th align="right">K</th>
+<th align="right">AICc</th>
+<th align="right">Delta_AICc</th>
+<th align="right">ModelLik</th>
+<th align="right">AICcWt</th>
+<th align="right">LL</th>
+<th align="right">Cum.Wt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="left">y ~ x[, 1]</td>
+<td align="right">2</td>
+<td align="right">131.60</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">0.57</td>
+<td align="right">-63.74</td>
+<td align="right">0.57</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td align="left">y ~ x[, 3]</td>
+<td align="right">2</td>
+<td align="right">132.44</td>
+<td align="right">0.84</td>
+<td align="right">0.66</td>
+<td align="right">0.38</td>
+<td align="right">-64.16</td>
+<td align="right">0.95</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td align="left">y ~ x[, 5]</td>
+<td align="right">2</td>
+<td align="right">138.34</td>
+<td align="right">6.73</td>
+<td align="right">0.03</td>
+<td align="right">0.02</td>
+<td align="right">-67.11</td>
+<td align="right">0.97</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td align="left">y ~ x[, 2]</td>
+<td align="right">2</td>
+<td align="right">140.52</td>
+<td align="right">8.92</td>
+<td align="right">0.01</td>
+<td align="right">0.01</td>
+<td align="right">-68.20</td>
+<td align="right">0.97</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td align="left">y ~ 1</td>
+<td align="right">1</td>
+<td align="right">140.63</td>
+<td align="right">9.03</td>
+<td align="right">0.01</td>
+<td align="right">0.01</td>
+<td align="right">-69.29</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td align="left">y ~ x[, 4]</td>
+<td align="right">2</td>
+<td align="right">140.70</td>
+<td align="right">9.10</td>
+<td align="right">0.01</td>
+<td align="right">0.01</td>
+<td align="right">-68.29</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td align="left">y ~ x[, 6]</td>
+<td align="right">2</td>
+<td align="right">141.50</td>
+<td align="right">9.89</td>
+<td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">-68.69</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td align="left">y ~ x[, 9]</td>
+<td align="right">2</td>
+<td align="right">142.03</td>
+<td align="right">10.43</td>
+<td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">-68.95</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td align="left">y ~ x[, 8]</td>
+<td align="right">2</td>
+<td align="right">142.42</td>
+<td align="right">10.82</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">-69.15</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td align="left">y ~ x[, 7]</td>
+<td align="right">2</td>
+<td align="right">142.66</td>
+<td align="right">11.06</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">-69.27</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td align="left">y ~ x[, 10]</td>
+<td align="right">2</td>
+<td align="right">142.67</td>
+<td align="right">11.07</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">-69.27</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table>
+<p>I had to play around with different random seeds to get a set that had all three “true” predictors in
+the top set. 1 is always the top, but 2 and 3 often drop way down along with the
+null model. So how does a model average prediction stack up against the top model? First i’ll extract
+the “hazard ratios”, which I believe is just <span class="math inline">\(e^{\beta_1}\)</span></p>
+<pre class="r"><code>hr &lt;- map_dfr(s1fits[1:10], broom::tidy, conf.int = TRUE) %&gt;% 
+  filter(term != &quot;(Intercept)&quot;) %&gt;% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high),
+         AICc = map_dbl(s1fits, AICc)[1:10])
+ggplot(data = hr,
+#       mapping = aes(x = fct_reorder(term, AICc), y = hr)) + 
+       mapping = aes(x = AICc, y = hr)) + 
+  geom_point() + 
+  geom_errorbar(mapping = aes(ymin = lcl, ymax = hcl), width = 0.1) + 
+  labs(x = &quot;Term ordered by AICc&quot;,
+       y = &quot;Hazard Ratio&quot;) + 
+  geom_hline(yintercept = 1, linetype = 2)</code></pre>
+<p><img src="/post/genomics-model-averaging_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>That’s kind of a cool plot. The two predictors that give the strongest results are well separated
+from the rest. Now, what is a “compound prediction”? If it is a model averaged prediction, I think
+that has to be necessarily worse than the top predictor because the model averaging will shrink the
+prediction back towards zero. Also, I’m not really sure how to get a single hazard ratio. Reading
+between the lines, I wonder if they are doing something with the predictor variables, like using
+the sum of the top predictors. I’ll use the top 3 because they had hazard ratios significantly
+different from 1.</p>
+<pre class="r"><code>df$compound &lt;- with(df, x[,1] + x[,3] + x[,5]) # dplyr doesn&#39;t like matrix columns
+s1cmpd &lt;- glm(y~compound, data = df, family = binomial)
+broom::tidy(s1cmpd, conf.int = TRUE) %&gt;% 
+  filter(term != &quot;(Intercept)&quot;) %&gt;% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high)) %&gt;% 
+  select(hr, lcl, hcl)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##      hr   lcl   hcl
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  1.99  1.47  2.86</code></pre>
+<p>Hmmm. That’s also worse than either of the single predictors. But it could be that it happens sometimes.</p>
+<p>I wonder what happens if I use the sum of the true predictors.</p>
+<pre class="r"><code>df$true &lt;- with(df, x[,1] + x[,2] + x[,3]) # dplyr doesn&#39;t like matrix columns
+s1true&lt;- glm(y~true, data = df, family = binomial)
+broom::tidy(s1true, conf.int = TRUE) %&gt;% 
+  filter(term != &quot;(Intercept)&quot;) %&gt;% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high)) %&gt;% 
+  select(hr, lcl, hcl)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##      hr   lcl   hcl
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  2.17  1.54  3.26</code></pre>
+<p>The top predictor has a hazard ratio of 2.23, so this is slightly worse. What about the
+two variables that had AICc values far below the others?</p>
+<pre class="r"><code>df$true &lt;- with(df, x[,1] + x[,3]) # dplyr doesn&#39;t like matrix columns
+s1true&lt;- glm(y~true, data = df, family = binomial)
+broom::tidy(s1true, conf.int = TRUE) %&gt;% 
+  filter(term != &quot;(Intercept)&quot;) %&gt;% 
+  mutate(hr = exp(estimate),
+         lcl = exp(conf.low),
+         hcl = exp(conf.high)) %&gt;% 
+  select(hr, lcl, hcl)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##      hr   lcl   hcl
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  2.29  1.57  3.54</code></pre>
+<p>So that <em>is</em> higher, but not by much. I guess I could get a single hazard ratio by calculating
+a model averaged prediction and then using it in a glm.</p>
