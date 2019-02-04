@@ -1,14 +1,14 @@
 ---
-title: Introducing $\rho_{max}$ and $K_{max}$!
-author: Drew Tyre
+title: "Introducing $\\rho_{max}$ and $K_{max}$!"
+author: "Drew Tyre"
 date: '2019-02-11'
+output: html_document
 draft: no
-categories:
-  - Research
-tags_include:
-  - ecology
-  - carrying capacity
 slug: below-K
+tags_include:
+- ecology
+- carrying capacity
+categories: Research
 ---
 
 I often hear the phrase, "This population is below $K$ so ...". But what does the
