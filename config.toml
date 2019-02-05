@@ -50,7 +50,7 @@ enableGitInfo = false
   role = "Professor of Wildlife Ecology"
   organizations = [{name = "University of Nebraska - Lincoln", url = "https://www.unl.edu"}]
   gravatar = false  # Get your avatar from Gravatar.com? (true/false)
-  avatar = "tyre_drew_mug_101116_square.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
+  avatar = "tyre_mug_2019-01-20.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
   email = "atyre2@unl.edu"
   address = "416 Hardin Hall, 3310 Holdrege St, Lincoln, NE, 68583-0974"
   office_hours = "email for appointment"
