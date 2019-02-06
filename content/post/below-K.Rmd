@@ -11,6 +11,13 @@ tags_include:
 categories: Research
 ---
 
+```{r setup, include = FALSE}
+library("tidyverse")
+library("tidypop")
+library("gganimate")
+```
+
+
 I often hear the phrase, "This population is below $K$ so ...". But what does the
 trajectory of such a population look like? I think it should be increasing. But apparently 
 not everyone agrees. The usual context of this statement is interpreting what 
@@ -42,7 +49,31 @@ $K_t$ is the mathematical point I just described, and includes all the vagries o
 the environment, disease, predators etc. It is specific to a point in time and 
 indeed, space. In contrast, $K_{max}$ is constant, a feature of the species' life
 history. In a given habitat[^habitat], at what population size do birth rates equal
-death rates equal given only intra-specific competition.
+death rates equal given only intra-specific competition. In theory, one could work
+out $K_{max}$ given knowledge of primary production, plant community composition,
+assimilation efficiencies, and assuming scramble competition. Here's a graph to 
+illustrate.
+
+```{r, echo = FALSE}
+logisticmod <- function(N0, r_t, K_t, t, Kmax){
+  N1 <- N0*exp(r_t*(1-N0/K_t))
+}
+plotdata <- tibble(t = 1:100,
+                   Kmax = 100,
+                   r_t = 0.25,
+                   K_t = Kmax - rgamma(100, shape = 10, rate = 1/2))
+plotdata <- iterate_pop(N0 = c(N=50), plotdata, logisticmod)
+ggplot(data = plotdata,
+       mapping = aes(x = t, y = N)) +
+  geom_point() + geom_hline(yintercept = plotdata$Kmax[1], linetype = 2) +
+  annotate("text", x = 5, y = 97, label = expression(K_max))+
+  geom_segment(mapping = aes(xend = t + 1, yend = K_t), 
+               arrow = arrow(length = unit(0.1, "inches"), type = "closed", angle = 15),
+               alpha = 0.5) + 
+  transition_time(t) + shadow_mark()
+  
+```
+
 
 I picked the $K_{max}$ notation to correspond to $r_{max}$, the intrinsic rate of
 growth, or the difference in birth and death rates when intra-specific competition
