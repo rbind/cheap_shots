@@ -49,8 +49,8 @@ $K_t$ is the mathematical point I just described, and includes all the vagries o
 the environment, disease, predators etc. It is specific to a point in time and 
 indeed, space. In contrast, $K_{max}$ is constant, a feature of the species' life
 history. In a given habitat[^habitat], at what population size do birth rates equal
-death rates equal given only intra-specific competition. In theory, one could work
-out $K_{max}$ given knowledge of primary production, plant community composition,
+death rates equal given *only* intra-specific competition. In theory, one could work
+out $K_{max}$ given [knowledge of primary production](https://onlinelibrary.wiley.com/doi/10.1111/ele.13227), plant community composition,
 assimilation efficiencies, and assuming scramble competition. Here's a graph to 
 illustrate.
 
@@ -66,14 +66,17 @@ plotdata <- iterate_pop(N0 = c(N=50), plotdata, logisticmod)
 ggplot(data = plotdata,
        mapping = aes(x = t, y = N)) +
   geom_point() + geom_hline(yintercept = plotdata$Kmax[1], linetype = 2) +
-  annotate("text", x = 5, y = 97, label = expression(K_max))+
+  annotate("text", x = 5, y = 97, label = "K[max]", parse = TRUE) +
   geom_segment(mapping = aes(xend = t + 1, yend = K_t), 
                arrow = arrow(length = unit(0.1, "inches"), type = "closed", angle = 15),
                alpha = 0.5) + 
   transition_time(t) + shadow_mark()
-  
+#  anim_save("~/Desktop/animation.gif") # for sharing
 ```
 
+In the animation[^methods], the arrows point from the current population size to $K_t$, which varies 
+randomly between years. Note that early on, the population increases *even in bad years* 
+(years with low $K_t$), because the population is below $K_t$.  
 
 I picked the $K_{max}$ notation to correspond to $r_{max}$, the intrinsic rate of
 growth, or the difference in birth and death rates when intra-specific competition
@@ -107,3 +110,5 @@ is well nigh impossible. What do you think? Comments welcome below!
 [^social]: The concept is not without criticism - [this is a fascinating read.](https://www.counterpunch.org/2016/01/08/the-politspeak-of-social-carrying-capacity/)
 
 [^habitat]: introducing another vague term here! Here, I think of habitat as a type of vegetation in a particular location, averaged at a resolution of at least the home range of the species in question. This works just fine for big horn sheep, but what about predators?
+
+[^methods]: I assumed that $K_t = K_{max} - gamma(10, 0.5)$ with shape and rate parameters for the gamma variate. You can see [all the code if you're keen](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/below-K.Rmd).
