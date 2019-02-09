@@ -40,7 +40,14 @@ common usage suggests that <span class="math inline">\(K\)</span> does <em>not</
 the environment, disease, predators etc. It is specific to a point in time and
 indeed, space. In contrast, <span class="math inline">\(K_{max}\)</span> is constant, a feature of the species’ life
 history. In a given habitat<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, at what population size do birth rates equal
-death rates equal given only intra-specific competition.</p>
+death rates equal given <em>only</em> intra-specific competition. In theory, one could work
+out <span class="math inline">\(K_{max}\)</span> given <a href="https://onlinelibrary.wiley.com/doi/10.1111/ele.13227">knowledge of primary production</a>, plant community composition,
+assimilation efficiencies, and assuming scramble competition. Here’s a graph to
+illustrate.</p>
+<p><img src="/post/below-K_files/figure-html/unnamed-chunk-1-1.gif" /><!-- --></p>
+<p>In the animation<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>, the arrows point from the current population size to <span class="math inline">\(K_t\)</span>, which varies
+randomly between years. Note that early on, the population increases <em>even in bad years</em>
+(years with low <span class="math inline">\(K_t\)</span>), because the population is below <span class="math inline">\(K_t\)</span>.</p>
 <p>I picked the <span class="math inline">\(K_{max}\)</span> notation to correspond to <span class="math inline">\(r_{max}\)</span>, the intrinsic rate of
 growth, or the difference in birth and death rates when intra-specific competition
 is absent. This has a pleasing conceptual symmetry, but actually creates a problem.
@@ -70,5 +77,6 @@ is well nigh impossible. What do you think? Comments welcome below!</p>
 <li id="fn1"><p>I just made this up. I love being an academic and getting to coin new jargon.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 <li id="fn2"><p>The concept is not without criticism - <a href="https://www.counterpunch.org/2016/01/08/the-politspeak-of-social-carrying-capacity/">this is a fascinating read.</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
 <li id="fn3"><p>introducing another vague term here! Here, I think of habitat as a type of vegetation in a particular location, averaged at a resolution of at least the home range of the species in question. This works just fine for big horn sheep, but what about predators?<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>I assumed that <span class="math inline">\(K_t = K_{max} - gamma(10, 0.5)\)</span> with shape and rate parameters for the gamma variate. You can see <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/below-K.Rmd">all the code if you’re keen</a>.<a href="#fnref4" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

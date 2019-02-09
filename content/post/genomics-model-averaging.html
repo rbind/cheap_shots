@@ -51,15 +51,15 @@ glm(y~x, family = binomial, data =s1())</code></pre>
 ## 
 ## Coefficients:
 ## (Intercept)           x1           x2           x3           x4  
-##     0.44050      1.59987      1.10360     -0.15157      0.12501  
+##      0.2382       0.6315       0.1510       0.1752       0.3034  
 ##          x5           x6           x7           x8           x9  
-##     0.01395      0.04366      0.01698      0.12626     -0.36231  
+##     -0.2148      -0.3454       0.4823       0.2738       0.3648  
 ##         x10  
-##    -0.51461  
+##     -0.3311  
 ## 
 ## Degrees of Freedom: 99 Total (i.e. Null);  89 Residual
-## Null Deviance:       137.2 
-## Residual Deviance: 90.8  AIC: 112.8</code></pre>
+## Null Deviance:       138.5 
+## Residual Deviance: 119.5     AIC: 141.5</code></pre>
 <pre class="r"><code>s2 &lt;- function(N = 100, M = 10, effects = list(e0 = 1, rate = -0.9)){
   x &lt;- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
   effects &lt;- with(effects, e0 * exp(rate * 0:(M-1)))
@@ -73,15 +73,15 @@ glm(y~x, family = binomial, data =s2())</code></pre>
 ## 
 ## Coefficients:
 ## (Intercept)           x1           x2           x3           x4  
-##     0.13774      0.93115      0.30671     -0.05183     -0.28310  
+##     0.05495      0.61225      0.81549      0.50739      0.31067  
 ##          x5           x6           x7           x8           x9  
-##     0.32937      0.25106     -0.02809      0.33333     -0.17235  
+##     0.16151     -0.10861      0.30978     -0.07308      0.32201  
 ##         x10  
-##    -0.04998  
+##     0.12204  
 ## 
 ## Degrees of Freedom: 99 Total (i.e. Null);  89 Residual
-## Null Deviance:       138.5 
-## Residual Deviance: 113.7     AIC: 135.7</code></pre>
+## Null Deviance:       138.6 
+## Residual Deviance: 114.9     AIC: 136.9</code></pre>
 <p><code>s1()</code> generates data according to the view of reality behind BIC. <code>s2()</code> generates
 data according to the view of reality behind AIC. Now I need a plausible model
 set. I don’t know what genomics people do, but I imagine they test individual
