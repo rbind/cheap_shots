@@ -1,0 +1,111 @@
+---
+title: "Rethinking the logistic model"
+author: "Drew Tyre"
+date: '2019-03-04'
+output: html_document
+draft: yes
+slug: rethink-logistic
+tags_include:
+- ecology
+- carrying capacity
+categories: Research
+---
+
+```{r setup, message = FALSE, warning=FALSE}
+library("tidyverse")
+library("tidypop") # note: code below using the dev branch of this package use
+# devtools::install_github("atyre2/tidypop@dev") 
+```
+
+A few weeks ago I rambled on about [carrying capacity as a concept](https://drewtyre.rbind.io/posts/below-K/).
+The day after I posted that, I stumbled across [a paper by James Mallet in 2012](https://mallet.oeb.harvard.edu/files/malletlab/files/mallet_the_struggle_2012.pdf)
+on why the r-K parameterization of the logistic model is all wrong. Mind Blown. 
+
+The essential point of the paper is that our typical form of logistic growth
+
+$$
+\frac{1}{N}\frac{dN}{dt} = r_{max}\left(1-\frac{N}{K}\right)
+$$
+
+is a historical accident. Verhulst's original form was
+
+$$
+\frac{1}{N}\frac{dN}{dt} = r_{max} - \alpha N
+$$
+
+with an equilibrium population size given by $N^* = r_{max} / \alpha$. This is brilliant, 
+because now $r_{max}$ represents growth in the absence of intraspecific competition,
+while $\alpha$ is how much growth is reduced by intraspecific competition. Most 
+importantly, *these two parameters can vary independently*. In contrast, $r_{max}$ 
+and $K$ are linked at the hip. 
+
+To see this, consider the following diagram of per-capita birth and death rates changing with 
+population size[^baseR].
+
+```{r, echo=FALSE}
+plot(0,0,type="n",xlab="Population Size",ylab="Per capita birth or death rates",axes=FALSE,xlim=c(0,1),ylim=c(0,1))
+box(bty="l")
+abline(a=0.9,b=-0.5,lwd=3)
+abline(a=0.1,b=0.5,lwd=3,lty=3)
+legend(0.8,1,bty="n",legend=c("Births","Deaths"),lty=c(1,3),lwd=3)
+arrows(0,0.1,0,0.9,code=3)
+text(0.01,0.5,"r",font=3)
+arrows(0.8,0,0.8,0.5,code=2)
+text(0.81,0,"K",font=3)
+```
+
+A change in per capita death rates, say by increasing trapping by humans that is 
+density independent, shifts the death rate curve upwards, parallel to the current
+line. This reduces $r_{max}$, because the y-intercepts get closer, *and reduces $K$*,
+because now the two curves cross closer to the origin. However, $\alpha$, the sum
+of the slopes of the lines *does not change*. 
+
+This isn't a trivial side bar. Trevor Hefley's [work on detecting transcritical bifurcations
+in real populations](https://rdcu.be/bnuBG) ran into issues because of this non-independence.
+Trevor fit an r-K model to population data on Bobwhite. He allowed both $r_{max}$ and $K$ to 
+change over time. If $r_{max}$ dips below 0 while $K > 0$, then the population 
+goes through a "transcritical bifurcation" -- the equilibrium population size ceases
+to exist, and the population decays exponentially towards 0. However, if $N>K$ when 
+the bifurcation occurs, the r-K model predicts an increase towards $\infty$. 
+
+```{r}
+rKmod <- function(N0, r, K){
+  N1 <- N0 + N0*r*(1-N0/K)
+  return(N1)
+}
+inputs <- tibble(t = 1:20,
+                 r = c(rep(0.5,10), rep(-0.1,10)),
+                 K = c(rep(100,10), rep(90,10)))
+outputs <- iterate(inputs, N0 = 20, rKmod)
+ggplot(data = outputs,
+       mapping = aes(x = t, y = N)) + 
+  geom_line() + 
+  geom_step(data = inputs,
+            mapping = aes(y = K), linetype = 2)
+```
+
+Needless to say that isn't the expected behavior for $r_{max} < 0$! If I switch
+to the $r-\alpha$ form, I need to work out what $\alpha$ should be to have $N^* = 100$.
+I think it is $r/N^* = 0.005$ in this case so 
+
+```{r, warning=FALSE}
+ramod <- function(N0, r, alpha){
+  N1 <- N0 + N0*r - alpha*N0^2
+  return(N1)
+}
+inputs <- tibble(t = 1:20,
+                 r = c(rep(0.5,10), rep(-0.1,10)),
+                 alpha = 0.005,
+                 K = r / alpha)
+outputs <- iterate(inputs, N0 = 20, rKmod)
+ggplot(data = outputs,
+       mapping = aes(x = t, y = N)) + 
+  geom_line() + 
+  geom_step(data = inputs,
+            mapping = aes(y = K), linetype = 2) + 
+  ylim(c(0,100))
+```
+
+That's more like it! 
+
+[^baseR]: Yes, that's using base R plotting. I'm being lazy and recycling a figure from my lecture notes, which are not yet tidied. 
