@@ -1,21 +1,15 @@
 ---
 title: "Rethinking the logistic model"
 author: "Drew Tyre"
-date: '2019-03-04'
+date: '2019-02-25'
 output: html_document
-draft: yes
+draft: no
 slug: rethink-logistic
 tags_include:
 - ecology
 - carrying capacity
 categories: Research
 ---
-
-```{r setup, message = FALSE, warning=FALSE}
-library("tidyverse")
-library("tidypop") # note: code below using the dev branch of this package use
-# devtools::install_github("atyre2/tidypop@dev") 
-```
 
 A few weeks ago I rambled on about [carrying capacity as a concept](https://drewtyre.rbind.io/posts/below-K/).
 The day after I posted that, I stumbled across [a paper by James Mallet in 2012](https://mallet.oeb.harvard.edu/files/malletlab/files/mallet_the_struggle_2012.pdf)
@@ -68,7 +62,11 @@ goes through a "transcritical bifurcation" -- the equilibrium population size ce
 to exist, and the population decays exponentially towards 0. However, if $N>K$ when 
 the bifurcation occurs, the r-K model predicts an increase towards $\infty$. 
 
-```{r}
+```{r setup, message = FALSE, warning=FALSE}
+library("tidyverse")
+library("tidypop") # note: code below using the dev branch of this package use
+# devtools::install_github("atyre2/tidypop@dev") 
+
 rKmod <- function(N0, r, K){
   N1 <- N0 + N0*r*(1-N0/K)
   return(N1)
@@ -106,6 +104,37 @@ ggplot(data = outputs,
   ylim(c(0,100))
 ```
 
-That's more like it! 
+That's more like it! The per capita effect of intra-specific competition didn't change -- 
+the perturbation just affected the population in a density independent way. 
+
+What is $\alpha$? I'll start with discrete time exponential growth, and substitute
+straight line functions for the per capita birth and death rates.
+
+$$
+\begin{align}
+N_{t+1} & =N_t\left(1 + b - d\right) \\
+        & =N_t + N_tb - N_td \\
+        & =N_t + N_t(b_0 + b_1N_t) - N_t(d_0 + d_1N_t) \\
+        & =N_t + N_t(b_0 - d_0) + N_t^2(b_1 - d_1) \\
+        & =N_t + r_{max}N_t -\alpha N_t^2
+\end{align}
+$$
+
+So $b_0-d_0$ is usually rewritten as $r_{max}$. But also, $-\alpha = b_1 - d_1$,
+which is ... just beautiful. To write that equation with $K$ requires so much more
+algebra. 
+
+It also expands easily to competition.
+$$
+\begin{align}
+N_{1,t+1} & =N_{1,t} + r_{max}N_{1,t} -\alpha_{11} N_{1,t}^2 - \alpha_{21}N_{1,t}N_{2,t} \\
+N_{2,t+1} & =N_{2,t} + r_{max}N_{2,t} -\alpha_{22} N_{2,t}^2 - \alpha_{12}N_{2,t}N_{1,t}
+\end{align}
+$$
+
+and so on! Wow. 
+
+Now I've even more reason to rewrite my lecture notes and redo all the videos. How do I check to see if
+this change improves student learning? 
 
 [^baseR]: Yes, that's using base R plotting. I'm being lazy and recycling a figure from my lecture notes, which are not yet tidied. 

@@ -71,6 +71,7 @@ base_iris + geom_line(aes(y = .fitted, linetype = Species), data = pred.0)</code
 <p>I did something rather silly looking there because I wanted to see where the curves cross x = 0. That is where the estimates for the intercept and simple effect of species are calculated. The intercept is negative, and the line for <em>setosa</em> crosses x = 0 well below y = 0. The simple effect estimates of Species are both positive, with <em>virginica</em> being larger, and indeed the line for <em>virginica</em> crosses x = 0 at the highest point. Similarly, the simple effect of length is the slope of the line for <em>setosa</em>, and it is larger than the slopes of the other two species because the estimated interactions are both negative. But not centering really makes things ugly for direct interpretation of the estimated coefficients.</p>
 <p>Centering the continuous variable gives us</p>
 <pre class="r"><code>library(dplyr)  #Stay in the tidyverse! </code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>## The following objects are masked from &#39;package:stats&#39;:

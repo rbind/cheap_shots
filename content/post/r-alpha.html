@@ -1,0 +1,115 @@
+---
+title: "Rethinking the logistic model"
+author: "Drew Tyre"
+date: '2019-02-25'
+output: html_document
+draft: no
+slug: rethink-logistic
+tags_include:
+- ecology
+- carrying capacity
+categories: Research
+---
+
+
+
+<p>A few weeks ago I rambled on about <a href="https://drewtyre.rbind.io/posts/below-K/">carrying capacity as a concept</a>.
+The day after I posted that, I stumbled across <a href="https://mallet.oeb.harvard.edu/files/malletlab/files/mallet_the_struggle_2012.pdf">a paper by James Mallet in 2012</a>
+on why the r-K parameterization of the logistic model is all wrong. Mind Blown.</p>
+<p>The essential point of the paper is that our typical form of logistic growth</p>
+<p><span class="math display">\[
+\frac{1}{N}\frac{dN}{dt} = r_{max}\left(1-\frac{N}{K}\right)
+\]</span></p>
+<p>is a historical accident. Verhulst’s original form was</p>
+<p><span class="math display">\[
+\frac{1}{N}\frac{dN}{dt} = r_{max} - \alpha N
+\]</span></p>
+<p>with an equilibrium population size given by <span class="math inline">\(N^* = r_{max} / \alpha\)</span>. This is brilliant,
+because now <span class="math inline">\(r_{max}\)</span> represents growth in the absence of intraspecific competition,
+while <span class="math inline">\(\alpha\)</span> is how much growth is reduced by intraspecific competition. Most
+importantly, <em>these two parameters can vary independently</em>. In contrast, <span class="math inline">\(r_{max}\)</span>
+and <span class="math inline">\(K\)</span> are linked at the hip.</p>
+<p>To see this, consider the following diagram of per-capita birth and death rates changing with
+population size<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p><img src="/post/r-alpha_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>A change in per capita death rates, say by increasing trapping by humans that is
+density independent, shifts the death rate curve upwards, parallel to the current
+line. This reduces <span class="math inline">\(r_{max}\)</span>, because the y-intercepts get closer, <em>and reduces <span class="math inline">\(K\)</span></em>,
+because now the two curves cross closer to the origin. However, <span class="math inline">\(\alpha\)</span>, the sum
+of the slopes of the lines <em>does not change</em>.</p>
+<p>This isn’t a trivial side bar. Trevor Hefley’s <a href="https://rdcu.be/bnuBG">work on detecting transcritical bifurcations
+in real populations</a> ran into issues because of this non-independence.
+Trevor fit an r-K model to population data on Bobwhite. He allowed both <span class="math inline">\(r_{max}\)</span> and <span class="math inline">\(K\)</span> to
+change over time. If <span class="math inline">\(r_{max}\)</span> dips below 0 while <span class="math inline">\(K &gt; 0\)</span>, then the population
+goes through a “transcritical bifurcation” – the equilibrium population size ceases
+to exist, and the population decays exponentially towards 0. However, if <span class="math inline">\(N&gt;K\)</span> when
+the bifurcation occurs, the r-K model predicts an increase towards <span class="math inline">\(\infty\)</span>.</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;tidypop&quot;) # note: code below using the dev branch of this package use
+# devtools::install_github(&quot;atyre2/tidypop@dev&quot;) 
+
+rKmod &lt;- function(N0, r, K){
+  N1 &lt;- N0 + N0*r*(1-N0/K)
+  return(N1)
+}
+inputs &lt;- tibble(t = 1:20,
+                 r = c(rep(0.5,10), rep(-0.1,10)),
+                 K = c(rep(100,10), rep(90,10)))
+outputs &lt;- iterate(inputs, N0 = 20, rKmod)
+ggplot(data = outputs,
+       mapping = aes(x = t, y = N)) + 
+  geom_line() + 
+  geom_step(data = inputs,
+            mapping = aes(y = K), linetype = 2)</code></pre>
+<p><img src="/post/r-alpha_files/figure-html/setup-1.png" width="672" /></p>
+<p>Needless to say that isn’t the expected behavior for <span class="math inline">\(r_{max} &lt; 0\)</span>! If I switch
+to the <span class="math inline">\(r-\alpha\)</span> form, I need to work out what <span class="math inline">\(\alpha\)</span> should be to have <span class="math inline">\(N^* = 100\)</span>.
+I think it is <span class="math inline">\(r/N^* = 0.005\)</span> in this case so</p>
+<pre class="r"><code>ramod &lt;- function(N0, r, alpha){
+  N1 &lt;- N0 + N0*r - alpha*N0^2
+  return(N1)
+}
+inputs &lt;- tibble(t = 1:20,
+                 r = c(rep(0.5,10), rep(-0.1,10)),
+                 alpha = 0.005,
+                 K = r / alpha)
+outputs &lt;- iterate(inputs, N0 = 20, rKmod)
+ggplot(data = outputs,
+       mapping = aes(x = t, y = N)) + 
+  geom_line() + 
+  geom_step(data = inputs,
+            mapping = aes(y = K), linetype = 2) + 
+  ylim(c(0,100))</code></pre>
+<p><img src="/post/r-alpha_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>That’s more like it! The per capita effect of intra-specific competition didn’t change –
+the perturbation just affected the population in a density independent way.</p>
+<p>What is <span class="math inline">\(\alpha\)</span>? I’ll start with discrete time exponential growth, and substitute
+straight line functions for the per capita birth and death rates.</p>
+<p><span class="math display">\[
+\begin{align}
+N_{t+1} &amp; =N_t\left(1 + b - d\right) \\
+        &amp; =N_t + N_tb - N_td \\
+        &amp; =N_t + N_t(b_0 + b_1N_t) - N_t(d_0 + d_1N_t) \\
+        &amp; =N_t + N_t(b_0 - d_0) + N_t^2(b_1 - d_1) \\
+        &amp; =N_t + r_{max}N_t -\alpha N_t^2
+\end{align}
+\]</span></p>
+<p>So <span class="math inline">\(b_0-d_0\)</span> is usually rewritten as <span class="math inline">\(r_{max}\)</span>. But also, <span class="math inline">\(-\alpha = b_1 - d_1\)</span>,
+which is … just beautiful. To write that equation with <span class="math inline">\(K\)</span> requires so much more
+algebra.</p>
+<p>It also expands easily to competition.
+<span class="math display">\[
+\begin{align}
+N_{1,t+1} &amp; =N_{1,t} + r_{max}N_{1,t} -\alpha_{11} N_{1,t}^2 - \alpha_{21}N_{1,t}N_{2,t} \\
+N_{2,t+1} &amp; =N_{2,t} + r_{max}N_{2,t} -\alpha_{22} N_{2,t}^2 - \alpha_{12}N_{2,t}N_{1,t}
+\end{align}
+\]</span></p>
+<p>and so on! Wow.</p>
+<p>Now I’ve even more reason to rewrite my lecture notes and redo all the videos. How do I check to see if
+this change improves student learning?</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Yes, that’s using base R plotting. I’m being lazy and recycling a figure from my lecture notes, which are not yet tidied.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
