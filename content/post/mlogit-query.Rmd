@@ -1,0 +1,34 @@
+---
+title: "Multinomial random effects model"
+author: "Drew Tyre"
+date: '2019-03-04'
+output: html_document
+draft: yes
+slug: mlogit-query
+tags_include:
+- R
+- statistics
+categories: Research
+---
+
+I received the following email:
+
+>I'm a junior faculty member familiarizing myself with the mlogit package in R.  After several hours researching an issue, the most helpful information gathered comes from a [response of yours provided on SE](https://stats.stackexchange.com/questions/51148/unable-to-provide-random-parameter-with-mlogit/121122#121122). I was hoping you might provide some further insight.
+I have a data set in which individuals belong to one of 4 groups (A, B, C, D) and repeatedly choose between three outcomes (X, Y, Z), with the number of trials varying by individual.  I am interested in the fixed effect of group, but wish to account for the repeated observations across individuals. In turn, I would like to conduct a mixed mulitnomial logistic with personID as a random effect.
+I've successfully implemented mlogit.data() to shape the data in long form (with columns personID, group, and  choice).  But I'm struggling with the following syntax concerns for mlogit():
+1) Covariates used with the rpar argument must be alternative specific. To confirm: is the rpar argument even needed in my scenario?  Or is the random effect of individual already accounted for by if within mlogit.data, ind.var = personID?
+2) For random effects in linear regressions (via lme4), the predictor goes behind the bar (e.g., |personID).  Am I reading the mlogit documentation correctly in assuming the opposite for mlogit (i.e., my intended fixed effect of group goes behind the bar)?
+
+Someone read one of my answers! woohoo! Unfortunately my knowledge of `mlogit()` 
+is actually very limited. I answered a couple questions on CrossValidated when I 
+was trying to figure out a multinomial logit model myself, but haven't used it 
+since. But I'm a sucker for a puzzle, so let's see what I can remember.
+
+I always work better with a working example, so I'm going to try and make one that
+matches the structure of this problem. 
+
+```{r}
+library("mlogit")
+
+```
+
