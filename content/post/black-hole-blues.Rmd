@@ -1,0 +1,52 @@
+---
+title: "Countering the Black Hole Blues"
+author: "Drew Tyre"
+date: '2019-04-12'
+output: html_document
+draft: no
+slug: black-hole-blues
+tags_include:
+- Mental Health
+categories: Personal
+---
+
+Last week we saw a black hole for the first time! WOOHOOO! 
+So why are we (ecologists) moping around comparing ourselves unfavorably
+with Dr. Katie Bouman? 
+
+Like these,
+<blockquote class="twitter-tweet" data-partner="tweetdeck"><p lang="en" dir="ltr">Katie Bouman, 29: *takes picture of black hole 55 million light years away*<br><br>Me, 40: ‘I wonder if I can ID that fish from the pier if I use the max zoom on my iPhone’ <a href="https://t.co/ZzuzmWKK4K">https://t.co/ZzuzmWKK4K</a></p>&mdash; Prosanta Chakrabarty (@PREAUX_FISH) <a href="https://twitter.com/PREAUX_FISH/status/1116858171690078208?ref_src=twsrc%5Etfw">April 13, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+or this
+<blockquote class="twitter-tweet" data-partner="tweetdeck"><p lang="en" dir="ltr">Katie Bouman, 29: *takes picture of black hole 55 million light years away*<br><br>Me, 29: “there are birds in this one place but not another” <a href="https://t.co/qkL7HtLBQa">https://t.co/qkL7HtLBQa</a></p>&mdash; Gavin Jones (@EcologyOfGavin) <a href="https://twitter.com/EcologyOfGavin/status/1116708450438873088?ref_src=twsrc%5Etfw">April 12, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+and lots of others, including many non-ecologists. I could add
+
+Me, 50: struggling to teach exponential growth to undergraduates.
+
+Before I go on, I absolutely believe Dr. Bouman did a great thing.
+Yes, she was part of a team too, and that's a great thing. But 
+we ecologists work in teams too, and our stuff is, well, 
+as the tweets say, sometimes a bit pathetic by comparison. But.
+
+Just one of the 8 radio telescopes in the [Event Horizon Telescope](https://eventhorizontelescope.org/),
+the [Atacama Large Millimeter/Submillmeter Array](https://www.almaobservatory.org/en/home/), 
+has [an annual operating budget from NSF of greater than $US40 million](https%3A%2F%2Fwww.nsf.gov%2Fabout%2Fbudget%2Ffy2019%2Fpdf%2F40s_fy2019.pdf)!
+For perspective, the entire NSF Division of Environmental Biology 2019 budget request is $US146 million. 
+
+Imagine what a team of ecologists could do with $40 million per year.
+I think I could build a continental scale network of camera traps that 
+monitor the abundance of everything bigger than a cottontail, and in a 
+few years I would have really smashing predictions of how many 
+deer there will be next year anywhere in the country. You 
+could run a [National Ecological Observatory Network](https://www.nsf.gov/news/special_reports/neon/index.jsp). 
+Imagine asking a question that integrated the output of 8 NEONs 
+from around the globe. That. would. be. cool.
+
+So. Stop beating yourselves up and compare apples with apples. We do
+great science of huge importance to the planet, usually on a 
+shoestring budget. Sometimes our outputs are a bit, uh, coarse. 
+That's OK. 
+
