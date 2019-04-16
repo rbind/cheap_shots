@@ -111,4 +111,43 @@ ggplot(data = df,
 ```
  
 That is much higher, clearly I haven't got this figured out yet. 
- 
+
+# As a function of $t_{switch}$
+
+The DP tells me there will be a switch point. Before the switch, only accept bucks, 
+after the switch, accept any deer. So I can write the value function like this
+
+$$
+V(t_{switch}) = (1 - (1-p(buck))^{t_{switch}}) + \\
+(1-p(buck))^{t_{switch}}(1-p(none)^{T-t_{switch}})(p(doe)v_d + p(buck))
+$$
+
+The first term is the probability of getting a buck before the switch point. The 
+second term is the probability of *not* getting a buck before the switch, times
+the probability of getting *something*, times the expected value of something.
+
+# Probability of harvesting a buck or doe
+
+So this approach is getting to what I need, which is the probability a hunter
+takes a buck or a doe, or is unsuccessful. Before the switch is easy; after the 
+switch is harder.
+
+$$
+\begin{align}
+P_{buck} = & (1 - (1-p(buck))^{t_{switch}}) + \\
+  & (1-p(buck))^{t_{switch}}(p(buck) + p(none)p(buck) + ... + p(none)^{T-t_{switch}-1}p(buck)) \\
+ = & (1 - (1-p(buck))^{t_{switch}}) + \\
+  & (1-p(buck))^{t_{switch}}p(buck)(1-p(none)^{T-t_{switch}-1})
+\end{align}
+$$
+
+and similarly for a doe, except we don't need the first term
+
+$$
+\begin{align}
+P_{doe} = & (1-p(buck))^{t_{switch}}(p(doe) + p(none)p(doe) + ... + p(none)^{T-t_{switch}-1}p(doe)) \\
+ = & (1-p(buck))^{t_{switch}}p(doe)(1-p(none)^{T-t_{switch}-1})
+\end{align}
+$$
+
+
