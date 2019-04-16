@@ -26,4 +26,19 @@ what they do when they encounter a doe. Simplifying again, each permit only
 allows 1 deer, so if they take a doe then that precludes taking a buck. 
 Each hunter has some limited time in which to harvest any animal (limited season). 
 Simplifying, assume that's the same for all hunters. Finally, hunters encounter 
-deer at rates proportional to their abundance $N$. 
+deer at rates proportional to their abundance $\lambda(N)$. This rate depends 
+on deer behavior, hunter behavior, and the habitat involved.
+
+If hunters have discrete intervals in which to encounter a deer, then this is kind
+of like a negative binomial distribution -- how many non-bucks are encountered
+before encountering a buck. The problem is we have two kinds of events, not one.
+For a single interval
+
+$$
+p(buck | N) = 1-e^{\lambda N_b} \\
+p(doe | N) = (1-e^{\lambda N_d})(1-p(buck)) \\
+p(nothing) = (1 - p(buck))(1-p(doe))
+$$
+
+Here I assume that if a doe and a buck are encountered, the hunter always takes
+the buck and ignores the doe. 
