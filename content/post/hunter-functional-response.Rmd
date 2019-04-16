@@ -1,0 +1,14 @@
+---
+title: "What is the functional response of a recreational hunter?"
+author: "Drew Tyre"
+date: '2019-04-12'
+output: html_document
+draft: yes
+slug: hunter-functional-response
+tags_include:
+- ecology
+- management
+- modeling
+categories: Research
+---
+
