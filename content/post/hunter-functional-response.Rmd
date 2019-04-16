@@ -12,3 +12,18 @@ tags_include:
 categories: Research
 ---
 
+A few years ago I built a white-tailed deer population model to evaluate different
+harvest strategies. 2 sexes, density dependence, age structure, it was fun. The
+main problem I came across was figuring out how changes in population
+size and structure would interact with management to change harvest mortality. 
+In consumer-resource modeling terminology, I didn't know what the functional 
+response of hunters was. So here's my first shot at it.
+
+To keep things simple, I will just think about 2 types of deer, does ($N_d$) 
+and bucks ($N_b$). Furthermore, hunters always prefer bucks. In practice this
+means if they encounter a buck they harvest it. The real trick is figuring out
+what they do when they encounter a doe. Simplifying again, each permit only 
+allows 1 deer, so if they take a doe then that precludes taking a buck. 
+Each hunter has some limited time in which to harvest any animal (limited season). 
+Simplifying, assume that's the same for all hunters. Finally, hunters encounter 
+deer at rates proportional to their abundance $N$. 
