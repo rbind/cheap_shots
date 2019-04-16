@@ -2,7 +2,9 @@
 title: "What is the functional response of a recreational hunter?"
 author: "Drew Tyre"
 date: '2019-04-12'
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 draft: yes
 slug: hunter-functional-response
 tags_include:
@@ -44,21 +46,20 @@ Here I assume that if a doe and a buck are encountered, the hunter always takes
 the buck and ignores the doe. Also, if more than one buck or doe is encountered
 that's the same as encountering one.
 
-So this is a dynamic programming problem -- there are T intervals, and on each
-interval the decision is to take a doe or not. 
+Maybe this is a dynamic programming problem -- there are T intervals, and on each
+interval the decision is to take a doe or not, given you've encountered one. 
 
 $$
-V(t) = max(p(buck) + v_d p(doe) + V(t+1) p(nothing), \\
-           p(buck) + V(t+1)(p(doe) + p(nothing)))
+V(t) = p(buck) + p(doe) max(v_d, V(t+1)) + p(nothing) V(t+1)
 $$
 
 where $0 \leq v_d \leq 1$ is the relative value of a doe compared to a buck.
 
-```{r, echo = FALSE}
+```{r, message = FALSE, warnings = FALSE}
 library("tidyverse")
 lambda <-  0.01
-N <-  c(doe = 100, buck = 2)
-vd <-  0.1
+N <-  c(doe = 100, buck = 20)
+vd <-  0.5
 p_enc <- function(N, lambda){
   c(pbuck = 1 - exp(-lambda*N[2]),
     pdoe = (1 - exp(-lambda*N[1]))*(exp(-lambda*N[2])),
@@ -69,12 +70,14 @@ V1 <- vector("numeric", length = 20)
 V2 <- vector("numeric", length = 20)
 D <- vector("character", length = 20)
 p <- p_enc(N, lambda)
-V[20] <- V1[20] <- V2[20] <- p[2] + vd*p[1]
+V[20] <- p[1] + vd*p[2]
+V1[20] <- vd
+V2[20] <- 0
 D[20] <- "accept"
 
 for(t in 19:1){
-  V1[t] <- p[2] + vd*p[1] + p[3]*V[t+1]
-  V2[t] <- p[2] + V[t+1]*(p[1] + p[3])
+  V1[t] <- vd
+  V2[t] <- V[t+1]
   if (V1[t] > V2[t]){
     D[t] <- "accept"
     V[t] <- V1[t]
@@ -82,6 +85,7 @@ for(t in 19:1){
     D[t] <- "reject"
     V[t] <- V2[t]
   }
+  V[t] <- p[1] + p[2] * V[t] + p[3] * V[t+1]
 }
 df <- bind_cols(t = 1:20, V = V, D = D, Accept = V1, Reject = V2) %>% 
   gather(key = Choice, value = Value, 4:5)
@@ -89,8 +93,22 @@ ggplot(data = df,
        mapping = aes(x = t)) +
   geom_line(mapping = aes(y = Value, linetype = Choice)) + 
   labs(x = "Time", y = "Value", 
-       caption = "Expected value of rejecting (solid line) or accepting (dashed line) a doe.")
+       caption = "Expected value of rejecting or accepting a doe. N_doe = 100, N_buck = 20, lambda = 0.01, v_doe = 0.5")
 ```
 
-So that was unexpected, but clear once I look at the equation again. As long as
-$v_d > 0$, accepting will always 
+ So with these parameters you should reject a doe until there are only a few
+ opportunities left, and then you should start accepting them. That makes sense
+ to me. Now I need to convert that into a model for the probability of harvesting
+ a buck, doe, or nothing. 
+ 
+ If I go back to my negative binomial thinking, if the hunter never accepts, the 
+ future value of rejecting would be $1 - p(0 | T-t, p(buck))$. This is the 
+ probability of getting at least one buck in $T-t$ opportunities. What does
+ that look like?
+ 
+```{r}
+1-dnbinom(0,19:1, p[1])
+```
+ 
+That is much higher, clearly I haven't got this figured out yet. 
+ 
