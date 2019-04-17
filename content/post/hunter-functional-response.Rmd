@@ -96,21 +96,11 @@ ggplot(data = df,
        caption = "Expected value of rejecting or accepting a doe. N_doe = 100, N_buck = 20, lambda = 0.01, v_doe = 0.5")
 ```
 
- So with these parameters you should reject a doe until there are only a few
- opportunities left, and then you should start accepting them. That makes sense
- to me. Now I need to convert that into a model for the probability of harvesting
- a buck, doe, or nothing. 
+So with these parameters you should reject a doe until there are only a few
+opportunities left, and then you should start accepting them. That makes sense
+to me. Now I need to convert that into a model for the probability of harvesting
+a buck, doe, or nothing. 
  
- If I go back to my negative binomial thinking, if the hunter never accepts, the 
- future value of rejecting would be $1 - p(0 | T-t, p(buck))$. This is the 
- probability of getting at least one buck in $T-t$ opportunities. What does
- that look like?
- 
-```{r}
-1-dnbinom(0,19:1, p[1])
-```
- 
-That is much higher, clearly I haven't got this figured out yet. 
 
 # As a function of $t_{switch}$
 
