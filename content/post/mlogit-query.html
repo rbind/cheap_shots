@@ -1,0 +1,48 @@
+---
+title: "Multinomial random effects model"
+author: "Drew Tyre"
+date: '2019-03-04'
+output: html_document
+draft: yes
+slug: mlogit-query
+tags_include:
+- R
+- statistics
+categories: Research
+---
+
+
+
+<p>I received the following email:</p>
+<blockquote>
+<p>I’m a junior faculty member familiarizing myself with the mlogit package in R. After several hours researching an issue, the most helpful information gathered comes from a <a href="https://stats.stackexchange.com/questions/51148/unable-to-provide-random-parameter-with-mlogit/121122#121122">response of yours provided on SE</a>. I was hoping you might provide some further insight.
+I have a data set in which individuals belong to one of 4 groups (A, B, C, D) and repeatedly choose between three outcomes (X, Y, Z), with the number of trials varying by individual. I am interested in the fixed effect of group, but wish to account for the repeated observations across individuals. In turn, I would like to conduct a mixed mulitnomial logistic with personID as a random effect.
+I’ve successfully implemented mlogit.data() to shape the data in long form (with columns personID, group, and choice). But I’m struggling with the following syntax concerns for mlogit():
+1) Covariates used with the rpar argument must be alternative specific. To confirm: is the rpar argument even needed in my scenario? Or is the random effect of individual already accounted for by if within mlogit.data, ind.var = personID?
+2) For random effects in linear regressions (via lme4), the predictor goes behind the bar (e.g., |personID). Am I reading the mlogit documentation correctly in assuming the opposite for mlogit (i.e., my intended fixed effect of group goes behind the bar)?</p>
+</blockquote>
+<p>Someone read one of my answers! woohoo! Unfortunately my knowledge of <code>mlogit()</code>
+is actually very limited. I answered a couple questions on CrossValidated when I
+was trying to figure out a multinomial logit model myself, but haven’t used it
+since. But I’m a sucker for a puzzle, so let’s see what I can remember.</p>
+<p>I always work better with a working example, so I’m going to try and make one that
+matches the structure of this problem. The mixed logit exercise in the vignettes
+has panel data with multiple choices per person. The inidividual level parameters
+are all continuous, so I’ll turn one into a</p>
+<pre class="r"><code>library(&quot;mlogit&quot;)</code></pre>
+<pre><code>## Warning: package &#39;mlogit&#39; was built under R version 3.5.2</code></pre>
+<pre><code>## Loading required package: Formula</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre><code>## Loading required package: lmtest</code></pre>
+<pre class="r"><code>data(&quot;Electricity&quot;, package = &quot;mlogit&quot;)
+Electr &lt;- mlogit.data(Electricity, id = &quot;id&quot;, choice = &quot;choice&quot;, 
+                      varying = 3:26, shape = &quot;wide&quot;, sep = &quot;&quot;)
+Elec.mxl &lt;- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr, 
+              rpar=c(pf = &#39;n&#39;, cl = &#39;n&#39;, loc = &#39;n&#39;, wk = &#39;n&#39;, 
+                     tod = &#39;n&#39;, seas = &#39;n&#39;), 
+              R = 100, halton = NA, panel = TRUE)</code></pre>

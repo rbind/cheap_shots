@@ -25,10 +25,18 @@ was trying to figure out a multinomial logit model myself, but haven't used it
 since. But I'm a sucker for a puzzle, so let's see what I can remember.
 
 I always work better with a working example, so I'm going to try and make one that
-matches the structure of this problem. 
+matches the structure of this problem. The mixed logit exercise in the vignettes
+has panel data with multiple choices per person. The inidividual level parameters
+are all continuous, so I'll turn one into a 
 
 ```{r}
 library("mlogit")
-
+data("Electricity", package = "mlogit")
+Electr <- mlogit.data(Electricity, id = "id", choice = "choice", 
+                      varying = 3:26, shape = "wide", sep = "")
+Elec.mxl <- mlogit(choice ~ pf + cl + loc + wk + tod + seas | 0, Electr, 
+              rpar=c(pf = 'n', cl = 'n', loc = 'n', wk = 'n', 
+                     tod = 'n', seas = 'n'), 
+              R = 100, halton = NA, panel = TRUE)
 ```
 
