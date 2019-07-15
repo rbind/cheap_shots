@@ -100,7 +100,6 @@ So with these parameters you should reject a doe until there are only a few
 opportunities left, and then you should start accepting them. That makes sense
 to me. Now I need to convert that into a model for the probability of harvesting
 a buck, doe, or nothing. 
- 
 
 # As a function of $t_{switch}$
 
