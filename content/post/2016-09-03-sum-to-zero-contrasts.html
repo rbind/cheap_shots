@@ -60,8 +60,13 @@ m0 &lt;- lm(Sepal.Width ~ Sepal.Length * Species, data = iris)
 <p>The intercept of this model isn’t directly interpretable because it gives the average width at a length of zero, which is impossible. In addition, both the intercept and simple effect of length represent the change in width for only one species, <em>setosa</em>. The default contrast in R estimates coefficients for <span class="math inline">\(k - 1\)</span> levels of a factor. In the simple effect of a factor each coefficient is the difference between the first level (estimated by the intercept), and the named level. In the above, <code>Speciesversicolor</code> has sepals that are 1.4 mm wider than <em>setosa</em>. The interaction coefficients
 such as <code>Sepal.Length:Speciesversicolor</code> tell us how much the effect of Sepal.Length in <em>versicolor</em> changes from that in <em>setosa</em>. So every mm of sepal length in versicolor increases sepal width by <span class="math inline">\(0.8 - 0.48 = 0.32\)</span> mm.</p>
 <p>Maybe a plot will help.</p>
-<pre class="r"><code>library(ggplot2)
-base_iris &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(aes(shape = Species)) + 
+<pre class="r"><code>library(ggplot2)</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggplot2&#39;:
+##   method         from 
+##   [.quosures     rlang
+##   c.quosures     rlang
+##   print.quosures rlang</code></pre>
+<pre class="r"><code>base_iris &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(aes(shape = Species)) + 
     xlab(&quot;Sepal Length [mm]&quot;) + ylab(&quot;Sepal Width [mm]&quot;)
 library(broom)
 nd &lt;- expand.grid(Sepal.Length = seq(-1, 8, 0.1), Species = factor(levels(iris$Species)))
@@ -71,7 +76,6 @@ base_iris + geom_line(aes(y = .fitted, linetype = Species), data = pred.0)</code
 <p>I did something rather silly looking there because I wanted to see where the curves cross x = 0. That is where the estimates for the intercept and simple effect of species are calculated. The intercept is negative, and the line for <em>setosa</em> crosses x = 0 well below y = 0. The simple effect estimates of Species are both positive, with <em>virginica</em> being larger, and indeed the line for <em>virginica</em> crosses x = 0 at the highest point. Similarly, the simple effect of length is the slope of the line for <em>setosa</em>, and it is larger than the slopes of the other two species because the estimated interactions are both negative. But not centering really makes things ugly for direct interpretation of the estimated coefficients.</p>
 <p>Centering the continuous variable gives us</p>
 <pre class="r"><code>library(dplyr)  #Stay in the tidyverse! </code></pre>
-<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>## The following objects are masked from &#39;package:stats&#39;:
