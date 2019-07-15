@@ -1,0 +1,16 @@
+---
+title: "Transforming natural resource management with radical openness"
+author: "Drew Tyre"
+date: '`r Sys.Date()`'
+output: 
+  html_document:
+    code_folding: hide
+draft: yes
+slug: radical-openness
+tags_include:
+- ecology
+- management
+- modeling
+categories: Research
+---
+
