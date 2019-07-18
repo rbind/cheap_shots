@@ -84,64 +84,6 @@ the science. Opening a repository with code and data for an analysis explicitly
 provides a place for that conversation to happen. It might not be the best place,
 but something seems better than nothing. 
 
-# Managing the commons
-
-There is another lens through which we could view natural resources and the 
-value of radical openness. Elinor Ostrom won a nobel prize in economics for
-describing the conditions under which groups exploiting natural resources can self govern without
-top-down regulation. She formulated 8 design principles to follow. 
-
-## Clearly defined boundaries
-
-Boundaries refer not only to spatial boundaries, but also to who is in the 
-group and who is out of the group. Wildlife management in the USA usually 
-has clear spatial boundaries. Who is in the group is not as clearly defined.
-On the one hand, the group of people who purchase licenses or permits to
-harvest wildlife seems clear enough. But even membership in that group
-fluctuates rapidly from year to year. I bought a Nebraska fishing license in 
-2017, but not in 2018 or 2019 (yet!). Furthermore, according to law all
-the taxpayers of a state collectively "own" the fish and wildlife living 
-in the state (the public trust doctrine). For many large and charismatic 
-species (e.g. mountain lions), groups outside of a state may express strong
-opinions about management. However, a large proportion of those "with standing"
-are completely unaware or disengaged with wildlife management.
-
-Radical openness on the analytical parts of management probably contributes
-nothing to the clarity of who is in and who is out.
-
-## Proportional equivalence between benefits and costs
-
-The idea behind this principle is that obtaining benefits carries some cost. 
-For consumptive users of fish and wildlife this is true. Excise taxes on firearms, 
-ammunition, and fishing equipment support fish and wildlife management directly. 
-In addition, a license or permit must be purchased, which varies in
-cost according to the magnitude of the benefit. 
-
-However, there is little cost to non-consumptive users for extracting their
-benefits, which include viewing opportunities and existence value of game species. 
-From the perspective of consumptive users, these benefits are appropriated and
-not fairly obtained. 
-
-Non-game species benefit indirectly from management funded by consumptive use
-of game species. In the USA, taxpayers broadly fund the State Wildlife Grants program that supports
-non-game species management. Nonetheless, I value viewing opportunities for
-game species as well, and that is a benefit that I have not paid for. 
-
-## Collective choice arrangements
-
-## Monitoring
-
-## Graduated sanctions
-
-## Fast and fair conflict resolution
-
-## Local autonomy
-
-## Appropriate relations with other tiers of rule-making authority
-
-This is also called "poly-centric governance". 
-
-
 
 # Conclusion
 
@@ -167,5 +109,5 @@ because of trapping, or the population is low because of poor habitat. These
 hypotheses make very different predictions about what will happen after closing
 the management area. If trapping is the problem, then after closure the population
 will start to increase. If habitat is the problem, then after closure nothing
-will change. We could do adaptive management! 
+will change. We could do [adaptive management](https://digitalcommons.unl.edu/natrespapers/302/! 
 
