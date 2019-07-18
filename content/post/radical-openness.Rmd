@@ -32,6 +32,7 @@ These initiatives were not stopped by agencies keeping their data and analyses
 secret. I don't know if having the data in the open would have stopped a ballot initiative
 either, but it seems a reasonable hypothesis to try out. 
 
+
 [Some good stuff on this page.](https://www.outdoorlife.com/articles/hunting/2016/01/it-time-rethink-north-american-model-wildlife-conservation/)
 
 Keeping the data and analyses secret provides another advantage: it hides the trade offs
@@ -110,4 +111,5 @@ hypotheses make very different predictions about what will happen after closing
 the management area. If trapping is the problem, then after closure the population
 will start to increase. If habitat is the problem, then after closure nothing
 will change. We could do [adaptive management](https://digitalcommons.unl.edu/natrespapers/302/! 
+
 
