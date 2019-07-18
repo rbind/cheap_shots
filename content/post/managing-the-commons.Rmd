@@ -73,12 +73,49 @@ regulations.
 
 ## Graduated sanctions
 
+Small violations of the rules should result in small penalties, and large violations
+have large penalties. Seems simple enough, and probably true for poaching.
+
 ## Fast and fair conflict resolution
 
+This one is clearly false for fish and wildlife management, because the primary
+means of dealing with conflicts between stakeholders is the judicial system. 
+State agency personnel work hard to manage conflicts. The bigger the fish, the
+bigger the issue. It is true that most fish and wildlife management comes off 
+without a hitch, even for game species; the big disagreements are in the past, and most other
+stakeholders seem resigned to the status quo. 
+
+Where local conflict resolution is clearly breaking down is the management of 
+large predators. As mountain lions and wolves rebound from over hunting and
+persecution, they are causing wildlife managers more and more headaches. 
+
+Another area of conflict in the USA involves threatened species. These 
+species often result in some group not being able to do something they
+want. Whether it is building a new dam, highway or shopping mall, all
+of these require checking to see if there are threatened species that
+might suffer some negative consequences ("take"). 
+
+None of these issues are quick to resolve. The ill-defined nature of the
+group relevant to fish and wildlife management means there usually are no
+public fora where discussions can take place, other than the courts. This isn't always 
+the case. Sometimes a forum for these discussions is constructed by
+the relevant state or federal agency. The Missouri River Restoration 
+Implementation Committee ("Mr Rick") is one example. 
+
+
 ## Local autonomy
+
+
 
 ## Appropriate relations with other tiers of rule-making authority
 
 This is also called "poly-centric governance". 
 
+## Conclusion
 
+It seems like F&W management needs an intervention. This is clearly a
+disaster. What would be an appropriate way to move forward? To me it appears
+that the biggest missing piece is the forum for making decisions and
+resolving conflicts. It should be local. It should be elected. In fact,
+it should look like [Nebraska's Natural Resource Districts](https://www.nrdnet.org/). Why don't NRDs 
+include F&W management in their mandate? Or do they?
