@@ -60,13 +60,8 @@ m0 &lt;- lm(Sepal.Width ~ Sepal.Length * Species, data = iris)
 <p>The intercept of this model isn’t directly interpretable because it gives the average width at a length of zero, which is impossible. In addition, both the intercept and simple effect of length represent the change in width for only one species, <em>setosa</em>. The default contrast in R estimates coefficients for <span class="math inline">\(k - 1\)</span> levels of a factor. In the simple effect of a factor each coefficient is the difference between the first level (estimated by the intercept), and the named level. In the above, <code>Speciesversicolor</code> has sepals that are 1.4 mm wider than <em>setosa</em>. The interaction coefficients
 such as <code>Sepal.Length:Speciesversicolor</code> tell us how much the effect of Sepal.Length in <em>versicolor</em> changes from that in <em>setosa</em>. So every mm of sepal length in versicolor increases sepal width by <span class="math inline">\(0.8 - 0.48 = 0.32\)</span> mm.</p>
 <p>Maybe a plot will help.</p>
-<pre class="r"><code>library(ggplot2)</code></pre>
-<pre><code>## Registered S3 methods overwritten by &#39;ggplot2&#39;:
-##   method         from 
-##   [.quosures     rlang
-##   c.quosures     rlang
-##   print.quosures rlang</code></pre>
-<pre class="r"><code>base_iris &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(aes(shape = Species)) + 
+<pre class="r"><code>library(ggplot2)
+base_iris &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(aes(shape = Species)) + 
     xlab(&quot;Sepal Length [mm]&quot;) + ylab(&quot;Sepal Width [mm]&quot;)
 library(broom)
 nd &lt;- expand.grid(Sepal.Length = seq(-1, 8, 0.1), Species = factor(levels(iris$Species)))
