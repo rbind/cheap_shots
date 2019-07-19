@@ -5,7 +5,7 @@ date: '`r Sys.Date()`'
 output: 
   html_document:
     code_folding: hide
-draft: yes
+draft: no
 slug: radical-openness
 tags_include:
 - ecology
@@ -14,8 +14,7 @@ tags_include:
 categories: Research
 ---
 
-A few days ago I participated in a discussion about responding to a freedom of 
-information request. The requesters wanted the formula for the model developed 
+Some time ago I participated in a discussion about responding to a request for information. The requesters wanted the formula for the model developed 
 by myself and others for a state agency. At the time, I mused that if we had
 posted all the code and data for the project on github, the request would be 
 redundant. I was told that it was necessary to only give requesters exactly 
@@ -26,14 +25,12 @@ what they asked for. So we did. But.
 I can think of one reason: maintain 
 agency authority over the decision making process. If no one else has the 
 information, then no one else can criticize or take over the decision. But this
-is patently false. Ballot initiatives tie the hands of Agencies across the country. 
-**Make a table of ballot initiatives**
+is patently false. [Ballot initiatives tie the hands of Agencies across the country](https://ballotpedia.org/Hunting_and_fishing_on_the_ballot#By_year). 
 These initiatives were not stopped by agencies keeping their data and analyses
 secret. I don't know if having the data in the open would have stopped a ballot initiative
 either, but it seems a reasonable hypothesis to try out. 
 
 
-[Some good stuff on this page.](https://www.outdoorlife.com/articles/hunting/2016/01/it-time-rethink-north-american-model-wildlife-conservation/)
 
 Keeping the data and analyses secret provides another advantage: it hides the trade offs
 that decision makers are making. There are unavoidable trade offs in natural 
@@ -46,17 +43,8 @@ else.
 
 # Reasons to make the data and code open
 
-I like to think about these issues in the context of a three-legged stool model
-of the science-policy interface [@buzan2005]: credibility, salience, and legitimacy. 
-All three of those are affected by how much a group of stakeholders trusts the agency.
-
-## Increase trust
-
-The more trust stakeholders have in an agency, the more likely they are to accept 
-a decision. **check for trust citations** Placing the code and data in the open
-should increase trust, because look ma, nothing up either sleeve! But that only
-works if it is also clear how the analyses contributed to the decision, and
-ultimately that means exposing the trade offs involved. 
+I like to think about these issues in the context of a [three-legged stool model of the science-policy interface](https://www.nap.edu/catalog/11204/knowledge-action-systems-for-seasonal-to-interannual-climate-forecasting-summary): 
+credibility, salience, and legitimacy. 
 
 ## Increase credibility
 
@@ -88,6 +76,13 @@ but something seems better than nothing.
 
 # Conclusion
 
+Increasing credibility, salience, and legitimacy increases trust.
+The more trust stakeholders have in an agency, the more likely they are to comply with 
+a decision. Placing the code and data in the open
+should increase trust, because look ma, nothing up either sleeve! But that only
+works if it is also clear how the analyses contributed to the decision, and
+ultimately that means exposing the trade offs involved.
+
 I don't have rose-colored glasses on; radical openness won't make conflict with
 stakeholders go away. But I think it could change the nature of that conflict for
 the better. 
@@ -110,6 +105,9 @@ because of trapping, or the population is low because of poor habitat. These
 hypotheses make very different predictions about what will happen after closing
 the management area. If trapping is the problem, then after closure the population
 will start to increase. If habitat is the problem, then after closure nothing
-will change. We could do [adaptive management](https://digitalcommons.unl.edu/natrespapers/302/! 
+will change. Alternatively, closure will lead to increasing populations. We could do [adaptive management](https://digitalcommons.unl.edu/natrespapers/302/)! 
+If we really wanted stakeholder good will, set up a program for trappers to 
+earn money monitoring track stations and camera traps in both the closed and
+nearby open areas. 
 
 
