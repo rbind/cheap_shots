@@ -1,0 +1,60 @@
+---
+title: "Preserving Biodiversity as Insurance Against Uncertainty and Ignorance"
+author: "Drew Tyre"
+date: '`r Sys.Date()`'
+output: 
+  html_document:
+    code_folding: hide
+draft: yes
+slug: biodiversity-insurance
+tags_include:
+- ecology
+- management
+- modeling
+categories: Research
+---
+
+The notion that biodiversity is insurance is old (cite lots of papers). Recently, so and so (2009) debunked the "insurance hypothesis" because insurance in the traditional sense is protection against risk – events whose probability of occurrence is at least estimable (cite something here). Risk is only one level in a hierarchy of epistemological notions of variation. We believe that biodiversity is insurance – against ignorance rather than risk – and moreover that this insurance has an economic value even if one ascribes to the belief that biodiversity is priceless. In the following, we first review the epistemological status of risk, uncertainty and ignorance, describe how biodiversity can be conceived as protection against ignorance, and finally describe how this insurance can be economically valued.
+
+It is important to make a critical distinction about the meaning of the term "uncertainty". To scientists, this term loosely encompasses many things, including statistical variation in an estimate, a poor or incomplete understanding about a process, and inherent variation arising from natural processes such as birth, death and environmental variability. However, policy makers and economists reserve the term uncertainty for events for which no probability can be calculated – a complete lack of understanding about a process. Thus, when a scientist claims "uncertainty" exists about a natural process – the extinction of biodiversity or the changing of the climate, policy makers hear "no probability" – which may be quite far from the actual state of scientific knowledge. 
+
+Example of statistical variation in fledgling ratio estimates as functions of various things as risk, uncertainty and ignorance. 
+
+This is also distinguishable from ignorance – we do not even know about the process. 
+
+# Risk and insurance
+
+The business of insurance, and the science of actuaries ? , is focused exclusively on the notion of hedging against risk. Risk in the policy and economic sense is an event whose probability can be calculated – the risk of dying in a car accident, of having a house fire, or any other event whose probability can be calculated. If one can calculate the probability of an event, and place a value on the loss incurred by that event, then it is possible to calculate a price that an individual would be willing to pay in order to mitigate that loss should it occur. Insurance is a profitable business because the prices are calculated so as to allow a stream of profits from selling risk aversion to a large number of customers. The more customers, the less costly it is to avoid the risk (as long as the risk isn’t correlated among customers – this is the problem with flood, hurricane, tornado insurance). For example, if one person is insured against a heart attack, this is a risky product to sell, because that one person might have a heart attack tomorrow. If the same insurance can be sold to 10,000 people, the risk of losing money goes down considerably because even if 10 people have a heart attack tomorrow, the other 9,990 people did not, and they continue to pay their premiums. 
+
+# Uncertainty and ignorance
+
+There are many events for which the probability is not calculable, or even estimable – earthquakes and pandemic flus fall in this category. These events are "uncertain" to a policy maker. There may be other types of events that we are currently unaware of – we are "ignorant" of these. It is impossible to give examples of these types of events or processes, because if we could give an example, then we would not be ignorant of the possibility, merely uncertain about the probability that it could occur! We may choose to act as if we were ignorant of the possibility – then we are merely stupid. 
+
+# Functional Effect and Response Diversity
+
+Folke et al (ARES 2004) following Naeem and ? (2002 cited in folke 2004) distinguish between function effect and functional response diversity. Functional effect diversity arises when there is more than one species providing a particular function, usually assumed to be across scales. Thus, grazers of different body masses provide functional effect diversity across scales, because larger grazers perceive and interact with the environment differently than small grazers. In contrast, functional response diversity arises when species providing a similar function respond differently to environmental challenges such as pH, temperature and so forth. Thus, if a lake becomes more acidic, species of phytoplankton that perform better at lower pH increase in abundance, while species that perform better at higher pH decrease in abundance, thus maintaining primary production at the same level independent of changes in pH. The greater the functional response diversity, the more resilient a function will be to perturbations. 
+
+Is it necessary to characterize all possible response functions? This would seem a monumental task even for the simplest of small scale ecosystems – for each species and environmental variable characterize how each functional trait of that species changes across the range of the environmental variable. Even that underestimates the magnitude of the problem, because there are almost certainly interactions among environmental variables in their effects of functional responses (c.f. effects of iron oxidation on phosphorous recycling in deep lakes). Every species will be idiosyncratic to some degree – knowing how one species responds provides little confidence in predicting how another species, even a closely related one, will respond. What is a prudent manager of the global biosphere to do? 
+
+To paraphrase Aldo Leopold: keep all the parts. Any partition of a species that is genetically distinct, and/or subject to different selective forces from other partitions of that species, contains the potential to develop or maintain different response functions from those other partitions and other species. In fact, species that are relatively less abundant at a given place and time are the ones most likely to be able to maintain a function as the environment changes.  Thus in the absence of other information, more biodiversity provides greater insurance for maintaining ecosystem services against uncertainty and ignorance.
+
+Response diversity article in FEE oct 2010 issue.
+
+Doug Morris, Political Economics, non-specialisation in economic activity is a hedge against uncertainty. Society needs to control uncertainty, turn it into risk, so that specialization can occur and enable economic growth.
+
+# Valuing insurance against uncertainty and ignorance
+
+Regular insurance is priced so that the company offering the insurance makes a profit, conditional on the distribution of the number of events in a particular period of time. If there are relatively few events the company will do well, and if there are relatively many events the company will do badly. If there is a really large event, like a hurricane, an insurance company may find itself having to pay out many more claims than expected. It comes as no surprise to find that there are companies that specialize in "reinsurance" – providing insurance to insurance companies! However, the whole enterprise revolves around being able to calculate a distribution of numbers and sizes of events. If there is substantial data available over a long period for many customers, this is relatively straightforward – hence automobile and most home insurance policies are relatively safe bets for an insurance company. Health insurance has even more data available, but the rate at which health costs change because of the introduction of new drugs, therapies, and diagnostic methods makes it less easy to predict future costs based on past observations.
+
+Above we argued that biodiversity is insurance against uncertainty and ignorance – situations in which the future cannot be predicted based on the past. How can this insurance be valued in the absence of probabilities? Even if we could place a value on the individual species that provide response diversity, we still could not predict the distribution of events where that response diversity would be needed. Nor can we predict the magnitude of the loss incurred if that response diversity is not present. The possibility that ecosystem services could collapse abruptly when conditions pass a critical threshold makes the question even more important, because waiting until bad events happen in order to collect sufficient data may leave us in a position where it is impossible or extremely difficult to get back to the desired state. 
+
+We believe that there is a value on biodiversity that is set by society as a whole. It is the value of the economically optimal alternative use for the resources used by the biodiversity. Thus, the price of biodiversity insurance in the Tallgrass prairie biome is the value of that land for agricultural production. As a society we have not been prepared to pay more than that for the insurance value of a native prairie, and so we have less than 2% of the original biome left in North America. The insurance was considered to be too expensive given our perceived risk of the loss of ecosystem services. 
+
+So why is there a move to preserve the bits that are left? In could be simply that the perceived risk of many people of losing ecosystem services has risen, making individuals more willing to contribute financially to groups acting to preserve biodiversity. At the larger democratic scale, environmental concerns are increasingly on the political agenda – although such concerns are still largely focused on issues directly related to human wellbeing such as water and air quality. 
+
+# What should ecologists do?
+
+There have been many calls for ecologists to expand our contributions to political discussions in order to further the preservation of biodiversity. Often these take the form of exhortations to improve communication (Likens 2010), under the assumption that if society at large and policy makers in particular understood the science they would make different choices. This is called the "deficit model" of science communication by the field of science and society interactions, which has long recognized that deficits in understanding are insufficient to explain the lack of action on environmental issues (… paper in same issue as Likens 2010). Another approach is to attempt to place direct value on ecosystem services (e.g. Costanza et al 2005? More recent FEE paper?), in the hopes that recognition of the potential costs will trigger more action. 
+
+If our hypothesis is correct, and biodiversity functions as insurance against ignorance and uncertainty, both of these approaches will be insufficient. What ecologists need to do is ecology, not science communications or economics. We need to be able to demonstrate, conclusively, that response diversity exists and provides widespread support to ecosystem services. Furthermore, we need to document that ecosystem services matter to things that humans care about – water and air quality, aesthetic and cultural values, recreation, and economic well being. We have done a pretty good job on water quality and recreation; we need to document how ecosystem services support our ability to provide food for the planet. 
+Fearsome tradeoffs involving water. 
