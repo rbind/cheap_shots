@@ -15,7 +15,8 @@ categories: Research
 
 Elinor Ostrom won a nobel prize in economics for
 describing the conditions under which groups exploiting natural resources can self govern without
-top-down regulation. She formulated 8 design principles to follow. 
+top-down regulation. She formulated 8 design principles to follow. What do those look
+like in the context of fish and wildlife management in the United States?
 
 
 [Some good stuff on this page.](https://www.outdoorlife.com/articles/hunting/2016/01/it-time-rethink-north-american-model-wildlife-conservation/)
@@ -28,9 +29,9 @@ has clear spatial boundaries. Who is in the group is not as clearly defined.
 On the one hand, the group of people who purchase licenses or permits to
 harvest wildlife seems clear enough. But even membership in that group
 fluctuates rapidly from year to year. I bought a Nebraska fishing license in 
-2017, but not in 2018 or 2019 (yet!). Furthermore, according to law all
+2017, but not in 2018 or 2019 (yet!). Furthermore, under the public trust doctrine all
 the taxpayers of a state collectively "own" the fish and wildlife living 
-in the state (the public trust doctrine). For many large and charismatic 
+in the state. For many large and charismatic 
 species (e.g. mountain lions), groups outside of a state may express strong
 opinions about management. However, a large proportion of those "with standing"
 are completely unaware or disengaged with wildlife management.
@@ -54,7 +55,6 @@ of game species. In the USA, taxpayers broadly fund the State Wildlife Grants pr
 non-game species management. Nonetheless, I value viewing opportunities for
 game species as well, and that is a benefit that I have not paid for. 
 
-
 ## Collective choice arrangements
 
 This principle requires that all individuals in the group participate in making decisions. 
@@ -65,7 +65,6 @@ Nebraska, fish and wildlife management decisions are made by a group of commissi
 who are appointed by the Governor, further reducing the participation of stakeholders. 
 I suppose you can communicate with them if you're interested, but they are under no
 obligation to listen. 
-
 
 ## Monitoring
 
@@ -89,7 +88,7 @@ without a hitch, even for game species; the big disagreements are in the past, a
 stakeholders seem resigned to the status quo. 
 
 Where local conflict resolution is clearly breaking down is the management of 
-large predators. As mountain lions and wolves rebound from over hunting and
+large predators. As grizzly, mountain lions, and wolves rebound from over hunting and
 persecution, they are causing wildlife managers more and more headaches. 
 
 Another area of conflict in the USA involves threatened species. These 
@@ -105,20 +104,73 @@ the case. Sometimes a forum for these discussions is constructed by
 the relevant state or federal agency. The Missouri River Restoration 
 Implementation Committee ("Mr Rick") is one example. 
 
-
 ## Local autonomy
 
+This principle means that the group gets to decide what rules apply to
+natural resource extraction. Fish and Wildlife management suffers twice here.
+First, who is in the "group" is unclear, and the vast majority are not involved in 
+formulating rules (see [Collective choice arrangements][Collective choice arrangements]). Second,
+state level decision makers are constrained by levels above them,
+particularly with threatened and endangered species. This might not matter; 
+the final principle involves other tiers of rule-making authority (see below).
 
+There is autonomy at the state level with respect to game species and non-threatened
+non-game species. Is this sufficiently local? Could we do better with a smaller
+spatial extent? Hunters very much [prefer to hunt within a hour's drive 
+of their homes](https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1100&context=conservationsurvey), 
+to the extent that they will tradeoff a short drive against many other
+desirable properties of the hunting experience. This suggests that more
+localized control of hunting regulations would be well received. However,
+that would also come with the requirement to be able to limit the group more
+stringently.
 
 ## Appropriate relations with other tiers of rule-making authority
 
-This is also called "poly-centric governance". 
+This is also called "poly-centric governance". The relationship between
+state agencies and federal agencies is an example of this. Are these 
+relationships "appropriate"? I find this principle challenging to grok. 
+What would an inapproprate relationship look like? Maybe the broader authority
+can overrule the local authority at any time, and that wouldn't allow for
+the local autonomy and collective choice arrangements. If that's the case,
+then I think the state/federal fit is appropriate. Federal agencies, the USFWS 
+in particular, can take over management of a species from states, but only
+under particular conditions. 
 
-## Conclusion
+For example, once a species is listed as vulnerable or endangered under the ESA,
+USFWS becomes responsible for management. However, even then the USFWS involves states, 
+as they have the "boots on the ground" that make management possible. State
+and local governments also control a great deal of the public lands east of the
+100th meridian, and without that habitat conservation of many species would
+be compromised. 
 
-It seems like F&W management needs an intervention. This is clearly a
-disaster. What would be an appropriate way to move forward? To me it appears
+The North American Waterfowl Management Plan is another example of 
+polycentric governance. States have local authority over harvest 
+regulations, but because the resource migrates across many states and 
+provinces, sometimes across 3 countries, they also work together with
+USFWS on management decision making within "flyway councils". This is
+important, because a duck that breeds on state land in North Dakota or 
+Manitoba may fly over Nebraska to winter in Texas. That duck could
+be taken by a hunter anywhere along the route. USFWS 
+also has authority over National Wildlife Refuges, which provide much 
+of the habitat for waterfowl, especially east of the 100th meridian. Habitat "Joint Ventures"
+provide another way for local participation in habitat restoration and
+management throughout flyways.
+
+# Conclusion
+
+It seems like F&W management needs an intervention. While FWM has
+polycentric governance, local autonomy (at the state level), compliance monitoring,
+and graduated sanctions, we're failing at group identification, collective choice 
+arrangements, and fast, fair conflict resolution. To me it appears
 that the biggest missing piece is the forum for making decisions and
-resolving conflicts. It should be local. It should be elected. In fact,
+resolving conflicts. It should be local (state?). It should be elected. In fact,
 it should look like [Nebraska's Natural Resource Districts](https://www.nrdnet.org/). Why don't NRDs 
 include F&W management in their mandate? Or do they?
+
+Another alternative in states like Nebraska would be to change the commission to
+an elected body, responsible to the citizens of the state. It isn't 
+entirely clear to me whether such a change would create a place for 
+resolving conflicts, but it would move management further towards the
+ideal of a collective choice arrangment. It would make for interesting
+discussions if the commission had some members elected on a platform of advancing
+non-game conservation. 
