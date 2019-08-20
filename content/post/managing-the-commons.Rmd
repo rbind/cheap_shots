@@ -15,11 +15,9 @@ categories: Research
 
 Elinor Ostrom won a nobel prize in economics for
 describing the conditions under which groups exploiting natural resources can self govern without
-top-down regulation. She formulated 8 design principles to follow. What do those look
+top-down regulation. She formulated [8 design principles to follow](https://www.ecologyandsociety.org/vol15/iss4/art38/). 
+What do those look
 like in the context of fish and wildlife management in the United States?
-
-
-[Some good stuff on this page.](https://www.outdoorlife.com/articles/hunting/2016/01/it-time-rethink-north-american-model-wildlife-conservation/)
 
 ## Clearly defined boundaries
 
@@ -51,20 +49,43 @@ From the perspective of consumptive users, these benefits are appropriated and
 not fairly obtained. 
 
 Non-game species benefit indirectly from management funded by consumptive use
-of game species. In the USA, taxpayers broadly fund the State Wildlife Grants program that supports
-non-game species management. Nonetheless, I value viewing opportunities for
-game species as well, and that is a benefit that I have not paid for. 
+of game species. In the USA, [taxpayers broadly fund the State Wildlife Grants program](https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1080&context=ncfwrustaff) that supports
+non-game species management, and the [land and water conservation fund](https://www.doi.gov/lwcf)
+that funds both game and non-game habitat management and restoration. 
+Nonetheless, I value viewing opportunities for
+game species as well, and that is a benefit that I have not directly paid for.
+
+There is another, diffuse, group of stakeholders that either pay or perceive that they
+pay a cost for the presence of large predators. Ranchers are prominent in this group, but they
+are not the only ones concerned with living alongside predators. This group
+perceives little (or no) benefit to the conservation of predators, and perceives a 
+large cost. No proportionality for them, either. 
+
+There are [some ideas out there for how to improve this situation](https://www.outdoorlife.com/articles/hunting/2016/01/it-time-rethink-north-american-model-wildlife-conservation/):
+
+* Expand the Pittman-Robertson concept to cover more than just guns, ammo, bows, and arrows. Why not optics, knives, GPS units, boots, ATVs, decoys, camping gear, and packs? 
+* Consider a general sales tax appropriation for state wildlife agencies. Missouri and Arkansas are already there, and in those states, outdoor recreation (including hunting and fishing) is flourishing.
 
 ## Collective choice arrangements
 
 This principle requires that all individuals in the group participate in making decisions. 
 This is pretty clearly false for wildlife management in the USA. All individuals in the
 group do vote to elect politicians at the federal and state level, but that is a pretty 
-indirect degree of participation. In some (most? check?) states, like my home state of 
+indirect degree of participation. In some states, like my home state of 
 Nebraska, fish and wildlife management decisions are made by a group of commissioners
-who are appointed by the Governor, further reducing the participation of stakeholders. 
+appointed by the Governor, further reducing the participation of stakeholders. 
 I suppose you can communicate with them if you're interested, but they are under no
 obligation to listen. 
+
+[Not everyone agrees that fish and wildlife management should be *more* democratic in 
+nature](https://www.outdoorlife.com/articles/hunting/2016/01/it-time-rethink-north-american-model-wildlife-conservation/). 
+
+> Ever hear of a ballot initiative? Well, it's basically a work-around for zealots who can't advance their agendas via the usual lawmaking channels. - Steve Wagner
+
+Wagner views the ballot initiative as an end-run around scientific management. 
+But ballot initiatives are a response to the absence of viable collective choice arrangements.
+If stakeholders can't get a ballot initiative, they might use the court system instead to
+block management actions. 
 
 ## Monitoring
 
@@ -101,18 +122,18 @@ None of these issues are quick to resolve. The ill-defined nature of the
 group relevant to fish and wildlife management means there usually are no
 public fora where discussions can take place, other than the courts. This isn't always 
 the case. Sometimes a forum for these discussions is constructed by
-the relevant state or federal agency. The Missouri River Restoration 
-Implementation Committee ("Mr Rick") is one example. 
+the relevant state or federal agency. The [Missouri River Restoration 
+Implementation Committee](https://www.nwo.usace.army.mil/mrrp/mrric/) ("Mr Rick") is one example. 
 
 ## Local autonomy
 
 This principle means that the group gets to decide what rules apply to
 natural resource extraction. Fish and Wildlife management suffers twice here.
-First, who is in the "group" is unclear, and the vast majority are not involved in 
+First, [who is in the "group" is unclear][Clearly defined boundaries], and the vast majority are not involved in 
 formulating rules (see [Collective choice arrangements][Collective choice arrangements]). Second,
 state level decision makers are constrained by levels above them,
 particularly with threatened and endangered species. This might not matter; 
-the final principle involves other tiers of rule-making authority (see below).
+the final principle [involves other tiers of rule-making authority][Appropriate relations with other tiers of rule-making authority].
 
 There is autonomy at the state level with respect to game species and non-threatened
 non-game species. Is this sufficiently local? Could we do better with a smaller
@@ -160,12 +181,20 @@ management throughout flyways.
 
 It seems like F&W management needs an intervention. While FWM has
 polycentric governance, local autonomy (at the state level), compliance monitoring,
-and graduated sanctions, we're failing at group identification, collective choice 
+and graduated sanctions, we're failing at group identification, equivalence of costs 
+and benefits, collective choice 
 arrangements, and fast, fair conflict resolution. To me it appears
 that the biggest missing piece is the forum for making decisions and
-resolving conflicts. It should be local (state?). It should be elected. In fact,
-it should look like [Nebraska's Natural Resource Districts](https://www.nrdnet.org/). Why don't NRDs 
-include F&W management in their mandate? Or do they?
+resolving conflicts. It should be local (does the state count as local?). It should be elected (collective choice). In fact,
+it should look like [Nebraska's Natural Resource Districts](https://www.nrdnet.org/). 
+
+[NRDs can manage/restore *habitat*](https://nebraskalegislature.gov/laws/statutes.php?statute=2-3229)
+for fish and wildlife, as long as those activities are consistent with
+the game and parks commission. It seems like a small step to add 
+approving fish and game regulations to the purposes of NRDs. However, wildlife at least
+are managed according to a hodge-podge of district boundaries that vary by species. As
+far as I am aware, none of those boundaries match up with hydrological boundaries
+that are the basis for forming water-focused natural resources districts. 
 
 Another alternative in states like Nebraska would be to change the commission to
 an elected body, responsible to the citizens of the state. It isn't 
