@@ -39,7 +39,7 @@ tomorrow's supply. Trouble is, borrowed spoons come with a ridiculously high int
 rate. Eventually I wake up with negative spoons. Carry that kind of debt for too 
 long and I will end up [where I was last winter break](/post/mental-health-redux). 
 Unlike money, I can borrow spoons, but I can't save them. Surplus 
-spoons disappear overnight.
+spoons disappear overnight[^2].
 
 Not every activity costs spoons; I gain spoons from some things. Free writing 
 like this blog post is, well, free. No spoons lost. Lying on the floor of my
@@ -59,6 +59,9 @@ In fact, I think I might put an envelope of spoons on the door of my office.
 You want to talk to me, hand me a spoon. When the envelope's empty, sorry, come 
 back tomorrow. Is there a way to have my e-mail autoresponse count spoons?
 
+
+[^2]: Maybe it is more accurate to say that the discount rate on spoons is very
+high too. I might be overthinking this metaphor.
 
 [^1]: This is one of those things I've been working on. Controlling my expectations
 so that when things don't work out, I don't spend a spoon on it. I almost always 
