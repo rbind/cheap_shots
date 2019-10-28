@@ -13,7 +13,7 @@ tags_include:
 categories: Personal
 ---
 
-A couple weeks ago I realized that my low, but stable, state was in fact a nosedive.
+A couple months ago I realized that my low, but stable, state was in fact a nosedive.
 Since then I pretty much cratered, crawled out, and maybe, just maybe, I'm back
 on my feet again. Trigger warning: I will discuss suicidal ideation below.
 
@@ -31,10 +31,10 @@ not trying to solve my problem, which at that point seemed insoluble.
 > To get started, it's all uncharted
 > -- Sara Bareilles, Uncharted
 
-I love that song, and that line captures a lot of how I felt last week. Still, having 
+I love that song, and that line captures a lot of how I felt. Still, having 
 someone sit with me and just listen, magic. 
 
-Last Monday I started Transcranial Magnetic Stimulation, which is a refinement of
+I started Transcranial Magnetic Stimulation, which is a refinement of
 Electro-Convulsive Therapy. Basically, it stimulates the neurons in a specific 
 brain region without the "Convulsive" part. TMS is well documented to help a large fraction 
 of people with treatment resistant depression, although not everybody responds.
@@ -43,7 +43,7 @@ Daily treatments for about 6 weeks are required, and even after that, if it work
 and when I last spoke with them they were taking no medication at all. 
 
 2 seconds of magnetic pulses every 20 
-seconds for 20 minutes. It isn't very comfortable, and I leave the sessions with
+seconds for 20 minutes, targeting the left dorso-lateral precortex. It isn't very comfortable, and initially I left the sessions with
 a headache. Most of the time I just breathe, eyes closed, counting breaths. It is
 hard to have a conversation with the tech when every 18 seconds a woodpecker starts
 hammering on your skull. The muscles in the right side of my jaw clench. Then it 
@@ -51,45 +51,31 @@ passes and I resume counting.
 The first day or two I felt pretty wide awake right afterward, although
 the feeling didn't last past noon.
 
-Last Wednesday I tried something completely different: acupuncture. I wouldn't 
-have considered it at all, but I've known Lezlie Abbott at Nebraska Acupuncture for
-a long time. So why not. I figure anything that's been around for millenia must
-have some efficacy. Even if the underlying model of classical eastern medicine is
-wrong, it might still make accurate predictions. Machine learning works, after all.
-
-> All models are wrong, but some of them are useful.
-> -- George Box, statistician
-
-One of the things that impressed me the most about that first session was the level
-of detail in Lezlie's observations. A western doctor takes your pulse, and records the
-frequency. I don't know what Lezlie was looking for, but she took my pulse in both
-wrists and recorded at least 12 different bits of information. She looked at my
-tongue. She asked me how often I blow my nose -- often several times per hour -- and 
-was surprised at that answer. After quizzing me
-and recording a complete medical history, she loaded me up with needles. 
-
-Most of the needles I couldn't feel going in. A few I felt for a moment, but 
-after a second or two the sensation was gone. The two exceptions were one in my
-right lower leg, and another in the side of my right wrist. Both generated an
-achy sensation. Leslie wiggled (probably a technical term there) a few of the
-needles around after inserting them. 
-There were needles sticking out of me from head to toe. Then she 
-left me alone for 20 minutes. I took the opportunity to practice mindfulness 
-meditation. 
-
-Pulling the needles out generated more feeling than putting them in, but quickly
-gone. When I went to sit up on the table, I nearly couldn't do it -- like my abs
-had been unplugged. I had to roll over on my side and get up gradually. I felt 
-very relaxed. 
-
-I wasn't looking for this change, but over the next couple of days it seemed like
-my sinuses weren't draining as much as usual. Confirmation bias and all that, so
-I've started recording my kleenex use. I'm going back for another acupuncture session
-in two weeks, so I'll have a good baseline to compare.
-
-Wednesday evening I hit the bottom of this cycle. I lay awake most of the night thinking
+Wednesday of the week I started TMS I hit the bottom of this cycle. I lay awake most of the night thinking
 of suicide. Suicidal ideation (SI) isn't new to me, but normally I'm able to separate
 the occurence of those thoughts from me, myself. The thought appears, flashes past,
-and goes away. Now, that's still not good, but as my friend says it is like background radiation.
-There, but not particularly harmful. Wednesday evening the SI went from background 
-radiation to full-blown thinking. 
+and goes away. Now, that's still not good, but as a friend says it is like background radiation:
+there, but not particularly harmful. Wednesday evening the SI went from background 
+radiation to full-blown thinking. So that wasn't fun.
+
+By the end of that first week I was also experiencing a high level of free-floating anxiety.
+I don't normally experience this; my anxiety is episodic, usually clearly attached
+to something like an upcoming deadline. Free-floating anxiety is just there, and
+ugh, I don't want to feel like that ever again! A friend who also did TMS experienced the
+same spike in anxiety at the start of the treatment. At the start of the 2nd week of
+TMS, my psychiatrist added a "right side" treatment to inhibit the anxiety. This 
+is a magnetic pulse every second for ~ 5 minutes, targeting the right dorsolateral prefrontal cortex. 
+And, um, wow! It just worked. No anxiety.
+
+Over the next few weeks my mood drifted steadily upwards, although I still 
+struggled to concentrate and focus on work. I felt well enough to try a lower dose
+of one medication, Mirtazipine. That stuff turns me into a zombie at 15 mg a day,
+but at 7.5 I wasn't getting my symptoms under control. So I'd been taking 11.75 mg
+a day, which controlled my symptoms and knocked me out. Although I slept, I never
+felt rested while taking the Mirtazipine. When I dropped the dose down to 7.5 mg 
+again, it felt like coming out from under a cloud. Suddenly I was sleeping better,
+waking rested, and just ... felt good. 
+
+
+
+
