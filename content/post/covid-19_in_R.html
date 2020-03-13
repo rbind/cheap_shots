@@ -1,0 +1,197 @@
+---
+title: "COVID-19 and R"
+author: "Drew Tyre"
+date: '2020-03-13'
+output: 
+  html_document:
+    code_folding: show
+draft: yes
+slug: COVID-19_and_R
+tags_include:
+- R
+- OPD
+categories: Research
+---
+
+
+
+<p>UNL cancelled classes next week and will go to all online instruction for
+the rest of the semester to try and postpone the effects of COVID-19. I’m,
+uh, kind of a data nerd, so I’d like to know, how will we know if these
+drastic steps have worked?</p>
+<p>I also had some personal decisions to make about cancelling travel, so I went
+looking for some data and R examples of how to analyze epidemics. <a href="https://rviews.rstudio.com/2020/03/05/covid-19-epidemiology-with-r/">I found Tim
+Churches excellent blog post</a>
+which also had some links to other more detailed tutorials on epidemilogy, R,
+and COVID-19. But that was published back on March 5, and there’s been a week’s
+worth of new data! I tried Tim’s code which uses the data underlying
+<a href="https://systems.jhu.edu/">John Hopkins University COVID-19 Dashboard</a>.
+That’s a pretty cool site too, and they have graciously made <a href="https://github.com/CSSEGISandData/COVID-19">the data available
+on github</a>. But it didn’t work;
+the underlying data had changed format since March 5. I got a nice visualization
+to work around 9 am Thursday, but by 2 pm it was broken and clearly wrong!
+I figured out what was going on today, and decided I’d better put it up
+publicly in case someone else wanted to dig in to this dataset.</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;lubridate&quot;)
+jhu_url &lt;- paste(&quot;https://raw.githubusercontent.com/CSSEGISandData/&quot;, 
+                 &quot;COVID-19/master/csse_covid_19_data/&quot;, 
+                 &quot;csse_covid_19_time_series/&quot;, 
+                 &quot;time_series_19-covid-Confirmed.csv&quot;, sep = &quot;&quot;)
+
+jhu_wide &lt;- read_csv(jhu_url) # just grab it once from github
+us_confirmed_long_jhu &lt;- jhu_wide %&gt;% 
+  rename(province = &quot;Province/State&quot;, 
+         country_region = &quot;Country/Region&quot;) %&gt;% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = &quot;Date&quot;, values_to = &quot;cumulative_cases&quot;) %&gt;% 
+  # adjust JHU dates back one day to reflect US time, more or
+  # less
+  mutate(Date = lubridate::mdy(Date) - lubridate::days(1)) %&gt;% 
+  filter(country_region == &quot;US&quot;) %&gt;% 
+  arrange(province, Date) %&gt;% 
+  group_by(province) %&gt;% 
+  mutate(incident_cases = c(0, diff(cumulative_cases))) %&gt;% 
+  ungroup() %&gt;% 
+  select(-c(country_region, Lat, Long, cumulative_cases)) %&gt;% 
+  filter(str_detect(province, &quot;Diamond Princess&quot;, negate = TRUE),
+         str_detect(province, &quot;, &quot;, negate = TRUE))</code></pre>
+<p>So all that converts the JHU data from it’s wide format with one column per day
+to a long format more suitable for plotting. Then the cumulative incidence is
+differenced to get the number of new cases per day. The final <code>filter()</code>
+removes some cases that were located on the Diamond Princess cruise ship and
+removes the County level data. On inspection, that data frame has one row for
+each state and day. Perfect! Lots of zeros … but lots of states have no cases
+yet so that’s OK, right? Make a graph of the total cases in the USA.</p>
+<pre class="r"><code>us_total &lt;- us_confirmed_long_jhu %&gt;% 
+  group_by(Date) %&gt;% 
+  summarize(incident_cases = sum(incident_cases))
+
+ggplot(data = filter(us_total, Date &gt; &quot;2020-02-27&quot;),
+       mapping = aes(x = Date, y = incident_cases)) + 
+  geom_line() + geom_point() +
+  geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="/post/covid-19_in_R_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>That doesn’t look right! Certainly wasn’t what I had on Thursday morning. Surely
+there were cases on the 7th and 8th? I tried
+using the county level data and rolling that up to a total, but that looked worse
+with logs of negative values and zeros after March 8. What happened?</p>
+<p>Turns out the county level data stopped being collected after March 8. For a while
+on Thursday there were a few days with BOTH county and state level numbers, and
+there were plenty of github issues filed asking about the double counting. The
+fix was easy – use the <code>filter()</code> I had above to get rid of the county data. But
+instead they chose to do something rather intriguing. They kept both county and
+state level data rows, but set all the state rows prior to march 8th, and all the
+county rows after march 8th, to zero! So if you try to use either state or county
+data by itself it isn’t correct … took me way too long to figure this out.</p>
+<pre class="r"><code>us_confirmed_total &lt;- jhu_wide %&gt;% 
+  rename(province = &quot;Province/State&quot;, 
+         country_region = &quot;Country/Region&quot;) %&gt;% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = &quot;Date&quot;, values_to = &quot;cumulative_cases&quot;) %&gt;% 
+  # adjust JHU dates back one day to reflect US time, more or
+  # less
+  mutate(Date = lubridate::mdy(Date) - lubridate::days(1)) %&gt;% 
+  filter(country_region == &quot;US&quot;) %&gt;% 
+  arrange(province, Date)  %&gt;% 
+  # up to here, no problem. same as before.
+  # solution? filter out state rows prior to march 8, and county rows after that. 
+  filter(str_detect(province, &quot;, &quot;) &amp; Date &lt;= &quot;2020-03-8&quot; |
+           str_detect(province, &quot;, &quot;, negate = TRUE) &amp; Date &gt; &quot;2020-03-8&quot;) %&gt;% 
+  group_by(Date) %&gt;% # then group by Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)))
+
+ggplot(data = us_confirmed_total,
+       mapping = aes(x = Date, y = incident_cases)) + 
+  geom_line() + geom_point()</code></pre>
+<p><img src="/post/covid-19_in_R_files/figure-html/nearly_good-1.png" width="672" /></p>
+<p>Yay! We’re back in business. Tim Church pointed out that this data is “date of reporting”,
+not “date of illness”; we can use it but there is some bias as a result.
+In Tim Church’s post he used a case level data table from
+wikipedia to separate cases into those imported from outside the US and those resulting
+from community spread inside the US. That table is gone, probably due
+to privacy concerns. The vast majority of cases reported prior to Feb 27 were travel
+related imports, while after that community spread cases dominate. So in what
+follows I will filter out data prior to Feb 27; poor proxy, but good enough
+in the moment. Another thing to keep in mind: difficulty with access to tests
+means the “confirmed cases” are a lower limit to the actual number of cases. A
+case is only “confirmed” when the patient tests positive for the virus. But there
+are stories of people getting sick, testing negative for everything else, but
+not “confirmed” because of delays in getting test results back.</p>
+<p>So, I’m a population ecologist, so the first thing I wondered was how good an
+exponential model was approximating the growth in the number of cases. The exponential
+model assumes the rate of increase is constant with time.</p>
+<pre class="r"><code>p1 &lt;- ggplot(data = filter(us_confirmed_total, Date &gt; &quot;2020-02-27&quot;),
+       mapping = aes(x = Date)) + 
+#  geom_line(mapping = aes(y = incident_cases)) + 
+  geom_point(mapping = aes(y = incident_cases)) + 
+  scale_y_log10() + 
+  geom_smooth(mapping = aes(y = incident_cases), method = &quot;lm&quot;)
+p1</code></pre>
+<p><img src="/post/covid-19_in_R_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Damn. Exponential growth is linear on a log scale, and that’s looking pretty damn
+linear. So if efforts to diminish the growth of the pandemic are successful,
+then we should start to see new daily cases drop below that line. The underlying
+“population” model is</p>
+<p><span class="math display">\[
+N_t = N_0 10^{rt} \\
+log_{10}(N_t) = log_{10}(N_0) + rt
+\]</span>
+So the intercept and slope of that linear regression have some things to teach us, let’s see:</p>
+<pre class="r"><code>us_exp_model &lt;- us_confirmed_total %&gt;% 
+  mutate(log_incident_cases = log10(incident_cases),    # transform the data
+         day = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) %&gt;% # get day relative to Feb 27
+  filter(Date &gt; &quot;2020-02-27&quot;) %&gt;% 
+  lm(data = .,
+     formula = log_incident_cases ~ day) 
+  broom::tidy(us_exp_model)</code></pre>
+<pre><code>## # A tibble: 2 x 5
+##   term        estimate std.error statistic     p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+## 1 (Intercept)    0.740    0.116       6.37 0.0000527  
+## 2 day            0.147    0.0146     10.1  0.000000695</code></pre>
+<p>So the daily growth rate is 0.15. The “index case” would be reported when <span class="math inline">\(log_{10}(N_t) = 0\)</span>, and
+that will be when
+<span class="math display">\[
+log_{10}(N_t) = 0 = 0.74 + 0.15 t \\
+-0.74 / 0.15 = -5 = t
+\]</span></p>
+<p>So the case load is growing as if a single person was reported ill on Feb 22nd. How long does it take
+for the daily case load to double?</p>
+<p><span class="math display">\[
+\begin{align}
+2N_0 =&amp; N_0 10^{rt} \\  
+log_{10}(2) =&amp; rt \\
+t = \frac{log_{10}(2)}{r}
+\end{align}
+\]</span></p>
+<p>So <span class="math inline">\(t = log_{10}(2) / 0.15 = 0.30103 / 0.15 = 2\)</span>. Wow.
+At that rate the number of new cases should be doubling every 2 days. Guess we’ll see.</p>
+<p>The last thing I want to try is predicting how many cases there will be over the next week.
+I also want “prediction intervals” on those, which will give me the distribution of the next
+observation. If observations over the next few days fall below the lower prediction limit, that’s
+a sign that the exponential model is no longer holding, and indicates that efforts to slow
+the outbreak are working.</p>
+<pre class="r"><code>predicted &lt;- tibble(day = 14:20)
+predicted_list &lt;- predict(us_exp_model, newdata = predicted, se.fit = TRUE)
+predicted$fit &lt;- predicted_list$fit # this is klutzy, but I want to see the answer! 
+predicted$se.fit &lt;- predicted_list$se.fit
+predicted &lt;- predicted %&gt;% 
+  mutate(Date = ymd(&quot;2020-2-27&quot;) + day,
+         pred_var = se.fit^2 + predicted_list$residual.scale^2,
+         lpl = 10^(fit - sqrt(pred_var)*qt(0.975, df = 11)),
+         upl = 10^(fit + sqrt(pred_var)*qt(0.975, df = 11)),
+         fit = 10^fit)
+
+p1 + 
+  geom_line(data = predicted,
+            mapping = aes(y = fit)) +
+  geom_ribbon(data = predicted,
+            mapping = aes(ymin = lpl, ymax = upl),
+            alpha = 0.2)</code></pre>
+<p><img src="/post/covid-19_in_R_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Nice! Well, not really. A week from now we expect between 1000 and 10,000 <em>new cases</em>.
+So if new case numbers start dipping below that lower limit then we
+are happy. Happier.</p>
