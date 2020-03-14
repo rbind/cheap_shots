@@ -1,7 +1,7 @@
 ---
 title: Model Averaging in Genomics?
 author: Drew Tyre
-date: '2021-02-25'
+date: '2020-03-13'
 draft: yes
 categories:
   - Research
@@ -56,15 +56,15 @@ glm(y~x, family = binomial, data =s1())</code></pre>
 ## 
 ## Coefficients:
 ## (Intercept)           x1           x2           x3           x4  
-##    -0.13011      1.50538      0.43352      0.29328     -0.06659  
+##     0.24942      0.80266      0.59007     -0.01495      0.58215  
 ##          x5           x6           x7           x8           x9  
-##    -0.25168     -0.13946     -0.08785      0.04267      0.36253  
+##    -0.32056      0.36850      0.06523     -0.08453     -0.13860  
 ##         x10  
-##     0.11241  
+##    -0.21419  
 ## 
 ## Degrees of Freedom: 99 Total (i.e. Null);  89 Residual
-## Null Deviance:       138.5 
-## Residual Deviance: 96.29     AIC: 118.3</code></pre>
+## Null Deviance:       137.6 
+## Residual Deviance: 114.5     AIC: 136.5</code></pre>
 <pre class="r"><code>s2 &lt;- function(N = 100, M = 10, effects = list(e0 = 1, rate = -0.9)){
   x &lt;- MASS::mvrnorm(n = N, mu = rep(0,M), Sigma = diag(M))
   effects &lt;- with(effects, e0 * exp(rate * 0:(M-1)))
@@ -78,15 +78,15 @@ glm(y~x, family = binomial, data =s2())</code></pre>
 ## 
 ## Coefficients:
 ## (Intercept)           x1           x2           x3           x4  
-##    -0.18659      0.19173      0.51610      0.39357      0.03785  
+##    0.239083     1.492229     0.532002     0.374358     0.075095  
 ##          x5           x6           x7           x8           x9  
-##    -0.22998     -0.09526      0.31149      0.05322      0.24608  
+##   -0.481411     0.204298    -0.265951     0.118680     0.001224  
 ##         x10  
-##     0.07023  
+##   -0.127160  
 ## 
 ## Degrees of Freedom: 99 Total (i.e. Null);  89 Residual
-## Null Deviance:       138.5 
-## Residual Deviance: 127   AIC: 149</code></pre>
+## Null Deviance:       138.3 
+## Residual Deviance: 106.7     AIC: 128.7</code></pre>
 <p><code>s1()</code> generates data according to the view of reality behind BIC. <code>s2()</code> generates
 data according to the view of reality behind AIC.</p>
 </div>

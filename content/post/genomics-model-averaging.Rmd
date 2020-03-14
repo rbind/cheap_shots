@@ -1,7 +1,7 @@
 ---
 title: Model Averaging in Genomics?
 author: Drew Tyre
-date: '2021-02-25'
+date: '`r Sys.Date()`'
 draft: yes
 categories:
   - Research
