@@ -5,7 +5,7 @@ date: '`r Sys.Date()`'
 output: 
   html_document:
     code_folding: hide
-draft: yes
+draft: no
 slug: COVID-19_and_R_II
 tags_include:
 - R
@@ -13,7 +13,7 @@ tags_include:
 categories: Research
 ---
 
-Yesterday I got into [the COVID-19 forecasting business](post/covid-19_in_R.html). 
+Yesterday I got into [the COVID-19 forecasting business](/post/covid-19_in_R/). 
 Today I want to see how my predictions held up. 
 
 # Munging the data ... again
@@ -27,7 +27,7 @@ sounds like the JHU team might be getting overwhelmed. So I'm going to try
 the data from [Our World In Data](https://ourworldindata.org/coronavirus-source-data).
 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library("tidyverse")
 library("lubridate")
 owid_url <- "https://covid.ourworldindata.org/data/total_cases.csv"
@@ -38,17 +38,21 @@ us_confirmed_total <- owid_wide %>%
   pivot_longer(-1, 
                names_to = "country", values_to = "cumulative_cases") %>% 
   filter(country == "United States") %>% 
-  arrange(date)  %>% 
+  arrange(date)  
 
 
 
 p1 <- ggplot(data = us_confirmed_total,
        mapping = aes(x = date)) + 
   geom_line(mapping = aes(y = cumulative_cases)) + 
-  geom_point(mapping = aes(y = cumulative_cases)) + 
+  geom_point(mapping = aes(y = cumulative_cases))  
 p1
 ```
 
-
+Well, fooey. [CDC reports over 1600 cases]() for March 13. The
+[WorldOMeter](https://www.worldometers.info/coronavirus/country/us/) reports 
+over 2000! So I'm not sure what to do at this point. I'm pretty sure my predictions
+from yesterday are at least in the ballpark. If I find a good way to keep on 
+top of the numbers I'll circle back to this. But for now ... GIGO. 
 
 
