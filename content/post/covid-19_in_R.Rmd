@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 and R"
 author: "Drew Tyre"
-date: '`r Sys.Date()`'
+date: '2020-03-13'
 output: 
   html_document:
     code_folding: show
@@ -17,6 +17,12 @@ UNL cancelled classes next week and will go to all online instruction for
 the rest of the semester to try and postpone the effects of COVID-19. I'm,
 uh, kind of a data nerd, so I'd like to know, how will we know if these 
 drastic steps have worked? 
+
+EDIT (2020-03-14): As I worked on testing the predictions from this page
+I ran into a lot of issues with data consistency. Also, Tim Church's 
+correction of the date by 1 day is overly aggressive. Going forward I
+will not subtract off that one day, so the dates in future posts will
+shift relative to this one. 
 
 I also had some personal decisions to make about cancelling travel, so I went
 looking for some data and R examples of how to analyze epidemics. [I found Tim 
@@ -40,7 +46,10 @@ jhu_url <- paste("https://raw.githubusercontent.com/CSSEGISandData/",
                  "csse_covid_19_time_series/", 
                  "time_series_19-covid-Confirmed.csv", sep = "")
 
-jhu_wide <- read_csv(jhu_url) # just grab it once from github
+#jhu_wide <- read_csv(jhu_url) # just grab it once from github
+# archive it! 
+#save(jhu_wide, file = "data/jhu_wide_2020-03-14.Rda")
+load("data/jhu_wide_2020-03-14.Rda")
 us_confirmed_long_jhu <- jhu_wide %>% 
   rename(province = "Province/State", 
          country_region = "Country/Region") %>% 
@@ -72,7 +81,7 @@ us_total <- us_confirmed_long_jhu %>%
   group_by(Date) %>% 
   summarize(incident_cases = sum(incident_cases))
 
-ggplot(data = filter(us_total, Date > "2020-02-27"),
+ggplot(data = filter(us_total, Date > "2020-02-27", Date <= "2020-03-11"),
        mapping = aes(x = Date, y = incident_cases)) + 
   geom_line() + geom_point() +
   geom_smooth(method = "lm")
@@ -112,7 +121,7 @@ us_confirmed_total <- jhu_wide %>%
   ungroup() %>% 
   mutate(incident_cases = c(0, diff(cumulative_cases)))
 
-ggplot(data = us_confirmed_total,
+ggplot(data = filter(us_confirmed_total, Date <= "2020-03-11"),
        mapping = aes(x = Date, y = incident_cases)) + 
   geom_line() + geom_point()
 ```
@@ -136,7 +145,7 @@ exponential model was approximating the growth in the number of cases. The expon
 model assumes the rate of increase is constant with time.
 
 ```{r}
-p1 <- ggplot(data = filter(us_confirmed_total, Date > "2020-02-27"),
+p1 <- ggplot(data = filter(us_confirmed_total, Date > "2020-02-27", Date <= "2020-03-11"),
        mapping = aes(x = Date)) + 
 #  geom_line(mapping = aes(y = incident_cases)) + 
   geom_point(mapping = aes(y = incident_cases)) + 
@@ -160,7 +169,7 @@ So the intercept and slope of that linear regression have some things to teach u
 us_exp_model <- us_confirmed_total %>% 
   mutate(log_incident_cases = log10(incident_cases),    # transform the data
          day = as.numeric(Date - ymd("2020-02-27"))) %>% # get day relative to Feb 27
-  filter(Date > "2020-02-27") %>% 
+  filter(Date > "2020-02-27", Date <= "2020-03-11") %>% 
   lm(data = .,
      formula = log_incident_cases ~ day) 
   broom::tidy(us_exp_model)
