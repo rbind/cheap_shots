@@ -1,0 +1,54 @@
+---
+title: "COVID-19 and R Part II"
+author: "Drew Tyre"
+date: '`r Sys.Date()`'
+output: 
+  html_document:
+    code_folding: hide
+draft: yes
+slug: COVID-19_and_R_II
+tags_include:
+- R
+- OPD
+categories: Research
+---
+
+Yesterday I got into [the COVID-19 forecasting business](post/covid-19_in_R.html). 
+Today I want to see how my predictions held up. 
+
+# Munging the data ... again
+
+My least favorite part of data analysis is munging the data into a usable form. 
+Especially #otherpeoplesdata. John Hopkins University is doing a great service
+making their data under their COVID-19 dashboard open, but they've made some
+interesting choices. I can only assume these choices work well for what they are
+doing; certainly isn't making my work easier! From the issues posted on github
+sounds like the JHU team might be getting overwhelmed. So I'm going to try
+the data from [Our World In Data](https://ourworldindata.org/coronavirus-source-data).
+
+
+```{r}
+library("tidyverse")
+library("lubridate")
+owid_url <- "https://covid.ourworldindata.org/data/total_cases.csv"
+
+owid_wide <- read_csv(owid_url) # just grab it once 
+
+us_confirmed_total <- owid_wide %>% 
+  pivot_longer(-1, 
+               names_to = "country", values_to = "cumulative_cases") %>% 
+  filter(country == "United States") %>% 
+  arrange(date)  %>% 
+
+
+
+p1 <- ggplot(data = us_confirmed_total,
+       mapping = aes(x = date)) + 
+  geom_line(mapping = aes(y = cumulative_cases)) + 
+  geom_point(mapping = aes(y = cumulative_cases)) + 
+p1
+```
+
+
+
+
