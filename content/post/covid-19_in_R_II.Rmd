@@ -13,7 +13,7 @@ tags_include:
 categories: Research
 ---
 
-Yesterday I got into [the COVID-19 forecasting business](/post/covid-19_in_R/). 
+Yesterday I got into [the COVID-19 forecasting business](/post/covid-19_and_R/). 
 Today I want to see how my predictions held up. 
 
 # Munging the data ... again
