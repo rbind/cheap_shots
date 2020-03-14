@@ -5,7 +5,7 @@ date: '2020-03-14'
 output: 
   html_document:
     code_folding: hide
-draft: yes
+draft: no
 slug: COVID-19_and_R_II
 tags_include:
 - R
@@ -48,7 +48,71 @@ p1</code></pre>
 <p><img src="/post/covid-19_in_R_II_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>Well, fooey. <a href="">CDC reports over 1600 cases</a> for March 13. The
 <a href="https://www.worldometers.info/coronavirus/country/us/">WorldOMeter</a> reports
-over 2000! So I’m not sure what to do at this point. I’m pretty sure my predictions
-from yesterday are at least in the ballpark. If I find a good way to keep on
-top of the numbers I’ll circle back to this. But for now … GIGO.</p>
+over 2000! However, the JHU data seems to have corrected in the
+last 12 hours, so I’ll go with that again. I’ll keep looking for
+new data sources. Another lesson from the past 24 hours – download
+<em>and then save</em> the data! Because the next time it is downloaded it
+might break everything …</p>
+<pre class="r"><code>load(&quot;data/jhu_wide_2020-03-14.Rda&quot;)
+us_confirmed_total &lt;- jhu_wide %&gt;% 
+  rename(province = &quot;Province/State&quot;, 
+         country_region = &quot;Country/Region&quot;) %&gt;% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = &quot;Date&quot;, values_to = &quot;cumulative_cases&quot;) %&gt;% 
+  filter(country_region == &quot;US&quot;) %&gt;% 
+  mutate(Date = mdy(Date)) %&gt;% 
+#  mutate(Date = lubridate::mdy(Date) - lubridate::days(1)) %&gt;% 
+  arrange(province, Date)  %&gt;% 
+  # filter out state rows prior to march 8, and county rows after that. 
+  filter(str_detect(province, &quot;, &quot;) &amp; Date &lt;= &quot;2020-03-9&quot; |
+           str_detect(province, &quot;, &quot;, negate = TRUE) &amp; Date &gt; &quot;2020-03-9&quot;) %&gt;% 
+  group_by(Date) %&gt;% # then group by Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)))
+
+p1 &lt;- ggplot(data = filter(us_confirmed_total, Date &gt; &quot;2020-02-28&quot;, Date &lt;= &quot;2020-03-11&quot;),
+       mapping = aes(x = Date)) + 
+#  geom_line(mapping = aes(y = incident_cases)) + 
+  geom_point(mapping = aes(y = incident_cases)) + 
+  scale_y_log10() + 
+  geom_smooth(mapping = aes(y = incident_cases), method = &quot;lm&quot;)
+
+us_exp_model &lt;- us_confirmed_total %&gt;% 
+  mutate(log_incident_cases = log10(incident_cases),    # transform the data
+         day = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) %&gt;% # get day relative to Feb 27
+  filter(Date &gt; &quot;2020-02-28&quot;, Date &lt;= &quot;2020-03-11&quot;) %&gt;% 
+  lm(data = .,
+     formula = log_incident_cases ~ day) 
+
+predicted &lt;- tibble(day = 14:20)
+predicted_list &lt;- predict(us_exp_model, newdata = predicted, se.fit = TRUE)
+predicted$fit &lt;- predicted_list$fit # this is klutzy, but I want to see the answer! 
+predicted$se.fit &lt;- predicted_list$se.fit
+predicted &lt;- predicted %&gt;% 
+  mutate(Date = ymd(&quot;2020-2-27&quot;) + day,
+         pred_var = se.fit^2 + predicted_list$residual.scale^2,
+         lpl = 10^(fit - sqrt(pred_var)*qt(0.975, df = 11)),
+         upl = 10^(fit + sqrt(pred_var)*qt(0.975, df = 11)),
+         fit = 10^fit)
+
+p1 + 
+  geom_line(data = predicted,
+            mapping = aes(y = fit),
+            linetype = 2) +
+  geom_ribbon(data = predicted,
+            mapping = aes(ymin = lpl, ymax = upl),
+            alpha = 0.2) +
+  geom_point(data = filter(us_confirmed_total, Date &gt; &quot;2020-03-11&quot;),
+             mapping = aes(y = incident_cases))</code></pre>
+<p><img src="/post/covid-19_in_R_II_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>So not bad! Although if the observations continue to fall below the expected value that would
+indicate some lack of fit. If you take the time to carefully compare these predictions with
+yesterday’s predictions you’ll notice some small discrepancies. As I was wrestling with
+data inconsistencies, I realized that correcting the UTC dates by a whole day was throwing everything
+off. So everything is now shifted over by one day. The estimated coefficients of the model don’t change very much; the rate of growth is still 0.15 day<sup>-1</sup> and the intercept dropped a little bit.
+Still forecasting 823 - 17714 new cases on March 18. That’s bigger than the range I mentioned
+in yesterday’s post, but I forgot about the effect of the logarithmic scale on y when I eyeballed it.</p>
+<p>So, things to do: run different countries that I care about, like Canada, Germany, Australia etc etc.
+Find some additional models to try, and develop a good measure of comparison.</p>
 </div>
