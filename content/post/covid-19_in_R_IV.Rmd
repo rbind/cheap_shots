@@ -1,0 +1,230 @@
+---
+title: "COVID-19 and R Part IV"
+author: "Drew Tyre"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: yes
+slug: COVID-19_and_R_IV
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+---
+
+
+# The bottom line
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library("tidyverse")
+library("lubridate")
+
+jhu_url <- paste("https://raw.githubusercontent.com/CSSEGISandData/", 
+                 "COVID-19/master/csse_covid_19_data/", 
+                 "csse_covid_19_time_series/", 
+                 "time_series_19-covid-Confirmed.csv", sep = "")
+
+#jhu_wide <- read_csv(jhu_url) # just grab it once from github
+# archive it! 
+#save(jhu_wide, file = "data/jhu_wide_2020-03-15.Rda")
+load("data/jhu_wide_2020-03-15.Rda")
+us_confirmed_total <- jhu_wide %>% 
+  rename(province = "Province/State", 
+         country_region = "Country/Region") %>% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = "Date", values_to = "cumulative_cases") %>% 
+  filter(country_region == "US") %>% 
+  mutate(Date = mdy(Date)) %>% 
+#  mutate(Date = lubridate::mdy(Date) - lubridate::days(1)) %>% 
+  arrange(province, Date)  %>% 
+  # filter out state rows prior to march 8, and county rows after that. 
+  # this is dropping virgin islands ... 
+  filter(str_detect(province, ", ") & Date <= "2020-03-9" |
+           str_detect(province, ", ", negate = TRUE) & Date > "2020-03-9") %>% 
+  group_by(Date) %>% # then group by Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %>% 
+  ungroup() %>% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)))
+
+p1 <- ggplot(data = filter(us_confirmed_total, Date > "2020-02-28", Date <= "2020-03-11"),
+       mapping = aes(x = Date)) + 
+#  geom_line(mapping = aes(y = incident_cases)) + 
+  geom_point(mapping = aes(y = incident_cases)) + 
+  scale_y_log10() + 
+  geom_smooth(mapping = aes(y = incident_cases), method = "lm")
+
+us_exp_model <- us_confirmed_total %>% 
+  mutate(log_incident_cases = log10(incident_cases),    # transform the data
+         day = as.numeric(Date - ymd("2020-02-27"))) %>% # get day relative to Feb 27
+  filter(Date > "2020-02-28", Date <= "2020-03-11") %>% 
+  lm(data = .,
+     formula = log_incident_cases ~ day) 
+
+predicted <- tibble(day = 14:20)
+predicted_list <- predict(us_exp_model, newdata = predicted, se.fit = TRUE)
+predicted$fit <- predicted_list$fit # this is klutzy, but I want to see the answer! 
+predicted$se.fit <- predicted_list$se.fit
+predicted <- predicted %>% 
+  mutate(Date = ymd("2020-2-27") + day,
+         pred_var = se.fit^2 + predicted_list$residual.scale^2,
+         lpl = 10^(fit - sqrt(pred_var)*qt(0.975, df = 11)),
+         upl = 10^(fit + sqrt(pred_var)*qt(0.975, df = 11)),
+         fit = 10^fit)
+
+p1 + 
+  geom_line(data = predicted,
+            mapping = aes(y = fit),
+            linetype = 2) +
+  geom_ribbon(data = predicted,
+            mapping = aes(ymin = lpl, ymax = upl),
+            alpha = 0.2) +
+  geom_point(data = filter(us_confirmed_total, Date > "2020-03-11"),
+             mapping = aes(y = incident_cases)) +
+  labs(y = "Incident cases", title = "Total new reported cases per day in the USA",
+       subtitle = "Exponential model in blue; predicted values with 95% prediction intervals with dashed line.",
+       caption = paste("Source data from https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime("data/jhu_wide_2020-03-15.Rda"), usetz = TRUE),
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")
+       )
+```
+
+
+# Full data nerd below this point
+
+[That article by Tomas Pueyo](https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca)
+has some good points about the difference between reported cases (what I'm using) and true cases
+(what I wish we had). The CDC does have a table of cases by date of infection, but it's a 
+small fraction of the total cases reported. Nonetheless, I thought it might be 
+instructive to run the exponential model on that data. Annnd, it's buried inside a JSON
+file used by a javascript widget that makes the figure and displays the table. No HTML table to scrape. 
+
+```{r, message=FALSE}
+# if running this for the first time, uncomment (once!) all the lines from 
+# <HERE> to 
+# library("RJSONIO")
+# library("RCurl")
+# 
+# # grab the data
+# raw_data <- getURL("https://www.cdc.gov/coronavirus/2019-ncov/us-cases-epi-chart.json")
+# # Then covert from JSON into a list in R
+# data <- fromJSON(raw_data)$data$columns # the list item named "data" has what we want, in an item named columns
+# # now put in a tibble, need to do some manual things to remove the name from the start of the data
+# cdc_epi <- tibble(
+#   Date = mdy(data[[1]][-1]), # grab first item in list, remove first element (the name)
+#   incident_cases = as.numeric(data[[2]][-1]) # grab second item in list, remove first element
+# )
+# # archive it, so that I use the same data for these figures always!
+# also means I don't hit the server with data requests every time I save the post.
+# save(cdc_epi, file = "data/cdc_epi_2020-03-15.Rda")
+# <HERE>
+load(file = "data/cdc_epi_2020-03-15.Rda")
+
+# plot it, just to see what it looks like
+ggplot(data = cdc_epi,
+       mapping = aes(x = Date, y = incident_cases)) + 
+  geom_point() +
+  geom_vline(xintercept = ymd("2020-03-05"), linetype = 2)
+```
+
+Cool! It worked ... OK, the vertical dashed line marks the point at which the CDC thinks
+not all cases are yet reported, so we shouldn't model things after March 5th, yet.
+I want to fit the same model as before, but the difficulty with that model is
+that it doesn't handle zeros well -- $log_{10}(0) = -\infty$. In my 
+current predictions I'm dodging that issue by only using data after
+the number of incident cases is always positive. But I've been 
+wondering how a glm with log link would do. Also need to choose an
+error distribution; a Poisson distribution has only positive 
+support and discrete values so I'll try that. 
+
+```{r}
+cdc_epi_trimmed <- filter(cdc_epi, Date < "2020-03-05") %>% 
+  mutate(days = as.numeric(Date - ymd("2020-02-27"))) # use day relative to Feb 27, same as other model
+cdc_epi_glm <- glm(incident_cases ~ days, data = cdc_epi_trimmed, family = poisson)
+summary(cdc_epi_glm)
+```
+Wow. Daily growth rate is 0.14 day^-1^, almost exactly the same estimate as I get for the
+model based on reported cases, because the base of the logarithms is different. This is 
+easy to see by running the transformation based model on the cases by infection date data.
+```{r}
+cdc_epi_trimmed %>% 
+  filter(Date > ymd("2020-02-17")) %>% 
+  mutate(log_cases = log10(incident_cases)) %>% 
+  lm(log_cases ~ days, data = .) %>% 
+  summary()
+```
+
+So reported cases are growing faster than the number of cases with known infection dates. 
+Trouble is, the number of cases with known infection dates is compromised by a lack of
+reporting (or the numbers would match the reported cases). 
+
+That model is mildly overdispersed
+(ratio of residual deviance to degrees of freedom is 
+`r format(cdc_epi_glm$deviance / cdc_epi_glm$df.residual, digits = 2)`), so
+how does a Negative Binomial model compare?
+
+```{r, message=FALSE}
+library("mgcv") # switch to mgcv::gam to estimate overdispersion parameter
+cdc_epi_glm2 <- gam(incident_cases ~ days, data = cdc_epi_trimmed, family = nb)
+summary(cdc_epi_glm2)
+```
+
+The AIC for this model is `r format(AIC(cdc_epi_glm2),digits = 2)` so moderately better than
+the Poisson model. 
+
+## Fit the model for more countries
+
+I'd like to get predictions for more countries so we can compare how the USA is doing with, say,
+Italy or South Korea. I'm going back to reported case data for this, and I'm going to use the 
+Negative Binomial model because then I don't have to worry about the odd zero close to the start of the time series. I'll process the other countries separately because of the funky county/state
+business in the USA, then stick them together afterwards.
+
+```{r}
+countries <- c("Canada", "Australia", "Korea, South", "Italy", "Iran")
+other_confirmed_total <- jhu_wide %>% 
+  rename(province = "Province/State", 
+         country_region = "Country/Region") %>% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = "Date", values_to = "cumulative_cases") %>% 
+  filter(country_region %in% countries,
+         # have to trap the rows with missing province (most other countries)
+         # otherwise str_detect(province ...) is missing and dropped by filter()
+         is.na(province) | str_detect(province, "Princess", negate = TRUE)) %>% 
+  mutate(Date = mdy(Date)) %>% 
+  # filter out state rows prior to march 9, and county rows after that. 
+  group_by(country_region, Date) %>% # then group by country and Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %>% 
+  group_by(country_region) %>% 
+  mutate(incident_cases = c(0, diff(cumulative_cases))) %>% 
+  ungroup()
+us_confirmed_total <- mutate(us_confirmed_total, country_region = "USA")
+all_confirmed_total <- bind_rows(other_confirmed_total, us_confirmed_total)
+
+pall <- ggplot(data = all_confirmed_total,
+       mapping = aes(x = Date)) + # don't add y = here, so we can change variables later for ribbons etc
+  geom_point(mapping = aes(y = incident_cases)) + 
+  facet_wrap(~country_region, scales = "free_y")
+pall
+```
+
+Phew. That took far too long to sort out, because I tried to `filter()` all the countries including the
+USA, and that was just not working. Treating the USA separately was easy because I already
+had that dataframe built above. The y axis scales are wildly different on those, but just eyeballing 
+the shape it's clear that South Korea is doing something radically different. There are also a couple
+weird outliers in Australia and Italy where incident cases dropped to zero suddenly for one day. Canada
+also has a strange 2 day oscillation going on. Now fit the models and see what that looks like.
+
+```{r}
+all_results <- all_confirmed_total %>%
+  mutate(day = as.numeric(Date - ymd("2020-02-27"))) %>% # get day relative to Feb 27
+  filter(Date > "2020-02-15", Date <= "2020-03-11") %>% 
+  group_by(country_region) %>% 
+  nest() %>% 
+  mutate(models = map(data, ~gam(incident_cases ~ day, data = ., family = nb)))
+
+```
+
+
+[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd).

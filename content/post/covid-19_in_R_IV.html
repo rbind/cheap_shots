@@ -1,0 +1,193 @@
+---
+title: "COVID-19 and R Part IV"
+author: "Drew Tyre"
+date: "2020-03-15"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: yes
+slug: COVID-19_and_R_IV
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+---
+
+
+
+<div id="the-bottom-line" class="section level1">
+<h1>The bottom line</h1>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="full-data-nerd-below-this-point" class="section level1">
+<h1>Full data nerd below this point</h1>
+<p><a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">That article by Tomas Pueyo</a>
+has some good points about the difference between reported cases (what I’m using) and true cases
+(what I wish we had). The CDC does have a table of cases by date of infection, but it’s a
+small fraction of the total cases reported. Nonetheless, I thought it might be
+instructive to run the exponential model on that data. Annnd, it’s buried inside a JSON
+file used by a javascript widget that makes the figure and displays the table. No HTML table to scrape.</p>
+<pre class="r"><code># if running this for the first time, uncomment (once!) all the lines from 
+# &lt;HERE&gt; to 
+# library(&quot;RJSONIO&quot;)
+# library(&quot;RCurl&quot;)
+# 
+# # grab the data
+# raw_data &lt;- getURL(&quot;https://www.cdc.gov/coronavirus/2019-ncov/us-cases-epi-chart.json&quot;)
+# # Then covert from JSON into a list in R
+# data &lt;- fromJSON(raw_data)$data$columns # the list item named &quot;data&quot; has what we want, in an item named columns
+# # now put in a tibble, need to do some manual things to remove the name from the start of the data
+# cdc_epi &lt;- tibble(
+#   Date = mdy(data[[1]][-1]), # grab first item in list, remove first element (the name)
+#   incident_cases = as.numeric(data[[2]][-1]) # grab second item in list, remove first element
+# )
+# # archive it, so that I use the same data for these figures always!
+# also means I don&#39;t hit the server with data requests every time I save the post.
+# save(cdc_epi, file = &quot;data/cdc_epi_2020-03-15.Rda&quot;)
+# &lt;HERE&gt;
+load(file = &quot;data/cdc_epi_2020-03-15.Rda&quot;)
+
+# plot it, just to see what it looks like
+ggplot(data = cdc_epi,
+       mapping = aes(x = Date, y = incident_cases)) + 
+  geom_point() +
+  geom_vline(xintercept = ymd(&quot;2020-03-05&quot;), linetype = 2)</code></pre>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Cool! It worked … OK, the vertical dashed line marks the point at which the CDC thinks
+not all cases are yet reported, so we shouldn’t model things after March 5th, yet.
+I want to fit the same model as before, but the difficulty with that model is
+that it doesn’t handle zeros well – <span class="math inline">\(log_{10}(0) = -\infty\)</span>. In my
+current predictions I’m dodging that issue by only using data after
+the number of incident cases is always positive. But I’ve been
+wondering how a glm with log link would do. Also need to choose an
+error distribution; a Poisson distribution has only positive
+support and discrete values so I’ll try that.</p>
+<pre class="r"><code>cdc_epi_trimmed &lt;- filter(cdc_epi, Date &lt; &quot;2020-03-05&quot;) %&gt;% 
+  mutate(days = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) # use day relative to Feb 27, same as other model
+cdc_epi_glm &lt;- glm(incident_cases ~ days, data = cdc_epi_trimmed, family = poisson)
+summary(cdc_epi_glm)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = incident_cases ~ days, family = poisson, data = cdc_epi_trimmed)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.3802  -1.0380  -0.3911   0.7188   3.4028  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) 3.306554   0.045628   72.47   &lt;2e-16 ***
+## days        0.142165   0.006575   21.62   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1096.97  on 52  degrees of freedom
+## Residual deviance:  108.51  on 51  degrees of freedom
+## AIC: 237.87
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<p>Wow. Daily growth rate is 0.14 day<sup>-1</sup>, almost exactly the same estimate as I get for the
+model based on reported cases, because the base of the logarithms is different. This is
+easy to see by running the transformation based model on the cases by infection date data.</p>
+<pre class="r"><code>cdc_epi_trimmed %&gt;% 
+  filter(Date &gt; ymd(&quot;2020-02-17&quot;)) %&gt;% 
+  mutate(log_cases = log10(incident_cases)) %&gt;% 
+  lm(log_cases ~ days, data = .) %&gt;% 
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log_cases ~ days, data = .)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.161794 -0.088745 -0.001402  0.091514  0.284924 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.440548   0.033381  43.155 2.71e-16 ***
+## days        0.064664   0.006886   9.391 2.02e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.127 on 14 degrees of freedom
+## Multiple R-squared:  0.863,  Adjusted R-squared:  0.8532 
+## F-statistic: 88.19 on 1 and 14 DF,  p-value: 2.023e-07</code></pre>
+<p>So reported cases are growing faster than the number of cases with known infection dates.
+Trouble is, the number of cases with known infection dates is compromised by a lack of
+reporting (or the numbers would match the reported cases).</p>
+<p>That model is mildly overdispersed
+(ratio of residual deviance to degrees of freedom is
+2.1), so
+how does a Negative Binomial model compare?</p>
+<pre class="r"><code>library(&quot;mgcv&quot;) # switch to mgcv::gam to estimate overdispersion parameter
+cdc_epi_glm2 &lt;- gam(incident_cases ~ days, data = cdc_epi_trimmed, family = nb)
+summary(cdc_epi_glm2)</code></pre>
+<pre><code>## 
+## Family: Negative Binomial(8.649) 
+## Link function: log 
+## 
+## Formula:
+## incident_cases ~ days
+## 
+## Parametric coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) 3.234943   0.100297   32.25   &lt;2e-16 ***
+## days        0.134150   0.009143   14.67   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## R-sq.(adj) =  0.925   Deviance explained = 85.4%
+## -REML = 119.64  Scale est. = 1         n = 53</code></pre>
+<p>The AIC for this model is 235 so moderately better than
+the Poisson model.</p>
+<div id="fit-the-model-for-more-countries" class="section level2">
+<h2>Fit the model for more countries</h2>
+<p>I’d like to get predictions for more countries so we can compare how the USA is doing with, say,
+Italy or South Korea. I’m going back to reported case data for this, and I’m going to use the
+Negative Binomial model because then I don’t have to worry about the odd zero close to the start of the time series. I’ll process the other countries separately because of the funky county/state
+business in the USA, then stick them together afterwards.</p>
+<pre class="r"><code>countries &lt;- c(&quot;Canada&quot;, &quot;Australia&quot;, &quot;Korea, South&quot;, &quot;Italy&quot;, &quot;Iran&quot;)
+other_confirmed_total &lt;- jhu_wide %&gt;% 
+  rename(province = &quot;Province/State&quot;, 
+         country_region = &quot;Country/Region&quot;) %&gt;% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = &quot;Date&quot;, values_to = &quot;cumulative_cases&quot;) %&gt;% 
+  filter(country_region %in% countries,
+         # have to trap the rows with missing province (most other countries)
+         # otherwise str_detect(province ...) is missing and dropped by filter()
+         is.na(province) | str_detect(province, &quot;Princess&quot;, negate = TRUE)) %&gt;% 
+  mutate(Date = mdy(Date)) %&gt;% 
+  # filter out state rows prior to march 9, and county rows after that. 
+  group_by(country_region, Date) %&gt;% # then group by country and Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %&gt;% 
+  group_by(country_region) %&gt;% 
+  mutate(incident_cases = c(0, diff(cumulative_cases))) %&gt;% 
+  ungroup()
+us_confirmed_total &lt;- mutate(us_confirmed_total, country_region = &quot;USA&quot;)
+all_confirmed_total &lt;- bind_rows(other_confirmed_total, us_confirmed_total)
+
+pall &lt;- ggplot(data = all_confirmed_total,
+       mapping = aes(x = Date)) + # don&#39;t add y = here, so we can change variables later for ribbons etc
+  geom_point(mapping = aes(y = incident_cases)) + 
+  facet_wrap(~country_region, scales = &quot;free_y&quot;)
+pall</code></pre>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Phew. That took far too long to sort out, because I tried to <code>filter()</code> all the countries including the
+USA, and that was just not working. Treating the USA separately was easy because I already
+had that dataframe built above. The y axis scales are wildly different on those, but just eyeballing
+the shape it’s clear that South Korea is doing something radically different. There are also a couple
+weird outliers in Australia and Italy where incident cases dropped to zero suddenly for one day. Canada
+also has a strange 2 day oscillation going on. Now fit the models and see what that looks like.</p>
+<pre class="r"><code>all_results &lt;- all_confirmed_total %&gt;%
+  mutate(day = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) %&gt;% # get day relative to Feb 27
+  filter(Date &gt; &quot;2020-02-15&quot;, Date &lt;= &quot;2020-03-11&quot;) %&gt;% 
+  group_by(country_region) %&gt;% 
+  nest() %&gt;% 
+  mutate(models = map(data, ~gam(incident_cases ~ day, data = ., family = nb)))</code></pre>
+</div>
+</div>
