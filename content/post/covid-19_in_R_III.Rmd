@@ -6,7 +6,7 @@ output:
   word_document: default
   html_document:
     code_folding: hide
-draft: yes
+draft: no
 slug: COVID-19_and_R_III
 tags_include:
 - R
@@ -56,6 +56,7 @@ us_confirmed_total <- jhu_wide %>%
 #  mutate(Date = lubridate::mdy(Date) - lubridate::days(1)) %>% 
   arrange(province, Date)  %>% 
   # filter out state rows prior to march 8, and county rows after that. 
+  # this is dropping virgin islands ... 
   filter(str_detect(province, ", ") & Date <= "2020-03-9" |
            str_detect(province, ", ", negate = TRUE) & Date > "2020-03-9") %>% 
   group_by(Date) %>% # then group by Date and sum
@@ -165,72 +166,6 @@ want to be the vector for someone getting ill.
 
 Stay well everyone, and wash your hands!
 
-# Full data nerd below this point
 
-[That article by Tomas Pueyo](https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca)
-has some good points about the difference between reported cases (what I'm using) and true cases
-(what I wish we had). The CDC does have a table of cases by date of infection, but it's a 
-small fraction of the total cases reported. Nonetheless, I thought it might be 
-instructive to run the exponential model on that data. Annnd, it's buried inside a JSON
-file used by a javascript widget that makes the figure and displays the table. No HTML table to scrape. 
 
-```{r, message=FALSE}
-# if running this for the first time, uncomment (once!) all the lines from 
-# <HERE> to 
-# library("RJSONIO")
-# library("RCurl")
-# 
-# # grab the data
-# raw_data <- getURL("https://www.cdc.gov/coronavirus/2019-ncov/us-cases-epi-chart.json")
-# # Then covert from JSON into a list in R
-# data <- fromJSON(raw_data)$data$columns # the list item named "data" has what we want, in an item named columns
-# # now put in a tibble, need to do some manual things to remove the name from the start of the data
-# cdc_epi <- tibble(
-#   Date = mdy(data[[1]][-1]), # grab first item in list, remove first element (the name)
-#   incident_cases = as.numeric(data[[2]][-1]) # grab second item in list, remove first element
-# )
-# # archive it, so that I use the same data for these figures always!
-# also means I don't hit the server with data requests every time I save the post.
-# save(cdc_epi, file = "data/cdc_epi_2020-03-15.Rda")
-# <HERE>
-load(file = "data/cdc_epi_2020-03-15.Rda")
-
-# plot it, just to see what it looks like
-ggplot(data = cdc_epi,
-       mapping = aes(x = Date, y = incident_cases)) + 
-  geom_point() +
-  geom_vline(xintercept = ymd("2020-03-05"), linetype = 2)
-```
-
-Cool! It worked ... OK, the vertical dashed line marks the point at which the CDC thinks
-not all cases are yet reported, so we shouldn't model things after March 5th, yet.
-I want to fit the same model as before, but the difficulty with that model is
-that it doesn't handle zeros well -- $log_{10}(0) = -\infty$. In my 
-current predictions I'm dodging that issue by only using data after
-the number of incident cases is always positive. But I've been 
-wondering how a glm with log link would do. Also need to choose an
-error distribution; a Poisson distribution has only positive 
-support and discrete values so I'll try that. 
-
-```{r}
-cdc_epi_trimmed <- filter(cdc_epi, Date < "2020-03-05") %>% 
-  mutate(days = as.numeric(Date - ymd("2020-02-27"))) # use day relative to Feb 27, same as other model
-cdc_epi_glm <- glm(incident_cases ~ days, data = cdc_epi_trimmed, family = poisson)
-summary(cdc_epi_glm)
-```
-Wow. Daily growth rate is 0.14 day^-1^, almost exactly the same estimate as I get for the
-model based on the total number of cases. That model is mildly overdispersed
-(ratio of residual deviance to degrees of freedom is 
-`r format(cdc_epi_glm$deviance / cdc_epi_glm$df.residual, digits = 2)`), so
-how does a Negative Binomial model compare?
-
-```{r}
-library("mgcv") # switch to mgcv::gam to estimate overdispersion parameter
-cdc_epi_glm2 <- gam(incident_cases ~ days, data = cdc_epi_trimmed, family = mgcv::nb)
-summary(cdc_epi_glm2)
-```
-
-The AIC for this model is `r format(AIC(cdc_epi_glm2),digits = 2)` so moderately better than
-the Poisson model. 
-
-[^1]: The code for this post that is not shown is [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd).
+[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd).
