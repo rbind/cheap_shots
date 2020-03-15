@@ -1,0 +1,117 @@
+---
+title: "COVID-19 and R Part III"
+author: "Drew Tyre"
+date: '`r Sys.Date()`'
+output: 
+  html_document:
+    code_folding: hide
+draft: no
+slug: COVID-19_and_R_III
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+---
+
+In today's post I want to summarize some information about what to do (and what not to do)
+in the face of the COVID-19 pandemic, and examine how my predictions are holding up.
+I feel a little bit guilty because the topic is serious, and this data reflects 
+real suffering, but I am learning a lot with this real-time forecasting. In my
+normal work I only get one data point *per year*. Which means building up skill
+in forecasting takes a loooong time. 
+
+I've also realized I have a few different possible audiences with different needs.
+There are intelligent and interested people like my mother who want the bottom line
+explained but don't care how I get there. There are students who want to learn 
+more about how to use R. And then there are some serious data nerds who want to
+know about my every choice in the analysis and ask why I'm not doing y or z. So
+I'm going to put the bottom line at the top, so that my mother doesn't have to 
+scroll too far on her tablet (seriously, this was a conversation we just had).
+So if you want the gory details scroll down.
+
+# The bottom line
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library("tidyverse")
+library("lubridate")
+
+jhu_url <- paste("https://raw.githubusercontent.com/CSSEGISandData/", 
+                 "COVID-19/master/csse_covid_19_data/", 
+                 "csse_covid_19_time_series/", 
+                 "time_series_19-covid-Confirmed.csv", sep = "")
+
+#jhu_wide <- read_csv(jhu_url) # just grab it once from github
+# archive it! 
+#save(jhu_wide, file = "data/jhu_wide_2020-03-15.Rda")
+load("data/jhu_wide_2020-03-15.Rda")
+us_confirmed_total <- jhu_wide %>% 
+  rename(province = "Province/State", 
+         country_region = "Country/Region") %>% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = "Date", values_to = "cumulative_cases") %>% 
+  filter(country_region == "US") %>% 
+  mutate(Date = mdy(Date)) %>% 
+#  mutate(Date = lubridate::mdy(Date) - lubridate::days(1)) %>% 
+  arrange(province, Date)  %>% 
+  # filter out state rows prior to march 8, and county rows after that. 
+  filter(str_detect(province, ", ") & Date <= "2020-03-9" |
+           str_detect(province, ", ", negate = TRUE) & Date > "2020-03-9") %>% 
+  group_by(Date) %>% # then group by Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %>% 
+  ungroup() %>% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)))
+
+p1 <- ggplot(data = filter(us_confirmed_total, Date > "2020-02-28", Date <= "2020-03-11"),
+       mapping = aes(x = Date)) + 
+#  geom_line(mapping = aes(y = incident_cases)) + 
+  geom_point(mapping = aes(y = incident_cases)) + 
+  scale_y_log10() + 
+  geom_smooth(mapping = aes(y = incident_cases), method = "lm")
+
+us_exp_model <- us_confirmed_total %>% 
+  mutate(log_incident_cases = log10(incident_cases),    # transform the data
+         day = as.numeric(Date - ymd("2020-02-27"))) %>% # get day relative to Feb 27
+  filter(Date > "2020-02-28", Date <= "2020-03-11") %>% 
+  lm(data = .,
+     formula = log_incident_cases ~ day) 
+
+predicted <- tibble(day = 14:20)
+predicted_list <- predict(us_exp_model, newdata = predicted, se.fit = TRUE)
+predicted$fit <- predicted_list$fit # this is klutzy, but I want to see the answer! 
+predicted$se.fit <- predicted_list$se.fit
+predicted <- predicted %>% 
+  mutate(Date = ymd("2020-2-27") + day,
+         pred_var = se.fit^2 + predicted_list$residual.scale^2,
+         lpl = 10^(fit - sqrt(pred_var)*qt(0.975, df = 11)),
+         upl = 10^(fit + sqrt(pred_var)*qt(0.975, df = 11)),
+         fit = 10^fit)
+
+p1 + 
+  geom_line(data = predicted,
+            mapping = aes(y = fit),
+            linetype = 2) +
+  geom_ribbon(data = predicted,
+            mapping = aes(ymin = lpl, ymax = upl),
+            alpha = 0.2) +
+  geom_point(data = filter(us_confirmed_total, Date > "2020-03-11"),
+             mapping = aes(y = incident_cases)) +
+  labs(y = "Incident cases", title = "Total new reported cases per day in the USA",
+       subtitle = "Exponential model in blue; predicted values with 95% prediction intervals with dashed line.")
+```
+
+Saturday's count of new cases in the USA was within my prediction interval.[^1]
+The prediction interval is the wider ribbon of grey around
+the dashed line. For any one day, if you imagine 100 different
+copies of reality, 95 of the 100 would have new cases that fall
+inside the grey ribbon. So this prediction is still
+looking good for my model. However, I would also
+expect that the points would fluctuate above and below
+the dashed line. I'm assuming that the rate of
+new cases per case is not changing. If the "social distancing"
+is working to reduce the spread, then the number of new cases
+should start to drop away from my prediction. This is sort of
+what is shown in the figure, but not severe enough yet
+to make me throw out my simple model.
+
+[^1]: The code for this post that is not shown is [on Github](https://github.com/rbind/cheap_shots/blob/master/content/post/covid-19_in_R_III.Rmd).

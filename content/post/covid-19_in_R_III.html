@@ -1,0 +1,55 @@
+---
+title: "COVID-19 and R Part III"
+author: "Drew Tyre"
+date: '2020-03-15'
+output: 
+  html_document:
+    code_folding: hide
+draft: no
+slug: COVID-19_and_R_III
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+---
+
+
+
+<p>In today’s post I want to summarize some information about what to do (and what not to do)
+in the face of the COVID-19 pandemic, and examine how my predictions are holding up.
+I feel a little bit guilty because the topic is serious, and this data reflects
+real suffering, but I am learning a lot with this real-time forecasting. In my
+normal work I only get one data point <em>per year</em>. Which means building up skill
+in forecasting takes a loooong time.</p>
+<p>I’ve also realized I have a few different possible audiences with different needs.
+There are intelligent and interested people like my mother who want the bottom line
+explained but don’t care how I get there. There are students who want to learn
+more about how to use R. And then there are some serious data nerds who want to
+know about my every choice in the analysis and ask why I’m not doing y or z. So
+I’m going to put the bottom line at the top, so that my mother doesn’t have to
+scroll too far on her tablet (seriously, this was a conversation we just had).
+So if you want the gory details scroll down.</p>
+<div id="the-bottom-line" class="section level1">
+<h1>The bottom line</h1>
+<p><img src="/post/covid-19_in_R_III_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Saturday’s count of new cases in the USA was within my prediction interval.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>
+The prediction interval is the wider ribbon of grey around
+the dashed line. For any one day, if you imagine 100 different
+copies of reality, 95 of the 100 would have new cases that fall
+inside the grey ribbon. So this prediction is still
+looking good for my model. However, I would also
+expect that the points would fluctuate above and below
+the dashed line. I’m assuming that the rate of
+new cases per case is not changing. If the “social distancing”
+is working to reduce the spread, then the number of new cases
+should start to drop away from my prediction. This is sort of
+what is shown in the figure, but not severe enough yet
+to make me throw out my simple model.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The code for this post that is not shown is <a href="https://github.com/rbind/cheap_shots/blob/master/content/post/covid-19_in_R_III.Rmd">on Github</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
