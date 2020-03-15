@@ -1,11 +1,12 @@
 ---
 title: "COVID-19 and R Part III"
 author: "Drew Tyre"
-date: '2020-03-15'
-output: 
+date: "2020-03-15"
+output:
+  word_document: default
   html_document:
     code_folding: hide
-draft: no
+draft: yes
 slug: COVID-19_and_R_III
 tags_include:
 - R
@@ -45,11 +46,153 @@ new cases per case is not changing. If the “social distancing”
 is working to reduce the spread, then the number of new cases
 should start to drop away from my prediction. This is sort of
 what is shown in the figure, but not severe enough yet
-to make me throw out my simple model.</p>
+to make me throw out my simple model. Yet.</p>
+<p>My friend Brenda Pracheil (also a data nerd) offered up an interesting
+hypothesis for the lower number of cases reported yesterday: the weekend hypothesis.
+Fewer doctors, clinics etc. open on the weekend, so fewer people getting tested and
+reported. Too early to judge if that’s happening or not, but I’ll keep
+it in mind! The point that is farthest off my fitted line is a Monday.</p>
+<p>My summary of things to do:</p>
+<ul>
+<li><p>Wash your hands especially after going out and touching things other people have touched.
+Seriously. Soap more effective than hand sanitizer. Use hand sanitizer if you can’t get
+soap and water, but as long as you don’t touch your face after touching door knobs, etc.
+you can wait and use soap.</p></li>
+<li><p>Don’t bother with a mask unless you are already sick with some respiratory illness. Apparently
+wearing a mask makes you <em>more</em> likely to touch your face, and that’s bad.</p></li>
+<li><p>If you can, work from home and regardless avoid businesses and activities where you’ll end up closer
+than 1 m (3 feet) from others. This “social distancing” reduces the number of people you
+come in contact with per day, which reduces the rate at which the virus spreads. This is
+not an all or nothing thing. Tomas Pueyo, clearly a fellow (but wealthier and more successful!) data nerd,
+wrote <a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">a great article that shows the effects of social distancing</a> (among other interesting things).
+This chart in particular shows the benefit of social distancing:
+<img src="https://miro.medium.com/max/2942/1*aXhYA5D5PdTFjCTbFv8zmg.png" alt="chart 21c" />
+Reducing the number of people you come in contact with by 25% would postpone the epidemic peak by weeks, and reduce the size of the epidemic. A little social distancing goes a long way.</p></li>
+<li><p>Don’t expect this to be over in 2 weeks. If you’re exposed, and you isolate yourself, after
+2 weeks you can be sure you didn’t get infected by that exposure. But the epidemic is going to
+go on for quite a while! Months. Which leads me to …</p></li>
+<li><p>Don’t buy enough toilet paper for a year. “Stocking up” reduces the
+number of times you go to the store for supplies, not enable you to weather the apocalypse.
+If you’re in a grocery store, and there is some toilet paper, buy a package even if you don’t need it.
+But don’t buy 20, that’s just being silly. And rushing around to every store in town looking for
+toilet paper just increases your contact rate!</p></li>
+<li><p>Don’t panic. Yes, lots of people are going to get sick, but if you’re healthy and under 60 you
+are very unlikely to die or even need serious medical help. You should practice social distancing,
+even so, because that helps the broader community including people that are more likely to suffer
+severe disease from the virus.</p></li>
+<li><p>Do offer to help elderly or unhealthy neighbors and relatives. Offer to bring them supplies so
+they don’t have to risk going out. If you do that, when you deliver keep your distance! You don’t
+want to be the vector for someone getting ill.</p></li>
+</ul>
+<p>Stay well everyone, and wash your hands!</p>
+</div>
+<div id="full-data-nerd-below-this-point" class="section level1">
+<h1>Full data nerd below this point</h1>
+<p><a href="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">That article by Tomas Pueyo</a>
+has some good points about the difference between reported cases (what I’m using) and true cases
+(what I wish we had). The CDC does have a table of cases by date of infection, but it’s a
+small fraction of the total cases reported. Nonetheless, I thought it might be
+instructive to run the exponential model on that data. Annnd, it’s buried inside a JSON
+file used by a javascript widget that makes the figure and displays the table. No HTML table to scrape.</p>
+<pre class="r"><code># if running this for the first time, uncomment (once!) all the lines from 
+# &lt;HERE&gt; to 
+# library(&quot;RJSONIO&quot;)
+# library(&quot;RCurl&quot;)
+# 
+# # grab the data
+# raw_data &lt;- getURL(&quot;https://www.cdc.gov/coronavirus/2019-ncov/us-cases-epi-chart.json&quot;)
+# # Then covert from JSON into a list in R
+# data &lt;- fromJSON(raw_data)$data$columns # the list item named &quot;data&quot; has what we want, in an item named columns
+# # now put in a tibble, need to do some manual things to remove the name from the start of the data
+# cdc_epi &lt;- tibble(
+#   Date = mdy(data[[1]][-1]), # grab first item in list, remove first element (the name)
+#   incident_cases = as.numeric(data[[2]][-1]) # grab second item in list, remove first element
+# )
+# # archive it, so that I use the same data for these figures always!
+# also means I don&#39;t hit the server with data requests every time I save the post.
+# save(cdc_epi, file = &quot;data/cdc_epi_2020-03-15.Rda&quot;)
+# &lt;HERE&gt;
+load(file = &quot;data/cdc_epi_2020-03-15.Rda&quot;)
+
+# plot it, just to see what it looks like
+ggplot(data = cdc_epi,
+       mapping = aes(x = Date, y = incident_cases)) + 
+  geom_point() +
+  geom_vline(xintercept = ymd(&quot;2020-03-05&quot;), linetype = 2)</code></pre>
+<p><img src="/post/covid-19_in_R_III_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Cool! It worked … OK, the vertical dashed line marks the point at which the CDC thinks
+not all cases are yet reported, so we shouldn’t model things after March 5th, yet.
+I want to fit the same model as before, but the difficulty with that model is
+that it doesn’t handle zeros well – <span class="math inline">\(log_{10}(0) = -\infty\)</span>. In my
+current predictions I’m dodging that issue by only using data after
+the number of incident cases is always positive. But I’ve been
+wondering how a glm with log link would do. Also need to choose an
+error distribution; a Poisson distribution has only positive
+support and discrete values so I’ll try that.</p>
+<pre class="r"><code>cdc_epi_trimmed &lt;- filter(cdc_epi, Date &lt; &quot;2020-03-05&quot;) %&gt;% 
+  mutate(days = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) # use day relative to Feb 27, same as other model
+cdc_epi_glm &lt;- glm(incident_cases ~ days, data = cdc_epi_trimmed, family = poisson)
+summary(cdc_epi_glm)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = incident_cases ~ days, family = poisson, data = cdc_epi_trimmed)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.3802  -1.0380  -0.3911   0.7188   3.4028  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) 3.306554   0.045628   72.47   &lt;2e-16 ***
+## days        0.142165   0.006575   21.62   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1096.97  on 52  degrees of freedom
+## Residual deviance:  108.51  on 51  degrees of freedom
+## AIC: 237.87
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<p>Wow. Daily growth rate is 0.14 day<sup>-1</sup>, almost exactly the same estimate as I get for the
+model based on the total number of cases. That model is mildly overdispersed
+(ratio of residual deviance to degrees of freedom is
+2.1), so
+how does a Negative Binomial model compare?</p>
+<pre class="r"><code>library(&quot;mgcv&quot;) # switch to mgcv::gam to estimate overdispersion parameter</code></pre>
+<pre><code>## Loading required package: nlme</code></pre>
+<pre><code>## 
+## Attaching package: &#39;nlme&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     collapse</code></pre>
+<pre><code>## This is mgcv 1.8-28. For overview type &#39;help(&quot;mgcv-package&quot;)&#39;.</code></pre>
+<pre class="r"><code>cdc_epi_glm2 &lt;- gam(incident_cases ~ days, data = cdc_epi_trimmed, family = mgcv::nb)
+summary(cdc_epi_glm2)</code></pre>
+<pre><code>## 
+## Family: Negative Binomial(8.649) 
+## Link function: log 
+## 
+## Formula:
+## incident_cases ~ days
+## 
+## Parametric coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) 3.234943   0.100297   32.25   &lt;2e-16 ***
+## days        0.134150   0.009143   14.67   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## R-sq.(adj) =  0.925   Deviance explained = 85.4%
+## -REML = 119.64  Scale est. = 1         n = 53</code></pre>
+<p>The AIC for this model is 235 so moderately better than
+the Poisson model.</p>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>The code for this post that is not shown is <a href="https://github.com/rbind/cheap_shots/blob/master/content/post/covid-19_in_R_III.Rmd">on Github</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>The code for this post that is not shown is <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd">on Github</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
