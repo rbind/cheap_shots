@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 and R Part IV"
 author: "Drew Tyre"
-date: "2020-03-15"
+date: "2020-03-16"
 output:
   word_document: default
   html_document:
@@ -13,13 +13,39 @@ tags_include:
 - OPD
 - COVID19
 categories: Research
+featured_image: "post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png"
 ---
 
 
 
+<p>Sunday’s numbers still inside prediction interval, but below expectations.
+That’s good news. I’ve started adding more countries for comparison, to see
+whether USA is looking more like South Korea or more like Italy.</p>
 <div id="the-bottom-line" class="section level1">
 <h1>The bottom line</h1>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.</p>
 <p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Much as yesterday, Sunday’s new cases are inside the prediction intervals but
+below expectations for the exponential model<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This is good news, maybe. One of
+the issues with using “reported cases” is that it is affected
+by the frequency of testing for COVID-19. This is starting to ramp up in the USA,
+so we might see the rate of new cases go up as that happens.</p>
+<p>If there is a “weekend effect” in reporting, it would look like
+the two points for March 14 and 15 – dropping down below the expected values.
+Once there is more data I might be able to add a “weekend correction”,
+but not yet. It also probably doesn’t matter for decision making at this point.</p>
+<p>One of my FaceBook friends asked, “Does anyone known anyone that actually has coronavirus?”
+This is an interesting question, because we humans tend to take things
+that happen to our circle of people more seriously. Unfortunately, in the USA you’re unlikely to know anyone at this stage – ~3500 cases out of 327 million. There are certainly more people with the disease than that, but they’re the lucky ones who get a mild case. The problem with exponential growth is that everything looks fine until it suddenly isn’t.
+People in Lombardy or Wuhan are much, much more likely to know someone who is ill. The
+goal of cancelling events and social distancing is to make sure you <em>don’t</em> know
+someone personally.</p>
+<p>Bottom line – the pandemic still spreading in USA consistent with exponential growth.
+There are possible signs of improvement, but this next week will be critical to seeing
+what sort of trajectory the USA is on.</p>
 </div>
 <div id="full-data-nerd-below-this-point" class="section level1">
 <h1>Full data nerd below this point</h1>
@@ -28,7 +54,7 @@ has some good points about the difference between reported cases (what I’m usi
 (what I wish we had). The CDC does have a table of cases by date of infection, but it’s a
 small fraction of the total cases reported. Nonetheless, I thought it might be
 instructive to run the exponential model on that data. Annnd, it’s buried inside a JSON
-file used by a javascript widget that makes the figure and displays the table. No HTML table to scrape.</p>
+file used by a javascript widget that makes the figure and displays the table. No HTML table to scrape, so –</p>
 <pre class="r"><code># if running this for the first time, uncomment (once!) all the lines from 
 # &lt;HERE&gt; to 
 # library(&quot;RJSONIO&quot;)
@@ -91,7 +117,7 @@ summary(cdc_epi_glm)</code></pre>
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <p>Wow. Daily growth rate is 0.14 day<sup>-1</sup>, almost exactly the same estimate as I get for the
-model based on reported cases, because the base of the logarithms is different. This is
+model based on reported cases. That is a coincidence because the base of the logarithms is different. This is
 easy to see by running the transformation based model on the cases by infection date data.</p>
 <pre class="r"><code>cdc_epi_trimmed %&gt;% 
   filter(Date &gt; ymd(&quot;2020-02-17&quot;)) %&gt;% 
@@ -119,7 +145,7 @@ easy to see by running the transformation based model on the cases by infection 
 <p>So reported cases are growing faster than the number of cases with known infection dates.
 Trouble is, the number of cases with known infection dates is compromised by a lack of
 reporting (or the numbers would match the reported cases).</p>
-<p>That model is mildly overdispersed
+<p>The Poisson model is mildly overdispersed
 (ratio of residual deviance to degrees of freedom is
 2.1), so
 how does a Negative Binomial model compare?</p>
@@ -148,7 +174,7 @@ the Poisson model.</p>
 <div id="fit-the-model-for-more-countries" class="section level2">
 <h2>Fit the model for more countries</h2>
 <p>I’d like to get predictions for more countries so we can compare how the USA is doing with, say,
-Italy or South Korea. I’m going back to reported case data for this, and I’m going to use the
+Italy or South Korea. I’m going back to reported case data from JHU for this, and I’m going to use the
 Negative Binomial model because then I don’t have to worry about the odd zero close to the start of the time series. I’ll process the other countries separately because of the funky county/state
 business in the USA, then stick them together afterwards.</p>
 <pre class="r"><code>countries &lt;- c(&quot;Canada&quot;, &quot;Australia&quot;, &quot;Korea, South&quot;, &quot;Italy&quot;, &quot;Iran&quot;)
@@ -182,12 +208,132 @@ USA, and that was just not working. Treating the USA separately was easy because
 had that dataframe built above. The y axis scales are wildly different on those, but just eyeballing
 the shape it’s clear that South Korea is doing something radically different. There are also a couple
 weird outliers in Australia and Italy where incident cases dropped to zero suddenly for one day. Canada
-also has a strange 2 day oscillation going on. Now fit the models and see what that looks like.</p>
+also has a strange 2 day oscillation going on. I think these are likely reporting artifacts.</p>
+<p>Now fit the models and see what that looks like.
+The early period of the time series for all these countries is mostly driven by travel related
+cases, so as before I’ll trim off the data prior to Feb 15. I picked that date by eyeballing
+the data and looking for a date prior to where all the countries case loads started accelerating.
+It would be better to have that set uniquely for each country, and I’ve got some thoughts on
+how to do that, but I’ll leave that for tomorrow.</p>
 <pre class="r"><code>all_results &lt;- all_confirmed_total %&gt;%
   mutate(day = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) %&gt;% # get day relative to Feb 27
-  filter(Date &gt; &quot;2020-02-15&quot;, Date &lt;= &quot;2020-03-11&quot;) %&gt;% 
+  filter(Date &gt; &quot;2020-02-15&quot;, Date &lt;= &quot;2020-03-11&quot;) %&gt;% # trim data to the dates we want
   group_by(country_region) %&gt;% 
+  # nest() puts the data for each country into a &quot;list column&quot; called &quot;data&quot; 
+  # so that I can do the next step
   nest() %&gt;% 
-  mutate(models = map(data, ~gam(incident_cases ~ day, data = ., family = nb)))</code></pre>
+  # fit the models to each dataframe in the list column
+  mutate(models = map(data, ~gam(incident_cases ~ day, data = ., family = nb)),
+         data = map2(models, data, ~bind_cols(.y, tibble(.fitted = fitted.values(.x))))) ## adds regression output to data 
+all_fitted &lt;- all_results %&gt;% 
+  select(-models) %&gt;%  # remove the models column before the next step
+  unnest(cols = data)  # pulls the &quot;data&quot; column back out to make a single data frame
+pall + 
+  geom_line(data = all_fitted,
+            mapping = aes(y = .fitted))</code></pre>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>That’s a first cut, because <code>broom</code> functions don’t work on <code>mgcv::gam</code> objects. So I
+need to write a custom function to get what I want. But it certainly looks like all
+countries are showing less growth in cases than expected from a simple exponential
+growth model. That’s good news.</p>
+<pre class="r"><code>augment_gam &lt;- function(x, newdata = NULL, se.fit = FALSE){
+  if (is.null(newdata)){
+    result &lt;- predict(x, se.fit = se.fit)
+    original_data &lt;- x$model
+  } else {
+    result &lt;- predict(x, newdata = newdata, se.fit = se.fit)
+    original_data &lt;- newdata
+  }
+  if (se.fit){
+    result &lt;- bind_cols(original_data,
+                     tibble(.fitted = result$fit,
+                     .se.fit = result$se.fit))
+  } else {
+    result &lt;- bind_cols(original_data,
+                     tibble(.fitted = result))
+  }
+  return(result)
+}
+# test it
+# augment_gam(all_results$models[[1]], se.fit = TRUE, newdata = tibble(day = 14:20))
+# seems to work
+all_results &lt;- all_confirmed_total %&gt;%
+  mutate(day = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) %&gt;% # get day relative to Feb 27
+  filter(Date &gt; &quot;2020-02-15&quot;, Date &lt;= &quot;2020-03-11&quot;) %&gt;% # trim data to the dates we want
+  group_by(country_region) %&gt;% 
+  # nest() puts the data for each country into a &quot;list column&quot; called &quot;data&quot; 
+  # so that I can do the next step
+  nest() %&gt;% 
+  # fit the models to each dataframe in the list column
+  mutate(models = map(data, ~gam(incident_cases ~ day, data = ., family = nb)),
+         data = map(models, augment_gam, se.fit = TRUE), ## adds regression output to data
+         theta = map(models, ~.x$family$getTheta(TRUE)),
+         df = map_dbl(models, &quot;df.residual&quot;))  
+
+all_fitted &lt;- all_results %&gt;% 
+  select(-models) %&gt;%  # remove the models column before the next step
+  unnest(cols = data) %&gt;%   # pulls the &quot;data&quot; column back out to make a single data frame
+  mutate(Date = ymd(&quot;2020-02-27&quot;)+days(day), # recreate the Date column
+         fitted_cases = exp(.fitted),        # .fitted on log scale
+         lcl_cases = exp(.fitted - qt(0.975, df)*.se.fit),
+         ucl_cases = exp(.fitted + qt(0.975, df)*.se.fit))
+
+predict_data &lt;- tibble(day = 14:20)
+predicted &lt;- all_results %&gt;% 
+  mutate(predictions = map(models, augment_gam, se.fit = TRUE, newdata = predict_data),
+         theta = map(models, ~.x$family$getTheta(TRUE)),
+         df = map_dbl(models, &quot;df.residual&quot;)) %&gt;% 
+  select(-models, -data) %&gt;% 
+  unnest(cols = c(&quot;predictions&quot;, &quot;theta&quot;)) %&gt;% 
+  mutate(Date = ymd(&quot;2020-02-27&quot;)+days(day), # recreate the Date column
+         expected_cases = exp(.fitted),
+         lpl = qnbinom(0.025, mu = expected_cases, size = theta),
+         upl = qnbinom(0.975, mu = expected_cases, size = theta))
+pall2 &lt;- ggplot(data = filter(all_confirmed_total, Date &gt;= ymd(&quot;2020-02-15&quot;)),
+       mapping = aes(x = Date)) + # don&#39;t add y = here, so we can change variables later for ribbons etc
+  geom_point(mapping = aes(y = incident_cases)) + 
+  facet_wrap(~country_region, scales = &quot;free_y&quot;)
+
+pall2 + 
+  geom_line(data = all_fitted,
+            mapping = aes(y = fitted_cases), 
+            col = &quot;blue&quot;, size = 1.5) + 
+  geom_ribbon(data = all_fitted,
+              mapping = aes(ymin = lcl_cases, ymax = ucl_cases),
+              alpha = 0.25) + 
+  geom_line(data = predicted,
+            mapping = aes(y = expected_cases),
+            linetype = 2) + 
+  geom_ribbon(data = predicted,
+              mapping = aes(ymin = lpl, ymax = upl),
+              alpha = 0.25) +
+  scale_y_log10()</code></pre>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Clearly I need to figure out country specific ranges to fit the model. South Korea
+is clearly not growing anymore, so the terrible model fit is not unexpected. Iran
+is either doing great, or lying about the number of new cases, opinion out there seems
+divided on this point.</p>
+<p>One excellent point raised by Brian McGill in the <a href="https://dynamicecology.wordpress.com/2020/03/15/ecologists-discussing-science-of-corona-virus-pandemic-open-thread/">open discussion on Dyanmic Ecology</a>
+is that the extreme response of South Korea and other countries which works in the short term,
+might not be the best strategy in the long term. The “squash it” strategy works
+for a disease like SARS or MERS which are less contagious, and can therefore really be
+put to bed for good. But seems like COVID-19 has exceeded global capacity to squash it everywhere.
+Which means we need to figure out how to live with it long term. With an estimated R0 = 2.5 COVID-19
+will continue to be an issue until ~ 60% of the population are immune.
+I think the real goal of the “stretch it out” strategy by
+social distancing etc. is to buy us enough time to get a vaccine and build herd immunity artificially.</p>
 </div>
+<div id="next-steps" class="section level2">
+<h2>Next steps</h2>
+<p>I want to add some more models to the mix, I’m thinking maybe a logistic curve for the
+cumulative number of cases as suggested by my friend Scott Bradshaw (an MD), and
+then maybe a proper epidemiological model.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky and Kelly Helm-Smith.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
