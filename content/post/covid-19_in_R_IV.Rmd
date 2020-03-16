@@ -6,7 +6,7 @@ output:
   word_document: default
   html_document:
     code_folding: hide
-draft: yes
+draft: no
 slug: COVID-19_and_R_IV
 tags_include:
 - R
@@ -16,8 +16,8 @@ categories: Research
 featured_image: "post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png"
 ---
 
-Sunday's numbers still inside prediction interval, but below expectations. 
-That's good news. I've started adding more countries for comparison, to see
+Sunday's number of known cases in the USA are inside the prediction interval, but are below expectations. 
+Good news! I've started adding more countries for comparison, to see
 whether USA is looking more like South Korea or more like Italy. 
 
 # The bottom line
@@ -100,13 +100,14 @@ p1 +
        )
 ```
 
-Much as yesterday, Sunday's new cases are inside the prediction intervals but
+[Much as yesterday](/post/covid-19_and_r_iii/), Sunday's new cases are inside the prediction intervals but
 below expectations for the exponential model[^1]. This is good news, maybe. One of 
 the issues with using "reported cases" is that it is affected
-by the frequency of testing for COVID-19. This is starting to ramp up in the USA,
-so we might see the rate of new cases go up as that happens.
+by the frequency of testing for COVID-19. [This is starting to ramp up in the USA](https://www.latimes.com/california/story/2020-03-16/california-coronavirus-tests),
+so we might see the number of new cases per day go up as that happens.
 
-If there is a "weekend effect" in reporting, it would look like
+If there is a "weekend effect" reducing reporting ([see yesterday's post](/post/covid-19_and_R_part_iv/)
+for the full hypothesis), it would look like
 the two points for March 14 and 15 -- dropping down below the expected values.
 Once there is more data I might be able to add a "weekend correction",
 but not yet. It also probably doesn't matter for decision making at this point.
@@ -119,12 +120,16 @@ goal of cancelling events and social distancing is to make sure you *don't* know
 someone personally. 
 
 Bottom line -- the pandemic still spreading in USA consistent with exponential growth.
-There are possible signs of improvement, but this next week will be critical to seeing 
+There are possible signs of improvement because the observations are all below the expected
+values, although that could still just be good luck. The next 5-10 days will be critical to seeing 
 what sort of trajectory the USA is on.
 
 # Full data nerd below this point
 
-[That article by Tomas Pueyo](https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca)
+Warning, not for the faint of heart. I'm basically typing while thinking, so if you're looking for a nice 
+coherent story beyond here, stop reading now.
+
+[This article by Tomas Pueyo](https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca)
 has some good points about the difference between reported cases (what I'm using) and true cases
 (what I wish we had). The CDC does have a table of cases by date of infection, but it's a 
 small fraction of the total cases reported. Nonetheless, I thought it might be 
@@ -159,15 +164,15 @@ ggplot(data = cdc_epi,
   geom_vline(xintercept = ymd("2020-03-05"), linetype = 2)
 ```
 
-Cool! It worked ... OK, the vertical dashed line marks the point at which the CDC thinks
+The vertical dashed line marks the point at which the CDC thinks
 not all cases are yet reported, so we shouldn't model things after March 5th, yet.
 I want to fit the same model as before, but the difficulty with that model is
-that it doesn't handle zeros well -- $log_{10}(0) = -\infty$. In my 
-current predictions I'm dodging that issue by only using data after
+that it doesn't handle zeros well (because $log_{10}(0) = -\infty$). In my 
+current predictions I'm dodging this issue by only using data after
 the number of incident cases is always positive. But I've been 
 wondering how a glm with log link would do. Also need to choose an
-error distribution; a Poisson distribution has only positive 
-support and discrete values so I'll try that. 
+error distribution; I'll try a Poisson distribution because it has only positive 
+and discrete values. 
 
 ```{r}
 cdc_epi_trimmed <- filter(cdc_epi, Date < "2020-03-05") %>% 
@@ -201,7 +206,7 @@ cdc_epi_glm2 <- gam(incident_cases ~ days, data = cdc_epi_trimmed, family = nb)
 summary(cdc_epi_glm2)
 ```
 
-The AIC for this model is `r format(AIC(cdc_epi_glm2),digits = 2)` so moderately better than
+The AIC for the Negative binomial is `r format(AIC(cdc_epi_glm2),digits = 2)` so slightly moderately better than
 the Poisson model. 
 
 ## Fit the model for more countries
@@ -242,14 +247,16 @@ pall
 Phew. That took far too long to sort out, because I tried to `filter()` all the countries including the
 USA, and that was just not working. Treating the USA separately was easy because I already
 had that dataframe built above. The y axis scales are wildly different on those, but just eyeballing 
-the shape it's clear that South Korea is doing something radically different. There are also a couple
+the shape it's clear that South Korea is doing something radically different. However, the exponential 
+growth in South Korea started earlier too, so that trajectory might not be impossible. 
+There are also a couple
 weird outliers in Australia and Italy where incident cases dropped to zero suddenly for one day. Canada
 also has a strange 2 day oscillation going on. I think these are likely reporting artifacts.
 
 Now fit the models and see what that looks like.
 The early period of the time series for all these countries is mostly driven by travel related
 cases, so as before I'll trim off the data prior to Feb 15. I picked that date by eyeballing 
-the data and looking for a date prior to where all the countries case loads started accelerating.
+the data and looking for a date prior to where case loads started accelerating for all countries.
 It would be better to have that set uniquely for each country, and I've got some thoughts on
 how to do that, but I'll leave that for tomorrow. 
 
@@ -297,9 +304,7 @@ augment_gam <- function(x, newdata = NULL, se.fit = FALSE){
   }
   return(result)
 }
-# test it
-# augment_gam(all_results$models[[1]], se.fit = TRUE, newdata = tibble(day = 14:20))
-# seems to work
+
 all_results <- all_confirmed_total %>%
   mutate(day = as.numeric(Date - ymd("2020-02-27"))) %>% # get day relative to Feb 27
   filter(Date > "2020-02-15", Date <= "2020-03-11") %>% # trim data to the dates we want
@@ -376,4 +381,4 @@ cumulative number of cases as suggested by my friend Scott Bradshaw (an MD), and
 then maybe a proper epidemiological model.
 
 [^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd).
-This post benefited from comments by Ramona Sky and Kelly Helm-Smith.
+This post benefited from comments by Jessica Burnett, Ramona Sky, and Kelly Helm-Smith.
