@@ -24,6 +24,11 @@ correction of the date by 1 day is overly aggressive. Going forward I
 will not subtract off that one day, so the dates in future posts will
 shift relative to this one. 
 
+EDIT 2020-03-16: DISCLAIMER: These unofficial results are not peer reviewed, and should be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.
+
 I also had some personal decisions to make about cancelling travel, so I went
 looking for some data and R examples of how to analyze epidemics. [I found Tim 
 Churches excellent blog post](https://rviews.rstudio.com/2020/03/05/covid-19-epidemiology-with-r/)

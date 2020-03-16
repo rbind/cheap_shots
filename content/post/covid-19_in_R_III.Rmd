@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 and R Part III"
 author: "Drew Tyre"
-date: "`r Sys.Date()`"
+date: "2020-03-15"
 output:
   word_document: default
   html_document:
@@ -32,6 +32,11 @@ scroll too far on her tablet (seriously, this was a conversation we just had).
 So if you want the gory details scroll down.
 
 # The bottom line
+
+EDIT 2020-03-16: DISCLAIMER: These unofficial results are not peer reviewed, and should be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 library("tidyverse")

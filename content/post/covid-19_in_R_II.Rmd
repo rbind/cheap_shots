@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 and R Part II"
 author: "Drew Tyre"
-date: '`r Sys.Date()`'
+date: '2020-03-14'
 output: 
   html_document:
     code_folding: hide
@@ -15,6 +15,11 @@ categories: Research
 
 Yesterday I got into [the COVID-19 forecasting business](/post/covid-19_and_R/). 
 Today I want to see how my predictions held up. 
+
+EDIT 2020-03-16: DISCLAIMER: These unofficial results are not peer reviewed, and should be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.
 
 # Munging the data ... again
 
