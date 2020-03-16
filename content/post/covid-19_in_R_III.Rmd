@@ -126,7 +126,7 @@ Fewer doctors, clinics etc. open on the weekend, so fewer people getting tested 
 reported. Too early to judge if that's happening or not, but I'll keep
 it in mind! The point that is farthest off my fitted line is a Monday. 
 
-My summary of things to do:
+# My summary of things to do
 
 - Wash your hands especially after going out and touching things other people have touched. 
 Seriously. Soap more effective than hand sanitizer. Use hand sanitizer if you can't get
