@@ -1,0 +1,339 @@
+---
+title: "COVID-19 and R Part V"
+author: "Drew Tyre"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: yes
+slug: COVID-19_and_R_V
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+og_image: /post/covid-19_in_r_v_files/figure-html/featured_image-1.png
+---
+
+Monday's number of new cases in the USA are inside the prediction interval, but are still below expectations. 
+Good news! However, new cases per day in the USA grew about 25% 
+faster than new cases in Italy over the first 12 days of the outbreak in each country. 
+Italy's numbers are showing clear signs of a slowdown relative to 
+exponential growth.
+
+# The bottom line
+
+DISCLAIMER: These unofficial results are not peer reviewed, and should be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library("drc")
+library("tidyverse")
+library("lubridate")
+savefilename <- "data/jhu_wide_2020-03-17.Rda"
+# 
+# jhu_url <- paste("https://raw.githubusercontent.com/CSSEGISandData/",
+#                  "COVID-19/master/csse_covid_19_data/",
+#                  "csse_covid_19_time_series/",
+#                  "time_series_19-covid-Confirmed.csv", sep = "")
+# 
+# jhu_wide <- read_csv(jhu_url) # just grab it once from github
+# # archive it!
+
+# save(jhu_wide, file = savefilename)
+load(savefilename)
+us_confirmed_total <- jhu_wide %>% 
+  rename(province = "Province/State", 
+         country_region = "Country/Region") %>% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = "Date", values_to = "cumulative_cases") %>% 
+  filter(country_region == "US") %>% 
+  mutate(Date = mdy(Date)) %>% 
+#  mutate(Date = lubridate::mdy(Date) - lubridate::days(1)) %>% 
+  arrange(province, Date)  %>% 
+  # filter out state rows prior to march 8, and county rows after that. 
+  # this is dropping virgin islands ... 
+  filter(str_detect(province, ", ") & Date <= "2020-03-9" |
+           str_detect(province, ", ", negate = TRUE) & Date > "2020-03-9") %>% 
+  group_by(Date) %>% # then group by Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %>% 
+  ungroup() %>% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)))
+
+p1 <- ggplot(data = filter(us_confirmed_total, Date > "2020-02-28", Date <= "2020-03-11"),
+       mapping = aes(x = Date)) + 
+#  geom_line(mapping = aes(y = incident_cases)) + 
+  geom_point(mapping = aes(y = incident_cases)) + 
+  scale_y_log10() + 
+  geom_smooth(mapping = aes(y = incident_cases), method = "lm")
+
+us_exp_model <- us_confirmed_total %>% 
+  mutate(log_incident_cases = log10(incident_cases),    # transform the data
+         day = as.numeric(Date - ymd("2020-02-27"))) %>% # get day relative to Feb 27
+  filter(Date > "2020-02-28", Date <= "2020-03-11") %>% 
+  lm(data = .,
+     formula = log_incident_cases ~ day) 
+
+predicted <- tibble(day = 14:20)
+predicted_list <- predict(us_exp_model, newdata = predicted, se.fit = TRUE)
+predicted$fit <- predicted_list$fit # this is klutzy, but I want to see the answer! 
+predicted$se.fit <- predicted_list$se.fit
+predicted <- predicted %>% 
+  mutate(Date = ymd("2020-2-27") + day,
+         pred_var = se.fit^2 + predicted_list$residual.scale^2,
+         lpl = 10^(fit - sqrt(pred_var)*qt(0.975, df = 10)),
+         upl = 10^(fit + sqrt(pred_var)*qt(0.975, df = 10)),
+         fit = 10^fit)
+
+p1 + 
+  geom_line(data = predicted,
+            mapping = aes(y = fit),
+            linetype = 2) +
+  geom_ribbon(data = predicted,
+            mapping = aes(ymin = lpl, ymax = upl),
+            alpha = 0.2) +
+  geom_point(data = filter(us_confirmed_total, Date > "2020-03-11"),
+             mapping = aes(y = incident_cases)) +
+  labs(y = "Incident cases", title = "Total new reported cases per day in the USA",
+       subtitle = "Exponential model in blue; predicted values with 95% prediction intervals with dashed line.",
+       caption = paste("Source data from https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")
+       )
+```
+
+[Much as yesterday](/post/covid-19_and_r_iv/), Monday's new cases are inside the prediction intervals but
+below expectations for the exponential model[^1]. 
+
+I don't think there is a "weekend effect" reducing reporting ([see Sunday's post](/post/covid-19_and_R_part_iv/)
+for the full hypothesis). Monday's point is just as low as the previous Saturday and Sunday. 
+The points are below expectations, but tracking along pretty parallel. This
+means that the **rate** of new cases hasn't changed, but my estimate of the initial number
+of cases might be high. There is another possibility, but it's a bit technical. My model
+assumes the deviations of the observations from the expected value are 
+independent of each other. That is, the fact that Sunday's observation is below the
+expected line doesn't change the distribution of Monday's observation. But
+this is probably not true. Both Sunday and Monday's observations are coming from the
+same population of true (but unknown) cases. So if my model is overestimating one it is 
+likely to overestimate the next one as well. 
+
+Below I fit the same model to case data from Italy, where the outbreak started a week or
+so sooner than in the USA. The number of new cases per day grew 25% *faster* 
+in the USA than in Italy over the first 12 days of the outbreak in each country.
+That's not such good news for the USA. The pandemic response in the USA is so fragmented and
+disorganized that it is hard to tell whether we took action earlier in the outbreak process than
+Italy did. Time will tell.
+
+How long before we see effects of social distancing?  
+The effects of social distancing won't be apparent for 5 or more days, because new cases 
+today are people that got sick up to 2 weeks ago. 
+In the meantime, if we start testing more frequently, the number 
+of new cases per day might go UP!
+ 
+We currently have 18 cases in Nebraska. They got sick anywhere up to two weeks ago. 
+We also know that only 20% of people get sick enough to go to hospital or the doctor, 
+and only really sick people are being tested anyway. So on average, a week ago there 
+could have been 18 / 0.2 = 90 cases in Nebraska. Obviously this is a very crude 
+calculation, but the point is that we're not seeing the full extent of the pandemic, 
+just the tip of the iceberg. And just like an iceberg, what's below the water line 
+causes the problem. 
+
+Bottom line -- the pandemic still spreading in USA consistent with exponential growth.
+The next 5-10 days will be critical to seeing 
+what sort of trajectory the USA is on.
+
+# For students
+
+This is a new section where I break down the steps of one of the figures or analyses 
+elsewhere on the page. I'll post the code here, but in the interest of saving space and
+typing, I'm going to walk through the code and make a video. I'll try to keep those short by
+just focusing on one piece of code at a time. If you're new to R/RStudio, [I've got videos and
+instructions on how to set things up](https://drewtyre.rbind.io/classes/computer-setup/).
+
+Today's topic: making the figure above showing the number of cases and fitting a model. The USA 
+is complicated, so I'm going to use a different country, say ... mmm, Italy. Links to videos and
+some additional commentary below the figure.
+
+```{r student_code, warning=FALSE, message=FALSE, eval=TRUE}
+library("tidyverse")
+library("lubridate")
+# Download and archive the data
+# Uncomment the next 6 lines of code if this is the first time
+# you are running it. 
+# jhu_url <- paste("https://raw.githubusercontent.com/CSSEGISandDATA/",
+#                  "COVID-19/master/csse_covid_19_data/",
+#                  "csse_covid_19_time_series/",
+#                  "time_series_19-covid-Confirmed.csv", sep = "")
+# jhu_wide <- read_csv(jhu_url)
+# save(jhu_wide, file = "data/jhu_wide_2020-03-17.Rda")
+# reload the data from the file, not the internet
+load("data/jhu_wide_2020-03-17.Rda")
+
+# Take the wide format data and make it long
+italy_confirmed <- jhu_wide %>% 
+  # rename the problematic variables
+  rename(province = "Province/State",  
+         country_region = "Country/Region") %>% 
+  # go from wide to long
+  pivot_longer(col = -c("province","country_region","Lat", "Long"),
+               names_to = "Date", values_to = "cumulative_cases") %>% 
+  # turn the Date column into actual Date type
+  mutate(Date = mdy(Date)) %>% 
+  # just get Italy
+  filter(country_region == "Italy") %>% 
+  # Calculate the number of new cases per day
+  mutate(incident_cases = c(0, diff(cumulative_cases)))%>% 
+  # only keep data after feb 21 when the outbreak started, and remove row with no reported cases
+  filter(Date >= "2020-02-21", incident_cases > 0)
+
+# make the plot with data prior to March 4 (12 days), save as an object to reuse later
+p1 <- ggplot(data = filter(italy_confirmed, Date <= "2020-03-03"),
+       mapping = aes(x = Date)) +
+  geom_point(mapping = aes(y = incident_cases)) +
+  scale_y_log10() +
+  geom_smooth(mapping = aes(y = incident_cases), method = "lm")
+
+# Fit the model to the first 12 days of data (to match what I did with USA)
+italy_exp_model <- italy_confirmed %>% 
+  filter(Date <= "2020-03-03") %>% 
+  mutate(log_incident_cases = log10(incident_cases),
+         day = as.numeric(Date - ymd("2020-02-27"))) %>% 
+  lm(data = .,
+     formula = log_incident_cases ~ day)
+
+# Make predictions out to March 16
+predicted <- tibble(day = 6:18)
+predicted_list <- predict(italy_exp_model, newdata = predicted, se.fit = TRUE)
+predicted <- predicted %>% 
+  mutate(Date = ymd("2020-02-27") + day,
+         fit = predicted_list$fit,
+         se.fit = predicted_list$se.fit,
+         pred_var = se.fit^2 + predicted_list$residual.scale^2,
+         lpl = 10^(fit - sqrt(pred_var)*qt(0.975, df = 10)),
+         upl = 10^(fit + sqrt(pred_var)*qt(0.975, df = 10)),
+         fit = 10^fit)
+
+# Make the whole plot
+p1 + 
+  # Expected values of prediction as a dashed line
+  geom_line(data = predicted,
+            mapping = aes(x = Date, y = fit),
+            linetype = 2) +
+  # Prediction interval as a partly transparent ribbon
+  geom_ribbon(data = predicted,
+              mapping = aes(x = Date, ymin = lpl, ymax = upl),
+              alpha = 0.25) +
+  # Add observed points after March 3
+  geom_point(data = filter(italy_confirmed, Date > "2020-03-03"),
+             mapping = aes(y = incident_cases)) +
+  labs(y = "Incident cases", title = "Total new reported cases per day in Italy",
+       subtitle = "Exponential model in blue; predicted values with 95% prediction intervals with dashed line.",
+       caption = paste("Source data from https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")
+       )
+```
+
+The code above is slightly tweaked relative to what I used in the video; I've
+adjusted the date range to match the USA analysis better, and the filename is 
+slightly different. I also added lables and copyright yada. But the steps and
+interpretation are the same.
+
+- [Download and manipulate the data (28 minutes)](https://youtu.be/dsW4QS-urM0)
+
+- [Make a figure of cumulative cases by day (14 minutes)](https://youtu.be/2UOq_tTsmFY)
+
+- [Fit the exponential model and make predictions (30 minutes)](https://youtu.be/yuQtGxEuaEE)
+
+Videos are way too long! But what else are you doing while social distancing? Learn some new stuff! 
+I think two points are worth making about that figure. First, just like with the USA figure
+there are signs the number of new cases per day is slowing because the points are all
+falling below the expected line, and some are outside the 95% prediction interval. That's great
+news for Italy. The estimated growth rate for italy is 0.12 compared to 0.15 for the USA over a 
+similar 12 day span following the first day of sustained growth. So in the first 12 days of the
+outbreak the number of new cases per day was growing about 25% *faster* in the USA than in Italy.
+That's not such good news.
+
+# Full data nerd below this point
+
+Warning, not for the faint of heart. I'm basically typing while thinking, so if you're looking for a nice 
+coherent story beyond here, stop reading now.
+
+I've got so many things to try, I'm loosing track! My friend Scott is waiting on predictions from a logistic
+model, so lets do that with the cumulative data for the 6 countries. 
+
+```{r featured_image, warning=FALSE}
+# packages that I need
+# have to load drc first or causes problems because of MASS::select conflicts with dplyr::select
+# library("drc") # dose response curves for the 3 parameter logistic, more robust than nls()
+# library("tidyverse") # plotting and data manipulation
+# library("lubridate") # easier Date objects
+countries <- c("Canada", "Australia", "Korea, South", "Italy", "Iran")
+other_confirmed_total <- jhu_wide %>% 
+  rename(province = "Province/State", 
+         country_region = "Country/Region") %>% 
+  pivot_longer(-c(province, country_region, Lat, Long), 
+               names_to = "Date", values_to = "cumulative_cases") %>% 
+  filter(country_region %in% countries,
+         # have to trap the rows with missing province (most other countries)
+         # otherwise str_detect(province ...) is missing and dropped by filter()
+         is.na(province) | str_detect(province, "Princess", negate = TRUE)) %>% 
+  mutate(Date = mdy(Date)) %>% 
+  # filter out state rows prior to march 9, and county rows after that. 
+  group_by(country_region, Date) %>% # then group by country and Date and sum
+  summarize(cumulative_cases = sum(cumulative_cases)) %>% 
+  group_by(country_region) %>% 
+  mutate(incident_cases = c(0, diff(cumulative_cases))) %>% 
+  ungroup()
+us_confirmed_total <- mutate(us_confirmed_total, country_region = "USA")
+all_confirmed_total <- bind_rows(other_confirmed_total, us_confirmed_total) 
+
+pall <- ggplot(data = all_confirmed_total,
+       mapping = aes(x = Date)) + # don't add y = here, so we can change variables later for ribbons etc
+  geom_point(mapping = aes(y = cumulative_cases)) + 
+  facet_wrap(~country_region, scales = "free_y")
+
+# these functions got out of control, so putting them in a separate file
+# 
+source("R/drchelpers.R")
+# fit the models
+all_results <- all_confirmed_total %>%
+  mutate(day = as.numeric(Date - ymd("2020-02-27"))) %>% # get day relative to Feb 27
+  filter(Date > "2020-02-15", Date <= "2020-03-11") %>% # trim data to the dates we want
+  group_by(country_region) %>% 
+  # nest() puts the data for each country into a "list column" called "data" 
+  # so that I can do the next step
+  nest() %>% 
+  # fit the models to each dataframe in the list column
+  mutate(models = map(data, ~drm(cumulative_cases~day, data = ., fct = drc::L.3())),#,
+         data = map(models, augment_drc, interval = "confidence")) ## adds regression output to data 
+all_fitted <- all_results %>% 
+  select(-models) %>%  # remove the models column before the next step
+  unnest(cols = data) %>%  # pulls the "data" column back out to make a single data frame
+  mutate(Date = ymd("2020-02-27") + day)
+predict_data <- tibble(day = 14:20)
+all_predictions <- all_results %>% 
+  mutate(predicted = map(models, augment_drc, newdata = predict_data)) %>% 
+  select(-c(models, data)) %>% 
+  unnest(cols = predicted) %>% 
+  mutate(Date = ymd("2020-02-27")+ day)
+pall + 
+  geom_line(data = all_fitted,
+            mapping = aes(y = Prediction),
+            color = "blue", size = 1.5) +
+  geom_ribbon(data = all_fitted,
+              mapping = aes(ymin = Lower, ymax = Upper), 
+              alpha = 0.25)
+```
+
+
+
+
+
+[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd).
+This post benefited from comments by Jessica Burnett, Ramona Sky, and Kelly Helm-Smith.
