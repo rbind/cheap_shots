@@ -6,7 +6,7 @@ output:
   word_document: default
   html_document:
     code_folding: hide
-draft: yes
+draft: no
 slug: COVID-19_and_R_V
 tags_include:
 - R
@@ -156,7 +156,7 @@ p1 +
 <p><img src="/post/covid-19_in_R_V_files/figure-html/student_code-1.png" width="672" /></p>
 <p>The code above is slightly tweaked relative to what I used in the video; I’ve
 adjusted the date range to match the USA analysis better, and the filename is
-slightly different. I also added lables and copyright yada. But the steps and
+slightly different. I also added labels and copyright and yada yada. But the steps and
 interpretation are the same.</p>
 <ul>
 <li><p><a href="https://youtu.be/dsW4QS-urM0">Download and manipulate the data (28 minutes)</a></p></li>
@@ -217,7 +217,8 @@ pall &lt;- ggplot(data = all_confirmed_total,
   facet_wrap(~country_region, scales = &quot;free_y&quot;)
 
 # these functions got out of control, so putting them in a separate file
-# 
+# You can get the code at
+# https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/R/drchelpers.R
 source(&quot;R/drchelpers.R&quot;)
 # fit the models
 all_results &lt;- all_confirmed_total %&gt;%
@@ -254,23 +255,99 @@ pall +
               mapping = aes(ymin = Lower, ymax = Upper), 
               alpha = 0.25)</code></pre>
 <p><img src="/post/covid-19_in_R_V_files/figure-html/featured_image-1.png" width="672" /></p>
-<p>That was way harder than I planned on. The goto function for non-linear models like this is <code>nls()</code>, but the estimation algorithms available there were struggling to find converged
-parameters. Package <code>drc</code> (dose response curve) gave me good results before so I tried that.
+<p>That was way harder than I planned on. The goto function for non-linear models like this is <code>nls()</code>, but the estimation algorithms available there were struggling to converge.
+Package <code>drc</code> (dose response curve) gave me good results in past problems so I tried that.
 Those models converged, but then I ran into all sorts of problems trying to get the predicted
 values out of them. <code>drc</code> isn’t tidy-friendly, returning matrices and failing left and right
 if you feed it a tibble. A few hours of hair-pulling later, I’ve got the fitted models and
 predicted values. My first impression is that the confidence and prediction intervals are
 way too narrow – I just don’t believe them.</p>
-<p>But that’s not the reason to discard these models – with the exception of the USA, all
+<p>But that’s not the reason to discard this model – with the exception of the USA, all
 five sets of observed cumulative cases are <em>above</em> the prediction interval. This is
 especially obvious with Iran. The best fit parameters have the curves tipping over towards
 the asymptote too soon. Within the data used to fit the models seem to be matching pretty well,
-except for Australia. What about the estimated asymptotic sizes?</p>
+except for Australia.</p>
+<p>So why is this happening? I suspect that the culprit is actually a rate parameter that is slowing
+down with time, rather than constant. In the logistic equation the rate parameter controls
+how fast the curve climbs at the early stage, but <em>also</em> how fast the asymptote is approached.
+Given the data is all from the early phase the model is matching the rate parameter to what’s
+happening then. But then the forecast approaches the estimated asymptote too fast.</p>
+<p>What about the estimated asymptotic sizes?</p>
+<pre class="r"><code>library(&quot;huxtable&quot;)
+all_results %&gt;% 
+  mutate(estimates = map(models, tidy_drc)) %&gt;% 
+  select(-c(models, data)) %&gt;% 
+  unnest(cols = estimates) %&gt;% 
+  filter(Coefficient == &quot;d:(Intercept)&quot;) %&gt;% # grab the asymptote estimate
+  select(country_region, Estimate, `2.5 %`, `97.5 %`) %&gt;% 
+  mutate(`2.5 %` = case_when(`2.5 %` &lt; 0 ~ 0, # truncate the lower limit to zero
+                             TRUE ~ `2.5 %`)) %&gt;% 
+  rename(Country = country_region) %&gt;% 
+  hux(add_colnames = TRUE) %&gt;% # I love huxtables
+  set_number_format(row = 2:7, col = 2:4, value = 0) %&gt;% 
+  theme_article()</code></pre>
+<table class="huxtable" style="border-collapse: collapse; margin-bottom: 2em; margin-top: 2em; width: 50%; margin-left: auto; margin-right: auto;  ">
+<col><col><col><col><tr>
+<td style="vertical-align: top; text-align: left; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Country</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Estimate</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">2.5 %</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">97.5 %</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Australia</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3479</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13364</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Canada</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">6605</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">30952</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Iran</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">10135</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">9523</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">10748</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Italy</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">28453</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">21677</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">35229</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Korea, South</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">7947</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">7816</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">8078</td>
+</tr>
+<tr>
+<td style="vertical-align: top; text-align: left; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">USA</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt;">53244</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt;">0</td>
+<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt;">262967</td>
+</tr>
+</table>
+
+<p>Keep in mind that the logistic model is making terrible predictions for the first five
+rows, so in all likelihood the upper confidence limit is like a bare minimum given
+what’s happening now. Iran, Italy, and South Korea are all much too precise. The most
+interesting thing about the other three is how uncertain they are – I truncated negative
+lower limits to 0 for plausibility, and the upper limits are 5x bigger than the best estimate.
+As I suspected we can’t say anything about the ultimate size of the outbreak with these models.</p>
+</div>
+<div id="what-to-try-next" class="section level1">
+<h1>What to try next?</h1>
+<p>I seem to have the code for multiple countries worked out, so tomorrow I’ll run the
+negative binomial model on all 6 countries with country specific 12 day windows. Time
+permitting I want to explore some of the epidemiological models.</p>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
 <li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd">on Github</a>.
-This post benefited from comments by Jessica Burnett, Ramona Sky, and Kelly Helm-Smith.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+This post benefited from comments by Ramona Sky.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

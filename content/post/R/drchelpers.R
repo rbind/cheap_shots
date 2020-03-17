@@ -1,3 +1,9 @@
+tidy_drc <- function(x){
+  estimates <- summary(x)$coefficients
+  confints <- confint(x)
+  result <- bind_cols(as_tibble(estimates, rownames = "Coefficient"), as_tibble(confints))
+  return(result)
+}
 # function to get the predicted values out
 augment_drc <- function(x, newdata = NULL, interval = "none"){
   if (is.null(newdata)){

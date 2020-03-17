@@ -6,7 +6,7 @@ output:
   word_document: default
   html_document:
     code_folding: hide
-draft: yes
+draft: no
 slug: COVID-19_and_R_V
 tags_include:
 - R
@@ -241,7 +241,7 @@ p1 +
 
 The code above is slightly tweaked relative to what I used in the video; I've
 adjusted the date range to match the USA analysis better, and the filename is 
-slightly different. I also added lables and copyright yada. But the steps and
+slightly different. I also added labels and copyright and yada yada. But the steps and
 interpretation are the same.
 
 - [Download and manipulate the data (28 minutes)](https://youtu.be/dsW4QS-urM0)
@@ -307,7 +307,8 @@ pall <- ggplot(data = all_confirmed_total,
   facet_wrap(~country_region, scales = "free_y")
 
 # these functions got out of control, so putting them in a separate file
-# 
+# You can get the code at
+# https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/R/drchelpers.R
 source("R/drchelpers.R")
 # fit the models
 all_results <- all_confirmed_total %>%
@@ -345,28 +346,59 @@ pall +
               alpha = 0.25)
 ```
 
-That was way harder than I planned on. The goto function for non-linear models like this is `nls()`, but the estimation algorithms available there were struggling to find converged 
-parameters. Package `drc` (dose response curve) gave me good results before so I tried that.
+That was way harder than I planned on. The goto function for non-linear models like this is `nls()`, but the estimation algorithms available there were struggling to converge. 
+Package `drc` (dose response curve) gave me good results in past problems so I tried that.
 Those models converged, but then I ran into all sorts of problems trying to get the predicted
 values out of them. `drc` isn't tidy-friendly, returning matrices and failing left and right
 if you feed it a tibble. A few hours of hair-pulling later, I've got the fitted models and
 predicted values. My first impression is that the confidence and prediction intervals are
 way too narrow -- I just don't believe them. 
 
-But that's not the reason to discard these models -- with the exception of the USA, all
+But that's not the reason to discard this model -- with the exception of the USA, all
 five sets of observed cumulative cases are *above* the prediction interval. This is 
 especially obvious with Iran. The best fit parameters have the curves tipping over towards
 the asymptote too soon. Within the data used to fit the models seem to be matching pretty well,
-except for Australia. What about the estimated asymptotic sizes? 
+except for Australia. 
 
-```{r}
+So why is this happening? I suspect that the culprit is actually a rate parameter that is slowing
+down with time, rather than constant. In the logistic equation the rate parameter controls
+how fast the curve climbs at the early stage, but *also* how fast the asymptote is approached. 
+Given the data is all from the early phase the model is matching the rate parameter to what's 
+happening then. But then the forecast approaches the estimated asymptote too fast. 
 
+What about the estimated asymptotic sizes? 
+
+```{r, message=FALSE}
+library("huxtable")
+all_results %>% 
+  mutate(estimates = map(models, tidy_drc)) %>% 
+  select(-c(models, data)) %>% 
+  unnest(cols = estimates) %>% 
+  filter(Coefficient == "d:(Intercept)") %>% # grab the asymptote estimate
+  select(country_region, Estimate, `2.5 %`, `97.5 %`) %>% 
+  mutate(`2.5 %` = case_when(`2.5 %` < 0 ~ 0, # truncate the lower limit to zero
+                             TRUE ~ `2.5 %`)) %>% 
+  rename(Country = country_region) %>% 
+  hux(add_colnames = TRUE) %>% # I love huxtables
+  set_number_format(row = 2:7, col = 2:4, value = 0) %>% 
+  theme_article()
 ```
 
+Keep in mind that the logistic model is making terrible predictions for the first five
+rows, so in all likelihood the upper confidence limit is like a bare minimum given
+what's happening now. Iran, Italy, and South Korea are all much too precise. The most
+interesting thing about the other three is how uncertain they are -- I truncated negative
+lower limits to 0 for plausibility, and the upper limits are 5x bigger than the best estimate.
+As I suspected we can't say anything about the ultimate size of the outbreak with these models.
 
+# What to try next?
+
+I seem to have the code for multiple countries worked out, so tomorrow I'll run the 
+negative binomial model on all 6 countries with country specific 12 day windows. Time 
+permitting I want to explore some of the epidemiological models. 
 
 
 
 
 [^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd).
-This post benefited from comments by Jessica Burnett, Ramona Sky, and Kelly Helm-Smith.
+This post benefited from comments by Ramona Sky.
