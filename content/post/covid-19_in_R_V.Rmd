@@ -264,8 +264,16 @@ That's not such good news.
 Warning, not for the faint of heart. I'm basically typing while thinking, so if you're looking for a nice 
 coherent story beyond here, stop reading now.
 
-I've got so many things to try, I'm loosing track! My friend Scott is waiting on predictions from a logistic
-model, so lets do that with the cumulative data for the 6 countries. 
+I've got so many things to try, I'm losing track! My friend Scott is waiting on predictions
+of the cumulative cases from a logistic
+model, so lets do that with the cumulative data for the 6 countries. The logistic model
+has one more parameter than the exponential model, and levels off to an asymptote. This 
+is what we expect for the cumulative number of cases, because as more and more people recover
+from the virus (or get vaccinated) the number of people left to infect gets lower, and 
+the epidemic ends. The estimate of the Asymptote parameter in these models would give us
+an idea of how many people might ultimately be infected. I'm skeptical that these models will
+work, because early in the epidemic process the data have little information about where the
+asymptote is. But let's try and see what happens. 
 
 ```{r featured_image, warning=FALSE}
 # packages that I need
@@ -316,9 +324,9 @@ all_fitted <- all_results %>%
   select(-models) %>%  # remove the models column before the next step
   unnest(cols = data) %>%  # pulls the "data" column back out to make a single data frame
   mutate(Date = ymd("2020-02-27") + day)
-predict_data <- tibble(day = 14:20)
+predict_data <- data.frame(day = 14:20) # if use a tibble here doesn't work with drc
 all_predictions <- all_results %>% 
-  mutate(predicted = map(models, augment_drc, newdata = predict_data)) %>% 
+  mutate(predicted = map(models, augment_drc, newdata = predict_data, interval = "prediction")) %>% 
   select(-c(models, data)) %>% 
   unnest(cols = predicted) %>% 
   mutate(Date = ymd("2020-02-27")+ day)
@@ -328,8 +336,33 @@ pall +
             color = "blue", size = 1.5) +
   geom_ribbon(data = all_fitted,
               mapping = aes(ymin = Lower, ymax = Upper), 
+              alpha = 0.25)+
+    geom_line(data = all_predictions,
+            mapping = aes(y = Prediction),
+            linetype = 2) +
+  geom_ribbon(data = all_predictions,
+              mapping = aes(ymin = Lower, ymax = Upper), 
               alpha = 0.25)
 ```
+
+That was way harder than I planned on. The goto function for non-linear models like this is `nls()`, but the estimation algorithms available there were struggling to find converged 
+parameters. Package `drc` (dose response curve) gave me good results before so I tried that.
+Those models converged, but then I ran into all sorts of problems trying to get the predicted
+values out of them. `drc` isn't tidy-friendly, returning matrices and failing left and right
+if you feed it a tibble. A few hours of hair-pulling later, I've got the fitted models and
+predicted values. My first impression is that the confidence and prediction intervals are
+way too narrow -- I just don't believe them. 
+
+But that's not the reason to discard these models -- with the exception of the USA, all
+five sets of observed cumulative cases are *above* the prediction interval. This is 
+especially obvious with Iran. The best fit parameters have the curves tipping over towards
+the asymptote too soon. Within the data used to fit the models seem to be matching pretty well,
+except for Australia. What about the estimated asymptotic sizes? 
+
+```{r}
+
+```
+
 
 
 
