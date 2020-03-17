@@ -13,7 +13,7 @@ tags_include:
 - OPD
 - COVID19
 categories: Research
-featured_image: "post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png"
+og_image: /post/covid-19_in_r_iv_files/figure-html/unnamed-chunk-1-1.png
 ---
 
 
@@ -27,7 +27,7 @@ whether USA is looking more like South Korea or more like Italy.</p>
 treated as such. My goal is to learn about forecasting in real time,
 how simple models compare with more complex models, and even how to compare
 different models.</p>
-<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/iv_featured_image-1.png" width="672" /></p>
 <p><a href="/post/covid-19_and_r_iii/">Much as yesterday</a>, Sunday’s new cases are inside the prediction intervals but
 below expectations for the exponential model<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. This is good news, maybe. One of
 the issues with using “reported cases” is that it is affected
@@ -38,7 +38,7 @@ for the full hypothesis), it would look like
 the two points for March 14 and 15 – dropping down below the expected values.
 Once there is more data I might be able to add a “weekend correction”,
 but not yet. It also probably doesn’t matter for decision making at this point.</p>
-<p>One of my FaceBook friends asked, “Does anyone known anyone that actually has coronavirus?”
+<p>One of my FaceBook friends asked, “Does anyone know anyone that actually has coronavirus?”
 This is an interesting question, because we humans tend to take things
 that happen to our circle of people more seriously. Unfortunately, in the USA you’re unlikely to know anyone at this stage – ~3500 cases out of 327 million. There are certainly more people with the disease than that, but they’re the lucky ones who get a mild case. The problem with exponential growth is that everything looks fine until it suddenly isn’t.
 People in Lombardy or Wuhan are much, much more likely to know someone who is ill. The
@@ -84,7 +84,7 @@ ggplot(data = cdc_epi,
        mapping = aes(x = Date, y = incident_cases)) + 
   geom_point() +
   geom_vline(xintercept = ymd(&quot;2020-03-05&quot;), linetype = 2)</code></pre>
-<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>The vertical dashed line marks the point at which the CDC thinks
 not all cases are yet reported, so we shouldn’t model things after March 5th, yet.
 I want to fit the same model as before, but the difficulty with that model is
@@ -206,7 +206,7 @@ pall &lt;- ggplot(data = all_confirmed_total,
   geom_point(mapping = aes(y = incident_cases)) + 
   facet_wrap(~country_region, scales = &quot;free_y&quot;)
 pall</code></pre>
-<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Phew. That took far too long to sort out, because I tried to <code>filter()</code> all the countries including the
 USA, and that was just not working. Treating the USA separately was easy because I already
 had that dataframe built above. The y axis scales are wildly different on those, but just eyeballing
@@ -237,7 +237,7 @@ all_fitted &lt;- all_results %&gt;%
 pall + 
   geom_line(data = all_fitted,
             mapping = aes(y = .fitted))</code></pre>
-<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>That’s a first cut, because <code>broom</code> functions don’t work on <code>mgcv::gam</code> objects. So I
 need to write a custom function to get what I want. But it certainly looks like all
 countries are showing less growth in cases than expected from a simple exponential
@@ -312,7 +312,7 @@ pall2 +
               mapping = aes(ymin = lpl, ymax = upl),
               alpha = 0.25) +
   scale_y_log10()</code></pre>
-<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="/post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Clearly I need to figure out country specific ranges to fit the model. South Korea
 is clearly not growing anymore, so the terrible model fit is not unexpected. Iran
 is either doing great, or lying about the number of new cases, opinion out there seems

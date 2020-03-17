@@ -13,7 +13,7 @@ tags_include:
 - OPD
 - COVID19
 categories: Research
-featured_image: "post/covid-19_in_R_IV_files/figure-html/unnamed-chunk-1-1.png"
+og_image: /post/covid-19_in_r_iv_files/figure-html/unnamed-chunk-1-1.png
 ---
 
 Sunday's number of known cases in the USA are inside the prediction interval, but are below expectations. 
@@ -27,7 +27,7 @@ treated as such. My goal is to learn about forecasting in real time,
 how simple models compare with more complex models, and even how to compare
 different models.
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r iv_featured_image, warning=FALSE, message=FALSE, echo=FALSE}
 library("tidyverse")
 library("lubridate")
 
@@ -112,7 +112,7 @@ the two points for March 14 and 15 -- dropping down below the expected values.
 Once there is more data I might be able to add a "weekend correction",
 but not yet. It also probably doesn't matter for decision making at this point.
 
-One of my FaceBook friends asked, "Does anyone known anyone that actually has coronavirus?" 
+One of my FaceBook friends asked, "Does anyone know anyone that actually has coronavirus?" 
 This is an interesting question, because we humans tend to take things 
 that happen to our circle of people more seriously. Unfortunately, in the USA you're unlikely to know anyone at this stage -- ~3500 cases out of 327 million. There are certainly more people with the disease than that, but they're the lucky ones who get a mild case. The problem with exponential growth is that everything looks fine until it suddenly isn't.
 People in Lombardy or Wuhan are much, much more likely to know someone who is ill. The 

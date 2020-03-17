@@ -137,6 +137,13 @@
     {{ $og_image = "img/icon-192.png" | absURL }}
     {{ $twitter_card = "summary" }}
   {{ end }}
+  {{ if .Params.og_image }}
+  <meta property="og:image" content="http://drewtyre.rbind.io{{ .Params.og_image | relURL }}"/>
+  <meta property="og:image:secure_url" content="{{ .Params.og_image | absURL }}"/>
+  {{ else }}
+  <meta property="og:image" content="http://drewtyre.rbind.io{{ .Site.Params.og_image | relURL }}"/>
+  <meta property="og:image:secure_url" content="{{ .Site.Params.og_image | absURL }}"/>
+  {{ end }}
   <meta property="twitter:card" content="{{ $twitter_card }}">
   {{ with .Site.Params.twitter }}
   <meta property="twitter:site" content="@{{ . }}">
