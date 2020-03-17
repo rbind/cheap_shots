@@ -13,7 +13,7 @@ tags_include:
 - OPD
 - COVID19
 categories: Research
-og_image: /post/covid-19_in_r_iv_files/figure-html/unnamed-chunk-1-1.png
+og_image: /post/covid-19_in_r_iv_files/figure-html/featured_image-1.png
 ---
 
 Sunday's number of known cases in the USA are inside the prediction interval, but are below expectations. 
@@ -27,7 +27,7 @@ treated as such. My goal is to learn about forecasting in real time,
 how simple models compare with more complex models, and even how to compare
 different models.
 
-```{r iv_featured_image, warning=FALSE, message=FALSE, echo=FALSE}
+```{r featured_image, warning=FALSE, message=FALSE, echo=FALSE}
 library("tidyverse")
 library("lubridate")
 
