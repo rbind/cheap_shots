@@ -18,336 +18,75 @@ og_image: /post/covid-19_in_r_vi_files/figure-html/featured_image-1.png
 
 
 
-<p>Monday’s number of new cases in the USA are inside the prediction interval, but are still below expectations.
-Good news! However, new cases per day in the USA grew about 25%
-faster than new cases in Italy over the first 12 days of the outbreak in each country.
-Italy’s numbers are showing clear signs of a slowdown relative to
-exponential growth.</p>
+<p>Tuesday’s number of new cases in the USA are inside the prediction interval,
+but are still below expectations.
+Italy’s numbers continue showing clear signs of a slowdown relative to
+exponential growth. Nonetheless, Italy continues to add more severe cases per day
+than their ICU bed capacity.
+Unless things change drastically, I predict the USA will start to exceed ICU bed
+capacity by March 23, maybe sooner in some locations. Certainly by the
+end of March.</p>
+<p>That outcome is not set in stone. The time to act is now. Even a one day delay in reducing transmission rate
+dramatically increases the peak number of sick people. If you’re lucky to be
+in a low risk group, you can still spread the virus. Although your symptoms are mild,
+the person you hand the virus off to could experience much worse symptoms. You don’t
+have to hermetically seal your house. I like this graphic:
+<img src="http://rutherfordcountytn.gov/img/2.png" alt="social distancing suggestions" /></p>
 <div id="the-bottom-line" class="section level1">
 <h1>The bottom line</h1>
 <p>DISCLAIMER: These unofficial results are not peer reviewed, and should be
 treated as such. My goal is to learn about forecasting in real time,
 how simple models compare with more complex models, and even how to compare
 different models.</p>
-<p><img src="/post/covid-19_in_R_VI_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p><a href="/post/covid-19_and_r_iv/">Much as yesterday</a>, Monday’s new cases are inside the prediction intervals but
-below expectations for the exponential model<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
-<p>I don’t think there is a “weekend effect” reducing reporting (<a href="/post/covid-19_and_R_part_iv/">see Sunday’s post</a>
-for the full hypothesis). Monday’s point is just as low as the previous Saturday and Sunday.
-The points are below expectations, but tracking along pretty parallel. This
-means that the <strong>rate</strong> of new cases hasn’t changed, but my estimate of the initial number
-of cases might be high. There is another possibility, but it’s a bit technical. My model
-assumes the deviations of the observations from the expected value are
-independent of each other. That is, the fact that Sunday’s observation is below the
-expected line doesn’t change the distribution of Monday’s observation. But
-this is probably not true. Both Sunday and Monday’s observations are coming from the
-same population of true (but unknown) cases. So if my model is overestimating one it is
-likely to overestimate the next one as well.</p>
-<p>Below I fit the same model to case data from Italy, where the outbreak started a week or
-so sooner than in the USA. The number of new cases per day grew 25% <em>faster</em>
-in the USA than in Italy over the first 12 days of the outbreak in each country.
-That’s not such good news for the USA. The pandemic response in the USA is so fragmented and
-disorganized that it is hard to tell whether we took action earlier in the outbreak process than
-Italy did. Time will tell.</p>
-<p>How long before we see effects of social distancing?<br />
-The effects of social distancing won’t be apparent for 5 or more days, because new cases
-today are people that got sick up to 2 weeks ago.
-In the meantime, if we start testing more frequently, the number
-of new cases per day might go UP!</p>
-<p>We currently have 18 cases in Nebraska. They got sick anywhere up to two weeks ago.
-We also know that only 20% of people get sick enough to go to hospital or the doctor,
-and only really sick people are being tested anyway. So on average, a week ago there
-could have been 18 / 0.2 = 90 cases in Nebraska. Obviously this is a very crude
-calculation, but the point is that we’re not seeing the full extent of the pandemic,
-just the tip of the iceberg. And just like an iceberg, what’s below the water line
-causes the problem.</p>
-<p>Bottom line – the pandemic still spreading in USA consistent with exponential growth.
-The next 5-10 days will be critical to seeing
-what sort of trajectory the USA is on.</p>
-</div>
-<div id="for-students" class="section level1">
-<h1>For students</h1>
-<p>This is a new section where I break down the steps of one of the figures or analyses
-elsewhere on the page. I’ll post the code here, but in the interest of saving space and
-typing, I’m going to walk through the code and make a video. I’ll try to keep those short by
-just focusing on one piece of code at a time. If you’re new to R/RStudio, <a href="https://drewtyre.rbind.io/classes/computer-setup/">I’ve got videos and
-instructions on how to set things up</a>.</p>
-<p>Today’s topic: making the figure above showing the number of cases and fitting a model. The USA
-is complicated, so I’m going to use a different country, say … mmm, Italy. Links to videos and
-some additional commentary below the figure.</p>
-<pre class="r"><code>library(&quot;tidyverse&quot;)
-library(&quot;lubridate&quot;)
-# Download and archive the data
-# Uncomment the next 6 lines of code if this is the first time
-# you are running it. 
-# jhu_url &lt;- paste(&quot;https://raw.githubusercontent.com/CSSEGISandDATA/&quot;,
-#                  &quot;COVID-19/master/csse_covid_19_data/&quot;,
-#                  &quot;csse_covid_19_time_series/&quot;,
-#                  &quot;time_series_19-covid-Confirmed.csv&quot;, sep = &quot;&quot;)
-# jhu_wide &lt;- read_csv(jhu_url)
-# save(jhu_wide, file = &quot;data/jhu_wide_2020-03-17.Rda&quot;)
-# reload the data from the file, not the internet
-load(&quot;data/jhu_wide_2020-03-17.Rda&quot;)
-
-# Take the wide format data and make it long
-italy_confirmed &lt;- jhu_wide %&gt;% 
-  # rename the problematic variables
-  rename(province = &quot;Province/State&quot;,  
-         country_region = &quot;Country/Region&quot;) %&gt;% 
-  # go from wide to long
-  pivot_longer(col = -c(&quot;province&quot;,&quot;country_region&quot;,&quot;Lat&quot;, &quot;Long&quot;),
-               names_to = &quot;Date&quot;, values_to = &quot;cumulative_cases&quot;) %&gt;% 
-  # turn the Date column into actual Date type
-  mutate(Date = mdy(Date)) %&gt;% 
-  # just get Italy
-  filter(country_region == &quot;Italy&quot;) %&gt;% 
-  # Calculate the number of new cases per day
-  mutate(incident_cases = c(0, diff(cumulative_cases)))%&gt;% 
-  # only keep data after feb 21 when the outbreak started, and remove row with no reported cases
-  filter(Date &gt;= &quot;2020-02-21&quot;, incident_cases &gt; 0)
-
-# make the plot with data prior to March 4 (12 days), save as an object to reuse later
-p1 &lt;- ggplot(data = filter(italy_confirmed, Date &lt;= &quot;2020-03-03&quot;),
-       mapping = aes(x = Date)) +
-  geom_point(mapping = aes(y = incident_cases)) +
-  scale_y_log10() +
-  geom_smooth(mapping = aes(y = incident_cases), method = &quot;lm&quot;)
-
-# Fit the model to the first 12 days of data (to match what I did with USA)
-italy_exp_model &lt;- italy_confirmed %&gt;% 
-  filter(Date &lt;= &quot;2020-03-03&quot;) %&gt;% 
-  mutate(log_incident_cases = log10(incident_cases),
-         day = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) %&gt;% 
-  lm(data = .,
-     formula = log_incident_cases ~ day)
-
-# Make predictions out to March 16
-predicted &lt;- tibble(day = 6:18)
-predicted_list &lt;- predict(italy_exp_model, newdata = predicted, se.fit = TRUE)
-predicted &lt;- predicted %&gt;% 
-  mutate(Date = ymd(&quot;2020-02-27&quot;) + day,
-         fit = predicted_list$fit,
-         se.fit = predicted_list$se.fit,
-         pred_var = se.fit^2 + predicted_list$residual.scale^2,
-         lpl = 10^(fit - sqrt(pred_var)*qt(0.975, df = 10)),
-         upl = 10^(fit + sqrt(pred_var)*qt(0.975, df = 10)),
-         fit = 10^fit)
-
-# Make the whole plot
-p1 + 
-  # Expected values of prediction as a dashed line
-  geom_line(data = predicted,
-            mapping = aes(x = Date, y = fit),
-            linetype = 2) +
-  # Prediction interval as a partly transparent ribbon
-  geom_ribbon(data = predicted,
-              mapping = aes(x = Date, ymin = lpl, ymax = upl),
-              alpha = 0.25) +
-  # Add observed points after March 3
-  geom_point(data = filter(italy_confirmed, Date &gt; &quot;2020-03-03&quot;),
-             mapping = aes(y = incident_cases)) +
-  labs(y = &quot;Incident cases&quot;, title = &quot;Total new reported cases per day in Italy&quot;,
-       subtitle = &quot;Exponential model in blue; predicted values with 95% prediction intervals with dashed line.&quot;,
-       caption = paste(&quot;Source data from https://github.com/CSSEGISandData/COVID-19 downloaded &quot;,
-                       format(file.mtime(savefilename), usetz = TRUE),
-                       &quot;\n Unofficial, not peer reviewed results.&quot;,
-                       &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;)
-       )</code></pre>
-<p><img src="/post/covid-19_in_R_VI_files/figure-html/student_code-1.png" width="672" /></p>
-<p>The code above is slightly tweaked relative to what I used in the video; I’ve
-adjusted the date range to match the USA analysis better, and the filename is
-slightly different. I also added labels and copyright and yada yada. But the steps and
-interpretation are the same.</p>
-<ul>
-<li><p><a href="https://youtu.be/dsW4QS-urM0">Download and manipulate the data (28 minutes)</a></p></li>
-<li><p><a href="https://youtu.be/2UOq_tTsmFY">Make a figure of cumulative cases by day (14 minutes)</a></p></li>
-<li><p><a href="https://youtu.be/yuQtGxEuaEE">Fit the exponential model and make predictions (30 minutes)</a></p></li>
-</ul>
-<p>Videos are way too long! But what else are you doing while social distancing? Learn some new stuff!
-I think two points are worth making about that figure. First, just like with the USA figure
-there are signs the number of new cases per day is slowing because the points are all
-falling below the expected line, and some are outside the 95% prediction interval. That’s great
-news for Italy. The estimated growth rate for italy is 0.12 compared to 0.15 for the USA over a
-similar 12 day span following the first day of sustained growth. So in the first 12 days of the
-outbreak the number of new cases per day was growing about 25% <em>faster</em> in the USA than in Italy.
-That’s not such good news.</p>
-</div>
-<div id="full-data-nerd-below-this-point" class="section level1">
-<h1>Full data nerd below this point</h1>
-<p>Warning, not for the faint of heart. I’m basically typing while thinking, so if you’re looking for a nice
-coherent story beyond here, stop reading now.</p>
-<p>I’ve got so many things to try, I’m losing track! My friend Scott is waiting on predictions
-of the cumulative cases from a logistic
-model, so lets do that with the cumulative data for the 6 countries. The logistic model
-has one more parameter than the exponential model, and levels off to an asymptote. This
-is what we expect for the cumulative number of cases, because as more and more people recover
-from the virus (or get vaccinated) the number of people left to infect gets lower, and
-the epidemic ends. The estimate of the Asymptote parameter in these models would give us
-an idea of how many people might ultimately be infected. I’m skeptical that these models will
-work, because early in the epidemic process the data have little information about where the
-asymptote is. But let’s try and see what happens.</p>
-<pre class="r"><code># packages that I need
-# have to load drc first or causes problems because of MASS::select conflicts with dplyr::select
-# library(&quot;drc&quot;) # dose response curves for the 3 parameter logistic, more robust than nls()
-# library(&quot;tidyverse&quot;) # plotting and data manipulation
-# library(&quot;lubridate&quot;) # easier Date objects
-countries &lt;- c(&quot;Canada&quot;, &quot;Australia&quot;, &quot;Korea, South&quot;, &quot;Italy&quot;, &quot;Iran&quot;)
-other_confirmed_total &lt;- jhu_wide %&gt;% 
-  rename(province = &quot;Province/State&quot;, 
-         country_region = &quot;Country/Region&quot;) %&gt;% 
-  pivot_longer(-c(province, country_region, Lat, Long), 
-               names_to = &quot;Date&quot;, values_to = &quot;cumulative_cases&quot;) %&gt;% 
-  filter(country_region %in% countries,
-         # have to trap the rows with missing province (most other countries)
-         # otherwise str_detect(province ...) is missing and dropped by filter()
-         is.na(province) | str_detect(province, &quot;Princess&quot;, negate = TRUE)) %&gt;% 
-  mutate(Date = mdy(Date)) %&gt;% 
-  # filter out state rows prior to march 9, and county rows after that. 
-  group_by(country_region, Date) %&gt;% # then group by country and Date and sum
-  summarize(cumulative_cases = sum(cumulative_cases)) %&gt;% 
-  group_by(country_region) %&gt;% 
-  mutate(incident_cases = c(0, diff(cumulative_cases))) %&gt;% 
-  ungroup()
-us_confirmed_total &lt;- mutate(us_confirmed_total, country_region = &quot;USA&quot;)
-all_confirmed_total &lt;- bind_rows(other_confirmed_total, us_confirmed_total) 
-
-pall &lt;- ggplot(data = all_confirmed_total,
-       mapping = aes(x = Date)) + # don&#39;t add y = here, so we can change variables later for ribbons etc
-  geom_point(mapping = aes(y = cumulative_cases)) + 
-  facet_wrap(~country_region, scales = &quot;free_y&quot;)
-
-# these functions got out of control, so putting them in a separate file
-# You can get the code at
-# https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/R/drchelpers.R
-source(&quot;R/drchelpers.R&quot;)
-# fit the models
-all_results &lt;- all_confirmed_total %&gt;%
-  mutate(day = as.numeric(Date - ymd(&quot;2020-02-27&quot;))) %&gt;% # get day relative to Feb 27
-  filter(Date &gt; &quot;2020-02-15&quot;, Date &lt;= &quot;2020-03-11&quot;) %&gt;% # trim data to the dates we want
-  group_by(country_region) %&gt;% 
-  # nest() puts the data for each country into a &quot;list column&quot; called &quot;data&quot; 
-  # so that I can do the next step
-  nest() %&gt;% 
-  # fit the models to each dataframe in the list column
-  mutate(models = map(data, ~drm(cumulative_cases~day, data = ., fct = drc::L.3())),#,
-         data = map(models, augment_drc, interval = &quot;confidence&quot;)) ## adds regression output to data 
-all_fitted &lt;- all_results %&gt;% 
-  select(-models) %&gt;%  # remove the models column before the next step
-  unnest(cols = data) %&gt;%  # pulls the &quot;data&quot; column back out to make a single data frame
-  mutate(Date = ymd(&quot;2020-02-27&quot;) + day)
-predict_data &lt;- data.frame(day = 14:20) # if use a tibble here doesn&#39;t work with drc
-all_predictions &lt;- all_results %&gt;% 
-  mutate(predicted = map(models, augment_drc, newdata = predict_data, interval = &quot;prediction&quot;)) %&gt;% 
-  select(-c(models, data)) %&gt;% 
-  unnest(cols = predicted) %&gt;% 
-  mutate(Date = ymd(&quot;2020-02-27&quot;)+ day)
-pall + 
-  geom_line(data = all_fitted,
-            mapping = aes(y = Prediction),
-            color = &quot;blue&quot;, size = 1.5) +
-  geom_ribbon(data = all_fitted,
-              mapping = aes(ymin = Lower, ymax = Upper), 
-              alpha = 0.25)+
-    geom_line(data = all_predictions,
-            mapping = aes(y = Prediction),
-            linetype = 2) +
-  geom_ribbon(data = all_predictions,
-              mapping = aes(ymin = Lower, ymax = Upper), 
-              alpha = 0.25)</code></pre>
+<p>Another way to put the above: you get the research you pay for!</p>
+<p>The figure below has changed quite a bit, and so I’ll highlight some
+key points here. The y axis is now cases / 100,000 people to make it easier to compare Italy
+and the USA. As before, the BLUE LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed lines are predictions from that
+model. The estimated model and predictions for both countries are on both panels.
+The lines and intervals for the other country are faded out. The RED LINES
+are 20 x the number of ICU beds per 100,000 people in each country.</p>
 <p><img src="/post/covid-19_in_R_VI_files/figure-html/featured_image-1.png" width="672" /></p>
-<p>That was way harder than I planned on. The goto function for non-linear models like this is <code>nls()</code>, but the estimation algorithms available there were struggling to converge.
-Package <code>drc</code> (dose response curve) gave me good results in past problems so I tried that.
-Those models converged, but then I ran into all sorts of problems trying to get the predicted
-values out of them. <code>drc</code> isn’t tidy-friendly, returning matrices and failing left and right
-if you feed it a tibble. A few hours of hair-pulling later, I’ve got the fitted models and
-predicted values. My first impression is that the confidence and prediction intervals are
-way too narrow – I just don’t believe them.</p>
-<p>But that’s not the reason to discard this model – with the exception of the USA, all
-five sets of observed cumulative cases are <em>above</em> the prediction interval. This is
-especially obvious with Iran. The best fit parameters have the curves tipping over towards
-the asymptote too soon. Within the data used to fit the models seem to be matching pretty well,
-except for Australia.</p>
-<p>So why is this happening? I suspect that the culprit is actually a rate parameter that is slowing
-down with time, rather than constant. In the logistic equation the rate parameter controls
-how fast the curve climbs at the early stage, but <em>also</em> how fast the asymptote is approached.
-Given the data is all from the early phase the model is matching the rate parameter to what’s
-happening then. But then the forecast approaches the estimated asymptote too fast.</p>
-<p>What about the estimated asymptotic sizes?</p>
-<pre class="r"><code>library(&quot;huxtable&quot;)
-all_results %&gt;% 
-  mutate(estimates = map(models, tidy_drc)) %&gt;% 
-  select(-c(models, data)) %&gt;% 
-  unnest(cols = estimates) %&gt;% 
-  filter(Coefficient == &quot;d:(Intercept)&quot;) %&gt;% # grab the asymptote estimate
-  select(country_region, Estimate, `2.5 %`, `97.5 %`) %&gt;% 
-  mutate(`2.5 %` = case_when(`2.5 %` &lt; 0 ~ 0, # truncate the lower limit to zero
-                             TRUE ~ `2.5 %`)) %&gt;% 
-  rename(Country = country_region) %&gt;% 
-  hux(add_colnames = TRUE) %&gt;% # I love huxtables
-  set_number_format(row = 2:7, col = 2:4, value = 0) %&gt;% 
-  theme_article()</code></pre>
-<table class="huxtable" style="border-collapse: collapse; margin-bottom: 2em; margin-top: 2em; width: 50%; margin-left: auto; margin-right: auto;  ">
-<col><col><col><col><tr>
-<td style="vertical-align: top; text-align: left; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Country</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Estimate</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">2.5 %</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 1pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">97.5 %</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Australia</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">3479</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">13364</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Canada</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">6605</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">30952</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Iran</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">10135</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">9523</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">10748</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Italy</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">28453</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">21677</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">35229</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: nowrap; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">Korea, South</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">7947</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">7816</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; padding: 4pt 4pt 4pt 4pt;">8078</td>
-</tr>
-<tr>
-<td style="vertical-align: top; text-align: left; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt; font-weight: bold;">USA</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt;">53244</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt;">0</td>
-<td style="vertical-align: top; text-align: right; white-space: nowrap; border-style: solid solid solid solid; border-width: 0pt 0pt 1pt 0pt; padding: 4pt 4pt 4pt 4pt;">262967</td>
-</tr>
-</table>
-
-<p>Keep in mind that the logistic model is making terrible predictions for the first five
-rows, so in all likelihood the upper confidence limit is like a bare minimum given
-what’s happening now. Iran, Italy, and South Korea are all much too precise. The most
-interesting thing about the other three is how uncertain they are – I truncated negative
-lower limits to 0 for plausibility, and the upper limits are 5x bigger than the best estimate.
-As I suspected we can’t say anything about the ultimate size of the outbreak with these models.</p>
-</div>
-<div id="what-to-try-next" class="section level1">
-<h1>What to try next?</h1>
-<p>I seem to have the code for multiple countries worked out, so tomorrow I’ll run the
-negative binomial model on all 6 countries with country specific 12 day windows. Time
-permitting I want to explore some of the epidemiological models.</p>
+<p><a href="/post/covid-19_and_r_v/">Much as yesterday</a>, Tuesday’s new cases in the USA are inside
+the prediction intervals but
+below expectations for the exponential model<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Italy’s numbers continue to fall outside
+of the prediction interval for the exponential model.
+Cases are growing faster in the USA than Italy during the first couple weeks
+because the lines are converging.</p>
+<p>The horizontal red lines are the 20 x number of ICU beds per 100,000 people. I multiply
+by 20 assuming that only 5% of cases need ICU beds. It’s easy to see why things
+are going so poorly in Italy even though the growth in the number of new cases has leveled
+off. <em>Every day</em> they are adding more severe cases per capita than the number of ICU beds.
+And that assumes all the beds are available – they weren’t to begin with and certainly not
+now. In addition the cases are not evenly distributed geographically; some parts of Italy have a
+much higher number of cases per capita than others. This is also true in the USA. California, Washington state,
+and New York state will overwhelm their ICU capacity sooner than the rest of the country.</p>
+<blockquote>
+<p>Unless things change radically, I expect USA to be in a similar pickle as Italy after
+March 23, certainly by the end of March.</p>
+</blockquote>
+<p>Could be sooner in some places. There is a lot of uncertainty around the red line that isn’t accounted for.
+After I wrote that prediction (honestly), I read <a href="https://www.cnbc.com/2020/03/18/cuomo-says-trump-is-dispatching-a-floating-hospital-to-new-york-state.html">this CNBC report</a>
+in which Governor Cuomo suggests that 110,000 beds will be needed in mid-May. Looking closely at the
+numbers in that article, I think there is a lot of confusion about the difference between the cumulative
+number of cases and the peak <em>daily</em> number of cases. Even many of the really sick people recover! It is
+clear that someone is giving Governor Cuomo projections, but he obviously doesn’t understand them.
+More important than the number of hospital beds, or even ICU beds, is the number of ventilators.
+3000 in New York state.</p>
+<p>Yesterday I made a back-of-the-envelope calculation about the number of true cases in Nebraska, assuming that
+only 20% of cases get reported. This morning I found <a href="https://science.sciencemag.org/content/early/2020/03/13/science.abb3221">this paper estimating that only 14% of cases in
+China were documented prior to Jan 23 travel restrictions</a>.
+So my guess might not have been far wrong! It could be worse here, because the frequency of testing
+is very low. I heard an ancedote of someone being hospitalized with COVID-19 like symptoms, but not
+tested. In the USA only 31878 people have been tested to date, compared with 42976 in Canada! That comparison
+gets worse if you recall that Canada has a population ~10x smaller than the USA.</p>
+<p>I’m going to call this one good. Keep your distance everyone, wash your hands, and stay positive.
+This too will pass.</p>
 </div>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd">on Github</a>.
-This post benefited from comments by Ramona Sky.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VI.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

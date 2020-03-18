@@ -18,19 +18,38 @@ og_image: /post/covid-19_in_r_vi_files/figure-html/featured_image-1.png
 
 Tuesday's number of new cases in the USA are inside the prediction interval, 
 but are still below expectations. 
-Good news! However, new cases per day in the USA grew about 25% 
-faster than new cases in Italy over the first 12 days of the outbreak in each country. 
-Italy's numbers are showing clear signs of a slowdown relative to 
-exponential growth.
+Italy's numbers continue showing clear signs of a slowdown relative to 
+exponential growth. Nonetheless, Italy continues to add more severe cases per day
+than their ICU bed capacity.
+Unless things change drastically, I predict the USA will start to exceed ICU bed
+capacity by March 23, maybe sooner in some locations. Certainly by the
+end of March. 
+
+That outcome is not set in stone. The time to act is now. Even a one day delay in reducing transmission rate
+dramatically increases the peak number of sick people. If you're lucky to be 
+in a low risk group, you can still spread the virus. Although your symptoms are mild, 
+the person you hand the virus off to could experience much worse symptoms. You don't 
+have to hermetically seal your house. I like this graphic:
+![social distancing suggestions](http://rutherfordcountytn.gov/img/2.png)
 
 # The bottom line
 
 DISCLAIMER: These unofficial results are not peer reviewed, and should be
 treated as such. My goal is to learn about forecasting in real time, 
 how simple models compare with more complex models, and even how to compare
-different models.
+different models. 
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+Another way to put the above: you get the research you pay for! 
+
+The figure below has changed quite a bit, and so I'll highlight some
+key points here. The y axis is now cases / 100,000 people to make it easier to compare Italy 
+and the USA. As before, the BLUE LINES are exponential growth models that assume
+the rate of increase is *constant*. The dashed lines are predictions from that
+model. The estimated model and predictions for both countries are on both panels.
+The lines and intervals for the other country are faded out. The RED LINES
+are 20 x the number of ICU beds per 100,000 people in each country. 
+
+```{r featured_image, warning=FALSE, message=FALSE, echo=FALSE}
 library("drc")
 library("tidyverse")
 library("lubridate")
@@ -82,7 +101,7 @@ us_fits <- augment(us_exp_model, se_fit = TRUE) %>%
          ucl = 10^(.fitted + .se.fit*qt(0.975, df = 10)),
          fit = 10^.fitted)
 
-predicted <- tibble(day = 14:20)
+predicted <- tibble(day = 14:27)
 predicted_list <- predict(us_exp_model, newdata = predicted, se.fit = TRUE)
 predicted$fit <- predicted_list$fit # this is klutzy, but I want to see the answer! 
 predicted$se.fit <- predicted_list$se.fit
@@ -141,65 +160,109 @@ italy_predicted <- predicted %>%
 
 observed <- bind_rows(USA = us_confirmed_total, Italy = italy_confirmed, .id = "country") %>% 
   left_join(country_data, by = c("country" = "country_region")) %>% 
-  mutate(icpc = incident_cases * 10 / popn)
+  mutate(icpc = incident_cases * 10 / popn,
+         group = as.numeric(factor(country)))
 fits <- bind_rows(USA = us_fits, Italy = italy_fits, .id = "country")%>% 
   left_join(country_data, by = c("country" = "country_region"))%>% 
   mutate(fitpc = fit * 10 / popn,
          lclpc = lcl * 10 / popn,
-         uclpc = ucl * 10 / popn)
+         uclpc = ucl * 10 / popn,
+         group = as.numeric(factor(country)))
 predicted <- bind_rows(USA = us_predicted, Italy = italy_predicted, .id = "country")%>% 
   left_join(country_data, by = c("country" = "country_region"))%>% 
   mutate(fitpc = fit * 10 / popn,
          lplpc = lpl * 10 / popn,
-         uplpc = upl * 10 / popn)
+         uplpc = upl * 10 / popn,
+         group = as.numeric(factor(country)))
 
 ggplot(data = observed,
        mapping = aes(x = Date)) + 
-  geom_point(mapping = aes(y = incident_cases)) + 
-  facet_wrap(~country) +
+  geom_point(mapping = aes(y = icpc)) + 
+  facet_wrap(~country, scales = "free_x") +
   scale_y_log10() +
+  geom_line(data = select(fits, -country),
+            mapping = aes(y = fitpc, group = group),
+            color = "blue", alpha = 0.5) +
+  geom_ribbon(data = select(fits, -country),
+            mapping = aes(ymin = lclpc, ymax = uclpc, group = group),
+            alpha = 0.1) +
+  geom_line(data = select(predicted, -country),
+            mapping = aes(y = fitpc, group = group),
+            linetype = 2, alpha = 0.5) +
+  geom_ribbon(data = select(predicted, -country),
+            mapping = aes(ymin = lplpc, ymax = uplpc, group = group),
+            alpha = 0.1) +
   geom_line(data = fits,
-            mapping = aes(y = fit),
+            mapping = aes(y = fitpc),
             color = "blue", size = 1.25) +
   geom_ribbon(data = fits,
-            mapping = aes(ymin = lcl, ymax = ucl),
+            mapping = aes(ymin = lclpc, ymax = uclpc),
             alpha = 0.2) +
   geom_line(data = predicted,
-            mapping = aes(y = fit),
+            mapping = aes(y = fitpc),
             linetype = 2) +
   geom_ribbon(data = predicted,
-            mapping = aes(ymin = lpl, ymax = upl),
+            mapping = aes(ymin = lplpc, ymax = uplpc),
             alpha = 0.2) +
-  labs(y = "Incident cases", title = "Total new reported cases per day",
+  geom_hline(mapping = aes(yintercept = icu_beds/0.05), color = "red", linetype = 2) +
+  labs(y = "Incident cases per 100,000 people", title = "Total new reported cases per day",
        subtitle = "Exponential model in blue; predicted values with 95% prediction intervals with dashed line.",
        caption = paste("Source data from https://github.com/CSSEGISandData/COVID-19 downloaded ",
                        format(file.mtime(savefilename), usetz = TRUE),
                        "\n Unofficial, not peer reviewed results.",
                        "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")
-       )
+       ) + 
+  geom_text(mapping = aes(y = icu_beds/0.05+75), 
+            x = ymd("2020-02-21"),
+           label = "20 x # ICU beds / 100K",
+           size = 2.5, hjust = "left")
 ```
 
 [Much as yesterday](/post/covid-19_and_r_v/), Tuesday's new cases in the USA are inside 
 the prediction intervals but
 below expectations for the exponential model[^1]. Italy's numbers continue to fall outside
 of the prediction interval for the exponential model. 
+Cases are growing faster in the USA than Italy during the first couple weeks 
+because the lines are converging.
+
+The horizontal red lines are the 20 x number of ICU beds per 100,000 people. I multiply
+by 20 assuming that only 5% of cases need ICU beds. It's easy to see why things
+are going so poorly in Italy even though the growth in the number of new cases has leveled
+off. *Every day* they are adding more severe cases per capita than the number of ICU beds.
+And that assumes all the beds are available -- they weren't to begin with and certainly not
+now. In addition the cases are not evenly distributed geographically; some parts of Italy have a 
+much higher number of cases per capita than others. This is also true in the USA. California, Washington state, 
+and New York state will overwhelm their ICU capacity sooner than the rest of the country. 
+
+> Unless things change radically, I expect USA to be in a similar pickle as Italy after 
+March 23, certainly by the end of March. 
+
+Could be sooner in some places. There is a lot of uncertainty around the red line that isn't accounted for. 
+After I wrote that prediction (honestly), I read [this CNBC report](https://www.cnbc.com/2020/03/18/cuomo-says-trump-is-dispatching-a-floating-hospital-to-new-york-state.html) 
+in which Governor Cuomo suggests that 110,000 beds will be needed in mid-May. Looking closely at the
+numbers in that article, I think there is a lot of confusion about the difference between the cumulative
+number of cases and the peak *daily* number of cases. Even many of the really sick people recover! It is
+clear that someone is giving Governor Cuomo projections, but he obviously doesn't understand them. 
+More important than the number of hospital beds, or even ICU beds, is the number of ventilators. 
+3000 in New York state.  
+
+Yesterday I made a back-of-the-envelope calculation about the number of true cases in Nebraska, assuming that
+only 20% of cases get reported. This morning I found [this paper estimating that only 14% of cases in 
+China were documented prior to Jan 23 travel restrictions](https://science.sciencemag.org/content/early/2020/03/13/science.abb3221).
+So my guess might not have been far wrong! It could be worse here, because the frequency of testing
+is very low. I heard an ancedote of someone being hospitalized with COVID-19 like symptoms, but not
+tested. In the USA only 31878 people have been tested to date, compared with 42976 in Canada! That comparison
+gets worse if you recall that Canada has a population ~10x smaller than the USA.  
+
+I'm going to call this one good. Keep your distance everyone, wash your hands, and stay positive. 
+This too will pass. 
 
 
 
 
-# Full data nerd below this point
-
-Warning, not for the faint of heart. I'm basically typing while thinking, so if you're looking for a nice 
-coherent story beyond here, stop reading now.
 
 
 
 
-# What to try next?
-
-
-
-
-
-[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_II.Rmd).
-This post benefited from comments by Ramona Sky.
+[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VI.Rmd).
+This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.
