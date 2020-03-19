@@ -1,0 +1,194 @@
+---
+title: "COVID-19 and R Part VII"
+author: "Drew Tyre"
+date: "2020-03-19"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: no
+slug: COVID-19_and_R_VII
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+og_image: /post/covid-19_in_r_vii_files/figure-html/featured_image-1.png
+---
+
+
+
+<p>Wednesday’s number of new cases in the USA was still inside the prediction interval,
+and still below expectations.
+Italy’s numbers appear to have leveled off from exponential to linear growth.
+Nonetheless, Italy continues to add more severe cases per day
+than their ICU bed capacity.
+Unless things change drastically, I predict the USA will start to exceed local ICU bed
+capacity by March 23, in places like New York, Washington state, and the Bay Area.
+Certainly by the end of March. Places like Nebraska may not experience these problems,
+because measures to reduce transmission started while case numbers were still low.</p>
+<p>That outcome is not set in stone. The time to act is now. Even a one day delay in reducing transmission rate
+dramatically increases the peak number of sick people. If you’re lucky to be
+in a low risk group, you can still spread the virus. Although your symptoms are mild,
+the person you hand the virus off to could experience much worse symptoms. You don’t
+have to hermetically seal your house. I like this graphic:
+<img src="http://rutherfordcountytn.gov/img/2.png" alt="social distancing suggestions" /></p>
+<p><a href="/post/covid-19_and_r/">This all started a week ago</a>, in case you’re just joining.</p>
+<div id="the-bottom-line" class="section level1">
+<h1>The bottom line</h1>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.</p>
+<p>The figure below is complex, so I’ll highlight some
+features first. The y axis is now cases / 100,000 population to make it easier to compare Italy
+and the USA. As before, the BLUE LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed black lines are predictions from that
+model. To make comparison easier, the estimated model and predictions for both countries are on both panels.
+The lines and intervals for the other country are faded out. The RED LINES
+are 20 times the number of ICU beds per 100,000 population in each country. Note that
+the y axis is logarithmic.</p>
+<p><img src="/post/covid-19_in_R_VII_files/figure-html/featured_image-1.png" width="672" /></p>
+<p><a href="/post/covid-19_and_r_vi/">Much as yesterday</a>, new cases in the USA are inside the prediction interval,
+and still below expectations<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.
+Italy’s numbers appear to have leveled off from exponential to linear growth. Look
+at the new case numbers starting around March 12 – they are going along at a constant
+level, a flat line on this graph. Each day Italy adds about the same number of cases as
+the day before. In exponential growth, the number of cases per day <em>increases</em> at the same rate.
+On a log axis exponential growth looks like an increasing straight line.
+Nonetheless, Italy continues to add more severe cases per day than their ICU bed capacity.</p>
+<blockquote>
+<p>Unless things change drastically, I predict the USA will start to exceed local ICU bed
+capacity by March 23, in places like New York, Washington state, and the Bay Area.
+Certainly by the end of March. Places like Nebraska may not experience these problems,
+because measures to reduce transmission started while case numbers were still low.</p>
+</blockquote>
+<p>That is a bit more nuanced than yesterday’s prediction. I was looking at maps of the USA outbreak
+last night and realized that the country level totals are obscuring a lot of variation
+between states. This matters because <em>when</em> a locale starts reducing transmission by social
+distancing relative to the size of the outbreak makes a big difference. Consider this
+figure<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> comparing two Italian provinces:
+<img src="https://mfr.osf.io/export?url=https://osf.io/wqnga/?view_only=c2f00dfe3677493faa421fc2ea38e295%26direct%26mode=render%26action=download%26public_file=True&amp;initialWidth=848&amp;childId=mfrIframe&amp;parentTitle=OSF+%7C+BergamoLodi.jpg&amp;parentUrl=https://osf.io/wqnga/?view_only=c2f00dfe3677493faa421fc2ea38e295&amp;format=2400x2400.jpeg" alt="barplot of COVID-19 cases in two Italian provinces" />
+The first confirmed case in Italy was in Lodi province on February 21. The Italian government prohibited
+movement in or out of 10 municipalities in Lodi on February 23, only two days later. Although
+cases began to increase in Bergamo province on February 28, movement prohibitions were not extended
+there until March 8, more than a week after the first cases were reported. Cases increased in both
+provinces, but in Lodi the increase is linear, while Bergamo the increase is exponential. I fear New York
+and friends are like Bergamo. I’m hoping Nebraska and other small states are like Lodi.</p>
+</div>
+<div id="full-data-nerd-past-here" class="section level1">
+<h1>Full data nerd past here</h1>
+<p>Remember – coding while thinking, no coherent story, ymmv.</p>
+<p>I want to break down Canada and the USA to state / province, and see if there is anything useful I can
+get at that level. I’ll stick to the simple exponential model as a “null model” for now. UGH, I just
+remembered why I haven’t done that before … needed to be able to map the county rows with 2 letter state
+abbreviations to the state names in the state rows. So that took an hour. I took the opportunity
+to follow a suggestion from brilliant quantitative ecologist JB and put the data munging code that
+isn’t changing into a separate script file. And then that fancy new code broke everything in my
+base plot, so spent another hour figuring out how I broke everything.</p>
+<pre class="r"><code>us_by_state &lt;- us_confirmed_long(jhu_wide) # see, fancy! 
+canada_by_prov &lt;- other_confirmed_long(jhu_wide, countries = &quot;Canada&quot;)
+all_by_province &lt;- bind_rows(us_by_state, canada_by_prov) %&gt;% 
+  left_join(country_data) %&gt;% 
+  group_by(country_region, province) %&gt;% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)),
+         max_cases = max(cumulative_cases)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(icpc = incident_cases * 10 / popn,
+         group = as.numeric(factor(country_region))) %&gt;% 
+  # remove early rows from each state/province
+  # remove 0 rows in the middle that are probably reporting errors
+  filter(incident_cases &gt; 0, Date &gt;= start_date,
+         province %in% c(&quot;California&quot;, &quot;Washington&quot;, &quot;New York&quot;, &quot;British Columbia&quot;, &quot;Alberta&quot;, &quot;Ontario&quot;)) %&gt;% 
+  mutate(province = factor(province, levels = c(&quot;California&quot;, &quot;Washington&quot;, &quot;New York&quot;, &quot;British Columbia&quot;, &quot;Alberta&quot;, &quot;Ontario&quot;)))
+base_plot &lt;- ggplot(data = all_by_province,
+                    mapping = aes(x = Date)) + 
+  geom_point(mapping = aes(y = icpc, color = province)) + 
+  facet_wrap(~province, dir=&quot;v&quot;) + 
+  scale_y_log10() + 
+  theme(legend.position = &quot;none&quot;) + 
+  labs(y = &quot;Incident cases / 100K people&quot;) 
+
+# fit the models
+all_models &lt;- all_by_province %&gt;% 
+  mutate(log10_ic = log10(incident_cases),
+         day = as.numeric(Date - start_date)) %&gt;% 
+  filter(day &lt;= 12) %&gt;% 
+  group_by(province) %&gt;% 
+  nest() %&gt;% 
+    mutate(model = map(data, ~lm(log10_ic~day, data = .)))
+
+all_fit &lt;- all_models %&gt;% 
+  mutate(fit = map(model, augment, se_fit = TRUE),
+         fit = map(fit, select, -c(&quot;log10_ic&quot;,&quot;day&quot;))) %&gt;% 
+  select(-model) %&gt;% 
+  unnest(cols = c(&quot;data&quot;,&quot;fit&quot;)) %&gt;% 
+  mutate(fit = 10^.fitted,
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+    fitpc = fit * 10 / popn,
+         lclpc = lcl * 10 / popn,
+         uclpc = ucl * 10 / popn)
+
+all_predicted &lt;- all_by_province %&gt;% 
+    mutate(day = as.numeric(Date - start_date)) %&gt;% 
+  filter(day &gt; 12) %&gt;% #these are the rows we want to predict with
+  group_by(province) %&gt;% 
+  nest() %&gt;% 
+  left_join(select(all_models, province, model), by=&quot;province&quot;) %&gt;% 
+  mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+         sigma = map_dbl(model, ~summary(.x)$sigma)) %&gt;% 
+  select(-c(model,data)) %&gt;% 
+  unnest(cols = predicted) %&gt;% 
+  mutate(
+    fit = 10^.fitted,
+    pred_var = sigma^2 + .se.fit^2,
+    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
+    fitpc = fit * 10 / popn,
+         lplpc = lpl * 10 / popn,
+         uplpc = upl * 10 / popn)
+base_plot + 
+  geom_line(data = all_fit,
+            mapping = aes(y = fitpc, color = province),
+            size = 1.25) +
+  geom_ribbon(data = all_fit,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = all_predicted,
+            mapping = aes(y = fitpc, color = province),
+            linetype = 2) +
+  geom_ribbon(data = all_predicted,
+            mapping = aes(ymin = lplpc, ymax = uplpc),
+            alpha = 0.2)  </code></pre>
+<p><img src="/post/covid-19_in_R_VII_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>That figure is all per capita, so by that metric the two places that are worst off
+are New York and British Columbia, both adding around 0.5% of the population
+per day and accelerating. The worst news is that both New York and California
+continue to grow consistent with the exponential model. It’s a bit harder
+to tell with the Canadian provinces because the outbreaks are shorter there,
+so not much left after using 12 days to fit the model. Ontario is interesting
+because the total number of cases is highest there (for Canada), but per capita
+they are lower.</p>
+</div>
+<div id="whats-next" class="section level1">
+<h1>What’s next?</h1>
+<p>So tomorrow I should be able to fiddle the state/province graphs a bit more
+and get localized predictions for when ICU capacity might become a problem. I guess
+it’s getting time to find an alternative model to the exponential as well. The
+logistic curves from a few days ago were terrible at forecasting, so not sure
+what else to try. Suggestions in the comments please!</p>
+<p>I’d also like to refine the prediction of ICU capacity. <a href="https://medium.com/@megan.higgie/without-serious-action-australia-will-run-out-of-intensive-care-beds-between-7-and-10-april-59f83b52756e">I finally found someone
+making predictions that include confidence limits</a> and Dr. Higgie predicts the time at which Australia
+will start to experience issues with ICU capacity (early April). She makes a great point that
+cases occupy an ICU bed for some weeks, so just looking at the new cases is optimistic. Instead
+there needs to be a kind of sliding window sum of the new cases.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VII.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p><a href="https://mfr.osf.io/render?url=https://osf.io/fd4rh/?view_only=c2f00dfe3677493faa421fc2ea38e295%26fbclid=IwAR2XQCAUzqpOWtdkLKmaIiorv5uih9RBg0BreAgSnYd2Qq9BnjWxyIf0zAk%26direct%26mode=render%26action=download%26mode=render">This preprint is the source of the figure, and discusses age structure effects</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

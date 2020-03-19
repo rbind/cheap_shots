@@ -16,7 +16,7 @@ us_confirmed_long <- function(all_wide){
     arrange(province, Date)  %>% 
     # filter out state rows prior to march 8, and county rows after that. 
     # this is dropping virgin islands ... 
-    filter(str_detect(province, ", ") & Date <= "2020-03-9" |
+    filter(str_detect(province, ", ") & Date <= "2020-03-9" | 
              str_detect(province, ", ", negate = TRUE) & Date > "2020-03-9",
            str_detect(province, "Princess", negate = TRUE)) 
   # split off the county rows, match with state names and sum
@@ -27,10 +27,12 @@ us_confirmed_long <- function(all_wide){
     rename(province = name) %>% 
     group_by(province, Date) %>% 
     summarize(cumulative_cases = sum(cumulative_cases)) %>% 
-    ungroup()
+    ungroup() %>% 
+    mutate(country_region = "USA")
   states <- t1 %>% 
     filter(str_detect(province, ", ", negate = TRUE)) %>% 
-    select(province, Date, cumulative_cases)
+    select(province, country_region, Date, cumulative_cases) %>% 
+    mutate(country_region = "USA")
   bind_rows(sum_counties, states) %>% 
     arrange(province, Date)
     
@@ -46,5 +48,6 @@ other_confirmed_long <- function(all_wide, countries = c("Canada")){
            # have to trap the rows with missing province (most other countries)
            # otherwise str_detect(province ...) is missing and dropped by filter()
            is.na(province) | str_detect(province, "Princess", negate = TRUE)) %>% 
-    mutate(Date = mdy(Date))
+    mutate(Date = mdy(Date)) %>% 
+    select(-c("Lat", "Long"))
 }
