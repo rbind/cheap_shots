@@ -17,7 +17,8 @@ og_image: /post/covid-19_in_r_viii_files/figure-html/featured_image-1.png
 ---
 
 New cases in the USA took a big jump up yesterday. Italy continues to add more cases per day 
-than 20 times their ICU capacity.
+than 20 times their ICU capacity. US states and Canadian provinces with the largest number
+of cases so far are seeing new cases per day consistent with the exponential model. 
 
 That outcome is not set in stone. The time to act is now. Even a one day delay in reducing transmission rate
 dramatically increases the peak number of sick people. If you're lucky to be 
@@ -202,18 +203,28 @@ ggplot(data = observed,
   theme(legend.position = "none")
 ```
 
-[Unlike yesterday](/post/covid-19_and_r_vii/), new cases in the USA took a big jump up, but are still inside the prediction interval[^1]. 
+[Unlike yesterday](/post/covid-19_and_r_vii/), new cases in the USA took a big jump up, but are still inside the prediction interval[^1]. That jump up has multiple alternative explanations besides an increase in the 
+actual number of cases. Yesterday's number was low, so it could be that reporting glitches delayed some
+cases from wednesday to thursday. The USA is also trying to increase the rate of testing, with varying levels
+of success, so if testing has started to step up the number of reported cases could rise just due to that. Or
+both of those things could be happening, on top of an increase in the number of true cases. 
+
+Bit of perspective on the testing issue -- [apparently California tested 17000 people so far, but 10000 of those
+tests are still pending](https://apple.news/AU6X4O-5WT3G6JGsqcOet8Q)!
+
 Italy's numbers continue the linear pattern that started around March 12 -- they are going along at a constant
 level, a flat line on this graph. Each day Italy adds about the same number of cases as 
 the day before. Unfortunately that is still more cases per day than their health care infrastructure can
-handle. 
+handle. To put those numbers in perspective, the thin white line just above the latest point from italy is
+1000 cases / 100,000 population. That's 1%. New cases in Italy are nearly 1% of the population *per day*. 
 
 Below are the same calculations but focused in on 3 US states and 3 Canadian provinces[^2].
 Each panel has the same features as the graph above.
 
-```{r featured_image, message=FALSE, echo = FALSE}
+```{r featured_image, message=FALSE, echo = FALSE, fig.height = 7, warning = FALSE}
 us_by_state <- us_confirmed_long(jhu_wide) # see, fancy! 
 canada_by_prov <- other_confirmed_long(jhu_wide, countries = "Canada")
+state_province <- c("California", "Washington", "New York", "British Columbia", "Alberta", "Ontario")
 all_by_province <- bind_rows(us_by_state, canada_by_prov) %>% 
   left_join(country_data) %>% 
   group_by(country_region, province) %>% 
@@ -225,8 +236,8 @@ all_by_province <- bind_rows(us_by_state, canada_by_prov) %>%
   # remove early rows from each state/province
   # remove 0 rows in the middle that are probably reporting errors
   filter(incident_cases > 0, Date >= start_date,
-         province %in% c("California", "Washington", "New York", "British Columbia", "Alberta", "Ontario")) %>% 
-  mutate(province = factor(province, levels = c("California", "Washington", "New York", "British Columbia", "Alberta", "Ontario")))
+         province %in% state_province) %>% 
+  mutate(province = factor(province, levels = state_province))
 
 
 # fit the models
@@ -250,9 +261,11 @@ all_fit <- all_models %>%
          lclpc = lcl * 10 / popn,
          uclpc = ucl * 10 / popn)
 
-all_predicted <- all_by_province %>% 
-    mutate(day = as.numeric(Date - start_date)) %>% 
-  filter(day > 12) %>% #these are the rows we want to predict with
+#all_predicted <- all_by_province %>% 
+all_predicted <- cross_df(list(province = factor(state_province, levels = state_province), 
+                               day = 13:26)) %>% 
+  #   mutate(day = as.numeric(Date - start_date)) %>% 
+  # filter(day > 12) %>% #these are the rows we want to predict with
   group_by(province) %>% 
   nest() %>% 
   left_join(select(all_models, province, model), by="province") %>% 
@@ -260,7 +273,11 @@ all_predicted <- all_by_province %>%
          sigma = map_dbl(model, ~summary(.x)$sigma)) %>% 
   select(-c(model,data)) %>% 
   unnest(cols = predicted) %>% 
+  ungroup() %>% 
+  left_join(country_data, by = "province") %>% 
   mutate(
+    Date = start_date + day,
+    province = factor(province, levels = state_province), # use factor to modify plot order
     fit = 10^.fitted,
     pred_var = sigma^2 + .se.fit^2,
     lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
@@ -293,43 +310,62 @@ ggplot(data = all_by_province,
        caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
                        format(file.mtime(savefilename), usetz = TRUE),
                        "\n Unofficial, not peer reviewed results.",
-                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License.") +  
-  geom_text(
-            mapping = aes(y = 1.3*icu_beds/0.05), 
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")) +  
+  geom_text(data = filter(all_by_province, province == "California"),
+            mapping = aes(y = 1.4*icu_beds/0.05), 
             x = ymd("2020-03-01"),
            label = "20 x # ICU beds / 100K",
            size = 2.5, hjust = "left")
-       ) 
   
 
 ```
 
-# Full data nerd past here
+Washington, New York, and British Columbia are near or over the estimated per capita supply of ICU beds. The
+projections are two weeks past the end of the window I used to fit the models; those forecasts indicate that 
+all six locales could be in trouble by the end of the month. If efforts to reduce transmission came too late,
+New York could be seeing 10000 cases per day by the end of the month. 
 
-Remember -- coding while thinking, no coherent story, ymmv. 
-
+A prominent quantitative ecologist (who can remain nameless) dismissed my efforts here because the 
+exponential model magnifies the uncertainty making forecasts useless, and making it impossible to refute the
+exponential model. In addition, many models can be 
+consistent with exponential growth at the beginning,
+but do a lousy job of forecasting (for example, [the logistic model](/post/covid-19_and_R_v/) scroll down).
+It's true that the forecasts here have a large amount of uncertainty -- the forecast incident cases in
+Ontario for March 30 span 3 orders of magnitude, between 100 and 10000 new cases. 
+However that is the worst case, caused by the 
+large day to day fluctuations in reported cases in Ontario. In addition, there is no guarantee that
+the exponential model appears to work just because of this uncertainty. Look at the plot for Italy.
+It was clear on March 13 that the exponential model was no longer valid in Italy. Honestly, I've 
+been hoping the exponential model would become invalid in the USA and Canada. That would indicate
+that efforts to reduce transmission were working. But there is no sign of that yet. 
 
 # What's next?
 
-So tomorrow I should be able to fiddle the state/province graphs a bit more
-and get localized predictions for when ICU capacity might become a problem. I guess
-it's getting time to find an alternative model to the exponential as well. The 
-logistic curves from a few days ago were terrible at forecasting, so not sure
-what else to try. Suggestions in the comments please! 
+I think this will be my last post for a while. I've learned a ton, but trying to keep on top
+of the scientific literature and news posts, and hours of hard thinking about code each day is wearing me 
+out. There are huge well-funded teams[^3] crunching the numbers and advising decision makers, so 
+nothing lost by me taking a break. Here are my lessons learned 
 
-I'd also like to refine the prediction of ICU capacity. [I finally found someone
-making predictions that include confidence limits](https://medium.com/@megan.higgie/without-serious-action-australia-will-run-out-of-intensive-care-beds-between-7-and-10-april-59f83b52756e) and Dr. Higgie predicts the time at which Australia
-will start to experience issues with ICU capacity (early April). She makes a great point that 
-cases occupy an ICU bed for some weeks, so just looking at the new cases is optimistic. Instead
-there needs to be a kind of sliding window sum of the new cases. 
+- Simple models can be useful for decision making. If I'd thought to do it, I could have predicted the
+ICU crunch in New York 2 weeks ago. 
 
+- Data are critical. The biggest weakness for the US predictions is the lack of testing to identify cases. 
 
+- Crowdsourcing can work! The JHU data aggregation is now the de facto go to for everyone, even the US government[^4]. 
 
-
-
+If anyone wants an up to date figure for some state/province/country shoot me an email and I'll see what 
+I can do. Stay safe everyone, wash your hands, go for a walk. 
 
 
 [^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VII.Rmd).
 This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.
 
 [^2]: Full disclosure: I'm Canadian!
+
+[^3]: Imperial College of London is one, Penn State here in the USA, and a professor 
+at the University of Queensland asked for $1000000 to expand his teams efforts. Even if someone
+gave me a million dollars I don't have anyone to spend it on. I don't even need a bigger computer;
+you could run the analyses I'm doing on your phone with the right software! 
+
+[^4]: A news article I looked at yesterday had a picture of the DHHS situation room in DC. The JHU
+dashboard was on the wallscreen in the background.
