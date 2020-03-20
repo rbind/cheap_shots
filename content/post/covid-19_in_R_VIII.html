@@ -21,13 +21,8 @@ og_image: /post/covid-19_in_r_viii_files/figure-html/featured_image-1.png
 <p>New cases in the USA took a big jump up yesterday. Italy continues to add more cases per day
 than 20 times their ICU capacity. US states and Canadian provinces with the largest number
 of cases so far are seeing new cases per day consistent with the exponential model.</p>
-<p>That outcome is not set in stone. The time to act is now. Even a one day delay in reducing transmission rate
-dramatically increases the peak number of sick people. If you’re lucky to be
-in a low risk group, you can still spread the virus. Although your symptoms are mild,
-the person you hand the virus off to could experience much worse symptoms. You don’t
-have to hermetically seal your house. I like this graphic:
-<img src="http://rutherfordcountytn.gov/img/2.png" alt="social distancing suggestions" /></p>
-<p><a href="/post/covid-19_and_r/">This all started a week ago</a>, in case you’re just joining.</p>
+<p><a href="/post/covid-19_and_r/">The first post in this series was just over a week ago</a>, in case you’re just joining and
+want to see the progression.</p>
 <div id="the-bottom-line" class="section level1">
 <h1>The bottom line</h1>
 <p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
@@ -36,10 +31,10 @@ how simple models compare with more complex models, and even how to compare
 different models.</p>
 <p>The figure below is complex, so I’ll highlight some
 features first. The y axis is now cases / 100,000 population to make it easier to compare Italy
-and the USA. As before, the BLUE LINES are exponential growth models that assume
-the rate of increase is <em>constant</em>. The dashed black lines are predictions from that
+and the USA. The SOLID LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed lines are predictions from that
 model. To make comparison easier, the estimated model and predictions for both countries are on both panels.
-The lines and intervals for the other country are faded out. The RED LINES
+The lines and intervals for the other country are faded out. The horizontal DOTTED LINES
 are 20 times the number of ICU beds per 100,000 population in each country. Note that
 the y axis is logarithmic.</p>
 <p><img src="/post/covid-19_in_R_VIII_files/figure-html/base_image-1.png" width="672" /></p>
@@ -48,45 +43,60 @@ actual number of cases. Yesterday’s number was low, so it could be that report
 cases from wednesday to thursday. The USA is also trying to increase the rate of testing, with varying levels
 of success, so if testing has started to step up the number of reported cases could rise just due to that. Or
 both of those things could be happening, on top of an increase in the number of true cases.</p>
-<p>Bit of perspective on the testing issue – <a href="https://apple.news/AU6X4O-5WT3G6JGsqcOet8Q">apparently California tested 17000 people so far, but 10000 of those
-tests are still pending</a>!</p>
+<p>Bit of perspective on the testing issue – <a href="https://www.mercurynews.com/2020/03/19/gov-newsom-expands-bay-area-shelter-in-place-to-all-of-california/">apparently California has tested 17000 people so far, and 10000 of those
+tests are still pending</a>.</p>
 <p>Italy’s numbers continue the linear pattern that started around March 12 – they are going along at a constant
 level, a flat line on this graph. Each day Italy adds about the same number of cases as
-the day before. Unfortunately that is still more cases per day than their health care infrastructure can
-handle. To put those numbers in perspective, the thin white line just above the latest point from italy is
-1000 cases / 100,000 population. That’s 1%. New cases in Italy are nearly 1% of the population <em>per day</em>.</p>
+the day before. This is what “Flattening the curve” looks like. Unfortunately that is still more cases per day than their health care infrastructure can
+handle. To put those numbers in perspective, the latest point from italy is
+880 cases / 100,000 population. That’s nearly 1%. New cases in Italy are nearly 1% of the population <em>per day</em>.</p>
 <p>Below are the same calculations but focused in on 3 US states and 3 Canadian provinces<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.
 Each panel has the same features as the graph above.</p>
 <p><img src="/post/covid-19_in_R_VIII_files/figure-html/featured_image-1.png" width="672" /></p>
 <p>Washington, New York, and British Columbia are near or over the estimated per capita supply of ICU beds. The
 projections are two weeks past the end of the window I used to fit the models; those forecasts indicate that
 all six locales could be in trouble by the end of the month. If efforts to reduce transmission came too late,
-New York could be seeing 10000 cases per day by the end of the month.</p>
-<p>A prominent quantitative ecologist (who can remain nameless) dismissed my efforts here because the
-exponential model magnifies the uncertainty making forecasts useless, and making it impossible to refute the
-exponential model. In addition, many models can be
-consistent with exponential growth at the beginning,
+New York could be seeing 10000 cases per day by the end of the month.
+<a href="https://www.thecut.com/2020/03/coronavirus-pandemic-what-a-nyc-doctor-is-seeing-in-the-er.html">This interview with an ER doctor in New York City</a>
+suggests they are already running out of critical equipment like ventilators and personal protective equipment.
+Masks. Because there are not enough protective masks frontline healthcare workers are being exposed
+unnecessarily. When all the doctors and nurses are sick who looks after them?</p>
+<p>Many models can be
+consistent with exponential growth at the beginning of a growth curve,
 but do a lousy job of forecasting (for example, <a href="/post/covid-19_and_R_v/">the logistic model</a> scroll down).
-It’s true that the forecasts here have a large amount of uncertainty – the forecast incident cases in
+Honestly, I’ve
+been hoping the exponential model would become invalid in the USA and Canada. That would indicate
+that efforts to reduce transmission were working. But there is no sign of that yet.
+It’s also true that the forecasts here have a large amount of uncertainty – the forecast incident cases in
 Ontario for March 30 span 3 orders of magnitude, between 100 and 10000 new cases.
 However that is the worst case, caused by the
-large day to day fluctuations in reported cases in Ontario. In addition, there is no guarantee that
-the exponential model appears to work just because of this uncertainty. Look at the plot for Italy.
-It was clear on March 13 that the exponential model was no longer valid in Italy. Honestly, I’ve
-been hoping the exponential model would become invalid in the USA and Canada. That would indicate
-that efforts to reduce transmission were working. But there is no sign of that yet.</p>
+large day to day fluctuations in reported cases in Ontario. There is no guarantee that
+the exponential model will falsely appear to work just because of this uncertainty. Look at the plot for Italy.
+It was clear on March 13 that the exponential model was no longer valid in Italy.</p>
+<p>Apparently, somewhere, there are people chanting “Colorado!”, “Nebraska!”. And I happen
+to know someone is paying attention in Missouri. So, due to popular demand:</p>
+<p><img src="/post/covid-19_in_R_VIII_files/figure-html/cone-1.png" width="672" /></p>
+<p>The Colorado and Nebraska regressions are not statistically significant.
+In Nebraska that line is very encouraging. We have
+already put in place measures to reduce transmission rates, so maybe that will be early
+enough to blunt the epidemic
+here. Colorado is clearly farther along, and with a few more observations that regression will be significant.
+Missouri is interesting because the epidemic started a few days later, but the rate of increase is much
+faster. Maybe there is better testing availability in Missouri? The uncertainty in the projections is still
+huge, so too early to say much of anything.</p>
 </div>
 <div id="whats-next" class="section level1">
 <h1>What’s next?</h1>
 <p>I think this will be my last post for a while. I’ve learned a ton, but trying to keep on top
 of the scientific literature and news posts, and hours of hard thinking about code each day is wearing me
-out. There are huge well-funded teams<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> crunching the numbers and advising decision makers, so
-nothing lost by me taking a break. Here are my lessons learned</p>
+out. I’m also emotionally wrung out; it’s like watching a train wreck in slow motion. Too big to do anything
+about but the outcome is all too clear. I was in tears after reading the piece about the ER doc in New York.
+They can see it coming too. Here are my lessons learned</p>
 <ul>
-<li><p>Simple models can be useful for decision making. If I’d thought to do it, I could have predicted the
+<li><p>Simple models can be useful for decision making. I was already convinced of this, and
+this confirmed my belief. If I’d thought to do it, I could have predicted the
 ICU crunch in New York 2 weeks ago.</p></li>
-<li><p>Data are critical. The biggest weakness for the US predictions is the lack of testing to identify cases.</p></li>
-<li><p>Crowdsourcing can work! The JHU data aggregation is now the de facto go to for everyone, even the US government<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p></li>
+<li><p>Open source science can work! The open <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University data aggregation</a> is now the de facto go to for everyone, even the US government<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p></li>
 </ul>
 <p>If anyone wants an up to date figure for some state/province/country shoot me an email and I’ll see what
 I can do. Stay safe everyone, wash your hands, go for a walk.</p>
@@ -95,13 +105,9 @@ I can do. Stay safe everyone, wash your hands, go for a walk.</p>
 <hr />
 <ol>
 <li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VII.Rmd">on Github</a>.
-This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 <li id="fn2"><p>Full disclosure: I’m Canadian!<a href="#fnref2" class="footnote-back">↩</a></p></li>
-<li id="fn3"><p>Imperial College of London is one, Penn State here in the USA, and a professor
-at the University of Queensland asked for $1000000 to expand his teams efforts. Even if someone
-gave me a million dollars I don’t have anyone to spend it on. I don’t even need a bigger computer;
-you could run the analyses I’m doing on your phone with the right software!<a href="#fnref3" class="footnote-back">↩</a></p></li>
-<li id="fn4"><p>A news article I looked at yesterday had a picture of the DHHS situation room in DC. The JHU
-dashboard was on the wallscreen in the background.<a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>A news article I looked at yesterday had a picture of the Department of Health
+and Human Services situation room in DC. The <a href="">JHU dashboard</a> was on the wallscreen in the background.<a href="#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

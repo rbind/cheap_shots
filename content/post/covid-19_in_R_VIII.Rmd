@@ -20,14 +20,8 @@ New cases in the USA took a big jump up yesterday. Italy continues to add more c
 than 20 times their ICU capacity. US states and Canadian provinces with the largest number
 of cases so far are seeing new cases per day consistent with the exponential model. 
 
-That outcome is not set in stone. The time to act is now. Even a one day delay in reducing transmission rate
-dramatically increases the peak number of sick people. If you're lucky to be 
-in a low risk group, you can still spread the virus. Although your symptoms are mild, 
-the person you hand the virus off to could experience much worse symptoms. You don't 
-have to hermetically seal your house. I like this graphic:
-![social distancing suggestions](http://rutherfordcountytn.gov/img/2.png)
-
-[This all started a week ago](/post/covid-19_and_r/), in case you're just joining.
+[The first post in this series was just over a week ago](/post/covid-19_and_r/), in case you're just joining and
+want to see the progression. 
 
 # The bottom line
 
@@ -38,10 +32,10 @@ different models.
 
 The figure below is complex, so I'll highlight some
 features first. The y axis is now cases / 100,000 population to make it easier to compare Italy 
-and the USA. As before, the BLUE LINES are exponential growth models that assume
-the rate of increase is *constant*. The dashed black lines are predictions from that
+and the USA. The SOLID LINES are exponential growth models that assume
+the rate of increase is *constant*. The dashed lines are predictions from that
 model. To make comparison easier, the estimated model and predictions for both countries are on both panels.
-The lines and intervals for the other country are faded out. The RED LINES
+The lines and intervals for the other country are faded out. The horizontal DOTTED  LINES
 are 20 times the number of ICU beds per 100,000 population in each country. Note that
 the y axis is logarithmic.
 
@@ -189,7 +183,7 @@ ggplot(data = observed,
   geom_ribbon(data = predicted,
             mapping = aes(ymin = lplpc, ymax = uplpc),
             alpha = 0.2) +
-  geom_hline(mapping = aes(yintercept = icu_beds/0.05), color = "red", linetype = 2) +
+  geom_hline(mapping = aes(yintercept = icu_beds/0.05), color = "red", linetype = 3) +
   labs(y = "Incident cases per 100,000 population", title = "New reported cases per day",
        subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
        caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
@@ -209,14 +203,14 @@ cases from wednesday to thursday. The USA is also trying to increase the rate of
 of success, so if testing has started to step up the number of reported cases could rise just due to that. Or
 both of those things could be happening, on top of an increase in the number of true cases. 
 
-Bit of perspective on the testing issue -- [apparently California tested 17000 people so far, but 10000 of those
-tests are still pending](https://apple.news/AU6X4O-5WT3G6JGsqcOet8Q)!
+Bit of perspective on the testing issue -- [apparently California has tested 17000 people so far, and 10000 of those
+tests are still pending](https://www.mercurynews.com/2020/03/19/gov-newsom-expands-bay-area-shelter-in-place-to-all-of-california/).
 
 Italy's numbers continue the linear pattern that started around March 12 -- they are going along at a constant
 level, a flat line on this graph. Each day Italy adds about the same number of cases as 
-the day before. Unfortunately that is still more cases per day than their health care infrastructure can
-handle. To put those numbers in perspective, the thin white line just above the latest point from italy is
-1000 cases / 100,000 population. That's 1%. New cases in Italy are nearly 1% of the population *per day*. 
+the day before. This is what "Flattening the curve" looks like. Unfortunately that is still more cases per day than their health care infrastructure can
+handle. To put those numbers in perspective, the latest point from italy is
+880 cases / 100,000 population. That's nearly 1%. New cases in Italy are nearly 1% of the population *per day*. 
 
 Below are the same calculations but focused in on 3 US states and 3 Canadian provinces[^2].
 Each panel has the same features as the graph above.
@@ -324,41 +318,154 @@ Washington, New York, and British Columbia are near or over the estimated per ca
 projections are two weeks past the end of the window I used to fit the models; those forecasts indicate that 
 all six locales could be in trouble by the end of the month. If efforts to reduce transmission came too late,
 New York could be seeing 10000 cases per day by the end of the month. 
+[This interview with an ER doctor in New York City](https://www.thecut.com/2020/03/coronavirus-pandemic-what-a-nyc-doctor-is-seeing-in-the-er.html) 
+suggests they are already running out of critical equipment like ventilators and personal protective equipment.
+Masks. Because there are not enough protective masks frontline healthcare workers are being exposed 
+unnecessarily. When all the doctors and nurses are sick who looks after them?
 
-A prominent quantitative ecologist (who can remain nameless) dismissed my efforts here because the 
-exponential model magnifies the uncertainty making forecasts useless, and making it impossible to refute the
-exponential model. In addition, many models can be 
-consistent with exponential growth at the beginning,
+Many models can be 
+consistent with exponential growth at the beginning of a growth curve,
 but do a lousy job of forecasting (for example, [the logistic model](/post/covid-19_and_R_v/) scroll down).
-It's true that the forecasts here have a large amount of uncertainty -- the forecast incident cases in
-Ontario for March 30 span 3 orders of magnitude, between 100 and 10000 new cases. 
-However that is the worst case, caused by the 
-large day to day fluctuations in reported cases in Ontario. In addition, there is no guarantee that
-the exponential model appears to work just because of this uncertainty. Look at the plot for Italy.
-It was clear on March 13 that the exponential model was no longer valid in Italy. Honestly, I've 
+Honestly, I've 
 been hoping the exponential model would become invalid in the USA and Canada. That would indicate
 that efforts to reduce transmission were working. But there is no sign of that yet. 
+It's also true that the forecasts here have a large amount of uncertainty -- the forecast incident cases in
+Ontario for March 30 span 3 orders of magnitude, between 100 and 10000 new cases. 
+However that is the worst case, caused by the 
+large day to day fluctuations in reported cases in Ontario. There is no guarantee that
+the exponential model will falsely appear to work just because of this uncertainty. Look at the plot for Italy.
+It was clear on March 13 that the exponential model was no longer valid in Italy. 
+
+Apparently, somewhere, there are people chanting "Colorado!", "Nebraska!". And I happen
+to know someone is paying attention in Missouri. So, due to popular demand:
+
+```{r cone, message=FALSE, echo = FALSE, warning = FALSE}
+us_by_state <- us_confirmed_long(jhu_wide) # see, fancy! 
+state_province <- c("Colorado", "Nebraska", "Missouri")
+all_by_province <- us_by_state %>% 
+  left_join(country_data) %>% 
+  group_by(country_region, province) %>% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)),
+         max_cases = max(cumulative_cases)) %>% 
+  ungroup() %>% 
+  mutate(icpc = incident_cases * 10 / popn,
+         group = as.numeric(factor(country_region))) %>% 
+  # remove early rows from each state/province
+  # remove 0 rows in the middle that are probably reporting errors
+  filter(incident_cases > 0, Date >= start_date,
+         province %in% state_province) %>% 
+  mutate(province = factor(province, levels = state_province))
+
+
+# fit the models
+all_models <- all_by_province %>% 
+  mutate(log10_ic = log10(incident_cases),
+         day = as.numeric(Date - start_date)) %>% 
+  filter(day <= 12) %>% 
+  group_by(province) %>% 
+  nest() %>% 
+    mutate(model = map(data, ~lm(log10_ic~day, data = .)))
+
+all_fit <- all_models %>% 
+  mutate(fit = map(model, augment, se_fit = TRUE),
+         fit = map(fit, select, -c("log10_ic","day"))) %>% 
+  select(-model) %>% 
+  unnest(cols = c("data","fit")) %>% 
+  mutate(fit = 10^.fitted,
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+    fitpc = fit * 10 / popn,
+         lclpc = lcl * 10 / popn,
+         uclpc = ucl * 10 / popn)
+
+#all_predicted <- all_by_province %>% 
+all_predicted <- cross_df(list(province = factor(state_province, levels = state_province), 
+                               day = 11:20)) %>% 
+  #   mutate(day = as.numeric(Date - start_date)) %>% 
+  # filter(day > 12) %>% #these are the rows we want to predict with
+  group_by(province) %>% 
+  nest() %>% 
+  left_join(select(all_models, province, model), by="province") %>% 
+  mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+         sigma = map_dbl(model, ~summary(.x)$sigma)) %>% 
+  select(-c(model,data)) %>% 
+  unnest(cols = predicted) %>% 
+  ungroup() %>% 
+  left_join(country_data, by = "province") %>% 
+  mutate(
+    Date = start_date + day,
+    province = factor(province, levels = state_province), # use factor to modify plot order
+    fit = 10^.fitted,
+    pred_var = sigma^2 + .se.fit^2,
+    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
+    fitpc = fit * 10 / popn,
+         lplpc = lpl * 10 / popn,
+         uplpc = upl * 10 / popn)
+
+ggplot(data = all_by_province,
+                    mapping = aes(x = Date)) + 
+  geom_point(mapping = aes(y = icpc, color = province)) + 
+  facet_wrap(~province, dir="h") + 
+  scale_y_log10() + 
+  theme(legend.position = "none") + 
+  geom_line(data = all_fit,
+            mapping = aes(y = fitpc, color = province),
+            size = 1.25) +
+  geom_ribbon(data = all_fit,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = all_predicted,
+            mapping = aes(y = fitpc, color = province),
+            linetype = 2) +
+  geom_ribbon(data = all_predicted,
+            mapping = aes(ymin = lplpc, ymax = uplpc),
+            alpha = 0.2)  +
+  geom_hline(mapping = aes(yintercept = icu_beds/0.05), color = "red", linetype = 3) +
+  labs(y = "Incident cases per 100,000 population", title = "New reported cases per day",
+       subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
+       caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")) +  
+  geom_text(data = filter(all_by_province, province == "Colorado"),
+            mapping = aes(y = 1.5*icu_beds/0.05), 
+            x = ymd("2020-03-09"),
+           label = "20 x # ICU beds / 100K",
+           size = 2.5, hjust = "left")
+  
+
+```
+
+The Colorado and Nebraska regressions are not statistically significant. 
+In Nebraska that line is very encouraging. We have
+already put in place measures to reduce transmission rates, so maybe that will be early 
+enough to blunt the epidemic
+here. Colorado is clearly farther along, and with a few more observations that regression will be significant.
+Missouri is interesting because the epidemic started a few days later, but the rate of increase is much 
+faster. Maybe there is better testing availability in Missouri? The uncertainty in the projections is still
+huge, so too early to say much of anything.
 
 # What's next?
 
 I think this will be my last post for a while. I've learned a ton, but trying to keep on top
 of the scientific literature and news posts, and hours of hard thinking about code each day is wearing me 
-out. There are huge well-funded teams[^3] crunching the numbers and advising decision makers, so 
-nothing lost by me taking a break. Here are my lessons learned 
+out. I'm also emotionally wrung out; it's like watching a train wreck in slow motion. Too big to do anything
+about but the outcome is all too clear. I was in tears after reading the piece about the ER doc in New York. 
+They can see it coming too. Here are my lessons learned 
 
-- Simple models can be useful for decision making. If I'd thought to do it, I could have predicted the
+- Simple models can be useful for decision making. I was already convinced of this, and 
+this confirmed my belief. If I'd thought to do it, I could have predicted the
 ICU crunch in New York 2 weeks ago. 
 
-- Data are critical. The biggest weakness for the US predictions is the lack of testing to identify cases. 
-
-- Crowdsourcing can work! The JHU data aggregation is now the de facto go to for everyone, even the US government[^4]. 
+- Open source science can work! The open [John Hopkins University data aggregation](https://github.com/CSSEGISandData/COVID-19) is now the de facto go to for everyone, even the US government[^4]. 
 
 If anyone wants an up to date figure for some state/province/country shoot me an email and I'll see what 
 I can do. Stay safe everyone, wash your hands, go for a walk. 
 
 
 [^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VII.Rmd).
-This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.
 
 [^2]: Full disclosure: I'm Canadian!
 
@@ -367,5 +474,5 @@ at the University of Queensland asked for $1000000 to expand his teams efforts. 
 gave me a million dollars I don't have anyone to spend it on. I don't even need a bigger computer;
 you could run the analyses I'm doing on your phone with the right software! 
 
-[^4]: A news article I looked at yesterday had a picture of the DHHS situation room in DC. The JHU
-dashboard was on the wallscreen in the background.
+[^4]: A news article I looked at yesterday had a picture of the Department of Health 
+and Human Services situation room in DC. The [JHU dashboard]() was on the wallscreen in the background.
