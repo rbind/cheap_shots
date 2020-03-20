@@ -1,0 +1,78 @@
+---
+title: "COVID-19 and R Part VIII"
+author: "Drew Tyre"
+date: "2020-03-20"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: no
+slug: COVID-19_and_R_VIII
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+og_image: /post/covid-19_in_r_viii_files/figure-html/featured_image-1.png
+---
+
+
+
+<p>New cases in the USA took a big jump up yesterday. Italy continues to add more cases per day
+than 20 times their ICU capacity.</p>
+<p>That outcome is not set in stone. The time to act is now. Even a one day delay in reducing transmission rate
+dramatically increases the peak number of sick people. If you’re lucky to be
+in a low risk group, you can still spread the virus. Although your symptoms are mild,
+the person you hand the virus off to could experience much worse symptoms. You don’t
+have to hermetically seal your house. I like this graphic:
+<img src="http://rutherfordcountytn.gov/img/2.png" alt="social distancing suggestions" /></p>
+<p><a href="/post/covid-19_and_r/">This all started a week ago</a>, in case you’re just joining.</p>
+<div id="the-bottom-line" class="section level1">
+<h1>The bottom line</h1>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.</p>
+<p>The figure below is complex, so I’ll highlight some
+features first. The y axis is now cases / 100,000 population to make it easier to compare Italy
+and the USA. As before, the BLUE LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed black lines are predictions from that
+model. To make comparison easier, the estimated model and predictions for both countries are on both panels.
+The lines and intervals for the other country are faded out. The RED LINES
+are 20 times the number of ICU beds per 100,000 population in each country. Note that
+the y axis is logarithmic.</p>
+<p><img src="/post/covid-19_in_R_VIII_files/figure-html/base_image-1.png" width="672" /></p>
+<p><a href="/post/covid-19_and_r_vii/">Unlike yesterday</a>, new cases in the USA took a big jump up, but are still inside the prediction interval<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.
+Italy’s numbers continue the linear pattern that started around March 12 – they are going along at a constant
+level, a flat line on this graph. Each day Italy adds about the same number of cases as
+the day before. Unfortunately that is still more cases per day than their health care infrastructure can
+handle.</p>
+<p>Below are the same calculations but focused in on 3 US states and 3 Canadian provinces<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.
+Each panel has the same features as the graph above.</p>
+<p><img src="/post/covid-19_in_R_VIII_files/figure-html/featured_image-1.png" width="672" /></p>
+</div>
+<div id="full-data-nerd-past-here" class="section level1">
+<h1>Full data nerd past here</h1>
+<p>Remember – coding while thinking, no coherent story, ymmv.</p>
+</div>
+<div id="whats-next" class="section level1">
+<h1>What’s next?</h1>
+<p>So tomorrow I should be able to fiddle the state/province graphs a bit more
+and get localized predictions for when ICU capacity might become a problem. I guess
+it’s getting time to find an alternative model to the exponential as well. The
+logistic curves from a few days ago were terrible at forecasting, so not sure
+what else to try. Suggestions in the comments please!</p>
+<p>I’d also like to refine the prediction of ICU capacity. <a href="https://medium.com/@megan.higgie/without-serious-action-australia-will-run-out-of-intensive-care-beds-between-7-and-10-april-59f83b52756e">I finally found someone
+making predictions that include confidence limits</a> and Dr. Higgie predicts the time at which Australia
+will start to experience issues with ICU capacity (early April). She makes a great point that
+cases occupy an ICU bed for some weeks, so just looking at the new cases is optimistic. Instead
+there needs to be a kind of sliding window sum of the new cases.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VII.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Full disclosure: I’m Canadian!<a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
