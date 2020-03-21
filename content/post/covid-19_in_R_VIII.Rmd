@@ -436,7 +436,7 @@ ggplot(data = all_by_province,
   geom_text(data = filter(all_by_province, province == "Colorado"),
             mapping = aes(y = 1.5*icu_beds), 
             x = ymd("2020-03-09"),
-           label = "20 x # ICU beds / 100K",
+           label = "# ICU beds / 100K",
            size = 2.5, hjust = "left")
   
 
