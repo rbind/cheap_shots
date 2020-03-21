@@ -18,8 +18,10 @@ og_image: /post/covid-19_in_r_viii_files/figure-html/featured_image-1.png
 
 
 
-<p>New cases in the USA took a big jump up yesterday. Italy continues to add more cases per day
-than 20 times their ICU capacity. US states and Canadian provinces with the largest number
+<p>EDIT: 2020-03-20 22:42 CDT – I goofed on the per capita conversion. Absolute number comparisons were all
+too high but trends are the same.</p>
+<p>New cases in the USA took a big jump up yesterday. Italy continues to add more <strong>than 3000 cases per day</strong>
+<del>than 20 times their ICU capacity</del>. US states and Canadian provinces with the largest number
 of cases so far are seeing new cases per day consistent with the exponential model.</p>
 <p><a href="/post/covid-19_and_r/">The first post in this series was just over a week ago</a>, in case you’re just joining and
 want to see the progression.</p>
@@ -35,7 +37,7 @@ and the USA. The SOLID LINES are exponential growth models that assume
 the rate of increase is <em>constant</em>. The dashed lines are predictions from that
 model. To make comparison easier, the estimated model and predictions for both countries are on both panels.
 The lines and intervals for the other country are faded out. The horizontal DOTTED LINES
-are 20 times the number of ICU beds per 100,000 population in each country. Note that
+are <del>20 times</del> the number of ICU beds per 100,000 population in each country. Note that
 the y axis is logarithmic.</p>
 <p><img src="/post/covid-19_in_R_VIII_files/figure-html/base_image-1.png" width="672" /></p>
 <p><a href="/post/covid-19_and_r_vii/">Unlike yesterday</a>, new cases in the USA took a big jump up, but are still inside the prediction interval<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. That jump up has multiple alternative explanations besides an increase in the
@@ -47,16 +49,18 @@ both of those things could be happening, on top of an increase in the number of 
 tests are still pending</a>.</p>
 <p>Italy’s numbers continue the linear pattern that started around March 12 – they are going along at a constant
 level, a flat line on this graph. Each day Italy adds about the same number of cases as
-the day before. This is what “Flattening the curve” looks like. Unfortunately that is still more cases per day than their health care infrastructure can
-handle. To put those numbers in perspective, the latest point from italy is
-880 cases / 100,000 population. That’s nearly 1%. New cases in Italy are nearly 1% of the population <em>per day</em>.</p>
+the day before. This is what “Flattening the curve” looks like. <del>Unfortunately that is still more cases per day than their health care infrastructure can handle. To put those numbers in perspective, the latest point from italy is 880 cases / 100,000 population. That’s nearly 1%. New cases in Italy are nearly 1% of the population <em>per day</em>.</del>
+EDIT: 2020-03-20 23:00 CDT All wrong. Sorry. Can’t do basic algebra. But in one way it makes it worse. We know that Italy has more cases than they can handle. The infrastructure maxes out well below 20 times the beds
+per 100,000 population.</p>
 <p>Below are the same calculations but focused in on 3 US states and 3 Canadian provinces<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.
-Each panel has the same features as the graph above.</p>
+Each panel has the same features as the graph above. EDIT: 2020-03-20 23:00 CDT I changed the
+position of the horizontal line to just be the number of ICU beds per 100K population.</p>
 <p><img src="/post/covid-19_in_R_VIII_files/figure-html/featured_image-1.png" width="672" /></p>
-<p>Washington, New York, and British Columbia are near or over the estimated per capita supply of ICU beds. The
+<p><del>Washington, New York, and British Columbia are near or over the estimated per capita supply of ICU beds.</del> The
 projections are two weeks past the end of the window I used to fit the models; those forecasts indicate that
 all six locales could be in trouble by the end of the month. If efforts to reduce transmission came too late,
-New York could be seeing 10000 cases per day by the end of the month.
+New York could be seeing <del>10000</del> <del>1000</del> A LOT of
+cases per day by the end of the month. Those points better start dropping off the exponential curve soon.
 <a href="https://www.thecut.com/2020/03/coronavirus-pandemic-what-a-nyc-doctor-is-seeing-in-the-er.html">This interview with an ER doctor in New York City</a>
 suggests they are already running out of critical equipment like ventilators and personal protective equipment.
 Masks. Because there are not enough protective masks frontline healthcare workers are being exposed
@@ -68,7 +72,7 @@ Honestly, I’ve
 been hoping the exponential model would become invalid in the USA and Canada. That would indicate
 that efforts to reduce transmission were working. But there is no sign of that yet.
 It’s also true that the forecasts here have a large amount of uncertainty – the forecast incident cases in
-Ontario for March 30 span 3 orders of magnitude, between 100 and 10000 new cases.
+Ontario for March 30 span 3 orders of magnitude, between <del>100 and 10000</del> <strong>10 and 1000</strong> new cases <strong>per 100,000 population</strong>.
 However that is the worst case, caused by the
 large day to day fluctuations in reported cases in Ontario. There is no guarantee that
 the exponential model will falsely appear to work just because of this uncertainty. Look at the plot for Italy.
@@ -97,6 +101,7 @@ They can see it coming too. Here are my lessons learned</p>
 this confirmed my belief. If I’d thought to do it, I could have predicted the
 ICU crunch in New York 2 weeks ago.</p></li>
 <li><p>Open source science can work! The open <a href="https://github.com/CSSEGISandData/COVID-19">John Hopkins University data aggregation</a> is now the de facto go to for everyone, even the US government<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p></li>
+<li><p><strong>Doing science in public without a safety net is risky?</strong></p></li>
 </ul>
 <p>If anyone wants an up to date figure for some state/province/country shoot me an email and I’ll see what
 I can do. Stay safe everyone, wash your hands, go for a walk.</p>

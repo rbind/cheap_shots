@@ -16,8 +16,11 @@ categories: Research
 og_image: /post/covid-19_in_r_viii_files/figure-html/featured_image-1.png
 ---
 
-New cases in the USA took a big jump up yesterday. Italy continues to add more cases per day 
-than 20 times their ICU capacity. US states and Canadian provinces with the largest number
+EDIT: 2020-03-20 22:42 CDT -- I goofed on the per capita conversion. Absolute number comparisons were all 
+too high but trends are the same. 
+
+New cases in the USA took a big jump up yesterday. Italy continues to add more **than 3000 cases per day** 
+~~than 20 times their ICU capacity~~. US states and Canadian provinces with the largest number
 of cases so far are seeing new cases per day consistent with the exponential model. 
 
 [The first post in this series was just over a week ago](/post/covid-19_and_r/), in case you're just joining and
@@ -36,7 +39,7 @@ and the USA. The SOLID LINES are exponential growth models that assume
 the rate of increase is *constant*. The dashed lines are predictions from that
 model. To make comparison easier, the estimated model and predictions for both countries are on both panels.
 The lines and intervals for the other country are faded out. The horizontal DOTTED  LINES
-are 20 times the number of ICU beds per 100,000 population in each country. Note that
+are ~~20 times~~ the number of ICU beds per 100,000 population in each country. Note that
 the y axis is logarithmic.
 
 ```{r base_image, warning=FALSE, message=FALSE, echo=FALSE}
@@ -139,19 +142,19 @@ italy_predicted <- predicted %>%
 
 observed <- bind_rows(us_confirmed_total, italy_confirmed) %>% 
   left_join(country_data) %>% 
-  mutate(icpc = incident_cases * 10 / popn,
+  mutate(icpc = incident_cases / popn / 10,
          group = country_region)
 fits <- bind_rows(USA = us_fits, Italy = italy_fits)%>% 
   left_join(country_data)%>% 
-  mutate(fitpc = fit * 10 / popn,
-         lclpc = lcl * 10 / popn,
-         uclpc = ucl * 10 / popn,
+  mutate(fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10,
          group = country_region)
 predicted <- bind_rows(USA = us_predicted, Italy = italy_predicted)%>% 
   left_join(country_data)%>% 
-  mutate(fitpc = fit * 10 / popn,
-         lplpc = lpl * 10 / popn,
-         uplpc = upl * 10 / popn,
+  mutate(fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10,
          group = country_region)
 
 ggplot(data = observed,
@@ -183,16 +186,16 @@ ggplot(data = observed,
   geom_ribbon(data = predicted,
             mapping = aes(ymin = lplpc, ymax = uplpc),
             alpha = 0.2) +
-  geom_hline(mapping = aes(yintercept = icu_beds/0.05), color = "red", linetype = 3) +
+  geom_hline(mapping = aes(yintercept = icu_beds), color = "red", linetype = 3) +
   labs(y = "Incident cases per 100,000 population", title = "New reported cases per day",
        subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
        caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
                        format(file.mtime(savefilename), usetz = TRUE),
                        "\n Unofficial, not peer reviewed results.",
                        "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")) + 
-  geom_text(mapping = aes(y = 1.3*icu_beds/0.05), 
+  geom_text(mapping = aes(y = 1.3*icu_beds), 
             x = ymd("2020-02-21"),
-           label = "20 x # ICU beds / 100K",
+           label = "# ICU beds / 100K",
            size = 2.5, hjust = "left") +
   theme(legend.position = "none")
 ```
@@ -208,12 +211,13 @@ tests are still pending](https://www.mercurynews.com/2020/03/19/gov-newsom-expan
 
 Italy's numbers continue the linear pattern that started around March 12 -- they are going along at a constant
 level, a flat line on this graph. Each day Italy adds about the same number of cases as 
-the day before. This is what "Flattening the curve" looks like. Unfortunately that is still more cases per day than their health care infrastructure can
-handle. To put those numbers in perspective, the latest point from italy is
-880 cases / 100,000 population. That's nearly 1%. New cases in Italy are nearly 1% of the population *per day*. 
+the day before. This is what "Flattening the curve" looks like. ~~Unfortunately that is still more cases per day than their health care infrastructure can handle. To put those numbers in perspective, the latest point from italy is 880 cases / 100,000 population. That's nearly 1%. New cases in Italy are nearly 1% of the population *per day*.~~ 
+EDIT: 2020-03-20 23:00 CDT All wrong. Sorry. Can't do basic algebra. But in one way it makes it worse. We know that Italy has more cases than they can handle. The infrastructure maxes out well below 20 times the beds
+per 100,000 population.
 
 Below are the same calculations but focused in on 3 US states and 3 Canadian provinces[^2].
-Each panel has the same features as the graph above.
+Each panel has the same features as the graph above. EDIT: 2020-03-20 23:00 CDT I changed the
+position of the horizontal line to just be the number of ICU beds per 100K population. 
 
 ```{r featured_image, message=FALSE, echo = FALSE, fig.height = 7, warning = FALSE}
 us_by_state <- us_confirmed_long(jhu_wide) # see, fancy! 
@@ -225,7 +229,7 @@ all_by_province <- bind_rows(us_by_state, canada_by_prov) %>%
   mutate(incident_cases = c(0, diff(cumulative_cases)),
          max_cases = max(cumulative_cases)) %>% 
   ungroup() %>% 
-  mutate(icpc = incident_cases * 10 / popn,
+  mutate(icpc = incident_cases / popn / 10,
          group = as.numeric(factor(country_region))) %>% 
   # remove early rows from each state/province
   # remove 0 rows in the middle that are probably reporting errors
@@ -251,9 +255,9 @@ all_fit <- all_models %>%
   mutate(fit = 10^.fitted,
          lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
          ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
-    fitpc = fit * 10 / popn,
-         lclpc = lcl * 10 / popn,
-         uclpc = ucl * 10 / popn)
+    fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10)
 
 #all_predicted <- all_by_province %>% 
 all_predicted <- cross_df(list(province = factor(state_province, levels = state_province), 
@@ -276,9 +280,9 @@ all_predicted <- cross_df(list(province = factor(state_province, levels = state_
     pred_var = sigma^2 + .se.fit^2,
     lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
     upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
-    fitpc = fit * 10 / popn,
-         lplpc = lpl * 10 / popn,
-         uplpc = upl * 10 / popn)
+    fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10)
 
 ggplot(data = all_by_province,
                     mapping = aes(x = Date)) + 
@@ -298,7 +302,7 @@ ggplot(data = all_by_province,
   geom_ribbon(data = all_predicted,
             mapping = aes(ymin = lplpc, ymax = uplpc),
             alpha = 0.2)  +
-  geom_hline(mapping = aes(yintercept = icu_beds/0.05), color = "red", linetype = 3) +
+  geom_hline(mapping = aes(yintercept = icu_beds), color = "red", linetype = 3) +
   labs(y = "Incident cases per 100,000 population", title = "New reported cases per day",
        subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
        caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
@@ -306,18 +310,19 @@ ggplot(data = all_by_province,
                        "\n Unofficial, not peer reviewed results.",
                        "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")) +  
   geom_text(data = filter(all_by_province, province == "California"),
-            mapping = aes(y = 1.4*icu_beds/0.05), 
+            mapping = aes(y = 1.4*icu_beds), 
             x = ymd("2020-03-01"),
-           label = "20 x # ICU beds / 100K",
+           label = "# ICU beds / 100K",
            size = 2.5, hjust = "left")
   
 
 ```
 
-Washington, New York, and British Columbia are near or over the estimated per capita supply of ICU beds. The
+~~Washington, New York, and British Columbia are near or over the estimated per capita supply of ICU beds.~~ The
 projections are two weeks past the end of the window I used to fit the models; those forecasts indicate that 
 all six locales could be in trouble by the end of the month. If efforts to reduce transmission came too late,
-New York could be seeing 10000 cases per day by the end of the month. 
+New York could be seeing ~~10000~~ ~~1000~~ A LOT of
+cases per day by the end of the month. Those points better start dropping off the exponential curve soon. 
 [This interview with an ER doctor in New York City](https://www.thecut.com/2020/03/coronavirus-pandemic-what-a-nyc-doctor-is-seeing-in-the-er.html) 
 suggests they are already running out of critical equipment like ventilators and personal protective equipment.
 Masks. Because there are not enough protective masks frontline healthcare workers are being exposed 
@@ -330,7 +335,7 @@ Honestly, I've
 been hoping the exponential model would become invalid in the USA and Canada. That would indicate
 that efforts to reduce transmission were working. But there is no sign of that yet. 
 It's also true that the forecasts here have a large amount of uncertainty -- the forecast incident cases in
-Ontario for March 30 span 3 orders of magnitude, between 100 and 10000 new cases. 
+Ontario for March 30 span 3 orders of magnitude, between ~~100 and 10000~~ **10 and 1000** new cases **per 100,000 population**. 
 However that is the worst case, caused by the 
 large day to day fluctuations in reported cases in Ontario. There is no guarantee that
 the exponential model will falsely appear to work just because of this uncertainty. Look at the plot for Italy.
@@ -348,7 +353,7 @@ all_by_province <- us_by_state %>%
   mutate(incident_cases = c(0, diff(cumulative_cases)),
          max_cases = max(cumulative_cases)) %>% 
   ungroup() %>% 
-  mutate(icpc = incident_cases * 10 / popn,
+  mutate(icpc = incident_cases / popn / 10,
          group = as.numeric(factor(country_region))) %>% 
   # remove early rows from each state/province
   # remove 0 rows in the middle that are probably reporting errors
@@ -374,9 +379,9 @@ all_fit <- all_models %>%
   mutate(fit = 10^.fitted,
          lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
          ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
-    fitpc = fit * 10 / popn,
-         lclpc = lcl * 10 / popn,
-         uclpc = ucl * 10 / popn)
+    fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10)
 
 #all_predicted <- all_by_province %>% 
 all_predicted <- cross_df(list(province = factor(state_province, levels = state_province), 
@@ -399,9 +404,9 @@ all_predicted <- cross_df(list(province = factor(state_province, levels = state_
     pred_var = sigma^2 + .se.fit^2,
     lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
     upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
-    fitpc = fit * 10 / popn,
-         lplpc = lpl * 10 / popn,
-         uplpc = upl * 10 / popn)
+    fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10)
 
 ggplot(data = all_by_province,
                     mapping = aes(x = Date)) + 
@@ -459,6 +464,8 @@ this confirmed my belief. If I'd thought to do it, I could have predicted the
 ICU crunch in New York 2 weeks ago. 
 
 - Open source science can work! The open [John Hopkins University data aggregation](https://github.com/CSSEGISandData/COVID-19) is now the de facto go to for everyone, even the US government[^4]. 
+
+- **Doing science in public without a safety net is risky?**
 
 If anyone wants an up to date figure for some state/province/country shoot me an email and I'll see what 
 I can do. Stay safe everyone, wash your hands, go for a walk. 
