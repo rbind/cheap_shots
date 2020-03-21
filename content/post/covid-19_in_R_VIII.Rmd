@@ -426,7 +426,7 @@ ggplot(data = all_by_province,
   geom_ribbon(data = all_predicted,
             mapping = aes(ymin = lplpc, ymax = uplpc),
             alpha = 0.2)  +
-  geom_hline(mapping = aes(yintercept = icu_beds/0.05), color = "red", linetype = 3) +
+  geom_hline(mapping = aes(yintercept = icu_beds), color = "red", linetype = 3) +
   labs(y = "Incident cases per 100,000 population", title = "New reported cases per day",
        subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
        caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
@@ -434,7 +434,7 @@ ggplot(data = all_by_province,
                        "\n Unofficial, not peer reviewed results.",
                        "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")) +  
   geom_text(data = filter(all_by_province, province == "Colorado"),
-            mapping = aes(y = 1.5*icu_beds/0.05), 
+            mapping = aes(y = 1.5*icu_beds), 
             x = ymd("2020-03-09"),
            label = "20 x # ICU beds / 100K",
            size = 2.5, hjust = "left")
