@@ -2,7 +2,7 @@ require("dplyr")
 require("tidyr")
 require("stringr")
 require("lubridate")
-us_confirmed_long <- function(all_wide){
+us_wide2long <- function(all_wide){
   # returns long dataframe with state level data for USA
   abbrv <- readr::read_csv(here::here("content/post/data/USA_state_abb.csv"))
   t1 <- all_wide %>% 
@@ -38,7 +38,7 @@ us_confirmed_long <- function(all_wide){
     
 }
 
-other_confirmed_long <- function(all_wide, countries = c("Canada")){
+other_wide2long <- function(all_wide, countries = c("Canada")){
   all_wide %>% 
     rename(province = "Province/State", 
            country_region = "Country/Region") %>% 

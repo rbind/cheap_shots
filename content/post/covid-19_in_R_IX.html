@@ -1,0 +1,340 @@
+---
+title: "COVID-19 and R Part IX"
+author: "Drew Tyre"
+date: "2020-03-23"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: no
+slug: COVID-19_and_R_IX
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+og_image: /post/covid-19_in_r_ix_files/figure-html/featured_image-1.png
+---
+
+
+
+<p><a href="/post/covid-19_and_r/">The first post in this series was a week and a half ago</a>, in case you’re just joining and
+want to see the progression.</p>
+<div id="the-bottom-line" class="section level1">
+<h1>The bottom line</h1>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>The figure below is complex, so I’ll highlight some
+features first. The y axis is now cases / 100,000 population to make it easier to compare Italy
+and the USA. The SOLID LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed lines are predictions from that
+model. To make comparison easier, the estimated model and predictions for both countries are on both panels.
+The lines and intervals for the other country are faded out. The horizontal DOTTED LINES
+are the number of ICU beds per 100,000 population in each country. Note that
+the y axis is logarithmic.</p>
+<p><img src="/post/covid-19_in_R_IX_files/figure-html/base_image-1.png" width="672" /></p>
+<p>Below are the same calculations but focused in on 3 US states and 3 Canadian provinces[^2].
+Each panel has the same features as the graph above.</p>
+<p><img src="/post/covid-19_in_R_IX_files/figure-html/featured_image-1.png" width="672" /></p>
+<p>Looks to me like Washington and New York are showing signs of a slow down in the rate of growth.
+New york is still within the prediction interval, but the last 4 days the new cases are closer to
+linear.</p>
+<p>Here are a few more states people have asked for, along with New York for comparison</p>
+<p><img src="/post/covid-19_in_R_IX_files/figure-html/cone-1.png" width="672" /></p>
+<p>The South Dakota, and Nebraska regressions are not statistically significant.
+In Nebraska that line is very encouraging. We have
+already put in place measures to reduce transmission rates, so maybe that will be early
+enough to blunt the epidemic
+here.</p>
+<p>Tomas Pueyo had another good post on Medium where <a href="https://medium.com/@tomaspueyo/coronavirus-the-hammer-and-the-dance-be9337092b56">he articulated the “Hammer and Dance” strategy.</a>
+It’s the best description yet of what South Korea, Singapore et al. are doing, and translated into US and
+western sensibility generally. Gave me a bit of hope that we might be able to ease back on the
+hammer in weeks rather than months, and minimize the economic damage. Key piece is to reduce transmission
+as much as possible (that’s on us), and a massive testing effort to identify where the virus is and get exposed people in quarantine (that’s on the government).
+All that buys time. Time for a vaccine to be developed, time for medical science to identify drugs that can
+help, time for manufacturing to spool up increased PPE production for frontline medical staff. Time is what
+we need.</p>
+</div>
+<div id="full-data-nerd" class="section level1">
+<h1>Full Data Nerd</h1>
+<p>The usual warning – thinking while coding, not necessarily well thought out. Even less
+helpful than the stuff up above.</p>
+<p>First up, Jessica Burnett wanted a plot with all the lines starting from Day 0, which in my posts differs by
+state/province and is picked manually based on when I think cases started growing consistently.</p>
+<pre class="r"><code>us_by_state &lt;- us_wide2long(jhu_confirmed) # see, fancy! 
+canada_by_prov &lt;- other_wide2long(jhu_confirmed, countries = &quot;Canada&quot;)
+state_province &lt;- c(&quot;California&quot;, &quot;Washington&quot;, &quot;New York&quot;, &quot;British Columbia&quot;, &quot;Alberta&quot;, &quot;Ontario&quot;)
+all_by_province &lt;- bind_rows(us_by_state, canada_by_prov) %&gt;% 
+  left_join(country_data) %&gt;% 
+  group_by(country_region, province) %&gt;% 
+  mutate(incident_cases = c(0, diff(cumulative_cases)),
+         max_cases = max(cumulative_cases)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(icpc = incident_cases / popn / 10,
+         group = as.numeric(factor(country_region)),
+         day = as.numeric(Date - start_date)) %&gt;% 
+  # remove early rows from each state/province
+  # remove 0 rows in the middle that are probably reporting errors
+  filter(incident_cases &gt; 0, Date &gt;= start_date,
+         province %in% state_province) %&gt;% 
+  mutate(province = factor(province, levels = state_province))
+
+
+# fit the models
+all_models &lt;- all_by_province %&gt;% 
+  mutate(log10_ic = log10(incident_cases)) %&gt;% 
+  filter(day &lt;= 12) %&gt;% 
+  group_by(province) %&gt;% 
+  nest() %&gt;% 
+    mutate(model = map(data, ~lm(log10_ic~day, data = .)))
+
+all_fit &lt;- all_models %&gt;% 
+  mutate(fit = map(model, augment, se_fit = TRUE),
+         fit = map(fit, select, -c(&quot;log10_ic&quot;,&quot;day&quot;))) %&gt;% 
+  select(-model) %&gt;% 
+  unnest(cols = c(&quot;data&quot;,&quot;fit&quot;)) %&gt;% 
+  mutate(fit = 10^.fitted,
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10)
+
+#all_predicted &lt;- all_by_province %&gt;% 
+all_predicted &lt;- cross_df(list(province = factor(state_province, levels = state_province), 
+                               day = 13:26)) %&gt;% 
+  #   mutate(day = as.numeric(Date - start_date)) %&gt;% 
+  # filter(day &gt; 12) %&gt;% #these are the rows we want to predict with
+  group_by(province) %&gt;% 
+  nest() %&gt;% 
+  left_join(select(all_models, province, model), by=&quot;province&quot;) %&gt;% 
+  mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+         sigma = map_dbl(model, ~summary(.x)$sigma)) %&gt;% 
+  select(-c(model,data)) %&gt;% 
+  unnest(cols = predicted) %&gt;% 
+  ungroup() %&gt;% 
+  left_join(country_data, by = &quot;province&quot;) %&gt;% 
+  mutate(
+    Date = start_date + day,
+    province = factor(province, levels = state_province), # use factor to modify plot order
+    fit = 10^.fitted,
+    pred_var = sigma^2 + .se.fit^2,
+    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10)
+
+ggplot(data = all_by_province,
+                    mapping = aes(x = day)) + 
+#  geom_point(mapping = aes(y = icpc, color = province)) + 
+#  facet_wrap(~province, dir=&quot;v&quot;) + 
+  scale_y_log10() + 
+  theme(legend.position = &quot;top&quot;,
+        legend.title = element_blank()) + 
+  geom_line(data = all_fit,
+            mapping = aes(y = fitpc, color = province),
+            size = 1.25) +
+  # geom_ribbon(data = all_fit,
+  #           mapping = aes(ymin = lclpc, ymax = uclpc),
+  #           alpha = 0.2) +
+  geom_line(data = all_predicted,
+            mapping = aes(y = fitpc, color = province),
+            linetype = 2) +
+  # geom_ribbon(data = all_predicted,
+  #           mapping = aes(ymin = lplpc, ymax = uplpc),
+  #           alpha = 0.2)  +
+ # geom_hline(mapping = aes(yintercept = icu_beds), color = &quot;red&quot;, linetype = 3) +
+  labs(y = &quot;Incident cases per 100,000 population&quot;, title = &quot;New reported cases per day&quot;,
+       subtitle = &quot;Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.&quot;,
+       caption = paste(&quot;Source data: https://github.com/CSSEGISandData/COVID-19 downloaded &quot;,
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       &quot;\n Unofficial, not peer reviewed results.&quot;,
+                       &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;))   </code></pre>
+<p><img src="/post/covid-19_in_R_IX_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>I removed the points as well to reduce clutter. The most remarkable thing about that figure is the
+consistency of the slopes for 4 locales. New York is the one growing faster than the others. British
+Columbia is the one growing slower.</p>
+<p>David Harris, a FaceBook correspondent, asked why I was using incident cases instead of cumulative cases.
+I gave a half-baked answer at the time, but really the reason is because
+<a href="https://timchurches.github.io/blog/posts/2020-03-01-analysing-covid-19-2019-ncov-outbreak-data-with-r-part-2/#modelling-epidemic-trajectory-in-hubei-province-using-log-linear-models">Tim Church used incident cases in his example modelling post</a>. I was
+thinking that cumulative cases is misleading because it ignores recoveries and deaths. However …
+the JHU data set includes numbers for recoveries and deaths. So it is straightforward to subtract
+those off and get something like “active cases”. And that would be directly proportional to
+the load on the healthcare system.</p>
+<pre class="r"><code>us_by_state &lt;- list(
+  Confirmed = us_wide2long(jhu_confirmed), # see, fancy! 
+  Deaths = us_wide2long(jhu_deaths),
+  Recovered = us_wide2long(jhu_recovered)
+) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases)
+
+canada_by_prov &lt;- list(
+  Confirmed = other_wide2long(jhu_confirmed, countries = &quot;Canada&quot;),
+  Deaths = other_wide2long(jhu_deaths, countries = &quot;Canada&quot;),
+  Recovered = other_wide2long(jhu_recovered, countries = &quot;Canada&quot;)
+  
+) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases)
+
+state_province &lt;- c(&quot;California&quot;, &quot;Washington&quot;, &quot;New York&quot;, &quot;British Columbia&quot;, &quot;Alberta&quot;, &quot;Ontario&quot;)
+all_by_province &lt;- bind_rows(us_by_state, canada_by_prov) %&gt;% 
+  left_join(country_data) %&gt;% 
+  group_by(country_region, province) %&gt;% 
+  mutate(incident_cases = c(0, diff(Confirmed)),
+         active_cases = Confirmed - Deaths - Recovered,
+         max_cases = max(Confirmed)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(icpc = incident_cases / popn / 10,
+         acpc = active_cases / popn / 10,
+         group = as.numeric(factor(country_region)),
+         day = as.numeric(Date - start_date)) %&gt;% 
+  # remove early rows from each state/province
+  # remove 0 rows in the middle that are probably reporting errors
+  filter(active_cases &gt; 0, Date &gt;= start_date,
+         province %in% state_province) %&gt;% 
+  mutate(province = factor(province, levels = state_province))
+
+
+# fit the models
+all_models &lt;- all_by_province %&gt;% 
+  mutate(log10_ac = log10(active_cases)) %&gt;% 
+  filter(day &lt;= 12) %&gt;% 
+  group_by(province) %&gt;% 
+  nest() %&gt;% 
+    mutate(model = map(data, ~lm(log10_ac~day, data = .)))
+
+all_fit &lt;- all_models %&gt;% 
+  mutate(fit = map(model, augment, se_fit = TRUE),
+         fit = map(fit, select, -c(&quot;log10_ac&quot;,&quot;day&quot;))) %&gt;% 
+  select(-model) %&gt;% 
+  unnest(cols = c(&quot;data&quot;,&quot;fit&quot;)) %&gt;% 
+  mutate(fit = 10^.fitted,
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10)
+
+#all_predicted &lt;- all_by_province %&gt;% 
+all_predicted &lt;- cross_df(list(province = factor(state_province, levels = state_province), 
+                               day = 13:26)) %&gt;% 
+  #   mutate(day = as.numeric(Date - start_date)) %&gt;% 
+  # filter(day &gt; 12) %&gt;% #these are the rows we want to predict with
+  group_by(province) %&gt;% 
+  nest() %&gt;% 
+  left_join(select(all_models, province, model), by=&quot;province&quot;) %&gt;% 
+  mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+         sigma = map_dbl(model, ~summary(.x)$sigma)) %&gt;% 
+  select(-c(model,data)) %&gt;% 
+  unnest(cols = predicted) %&gt;% 
+  ungroup() %&gt;% 
+  left_join(country_data, by = &quot;province&quot;) %&gt;% 
+  mutate(
+    Date = start_date + day,
+    province = factor(province, levels = state_province), # use factor to modify plot order
+    fit = 10^.fitted,
+    pred_var = sigma^2 + .se.fit^2,
+    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10)
+
+ggplot(data = all_by_province,
+                    mapping = aes(x = day)) + 
+  geom_point(mapping = aes(y = acpc, color = province)) + 
+  facet_wrap(~province, dir=&quot;v&quot;) + 
+  scale_y_log10() + 
+  theme(legend.position = &quot;none&quot;,
+        legend.title = element_blank()) + 
+  geom_line(data = all_fit,
+            mapping = aes(y = fitpc, color = province),
+            size = 1.25) +
+  geom_ribbon(data = all_fit,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = all_predicted,
+            mapping = aes(y = fitpc, color = province),
+            linetype = 2) +
+ geom_ribbon(data = all_predicted,
+           mapping = aes(ymin = lplpc, ymax = uplpc),
+           alpha = 0.2)  +
+ geom_hline(mapping = aes(yintercept = icu_beds), color = &quot;red&quot;, linetype = 3) +
+labs(y = &quot;Active cases per 100,000 population&quot;, title = &quot;Active cases by date&quot;,
+     x = &quot;Days since start of exponential growth&quot;,
+       subtitle = &quot;Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.&quot;,
+       caption = paste(&quot;Source data: https://github.com/CSSEGISandData/COVID-19 downloaded &quot;,
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       &quot;\n Unofficial, not peer reviewed results.&quot;,
+                       &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;))   +
+  geom_text(data = filter(all_by_province, province == &quot;California&quot;),
+            mapping = aes(y = 1.4*icu_beds),
+            x = ymd(&quot;2020-03-01&quot;),
+           label = &quot;# ICU beds / 100K&quot;,
+           size = 2.5, hjust = &quot;left&quot;)</code></pre>
+<p><img src="/post/covid-19_in_R_IX_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>“Flattening the curve” is clearer in this plot for California, Washington, and New York. The
+autocorrelation I’ve been ignoring is also clearer, especially in the New York plot. The points
+“wave” up and down around the expected value. The red line is per capita ICU beds by <em>country</em>, so
+could be different by state or province. The comparison between the points and the ICU line is affected
+by one question – what proportion of “active cases” need ICU support? If the “Confirmed” cases were ALL
+of the COVID-19 cases, then the red line is too low by a factor of 5-20. However, we know that not
+all cases are being tested and “confirmed”. Confirmed cases right now are overwhelmingly the ones that
+are really sick. So the dotted line is a “lower bound” that assumes all reported cases need ICU support. Maybe
+that should be a region of uncertainty between ICU beds and 20 x ICU beds.</p>
+<pre class="r"><code>ggplot(data = all_by_province,
+                    mapping = aes(x = day)) + 
+  geom_point(mapping = aes(y = acpc, color = province)) + 
+  facet_wrap(~province, dir=&quot;v&quot;) + 
+  scale_y_log10() + 
+  theme(legend.position = &quot;none&quot;,
+        legend.title = element_blank()) + 
+  geom_line(data = all_fit,
+            mapping = aes(y = fitpc, color = province),
+            size = 1.25) +
+  geom_ribbon(data = all_fit,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = all_predicted,
+            mapping = aes(y = fitpc, color = province),
+            linetype = 2) +
+ geom_ribbon(data = all_predicted,
+           mapping = aes(ymin = lplpc, ymax = uplpc),
+           alpha = 0.2)  +
+  # replace this line
+  # geom_hline(mapping = aes(yintercept = icu_beds), color = &quot;red&quot;, linetype = 3) +
+  # with this:
+  geom_ribbon(mapping = aes(ymin = icu_beds, ymax = icu_beds*20), fill = &quot;red&quot;, alpha = 0.2) +
+labs(y = &quot;Active cases per 100,000 population&quot;, title = &quot;Active cases by date&quot;,
+     x = &quot;Days since start of exponential growth&quot;,
+       subtitle = &quot;Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.&quot;,
+       caption = paste(&quot;Source data: https://github.com/CSSEGISandData/COVID-19 downloaded &quot;,
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       &quot;\n Unofficial, not peer reviewed results.&quot;,
+                       &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;))   +
+  geom_text(data = filter(all_by_province, province == &quot;California&quot;),
+            mapping = aes(y = 1.4*icu_beds),
+            x = ymd(&quot;2020-03-01&quot;),
+           label = &quot;# ICU beds / 100K&quot;,
+           size = 2.5, hjust = &quot;left&quot;)</code></pre>
+<p><img src="/post/covid-19_in_R_IX_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Hmm, so that’s better than the line. New York is clearly into the red zone, while Washington so far seems to be
+avoiding it.</p>
+</div>
+<div id="whats-next" class="section level1">
+<h1>What’s next?</h1>
+<p>I promised myself to not spend more than 1/2 a day on these posts! Taking a break was good. Next new thing to
+try tomorrow is calculating the doubling time and adding that to each panel.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
