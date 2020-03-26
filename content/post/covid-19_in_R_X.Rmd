@@ -36,7 +36,7 @@ features first. The y axis is now Active and Recovered cases / 100,000 populatio
 the rate of increase is *constant*. The dashed lines are predictions from that
 model. The red rectangle shows the range of ICU bed capacity per 100,000 population in each country.
 The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The 
-top of the rectanble assumes only 5% of cases need ICU support. That best case assumes that the
+top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
 confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
 Note that the y axis is logarithmic. The x axis is now days since the 100th case in each country.
 
@@ -205,9 +205,11 @@ have yet to show exponential growth.
 
 The "recovered" data from JHU are full of missing values and other issues, because those numbers
 are not being reported consistently. I've calculated
-"Active and recovered" by subtracting deaths from confirmed cases. At this point the number of 
-recovered cases is low relative to new cases, but as the epidemic develops this number will be
-overestimating the load on the health care system. 
+"Active and recovered" by subtracting deaths from confirmed cases. This is an overestimate
+of the load on the health care system, because people that recover are no longer a burden. 
+Right now the number of 
+recovered cases is low relative to new cases, but as the epidemic develops "Active and Recovered" will
+be worse as a estimate of health care burden. 
 
 # Full Data Nerd
 
