@@ -1,0 +1,336 @@
+---
+title: "COVID-19 and R Part X"
+author: "Drew Tyre"
+date: "2020-03-26"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: no
+slug: COVID-19_and_R_X
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+og_image: /post/covid-19_in_r_x_files/figure-html/featured_image-1.png
+---
+
+
+
+<p>Today’s post represents a complete reset, because the data structures at the
+JHU repository changed Monday and haven’t fully settled down yet. Country level data are
+good; they haven’t got state level data for the USA anymore. Germany seems to be #flatteningthecurve.
+USA, Australia, and Canada are still on exponential growth curves.</p>
+<p><a href="/post/covid-19_and_r/">The first post in this series was a week and a half ago</a>, in case you’re just joining and
+want to see the progression.</p>
+<div id="the-bottom-line" class="section level1">
+<h1>The bottom line</h1>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>The figure below is complex, so I’ll highlight some
+features first. The y axis is now Active and Recovered cases / 100,000 population to make it easier to compare locales. The SOLID LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed lines are predictions from that
+model. The red rectangle shows the range of ICU bed capacity per 100,000 population in each country.
+The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The
+top of the rectanble assumes only 5% of cases need ICU support. That best case assumes that the
+confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately). ]
+Note that the y axis is logarithmic. The x axis is now days since the 100th case in each country.</p>
+<p><img src="/post/covid-19_in_R_X_files/figure-html/featured_image-1.png" width="672" /></p>
+<p>The most obvious feature on this plot is how the growth in cases is slowing in Germany. <a href="https://www.npr.org/2020/03/25/820595489/why-germanys-coronavirus-death-rate-is-far-lower-than-in-other-countries">They are
+pulling this off with a massive testing effort that started early, in addition to getting people to move less.
+They are also reporting a very low death rate.</a>.
+Day 0 on this plot is the start of March for USA and Germany, and about March 10 for Canada and Australia.</p>
+<p>If you’ve been following along, you might notice that the prediction intervals on this figure are
+much, much narrower than previous plots. I’ve switched to
+plotting the cumulative “Active and Recovered” cases from the number of new cases per day. The
+variation (scatter around the line) is much smaller for the cumulative cases than new cases per day.
+That has two effects. First, the estimates of the growth rate become much more precise. Second, the
+smaller variability around the line directly reduces the variance of each future observation. These intervals
+are ignoring the correlation between one day and the next, so they are too narrow, but given that
+I am looking for the points to fall outside the intervals this is a conservative choice.</p>
+<p>The other thing to note is country level totals are obscuring significant variation, especially in the
+USA. Some states are already deep in the red zone (Louisiana, New York), while others like Nebraska
+have yet to show exponential growth.</p>
+<p>The “recovered” data from JHU are full of missing values and other issues, because those numbers
+are not being reported consistently. I’ve calculated
+“Active and recovered” by subtracting deaths from confirmed cases. At this point the number of
+recovered cases is low relative to new cases, but as the epidemic develops this number will be
+overestimating the load on the health care system.</p>
+</div>
+<div id="full-data-nerd" class="section level1">
+<h1>Full Data Nerd</h1>
+<p>Jessica Burnett asked for regression statistics to be on each panel. That might be
+TMI for most people, but I could calculate the doubling time and add that to the plot.</p>
+<p><span class="math display">\[
+\begin{align}
+y_{t} = &amp; y_{0}10^{bt} \\
+2y_{0} = &amp;  y_{t}10^{bt} \\
+2 = &amp; 10^{bt} \\
+t = &amp; log_{10}(2)/b
+\end{align}
+\]</span></p>
+<p>So I need to extract the slope estimate <span class="math inline">\(b\)</span> from each regression. First fit all those models. This
+is the same code used for the figure above<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;lubridate&quot;)
+library(&quot;broom&quot;)
+savefilename &lt;- &quot;data/jhu_wide_2020-03-26.Rda&quot;
+
+# jhu_url &lt;- paste(&quot;https://raw.githubusercontent.com/CSSEGISandData/&quot;,
+#                  &quot;COVID-19/master/csse_covid_19_data/&quot;,
+#                  &quot;csse_covid_19_time_series/time_series_covid19_&quot;,sep = &quot;&quot;)
+# 
+# jhu_confirmed_global &lt;- read_csv(paste0(jhu_url,&quot;confirmed_global.csv&quot;)) # just grab it once from github
+# jhu_deaths_global &lt;- read_csv(paste0(jhu_url,&quot;deaths_global.csv&quot;)) # just grab it once from github
+# jhu_recovered_global &lt;- read_csv(paste0(jhu_url,&quot;recovered_global.csv&quot;)) # just grab it once from github
+# # archive it!
+# save(jhu_confirmed_global, jhu_deaths_global, jhu_recovered_global, file = savefilename)
+load(savefilename)
+
+country_data &lt;- read_csv(&quot;data/countries_covid-19.csv&quot;) %&gt;% 
+  mutate(start_date = mdy(start_date))
+
+only_country_data &lt;- filter(country_data, is.na(province))
+source(&quot;R/jhu_helpers.R&quot;)
+
+countries &lt;- c(&quot;US&quot;, &quot;Australia&quot;, &quot;Germany&quot;, &quot;Canada&quot;)
+# Take the wide format data and make it long
+all_country &lt;- list(
+  confirmed = other_wide2long(jhu_confirmed_global, countries = countries),
+  deaths = other_wide2long(jhu_deaths_global, countries = countries)
+  # recovered data is a mess lots of missing values
+#  recovered = other_wide2long(jhu_recovered_global, countries = countries)
+  ) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) %&gt;% 
+  # roll up to country level
+  group_by(country_region, Date) %&gt;% 
+  summarize(cumulative_confirmed = sum(confirmed),
+            cumulative_deaths = sum(deaths)) %&gt;% 
+  group_by(country_region) %&gt;% 
+  mutate(incident_cases = c(0, diff(cumulative_confirmed)),
+         incident_deaths = c(0, diff(cumulative_deaths)),
+         active_recovered = cumulative_confirmed - cumulative_deaths) %&gt;% 
+  left_join(only_country_data, by = &quot;country_region&quot;) %&gt;% 
+  mutate(icpc = incident_cases / popn / 10,
+         arpc = active_recovered / popn / 10,
+         group = country_region,
+         date_100 = Date[min(which(cumulative_confirmed &gt;= 100))],
+         day100 = as.numeric(Date - date_100)) %&gt;% 
+  ungroup() %&gt;% 
+  mutate(country_region = factor(country_region, levels = countries))
+
+# recreate this adding date_100  
+only_country_data &lt;- all_country %&gt;% 
+  group_by(country_region) %&gt;% 
+  summarize(date_100 = first(date_100),
+            popn = first(popn),
+            icu_beds = first(icu_beds)) %&gt;% 
+  mutate(max_icu_beds = icu_beds * 20,
+         start_day = 0,
+         end_day = 28)
+
+all_models &lt;- all_country %&gt;% 
+  mutate(log10_ar = log10(active_recovered)) %&gt;% 
+  filter(day100 &lt;= 13, day100 &gt;= 0) %&gt;%  # model using first 2 weeks of data
+  group_by(country_region) %&gt;% 
+  nest() %&gt;% 
+    mutate(model = map(data, ~lm(log10_ar~day100, data = .)))
+
+all_fit &lt;- all_models %&gt;% 
+  mutate(fit = map(model, augment, se_fit = TRUE),
+         fit = map(fit, select, -c(&quot;log10_ar&quot;,&quot;day100&quot;))) %&gt;% 
+  select(-model) %&gt;% 
+  unnest(cols = c(&quot;data&quot;,&quot;fit&quot;)) %&gt;% 
+  mutate(fit = 10^.fitted,
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10)
+
+#all_predicted &lt;- all_by_province %&gt;% 
+all_predicted &lt;- cross_df(list(country_region = factor(countries, levels = countries), 
+                               day100 = 14:28)) %&gt;% 
+  #   mutate(day = as.numeric(Date - start_date)) %&gt;% 
+  # filter(day &gt; 12) %&gt;% #these are the rows we want to predict with
+  group_by(country_region) %&gt;% 
+  nest() %&gt;% 
+  left_join(select(all_models, country_region, model), by=&quot;country_region&quot;) %&gt;% 
+  mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+         sigma = map_dbl(model, ~summary(.x)$sigma)) %&gt;% 
+  select(-c(model,data)) %&gt;% 
+  unnest(cols = predicted) %&gt;% 
+  ungroup() %&gt;% 
+  left_join(only_country_data, by = &quot;country_region&quot;) %&gt;% 
+  mutate(
+    Date = date_100 + day100,
+    country_region = factor(country_region, levels = countries), # use factor to modify plot order
+    fit = 10^.fitted,
+    pred_var = sigma^2 + .se.fit^2,
+    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10)</code></pre>
+<p>All the model objects are in a “list column” called <code>model</code>. So now <code>map()</code> with <code>broom::tidy()</code> should
+give us what we want.</p>
+<pre class="r"><code>all_models %&gt;% 
+  mutate(estimates = map(model, tidy)) %&gt;% 
+  unnest(cols = estimates) %&gt;%  # produces 2 rows per country, (intercept) and day100
+  filter(term == &quot;day100&quot;) %&gt;% 
+  select(country_region, estimate, std.error) %&gt;% 
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">country_region</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Australia</td>
+<td align="right">0.095</td>
+<td align="right">0.002</td>
+</tr>
+<tr class="even">
+<td align="left">Canada</td>
+<td align="right">0.109</td>
+<td align="right">0.003</td>
+</tr>
+<tr class="odd">
+<td align="left">Germany</td>
+<td align="right">0.118</td>
+<td align="right">0.004</td>
+</tr>
+<tr class="even">
+<td align="left">US</td>
+<td align="right">0.126</td>
+<td align="right">0.002</td>
+</tr>
+</tbody>
+</table>
+<p>OK, so that’s what we want. However, one of my pet peeves is estimates/predictions without uncertainty
+attached. So I also want to put confidence limits around the doubling time, and to do that I need
+the variance of the doubling time. I have the variance (<code>std.error^2</code>) of the rate of growth.
+I can use the Delta method to approximate the variance of doubling time. Everything I know about
+the Delta method I learned from <a href="https://larkinpowell.wixsite.com/larkinpowell">Larkin Powell</a>.
+He wrote an <a href="https://academic.oup.com/condor/article/109/4/949/5563525">awesome howto for the Delta method</a>.</p>
+<p><span class="math display">\[
+var(\hat t) = var(\hat b)\left[\frac{\partial\hat t }{\partial \hat b}\right]^2 \\
+\frac{\partial\hat t }{\partial \hat b} = \frac{log_{10}2}{b^{2}}
+\]</span></p>
+<p>so</p>
+<p><span class="math display">\[
+var(\hat t) = var(\hat b)\frac{log_{10}2^2}{b^{4}}
+\]</span></p>
+<pre class="r"><code>doubling_times &lt;- all_models %&gt;% 
+  mutate(estimates = map(model, tidy)) %&gt;% 
+  unnest(cols = estimates) %&gt;%  # produces 2 rows per country, (intercept) and day100
+  filter(term == &quot;day100&quot;) %&gt;% 
+  select(country_region, estimate, std.error) %&gt;% 
+  mutate(var_b = std.error^2,
+         t = log10(2) / estimate,
+         var_t = var_b * log10(2)^2 / estimate^4,
+         lcl_t = t - sqrt(var_t)*qt(0.975, 12),
+         ucl_t = t + sqrt(var_t)*qt(0.975, 12),
+         label = sprintf(&quot;%.2f (%.2f, %.2f)&quot;, t, lcl_t, ucl_t))
+
+doubling_times %&gt;% 
+  select(country_region, label) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">country_region</th>
+<th align="left">label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Australia</td>
+<td align="left">3.16 (2.99, 3.33)</td>
+</tr>
+<tr class="even">
+<td align="left">Canada</td>
+<td align="left">2.77 (2.62, 2.91)</td>
+</tr>
+<tr class="odd">
+<td align="left">Germany</td>
+<td align="left">2.56 (2.35, 2.76)</td>
+</tr>
+<tr class="even">
+<td align="left">US</td>
+<td align="left">2.38 (2.30, 2.47)</td>
+</tr>
+</tbody>
+</table>
+<p>Now make the plot, adding that in with a custom labelling function for the facets.</p>
+<pre class="r"><code>facet_labels &lt;- doubling_times %&gt;% 
+  mutate(label = paste0(country_region,&quot;, doubling time [days (95% CL)]: &quot;, label)) %&gt;% 
+  pull(label)
+names(facet_labels) &lt;- pull(doubling_times, country_region)
+ggplot(data = filter(all_country, day100 &gt;= 0),
+                    mapping = aes(x = day100)) + 
+  geom_point(mapping = aes(y = arpc, color = country_region)) + 
+  facet_wrap(~country_region, dir=&quot;v&quot;, labeller = labeller(country_region = facet_labels)) + 
+  scale_y_log10() + 
+  theme(legend.position = &quot;none&quot;,
+        legend.title = element_blank()) + 
+  geom_line(data = all_fit,
+            mapping = aes(y = fitpc, color = country_region),
+            size = 1.25) +
+  geom_ribbon(data = all_fit,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = all_predicted,
+            mapping = aes(y = fitpc, color = country_region),
+            linetype = 2) +
+ geom_ribbon(data = all_predicted,
+           mapping = aes(ymin = lplpc, ymax = uplpc),
+           alpha = 0.2)  +
+ geom_rect(data = only_country_data,
+             mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20), 
+           fill = &quot;red&quot;, alpha = 0.2) +
+labs(y = &quot;Active and Recovered cases per 100,000 population&quot;, title = &quot;Active and Recovered cases by days since 100th case&quot;,
+     x = &quot;Days since 100th case&quot;,
+       subtitle = &quot;Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.&quot;,
+       caption = paste(&quot;Source data: https://github.com/CSSEGISandData/COVID-19 downloaded &quot;,
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       &quot;\n Unofficial, not peer reviewed results.&quot;,
+                       &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;))   +
+  geom_text(data = slice(only_country_data, 1),
+            mapping = aes(y = 1.4*icu_beds),
+            x = 0, #ymd(&quot;2020-03-01&quot;),
+           label = &quot;# ICU beds / 100K&quot;,
+           size = 2.5, hjust = &quot;left&quot;) +
+    geom_text(data = slice(only_country_data, 1),
+            mapping = aes(y = 20*icu_beds),
+            x = 0, #ymd(&quot;2020-03-01&quot;),
+           label = &quot;# 20 times ICU beds / 100K&quot;,
+           size = 2.5, hjust = &quot;left&quot;, vjust = &quot;top&quot;)</code></pre>
+<p><img src="/post/covid-19_in_R_X_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Woo! Keep in mind that’s based on the first two weeks after the 100th case, so in
+Germany the doubling time is currently increasing. Australian cases are growing the slowest, doubling about
+every 3 days. The initial growth rates in Germany and the USA might not be different
+(overlapping confidence limits).</p>
+</div>
+<div id="whats-next" class="section level1">
+<h1>What’s next?</h1>
+<p>So that’s enough for today. Hopefully this will quiet the peanut gallery (inside joke, sorry).
+Tomorrow I’ll try to find a dataset that includes states.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>I’m feeling pretty chuffed about this! I didn’t copy/paste – that code chunk pulls in the hidden one
+and then only echos the lines I want echoed.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
