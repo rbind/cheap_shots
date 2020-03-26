@@ -35,7 +35,7 @@ The lines and intervals for the other country are faded out. The horizontal DOTT
 are the number of ICU beds per 100,000 population in each country. Note that
 the y axis is logarithmic.</p>
 <p><img src="/post/covid-19_in_R_IX_files/figure-html/base_image-1.png" width="672" /></p>
-<p>Below are the same calculations but focused in on 3 US states and 3 Canadian provinces[^2].
+<p>Below are the same calculations but focused in on 3 US states and 3 Canadian provinces<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.
 Each panel has the same features as the graph above.</p>
 <p><img src="/post/covid-19_in_R_IX_files/figure-html/featured_image-1.png" width="672" /></p>
 <p>Looks to me like Washington and New York are showing signs of a slow down in the rate of growth.
@@ -63,7 +63,7 @@ we need.</p>
 helpful than the stuff up above.</p>
 <p>First up, Jessica Burnett wanted a plot with all the lines starting from Day 0, which in my posts differs by
 state/province and is picked manually based on when I think cases started growing consistently.</p>
-<pre class="r"><code>us_by_state &lt;- us_wide2long(jhu_confirmed) # see, fancy! 
+<pre class="r"><code>us_by_state &lt;- us_wide2long(jhu_confirmed, &quot;US&quot;) # see, fancy! 
 canada_by_prov &lt;- other_wide2long(jhu_confirmed, countries = &quot;Canada&quot;)
 state_province &lt;- c(&quot;California&quot;, &quot;Washington&quot;, &quot;New York&quot;, &quot;British Columbia&quot;, &quot;Alberta&quot;, &quot;Ontario&quot;)
 all_by_province &lt;- bind_rows(us_by_state, canada_by_prov) %&gt;% 
@@ -165,9 +165,9 @@ the JHU data set includes numbers for recoveries and deaths. So it is straightfo
 those off and get something like “active cases”. And that would be directly proportional to
 the load on the healthcare system.</p>
 <pre class="r"><code>us_by_state &lt;- list(
-  Confirmed = us_wide2long(jhu_confirmed), # see, fancy! 
-  Deaths = us_wide2long(jhu_deaths),
-  Recovered = us_wide2long(jhu_recovered)
+  Confirmed = us_wide2long(jhu_confirmed, &quot;US&quot;), # see, fancy! 
+  Deaths = us_wide2long(jhu_deaths,&quot;US&quot;),
+  Recovered = us_wide2long(jhu_recovered,&quot;US&quot;)
 ) %&gt;% 
   bind_rows(.id = &quot;variable&quot;) %&gt;% 
   pivot_wider(names_from = variable, values_from = cumulative_cases)
@@ -336,5 +336,6 @@ try tomorrow is calculating the doubling time and adding that to each panel.</p>
 <ol>
 <li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd">on Github</a>.
 This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Full disclosure: I’m Canadian.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>

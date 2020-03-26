@@ -1,64 +1,65 @@
 ﻿province,country_region,start_date,popn,icu_beds
+,Germany,2/29/20,82.79,29.2
 ,Australia,2/29/20,24.6,8.9
 ,Canada,2/27/20,37.59,12.9
 ,Iran,2/19/20,81.16,5.3
 ,Italy,2/21/20,60.48,12.5
 ,"Korea, South",2/20/20,51.47,10.6
-,USA,2/29/20,327.2,34.7
- California,USA,2/29/20,39.512223,34.7
- Texas,USA,2/29/20,28.995881,34.7
- Florida,USA,2/29/20,21.477737,34.7
- New York,USA,3/2/20,19.453561,34.7
- Pennsylvania,USA,2/29/20,12.801989,34.7
- Illinois,USA,2/29/20,12.671821,34.7
- Ohio,USA,2/29/20,11.6891,34.7
- Georgia,USA,2/29/20,10.617423,34.7
- North Carolina,USA,2/29/20,10.488084,34.7
- Michigan,USA,2/29/20,9.986857,34.7
- New Jersey,USA,2/29/20,8.88219,34.7
- Virginia,USA,2/29/20,8.535519,34.7
- Washington,USA,2/29/20,7.614893,34.7
- Arizona,USA,2/29/20,7.278717,34.7
- Massachusetts,USA,2/29/20,6.949503,34.7
- Tennessee,USA,2/29/20,6.833174,34.7
- Indiana,USA,2/29/20,6.732219,34.7
- Missouri,USA,3/13/20,6.137428,34.7
- Maryland,USA,2/29/20,6.04568,34.7
- Wisconsin,USA,3/10/20,5.822434,34.7
- Colorado,USA,3/9/20,5.758736,34.7
- Minnesota,USA,2/29/20,5.639632,34.7
- South Carolina,USA,2/29/20,5.148714,34.7
- Alabama,USA,2/29/20,4.903185,34.7
- Louisiana,USA,2/29/20,4.648794,34.7
- Kentucky,USA,2/29/20,4.467673,34.7
- Oregon,USA,2/29/20,4.217737,34.7
- Oklahoma,USA,2/29/20,3.956971,34.7
- Connecticut,USA,2/29/20,3.565287,34.7
- Utah,USA,2/29/20,3.205958,34.7
- Puerto Rico,USA,2/29/20,3.193694,34.7
- Iowa,USA,2/29/20,3.15507,34.7
- Nevada,USA,2/29/20,3.080156,34.7
- Arkansas,USA,2/29/20,3.017825,34.7
- Mississippi,USA,2/29/20,2.976149,34.7
- Kansas,USA,2/29/20,2.913314,34.7
- New Mexico,USA,2/29/20,2.096829,34.7
- Nebraska,USA,3/10/20,1.934408,34.7
- West Virginia,USA,2/29/20,1.792065,34.7
- Idaho,USA,2/29/20,1.787147,34.7
- Hawaii,USA,2/29/20,1.415872,34.7
- New Hampshire,USA,2/29/20,1.359711,34.7
- Maine,USA,2/29/20,1.344212,34.7
- Montana,USA,2/29/20,1.068778,34.7
- Rhode Island,USA,2/29/20,1.059361,34.7
- Delaware,USA,2/29/20,0.973764,34.7
- South Dakota,USA,3/11/20,0.884659,34.7
- North Dakota,USA,2/29/20,0.762062,34.7
- Alaska,USA,2/29/20,0.731545,34.7
- District of Columbia,USA,2/29/20,0.705749,34.7
- Vermont,USA,3/11/20,0.623989,34.7
- Wyoming,USA,2/29/20,0.578759,34.7
- Guam,USA,2/29/20,0.165718,34.7
- U.S. Virgin Islands,USA,2/29/20,0.104914,34.7
+,US,2/29/20,327.2,34.7
+ California,US,2/29/20,39.512223,34.7
+ Texas,US,2/29/20,28.995881,34.7
+ Florida,US,2/29/20,21.477737,34.7
+ New York,US,3/2/20,19.453561,34.7
+ Pennsylvania,US,2/29/20,12.801989,34.7
+ Illinois,US,2/29/20,12.671821,34.7
+ Ohio,US,2/29/20,11.6891,34.7
+ Georgia,US,2/29/20,10.617423,34.7
+ North Carolina,US,2/29/20,10.488084,34.7
+ Michigan,US,2/29/20,9.986857,34.7
+ New Jersey,US,2/29/20,8.88219,34.7
+ Virginia,US,3/9/20,8.535519,34.7
+ Washington,US,2/29/20,7.614893,34.7
+ Arizona,US,2/29/20,7.278717,34.7
+ Massachusetts,US,2/29/20,6.949503,34.7
+ Tennessee,US,2/29/20,6.833174,34.7
+ Indiana,US,2/29/20,6.732219,34.7
+ Missouri,US,3/13/20,6.137428,34.7
+ Maryland,US,2/29/20,6.04568,34.7
+ Wisconsin,US,3/10/20,5.822434,34.7
+ Colorado,US,3/9/20,5.758736,34.7
+ Minnesota,US,3/8/20,5.639632,34.7
+ South Carolina,US,2/29/20,5.148714,34.7
+ Alabama,US,2/29/20,4.903185,34.7
+ Louisiana,US,3/10/20,4.648794,34.7
+ Kentucky,US,2/29/20,4.467673,34.7
+ Oregon,US,2/29/20,4.217737,34.7
+ Oklahoma,US,2/29/20,3.956971,34.7
+ Connecticut,US,2/29/20,3.565287,34.7
+ Utah,US,2/29/20,3.205958,34.7
+ Puerto Rico,US,2/29/20,3.193694,34.7
+ Iowa,US,2/29/20,3.15507,34.7
+ Nevada,US,2/29/20,3.080156,34.7
+ Arkansas,US,2/29/20,3.017825,34.7
+ Mississippi,US,2/29/20,2.976149,34.7
+ Kansas,US,2/29/20,2.913314,34.7
+ New Mexico,US,2/29/20,2.096829,34.7
+ Nebraska,US,3/10/20,1.934408,34.7
+ West Virginia,US,2/29/20,1.792065,34.7
+ Idaho,US,2/29/20,1.787147,34.7
+ Hawaii,US,2/29/20,1.415872,34.7
+ New Hampshire,US,2/29/20,1.359711,34.7
+ Maine,US,2/29/20,1.344212,34.7
+ Montana,US,2/29/20,1.068778,34.7
+ Rhode Island,US,2/29/20,1.059361,34.7
+ Delaware,US,2/29/20,0.973764,34.7
+ South Dakota,US,3/11/20,0.884659,34.7
+ North Dakota,US,2/29/20,0.762062,34.7
+ Alaska,US,2/29/20,0.731545,34.7
+ District of Columbia,US,2/29/20,0.705749,34.7
+ Vermont,US,3/11/20,0.623989,34.7
+ Wyoming,US,2/29/20,0.578759,34.7
+ Guam,US,2/29/20,0.165718,34.7
+ U.S. Virgin Islands,US,2/29/20,0.104914,34.7
  Ontario,Canada,3/5/20,13.448494,12.9
  Quebec,Canada,2/27/20,8.164361,12.9
  British Columbia,Canada,3/3/20,4.648055,12.9

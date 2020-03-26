@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 and R Part IX"
 author: "Drew Tyre"
-date: "`r Sys.Date()`"
+date: "2020-03-23"
 output:
   word_document: default
   html_document:
@@ -58,12 +58,12 @@ country_data <- read_csv("data/countries_covid-19.csv") %>%
 
 source("R/jhu_helpers.R")
 
-us_confirmed_total <- us_wide2long(jhu_confirmed) %>% 
+us_confirmed_total <- us_wide2long(jhu_confirmed, "US") %>% 
   group_by(Date) %>% # then group by Date and sum
   summarize(cumulative_cases = sum(cumulative_cases)) %>% 
   ungroup() %>% 
   mutate(incident_cases = c(0, diff(cumulative_cases)),
-         country_region = "USA",
+         country_region = "US",
          province = NA_character_) %>% 
   filter(Date > "2020-02-28")  # trim to first day after which all incident_cases > 0
 
@@ -76,7 +76,7 @@ us_exp_model <- us_confirmed_total %>%
      formula = log_incident_cases ~ day) 
 
 us_fits <- augment(us_exp_model, se_fit = TRUE) %>% 
-    mutate(country_region = "USA",
+    mutate(country_region = "US",
            province = NA_character_,
            Date = ymd("2020-2-27") + day,
          lcl = 10^(.fitted - .se.fit*qt(0.975, df = 10)),
@@ -88,7 +88,7 @@ predicted_list <- predict(us_exp_model, newdata = predicted, se.fit = TRUE)
 predicted$fit <- predicted_list$fit # this is klutzy, but I want to see the answer! 
 predicted$se.fit <- predicted_list$se.fit
 us_predicted <- predicted %>% 
-  mutate(country_region = "USA",
+  mutate(country_region = "US",
            province = NA_character_,
          Date = ymd("2020-2-27") + day,
          pred_var = se.fit^2 + predicted_list$residual.scale^2,
@@ -200,7 +200,7 @@ Below are the same calculations but focused in on 3 US states and 3 Canadian pro
 Each panel has the same features as the graph above. 
 
 ```{r featured_image, message=FALSE, echo = FALSE, fig.height = 7, warning = FALSE}
-us_by_state <- us_wide2long(jhu_confirmed) # see, fancy! 
+us_by_state <- us_wide2long(jhu_confirmed, "US") # see, fancy! 
 canada_by_prov <- other_wide2long(jhu_confirmed, countries = "Canada")
 state_province <- c("California", "Washington", "New York", "British Columbia", "Alberta", "Ontario")
 all_by_province <- bind_rows(us_by_state, canada_by_prov) %>% 
@@ -305,7 +305,7 @@ linear.
 Here are a few more states people have asked for, along with New York for comparison
 
 ```{r cone, message=FALSE, echo = FALSE, warning = FALSE}
-us_by_state <- us_wide2long(jhu_confirmed) # see, fancy! 
+us_by_state <- us_wide2long(jhu_confirmed, "US") # see, fancy! 
 state_province <- c("Colorado", "Nebraska", "Missouri","Vermont", "South Dakota", "New York")
 all_by_province <- us_by_state %>% 
   left_join(country_data) %>% 
@@ -426,7 +426,7 @@ First up, Jessica Burnett wanted a plot with all the lines starting from Day 0, 
 state/province and is picked manually based on when I think cases started growing consistently.
 
 ```{r, message=FALSE, warning=FALSE}
-us_by_state <- us_wide2long(jhu_confirmed) # see, fancy! 
+us_by_state <- us_wide2long(jhu_confirmed, "US") # see, fancy! 
 canada_by_prov <- other_wide2long(jhu_confirmed, countries = "Canada")
 state_province <- c("California", "Washington", "New York", "British Columbia", "Alberta", "Ontario")
 all_by_province <- bind_rows(us_by_state, canada_by_prov) %>% 
@@ -533,9 +533,9 @@ the load on the healthcare system.
 
 ```{r, warning=FALSE, message=FALSE, fig.height=7}
 us_by_state <- list(
-  Confirmed = us_wide2long(jhu_confirmed), # see, fancy! 
-  Deaths = us_wide2long(jhu_deaths),
-  Recovered = us_wide2long(jhu_recovered)
+  Confirmed = us_wide2long(jhu_confirmed, "US"), # see, fancy! 
+  Deaths = us_wide2long(jhu_deaths,"US"),
+  Recovered = us_wide2long(jhu_recovered,"US")
 ) %>% 
   bind_rows(.id = "variable") %>% 
   pivot_wider(names_from = variable, values_from = cumulative_cases)
@@ -706,3 +706,4 @@ try tomorrow is calculating the doubling time and adding that to each panel.
 [^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd).
 This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.
 
+[^2]: Full disclosure: I'm Canadian.
