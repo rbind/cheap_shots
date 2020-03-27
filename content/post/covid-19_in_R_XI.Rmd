@@ -1,11 +1,13 @@
 ---
 title: "COVID-19 and R Part XI"
 author: "Drew Tyre"
-date: "2020-03-27"
+date: '2020-03-27'
 output:
-  word_document: default
+  pdf_document: default
   html_document:
     code_folding: hide
+  word_document: default
+og_image: /post/covid-19_in_r_xi_files/figure-html/featured_image-1.png
 draft: yes
 slug: COVID-19_and_R_XI
 tags_include:
@@ -13,13 +15,10 @@ tags_include:
 - OPD
 - COVID19
 categories: Research
-og_image: /post/covid-19_in_r_xi_files/figure-html/featured_image-1.png
 ---
 
-Today's post represents a complete reset, because the data structures at the 
-JHU repository changed Monday and haven't fully settled down yet. Country level data are
-good; they haven't got state level data for the USA anymore. Germany seems to be #flatteningthecurve.
-USA, Australia, and Canada are still on exponential growth curves.
+Not much new to report. I've got state level data back and do some exploration with that. I hope the
+data structure is a bit more stable going forward. 
 
 [The first post in this series was a week and a half ago](/post/covid-19_and_r/), in case you're just joining and
 want to see the progression. 
@@ -35,6 +34,7 @@ The figure below is complex, so I'll highlight some
 features first. The y axis is now Active and Recovered cases / 100,000 population to make it easier to compare locales. The SOLID LINES are exponential growth models that assume
 the rate of increase is *constant*. The dashed lines are predictions from that
 model. The red rectangle shows the range of ICU bed capacity per 100,000 population in each country.
+The faded solid lines are the fitted models for the other countries, to facilitate comparisons.
 The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The 
 top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
 confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
@@ -57,22 +57,24 @@ savefilename <- "data/jhu_wide_2020-03-27.Rda"
 # save(jhu_confirmed_global, jhu_deaths_global, jhu_recovered_global, file = savefilename)
 load(savefilename)
 
-country_data <- read_csv("data/regions_covid-19.csv") %>% 
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
   mutate(start_date = mdy(start_date))
 
 only_country_data <- filter(country_data, is.na(province))
 source("R/jhu_helpers.R")
 
-regions <- c("US", "Australia", "Germany", "Canada")
+countries <- c("US", "Australia", "Germany", "Canada")
 # Take the wide format data and make it long
 all_country <- list(
-  confirmed = other_wide2long_old(jhu_confirmed_global, regions = regions),
-  deaths = other_wide2long_old(jhu_deaths_global, regions = regions)
+  confirmed = other_wide2long_old(jhu_confirmed_global, countries = countries),
+  deaths = other_wide2long_old(jhu_deaths_global, countries = countries)
   # recovered data is a mess lots of missing values
-#  recovered = other_wide2long(jhu_recovered_global, regions = regions)
+#  recovered = other_wide2long(jhu_recovered_global, countries = countries)
   ) %>% 
   bind_rows(.id = "variable") %>% 
-  pivot_wider(names_from = variable, values_from = cumulative_cases) %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) %>%
+  mutate(country_region = case_when(country_region == "US" ~ "United States",
+                                    TRUE ~ country_region)) %>% 
   # roll up to country level
   group_by(country_region, Date) %>% 
   summarize(cumulative_confirmed = sum(confirmed),
@@ -84,11 +86,11 @@ all_country <- list(
   left_join(only_country_data, by = "country_region") %>% 
   mutate(icpc = incident_cases / popn / 10,
          arpc = active_recovered / popn / 10,
-         group = country_region,
          date_100 = Date[min(which(cumulative_confirmed >= 100))],
          day100 = as.numeric(Date - date_100)) %>% 
   ungroup() %>% 
-  mutate(country_region = factor(country_region, levels = regions))
+  mutate(country_region = factor(country_region, levels = c("United States", "Australia", "Germany", "Canada")),
+         group = country_region)
 
 # recreate this adding date_100  
 only_country_data <- all_country %>% 
@@ -117,10 +119,11 @@ all_fit <- all_models %>%
          ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
     fitpc = fit / popn / 10,
          lclpc = lcl / popn / 10,
-         uclpc = ucl / popn / 10)
+         uclpc = ucl / popn / 10) %>% 
+  ungroup()
 
 #all_predicted <- all_by_province %>% 
-all_predicted <- cross_df(list(country_region = factor(regions, levels = regions), 
+all_predicted <- cross_df(list(country_region = factor(c("United States", "Australia", "Germany", "Canada"), levels = c("United States", "Australia", "Germany", "Canada")), 
                                day100 = 14:28)) %>% 
   #   mutate(day = as.numeric(Date - start_date)) %>% 
   # filter(day > 12) %>% #these are the rows we want to predict with
@@ -135,7 +138,7 @@ all_predicted <- cross_df(list(country_region = factor(regions, levels = regions
   left_join(only_country_data, by = "country_region") %>% 
   mutate(
     Date = date_100 + day100,
-    country_region = factor(country_region, levels = regions), # use factor to modify plot order
+    country_region = factor(country_region, levels = c("United States", "Australia", "Germany", "Canada")), # use factor to modify plot order
     fit = 10^.fitted,
     pred_var = sigma^2 + .se.fit^2,
     lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
@@ -163,13 +166,14 @@ names(facet_labels) <- pull(doubling_times, country_region)
 ggplot(data = filter(all_country, day100 >= 0),
                     mapping = aes(x = day100)) + 
   geom_point(mapping = aes(y = arpc, color = country_region)) + 
-  facet_wrap(~country_region, dir="v", labeller = labeller(country_region = facet_labels)) + 
   scale_y_log10() + 
   theme(legend.position = "none",
         legend.title = element_blank()) + 
   geom_line(data = all_fit,
             mapping = aes(y = fitpc, color = country_region),
             size = 1.25) +
+    geom_line(data = select(all_fit, -country_region),
+            mapping = aes(y = fitpc, color = group), alpha = 0.5, size = 1.5) +
   geom_ribbon(data = all_fit,
             mapping = aes(ymin = lclpc, ymax = uclpc),
             alpha = 0.2) +
@@ -182,13 +186,7 @@ ggplot(data = filter(all_country, day100 >= 0),
  geom_rect(data = only_country_data,
              mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20), 
            fill = "red", alpha = 0.2) +
-labs(y = "Active and Recovered cases per 100,000 population", title = "Active and Recovered cases by days since 100th case",
-     x = "Days since 100th case",
-       subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
-       caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
-                       format(file.mtime(savefilename), usetz = TRUE),
-                       "\n Unofficial, not peer reviewed results.",
-                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))   +
+
   geom_text(data = slice(only_country_data, 1),
             mapping = aes(y = 1.4*icu_beds),
             x = 0, #ymd("2020-03-01"),
@@ -198,9 +196,24 @@ labs(y = "Active and Recovered cases per 100,000 population", title = "Active an
             mapping = aes(y = 20*icu_beds),
             x = 0, #ymd("2020-03-01"),
            label = "# 20 times ICU beds / 100K",
-           size = 2.5, hjust = "left", vjust = "top")
+           size = 2.5, hjust = "left", vjust = "top") + 
+  facet_wrap(~country_region, dir="v", labeller = labeller(country_region = facet_labels)) + 
+labs(y = "Active and Recovered cases per 100,000 population", title = "Active and Recovered cases by days since 100th case",
+     x = "Days since 100th case",
+       subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
+       caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License.")) 
 ```
 
+Other than Germany continuing to #flattenthecurve, the most interesting
+feature of today's plot is how much lower the prevalence is in the USA. 
+Yes, the USA has more cases than anyone else in the world, but per capita we
+have fewer than these countries here at the same point in the outbreak. However
+the rate of increase is higher, as shown by the shorter doubling time, 
+and the slope of the US line being steeper. The USA will catch up to
+Germany on a per capita basis within the next few days. 
 
 
 # Full Data Nerd
@@ -215,12 +228,6 @@ It looks like the county / state level data is available through the daily repor
 nearly resigned myself to processing all those reports into the time series myself, when I 
 stumbled on [this project that provides an API to formatted versions of the JHU data](https://coviddata.github.io/covid-api/).
 
-```{r , message = FALSE}
-api_confirmed_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/cases.csv")
-# has the county/state bug still, so:
-us_confirmed_state <- us_wide2long(api_confirmed_regions, "United States")
-```
-
 A little manual checking between the API values and the JHU dashboard shows some discrepancies, but could
 easily be due to differences in the time of updating. I'll redo the figure from above pulling the data from the API.
 
@@ -229,15 +236,18 @@ library("tidyverse")
 library("lubridate")
 library("broom")
 savefilename <- "data/api_wide_2020-03-27.Rda"
-
-# api_confirmed_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/cases.csv")
-# api_deaths_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/deaths.csv")
-# api_recoveries_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/recoveries.csv")
+# The following code is commented out and left in place. This isn't particularly good coding 
+# practice, but I don't want to have to rewrite it every day when I get the updated data.
+# I archive the data rather than pull fresh because this data source is very volatile, and
+# data that worked with this code yesterday might break today.
+# api_confirmed_countries <- read_csv("https://coviddata.github.io/covid-api/v1/countries/cases.csv")
+# api_deaths_countries <- read_csv("https://coviddata.github.io/covid-api/v1/countries/deaths.csv")
+# api_recoveries_countries <- read_csv("https://coviddata.github.io/covid-api/v1/countries/recoveries.csv")
 # 
-# save(api_confirmed_regions, api_deaths_regions, api_recoveries_regions, file = savefilename)
+# save(api_confirmed_countries, api_deaths_countries, api_recoveries_countries, file = savefilename)
 load(savefilename)
 
-country_data <- read_csv("data/regions_covid-19.csv") %>% 
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
   mutate(start_date = mdy(start_date)) %>% 
   rename(Country = country_region,
          Region = province)
@@ -245,20 +255,14 @@ country_data <- read_csv("data/regions_covid-19.csv") %>%
 only_country_data <- filter(country_data, is.na(Region))
 source("R/jhu_helpers.R")
 
-regions <- c("United States", "Australia", "Germany", "Canada")
+countries <- c("United States", "Australia", "Germany", "Canada")
 # Take the wide format data and make it long
-all_regions <- list(
-  confirmed = other_wide2long(api_confirmed_regions, regions = regions),
-  deaths = other_wide2long(api_deaths_regions, regions = regions)
-  # recovered data is a mess lots of missing values
-  #recoveries = other_wide2long(api_recoveries_regions, regions = regions)
+all_countries <- list(
+  confirmed = other_wide2long(api_confirmed_countries, countries = countries),
+  deaths = other_wide2long(api_deaths_countries, countries = countries)
   ) %>% 
   bind_rows(.id = "variable") %>% 
   pivot_wider(names_from = variable, values_from = cumulative_cases) %>% 
-  # roll up to country level
-  # group_by(Country, Date) %>% 
-  # summarize(cumulative_confirmed = sum(confirmed),
-  #           cumulative_deaths = sum(deaths)) %>% 
   group_by(Country) %>% 
   mutate(incident_cases = c(0, diff(confirmed)),
          incident_deaths = c(0, diff(deaths)),
@@ -266,14 +270,14 @@ all_regions <- list(
   left_join(only_country_data, by = "Country") %>% 
   mutate(icpc = incident_cases / popn / 10,
          arpc = active_recovered / popn / 10,
-         group = Country,
          date_100 = Date[min(which(confirmed >= 100))],
          day100 = as.numeric(Date - date_100)) %>% 
   ungroup() %>% 
-  mutate(Country = factor(Country, levels = regions))
+  mutate(Country = factor(Country, levels = countries),
+         group = Country)
 
 # recreate this adding date_100  
-only_country_data <- all_regions %>% 
+only_country_data <- all_countries %>% 
   group_by(Country) %>% 
   summarize(date_100 = first(date_100),
             popn = first(popn),
@@ -282,7 +286,7 @@ only_country_data <- all_regions %>%
          start_day = 0,
          end_day = 28)
 
-all_models <- all_regions %>% 
+all_models <- all_countries %>% 
   mutate(log10_ar = log10(active_recovered)) %>% 
   filter(day100 <= 13, day100 >= 0) %>%  # model using first 2 weeks of data
   group_by(Country) %>% 
@@ -299,13 +303,12 @@ all_fit <- all_models %>%
          ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
     fitpc = fit / popn / 10,
          lclpc = lcl / popn / 10,
-         uclpc = ucl / popn / 10)
+         uclpc = ucl / popn / 10) %>% 
+  ungroup()
 
 #all_predicted <- all_by_province %>% 
-all_predicted <- cross_df(list(Country = factor(regions, levels = regions), 
+all_predicted <- cross_df(list(Country = factor(countries, levels = countries), 
                                day100 = 14:28)) %>% 
-  #   mutate(day = as.numeric(Date - start_date)) %>% 
-  # filter(day > 12) %>% #these are the rows we want to predict with
   group_by(Country) %>% 
   nest() %>% 
   left_join(select(all_models, Country, model), by="Country") %>% 
@@ -317,7 +320,7 @@ all_predicted <- cross_df(list(Country = factor(regions, levels = regions),
   left_join(only_country_data, by = "Country") %>% 
   mutate(
     Date = date_100 + day100,
-    Country = factor(Country, levels = regions), # use factor to modify plot order
+    Country = factor(Country, levels = countries), # use factor to modify plot order
     fit = 10^.fitted,
     pred_var = sigma^2 + .se.fit^2,
     lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
@@ -342,7 +345,7 @@ facet_labels <- doubling_times %>%
   mutate(label = paste0(Country," doubling time (95% CL): ", label)) %>% 
   pull(label)
 names(facet_labels) <- pull(doubling_times, Country)
-ggplot(data = filter(all_regions, day100 >= 0),
+ggplot(data = filter(all_countries, day100 >= 0),
                     mapping = aes(x = day100)) + 
   geom_point(mapping = aes(y = arpc, color = Country)) + 
   facet_wrap(~Country, dir="v", labeller = labeller(Country = facet_labels)) + 
@@ -352,6 +355,8 @@ ggplot(data = filter(all_regions, day100 >= 0),
   geom_line(data = all_fit,
             mapping = aes(y = fitpc, color = Country),
             size = 1.25) +
+      geom_line(data = select(all_fit, -Country),
+            mapping = aes(y = fitpc, color = group), alpha = 0.5, size = 1.5) +
   geom_ribbon(data = all_fit,
             mapping = aes(ymin = lclpc, ymax = uclpc),
             alpha = 0.2) +
@@ -387,12 +392,17 @@ So, not identical, but close. Also the API has the recovered data back -- there 
 missing data etc, but I will resume using it to calculate active cases because lots of people are starting to 
 recover. 
 
+## Canada by Province
+
 Now that I have an automated way to calculate a start date, lets get serious. What are the doubling times for
-each province in Canada with more than 30 cumulative cases? 
+each province in Canada with more than 20 cumulative cases and at least 5 days of data? 
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 savefilename <- "data/api_regions_2020-03-27.Rda"
-
+# The following code is commented out and left in place. This isn't particularly good coding 
+# practice, but I don't want to have to rewrite it every day when I get the updated data.
+# I archive the data rather than pull fresh because this data source is very volatile, and
+# data that worked with this code yesterday might break today.
 # api_confirmed_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/cases.csv")
 # api_deaths_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/deaths.csv")
 # api_recoveries_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/recoveries.csv")
@@ -407,10 +417,6 @@ canada_by_region <- list(
   ) %>% 
   bind_rows(.id = "variable") %>% 
   pivot_wider(names_from = variable, values_from = cumulative_cases) %>% 
-  # roll up to country level
-  # group_by(Country, Date) %>% 
-  # summarize(cumulative_confirmed = sum(confirmed),
-  #           cumulative_deaths = sum(deaths)) %>% 
   group_by(Region) %>% 
   mutate(incident_cases = c(0, diff(confirmed)),
          incident_deaths = c(0, diff(deaths)),
@@ -459,8 +465,6 @@ all_fit <- all_models %>%
 #all_predicted <- all_by_province %>% 
 all_predicted <- cross_df(list(Region = pull(canada_data, Region), 
                                day20 = 5:28)) %>% 
-  #   mutate(day = as.numeric(Date - start_date)) %>% 
-  # filter(day > 12) %>% #these are the rows we want to predict with
   group_by(Region) %>% 
   nest() %>% 
   left_join(select(all_models, Region, model), by="Region") %>% 
@@ -470,7 +474,7 @@ all_predicted <- cross_df(list(Region = pull(canada_data, Region),
   unnest(cols = predicted) %>% 
   ungroup() %>% 
   left_join(canada_data, by = "Region") %>% 
-  filter(day20 > min(maxday20+1, 13)) %>% 
+  filter(day20 > pmin(maxday20+1, 13)) %>% 
   mutate(
     Date = date_20 + day20,
     Region = Region, # use factor to modify plot order
@@ -539,6 +543,335 @@ labs(y = "Active cases per 100,000 population", title = "Active cases by days si
            size = 2.5, hjust = "left", vjust = "top")
 ```
 
+Quebec appears to be in the worst shape with the shortest doubling time in active cases. 
+British Columbia and Ontario have the longest running outbreaks, and the trajectories are
+still consistent with exponential growth. 
+
+## Back to America
+
+```{r america_by_state, warning = FALSE, message = FALSE}
+usa_by_region <- list(
+  confirmed = us_wide2long(api_confirmed_regions, "United States"),
+  deaths = us_wide2long(api_deaths_regions, "United States"),
+  # recovered data is a mess lots of missing values
+  recoveries = us_wide2long(api_recoveries_regions, "United States")
+  ) %>% 
+  bind_rows(.id = "variable") %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) %>% 
+  group_by(Region) %>% 
+  mutate(incident_cases = c(0, diff(confirmed)),
+         incident_deaths = c(0, diff(deaths)),
+         active = confirmed - deaths - recoveries) %>% 
+  left_join(country_data, by = c("Country", "Region")) %>% 
+  mutate(icpc = incident_cases / popn / 10,
+         arpc = active / popn / 10,
+         group = Region,
+         date_20 = Date[min(which(confirmed >= 20))],
+         day20 = as.numeric(Date - date_20),
+         samplesize = max(day20)) %>% 
+  ungroup() %>% 
+  filter(!is.na(date_20),
+         samplesize > 4) # remove regions with less than 20 cases total or fewer than 5 days.
+
+# recreate this adding date_100  
+usa_data <- usa_by_region %>% 
+  group_by(Region) %>% 
+  summarize(date_20 = first(date_20),
+            popn = first(popn),
+            icu_beds = first(icu_beds),
+            maxday20 = max(day20)) %>% 
+  mutate(max_icu_beds = icu_beds * 20,
+         start_day = 0,
+         end_day = 28)
+
+all_models <- usa_by_region %>% 
+  mutate(log10_ar = log10(active)) %>% 
+  filter(day20 <= 13, day20 >= 0) %>%  # model using first 2 weeks of data
+  group_by(Region) %>% 
+  nest() %>% 
+    mutate(model = map(data, ~lm(log10_ar~day20, data = .)))
+
+all_fit <- all_models %>% 
+  mutate(fit = map(model, augment, se_fit = TRUE),
+         fit = map(fit, select, -c("log10_ar","day20"))) %>% 
+  select(-model) %>% 
+  unnest(cols = c("data","fit")) %>% 
+  mutate(fit = 10^.fitted,
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10) %>% 
+  ungroup()
+
+#all_predicted <- all_by_province %>% 
+all_predicted <- cross_df(list(Region = pull(usa_data, Region), 
+                               day20 = 5:28)) %>% 
+  group_by(Region) %>% 
+  nest() %>% 
+  left_join(select(all_models, Region, model), by="Region") %>% 
+  mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+         sigma = map_dbl(model, ~summary(.x)$sigma)) %>% 
+  select(-c(model,data)) %>% 
+  unnest(cols = predicted) %>% 
+  ungroup() %>% 
+  left_join(usa_data, by = "Region") %>% 
+  filter(day20 > pmin(maxday20+1, 13)) %>% 
+  mutate(
+    Date = date_20 + day20,
+    Region = Region, # use factor to modify plot order
+    fit = 10^.fitted,
+    pred_var = sigma^2 + .se.fit^2,
+    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10)
+
+doubling_times <- all_models %>% 
+  mutate(estimates = map(model, tidy)) %>% 
+  unnest(cols = estimates) %>%  # produces 2 rows per country, (intercept) and day100
+  ungroup() %>% 
+  filter(term == "day20") %>% 
+  select(Region, estimate, std.error) %>% 
+  mutate(var_b = std.error^2,
+         t = log10(2) / estimate,
+         var_t = var_b * log10(2)^2 / estimate^4,
+         lcl_t = t - sqrt(var_t)*qt(0.975, 12),
+         ucl_t = t + sqrt(var_t)*qt(0.975, 12),
+         label = sprintf("%.2f (%.2f, %.2f)", t, lcl_t, ucl_t),
+         Region = fct_reorder(Region, t, .desc = TRUE))
+
+ggplot(data = doubling_times,
+       mapping = aes(x = Region))+
+  geom_point(mapping = aes(y = t))+
+  geom_errorbar(mapping = aes(ymin = lcl_t, ymax = ucl_t),
+                width = 0) +
+  labs(y = "Doubling Time [days 95%CI]",
+       title = "Doubling time of active cases",
+       subtitle = "Estimated from first 14 days since 20th case reported.") +
+  theme_classic() +
+  theme(axis.text.x  = element_text(angle=90, vjust=0.5, size=9),
+        axis.title.x = element_blank())
+```
+
+There are too many states to show the trajectories effectively, so I just plot the
+doubling times from longest (best) to shortest (worst). States with larger confidence
+limits are states with less than 14 days of data since reporting their 20th case. All
+states in that plot (49) have statistically significant exponential growth 
+during the first days of the epidemic. I'm going 
+to pick out the trajectories of the states on the far left and far right. 
+
+```{r, warning = FALSE}
+states_2_plot <- c("North Dakota", "Nebraska", "Wyoming", "Missouri", "New Jersey", "Michigan")
+state_data <- filter(usa_data, Region %in% states_2_plot) %>% 
+    mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+point_data <- filter(usa_by_region, day20>=0,
+                     Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+fit_data <- filter(all_fit, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+predict_data <- filter(all_predicted, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+doubling_t_data <- filter(doubling_times, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+
+facet_labels <- doubling_t_data %>% 
+  arrange(desc(t)) %>%  
+  mutate(label = paste0(Region," doubling time (95% CL): ", label)) %>% 
+  pull(label)
+names(facet_labels) <- doubling_t_data %>% 
+  arrange(desc(t)) %>% 
+  pull(Region)
+
+ggplot(data = point_data,
+                    mapping = aes(x = day20)) + 
+  geom_point(mapping = aes(y = arpc, color = Region)) + 
+  facet_wrap(~Region, dir="v", labeller = labeller(Region = facet_labels)) + 
+  scale_y_log10() + 
+  theme(legend.position = "none",
+        legend.title = element_blank()) + 
+  geom_line(data = fit_data,
+            mapping = aes(y = fitpc, color = Region),
+            size = 1.25) +
+  geom_ribbon(data = fit_data,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = predict_data,
+            mapping = aes(y = fitpc, color = Region),
+            linetype = 2) +
+ geom_ribbon(data = predict_data,
+           mapping = aes(ymin = lplpc, ymax = uplpc),
+           alpha = 0.2)  +
+ geom_rect(data = state_data,
+             mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20), 
+           fill = "red", alpha = 0.2) +
+labs(y = "Active cases per 100,000 population", title = "Active cases by days since 20th case",
+     x = "Days since 20th case",
+       subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
+       caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))   +
+  geom_text(data = slice(state_data, 5),
+            mapping = aes(y = icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# ICU beds / 100K",
+           size = 2.5, hjust = "left", vjust = "bottom") +
+    geom_text(data = slice(state_data, 5),
+            mapping = aes(y = 20*icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# 20 times ICU beds / 100K",
+           size = 2.5, hjust = "left", vjust = "top")
+```
+
+Looks like Michigan is the next state to be in trouble? Actually, other states might
+be farther along. Which four states have the highest per capita prevalence?
+
+```{r, warning = FALSE}
+usa_by_region %>% 
+  group_by(Region) %>% 
+  summarize(highest_prevalence = max(arpc)) %>% 
+  ungroup() %>% 
+  arrange(desc(highest_prevalence)) %>% 
+  slice(1:4)
+```
+
+```{r, warning = FALSE}
+states_2_plot <- c("New York", "New Jersey", "Louisiana", "Washington")
+state_data <- filter(usa_data, Region %in% states_2_plot) %>% 
+    mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+point_data <- filter(usa_by_region, day20>=0,
+                     Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+fit_data <- filter(all_fit, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+predict_data <- filter(all_predicted, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+doubling_t_data <- filter(doubling_times, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+
+facet_labels <- doubling_t_data %>% 
+  arrange(desc(t)) %>%  
+  mutate(label = paste0(Region," doubling time (95% CL): ", label)) %>% 
+  pull(label)
+names(facet_labels) <- doubling_t_data %>% 
+  arrange(desc(t)) %>% 
+  pull(Region)
+
+ggplot(data = point_data,
+                    mapping = aes(x = day20)) + 
+  geom_point(mapping = aes(y = arpc, color = Region)) + 
+  facet_wrap(~Region, dir="v", labeller = labeller(Region = facet_labels)) + 
+  scale_y_log10() + 
+  theme(legend.position = "none",
+        legend.title = element_blank()) + 
+  geom_line(data = fit_data,
+            mapping = aes(y = fitpc, color = Region),
+            size = 1.25) +
+  geom_ribbon(data = fit_data,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = predict_data,
+            mapping = aes(y = fitpc, color = Region),
+            linetype = 2) +
+ geom_ribbon(data = predict_data,
+           mapping = aes(ymin = lplpc, ymax = uplpc),
+           alpha = 0.2)  +
+ geom_rect(data = state_data,
+             mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20), 
+           fill = "red", alpha = 0.2) +
+labs(y = "Active cases per 100,000 population", title = "Active cases by days since 20th case",
+     x = "Days since 20th case",
+       subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
+       caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))   +
+  geom_text(data = slice(state_data, 5),
+            mapping = aes(y = icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# ICU beds / 100K",
+           size = 2.5, hjust = "left", vjust = "bottom") +
+    geom_text(data = slice(state_data, 5),
+            mapping = aes(y = 20*icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# 20 times ICU beds / 100K",
+           size = 2.5, hjust = "left", vjust = "top")
+```
+
+OK, so that's interesting. Washington now clearly showing that they are #flatteningthecurve.
+It's clear why New York is hurting so bad; cases grew *faster* than the initial exponential rate,
+and they are now deep into the red zone. Louisiana and New Jersey are heading that way too.
+
+Finally, lets make a few specific states for people who are watching from home.
+
+```{r, warning = FALSE, message=FALSE}
+states_2_plot <- c("Colorado", "Virginia", "Minnesota")
+state_data <- filter(usa_data, Region %in% states_2_plot) %>% 
+    mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+point_data <- filter(usa_by_region, day20>=0,
+                     Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+fit_data <- filter(all_fit, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+predict_data <- filter(all_predicted, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+doubling_t_data <- filter(doubling_times, Region %in% states_2_plot) %>% 
+  mutate(Region = factor(Region, levels = states_2_plot)) # control plot order
+
+facet_labels <- doubling_t_data %>% 
+  arrange(desc(t)) %>%  
+  mutate(label = paste0(Region," : ", label)) %>% 
+  pull(label)
+names(facet_labels) <- doubling_t_data %>% 
+  arrange(desc(t)) %>% 
+  pull(Region)
+
+ggplot(data = point_data,
+                    mapping = aes(x = day20)) + 
+  geom_point(mapping = aes(y = arpc, color = Region)) + 
+  facet_wrap(~Region, dir="h", labeller = labeller(Region = facet_labels)) + 
+  scale_y_log10() + 
+  theme(legend.position = "none",
+        legend.title = element_blank()) + 
+  geom_line(data = fit_data,
+            mapping = aes(y = fitpc, color = Region),
+            size = 1.25) +
+  geom_ribbon(data = fit_data,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = predict_data,
+            mapping = aes(y = fitpc, color = Region),
+            linetype = 2) +
+ geom_ribbon(data = predict_data,
+           mapping = aes(ymin = lplpc, ymax = uplpc),
+           alpha = 0.2)  +
+ geom_rect(data = state_data,
+             mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20), 
+           fill = "red", alpha = 0.2) +
+labs(y = "Active cases per 100,000 population", title = "Active cases by days since 20th case",
+     x = "Days since 20th case",
+       subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
+       caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))   +
+  geom_text(data = slice(state_data, 5),
+            mapping = aes(y = icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# ICU beds / 100K",
+           size = 2.5, hjust = "left", vjust = "bottom") +
+    geom_text(data = slice(state_data, 5),
+            mapping = aes(y = 20*icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# 20 times ICU beds / 100K",
+           size = 2.5, hjust = "left", vjust = "top")
+```
+
+South Dakota is the one state without sufficient data. All three of 
+these states are showing exponential growth. Only Colorado is 
+getting close to the red zone. 
 
 # What's next?
 
@@ -547,5 +880,3 @@ labs(y = "Active cases per 100,000 population", title = "Active cases by days si
 [^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd).
 This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.
 
-[^2]: I'm feeling pretty chuffed about this! I didn't copy/paste -- that code chunk pulls in the hidden one 
-and then only echoes the lines I want echoed. 
