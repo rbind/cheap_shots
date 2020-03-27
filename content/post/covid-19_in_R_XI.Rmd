@@ -8,7 +8,7 @@ output:
     code_folding: hide
   word_document: default
 og_image: /post/covid-19_in_r_xi_files/figure-html/featured_image-1.png
-draft: yes
+draft: no
 slug: COVID-19_and_R_XI
 tags_include:
 - R
@@ -17,8 +17,14 @@ tags_include:
 categories: Research
 ---
 
-Not much new to report. I've got state level data back and do some exploration with that. I hope the
-data structure is a bit more stable going forward. 
+Yes, the USA has more cases than anyone else in the world, but per capita we have fewer than
+Australia, Germany, and Canada at the same point in the outbreak. However the rate of increase
+is higher, as shown by the shorter doubling time, and the slope of the US line being steeper.
+The USA will catch up to Germany on a per capita basis within the next few days. 
+
+I've got state level data back and do some exploration with that. I hope the
+data structure is a bit more stable going forward. [The state and province figures
+are below the Full Data Nerd heading](#full_data_nerd), just skip over the giant code blocks. 
 
 [The first post in this series was a week and a half ago](/post/covid-19_and_r/), in case you're just joining and
 want to see the progression. 
@@ -38,7 +44,7 @@ The faded solid lines are the fitted models for the other countries, to facilita
 The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The 
 top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
 confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
-Note that the y axis is logarithmic. The x axis is now days since the 100th case in each country.
+Note that the y axis is logarithmic. The x axis is days since the 100th case in each country.
 
 ```{r featured_image, warning=FALSE, message=FALSE, echo=FALSE}
 library("tidyverse")
@@ -215,8 +221,19 @@ the rate of increase is higher, as shown by the shorter doubling time,
 and the slope of the US line being steeper. The USA will catch up to
 Germany on a per capita basis within the next few days. 
 
+I think it's worth reminding everyone that the red box is a *very* fuzzy estimate of
+where ICU beds might be limited. There are 1.5 orders of magnitude in per capita beds between the
+top and the bottom. I've pulled those country level numbers from a wide range 
+of reports and papers published over several years. Many hard hit locales are building more 
+hospital beds, and there is variation from state to state in any case. Nurses, doctors, 
+and the PPE they need to stay safe seem likely to be as or more limiting to care 
+than beds at this stage. 
 
-# Full Data Nerd
+If you've read this far, [there's a plot of canadian provinces](#canada_by_province),
+and [several plots of different american states](#back_to_america). Be sure to 
+scroll down past the enormous blocks of code.
+
+# Full Data Nerd {#full_data_nerd}
 
 Johannes Knops, a colleague from Xi'an Jiaotong Liverpool University, brought
 [this site created by his staff to my attention](https://ncov2020.org). They 
@@ -225,7 +242,7 @@ lots of errors. Seems to work, but once I dug into it I couldn't tell if the dat
 just the most recent day. They don't use a standardized date format either, so I've given up on that.
 
 It looks like the county / state level data is available through the daily reports at JHU. I had
-nearly resigned myself to processing all those reports into the time series myself, when I 
+nearly resigned myself to processing all those reports into a time series myself, when I 
 stumbled on [this project that provides an API to formatted versions of the JHU data](https://coviddata.github.io/covid-api/).
 
 A little manual checking between the API values and the JHU dashboard shows some discrepancies, but could
@@ -392,7 +409,7 @@ So, not identical, but close. Also the API has the recovered data back -- there 
 missing data etc, but I will resume using it to calculate active cases because lots of people are starting to 
 recover. 
 
-## Canada by Province
+## Canada by Province {#canada_by_province}
 
 Now that I have an automated way to calculate a start date, lets get serious. What are the doubling times for
 each province in Canada with more than 20 cumulative cases and at least 5 days of data? 
@@ -543,11 +560,12 @@ labs(y = "Active cases per 100,000 population", title = "Active cases by days si
            size = 2.5, hjust = "left", vjust = "top")
 ```
 
-Quebec appears to be in the worst shape with the shortest doubling time in active cases. 
+Quebec appears to be in the worst shape with the shortest doubling time in active cases
+and the highest prevalence. 
 British Columbia and Ontario have the longest running outbreaks, and the trajectories are
 still consistent with exponential growth. 
 
-## Back to America
+## Back to America {#back_to_america}
 
 ```{r america_by_state, warning = FALSE, message = FALSE}
 usa_by_region <- list(
@@ -726,7 +744,7 @@ labs(y = "Active cases per 100,000 population", title = "Active cases by days si
 ```
 
 Looks like Michigan is the next state to be in trouble? Actually, other states might
-be farther along. Which four states have the highest per capita prevalence?
+have higher prevalence but longer doubling times. Which four states have the highest per capita prevalence?
 
 ```{r, warning = FALSE}
 usa_by_region %>% 
@@ -736,6 +754,10 @@ usa_by_region %>%
   arrange(desc(highest_prevalence)) %>% 
   slice(1:4)
 ```
+
+That's cases per 100,000 population, so even New York is only just 0.2%. So just
+by the numbers your chance of being sick is 2 out of 1000 right now in the worst
+hit place in the country. Of course it isn't evenly spread as that calculation assumes.
 
 ```{r, warning = FALSE}
 states_2_plot <- c("New York", "New Jersey", "Louisiana", "Washington")
