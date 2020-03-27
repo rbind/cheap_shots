@@ -46,6 +46,10 @@ library("lubridate")
 library("broom")
 savefilename <- "data/jhu_wide_2020-03-26.Rda"
 
+# The following code is commented out and left in place. This isn't particularly good coding 
+# practice, but I don't want to have to rewrite it every day when I get the updated data.
+# I archive the data rather than pull fresh because this data source is very volatile, and
+# data that worked with this code yesterday might break today.
 # jhu_url <- paste("https://raw.githubusercontent.com/CSSEGISandData/",
 #                  "COVID-19/master/csse_covid_19_data/",
 #                  "csse_covid_19_time_series/time_series_covid19_",sep = "")
@@ -57,17 +61,19 @@ savefilename <- "data/jhu_wide_2020-03-26.Rda"
 # save(jhu_confirmed_global, jhu_deaths_global, jhu_recovered_global, file = savefilename)
 load(savefilename)
 
-country_data <- read_csv("data/countries_covid-19.csv") %>% 
+country_data <- read_csv("data/countries_covid-19_old.csv") %>% 
   mutate(start_date = mdy(start_date))
 
 only_country_data <- filter(country_data, is.na(province))
 source("R/jhu_helpers.R")
 
+# different data sources use different abbreviations for USA, and it is making me crazy.
 countries <- c("US", "Australia", "Germany", "Canada")
+countries2 <- c("United States", "Australia", "Germany", "Canada")
 # Take the wide format data and make it long
 all_country <- list(
-  confirmed = other_wide2long(jhu_confirmed_global, countries = countries),
-  deaths = other_wide2long(jhu_deaths_global, countries = countries)
+  confirmed = other_wide2long_old(jhu_confirmed_global, countries = countries),
+  deaths = other_wide2long_old(jhu_deaths_global, countries = countries)
   # recovered data is a mess lots of missing values
 #  recovered = other_wide2long(jhu_recovered_global, countries = countries)
   ) %>% 
@@ -155,13 +161,13 @@ ggplot(data = filter(all_country, day100 >= 0),
             mapping = aes(y = fitpc, color = country_region),
             size = 1.25) +
   geom_ribbon(data = all_fit,
-            mapping = aes(ymin = lclpc, ymax = uclpc),
+            mapping = aes(ymin = lclpc, ymax = uclpc, group = country_region),
             alpha = 0.2) +
   geom_line(data = all_predicted,
             mapping = aes(y = fitpc, color = country_region),
             linetype = 2) +
  geom_ribbon(data = all_predicted,
-           mapping = aes(ymin = lplpc, ymax = uplpc),
+           mapping = aes(ymin = lplpc, ymax = uplpc, group = country_region),
            alpha = 0.2)  +
  geom_rect(data = only_country_data,
              mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20), 
@@ -190,8 +196,8 @@ pulling this off with a massive testing effort that started early, in addition t
 They are also reporting a very low death rate](https://www.npr.org/2020/03/25/820595489/why-germanys-coronavirus-death-rate-is-far-lower-than-in-other-countries).
 Day 0 on this plot is the start of March for USA and Germany, and about March 10 for Canada and Australia.
 
-If you've been following along, you might notice that the prediction intervals on this figure are
-much, much narrower than previous plots. I've switched to 
+If you've been following my earlier posts on the topic, you might notice that the prediction intervals on this figure are
+[much, much narrower than previous plots](/post/covid-19_and_R_IX/). I've switched to 
 plotting the cumulative "Active and Recovered" cases from the number of new cases per day. The
 variation (scatter around the line) is much smaller for the cumulative cases than new cases per day.
 That has two effects. First, the estimates of the growth rate become much more precise. Second, the
@@ -199,9 +205,10 @@ smaller variability around the line directly reduces the variance of each future
 are ignoring the correlation between one day and the next, so they are too narrow, but given that
 I am looking for the points to fall outside the intervals this is a conservative choice. 
 
-The other thing to note is country level totals are obscuring significant variation, especially in the
+The other thing to remember is country level totals are obscuring significant variation, especially in the
 USA. Some states are already deep in the red zone (Louisiana, New York), while others like Nebraska 
-have yet to show exponential growth.
+have yet to show exponential growth. I don't have up to date state level data to show this here, but hope
+to fix that soon.
 
 The "recovered" data from JHU are full of missing values and other issues, because those numbers
 are not being reported consistently. I've calculated
@@ -249,16 +256,11 @@ attached. So I also want to put confidence limits around the doubling time, and 
 the variance of the doubling time. I have the variance (`std.error^2`) of the rate of growth.
 I can use the Delta method to approximate the variance of doubling time. Everything I know about
 the Delta method I learned from [Larkin Powell](https://larkinpowell.wixsite.com/larkinpowell).
-He wrote an [awesome howto for the Delta method](https://academic.oup.com/condor/article/109/4/949/5563525).
+He wrote an [awesome how-to for the Delta method](https://academic.oup.com/condor/article/109/4/949/5563525).
 
 $$
 var(\hat t) = var(\hat b)\left[\frac{\partial\hat t }{\partial \hat b}\right]^2 \\
-\frac{\partial\hat t }{\partial \hat b} = \frac{log_{10}2}{b^{2}}
-$$
-
-so 
-
-$$
+\frac{\partial\hat t }{\partial \hat b} = \frac{log_{10}2}{b^{2}} \\
 var(\hat t) = var(\hat b)\frac{log_{10}2^2}{b^{4}}
 $$
 

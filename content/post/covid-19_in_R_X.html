@@ -43,17 +43,18 @@ Note that the y axis is logarithmic. The x axis is now days since the 100th case
 pulling this off with a massive testing effort that started early, in addition to getting people to move less.
 They are also reporting a very low death rate</a>.
 Day 0 on this plot is the start of March for USA and Germany, and about March 10 for Canada and Australia.</p>
-<p>If you’ve been following along, you might notice that the prediction intervals on this figure are
-much, much narrower than previous plots. I’ve switched to
+<p>If you’ve been following my earlier posts on the topic, you might notice that the prediction intervals on this figure are
+<a href="/post/covid-19_and_R_IX/">much, much narrower than previous plots</a>. I’ve switched to
 plotting the cumulative “Active and Recovered” cases from the number of new cases per day. The
 variation (scatter around the line) is much smaller for the cumulative cases than new cases per day.
 That has two effects. First, the estimates of the growth rate become much more precise. Second, the
 smaller variability around the line directly reduces the variance of each future observation. These intervals
 are ignoring the correlation between one day and the next, so they are too narrow, but given that
 I am looking for the points to fall outside the intervals this is a conservative choice.</p>
-<p>The other thing to note is country level totals are obscuring significant variation, especially in the
+<p>The other thing to remember is country level totals are obscuring significant variation, especially in the
 USA. Some states are already deep in the red zone (Louisiana, New York), while others like Nebraska
-have yet to show exponential growth.</p>
+have yet to show exponential growth. I don’t have up to date state level data to show this here, but hope
+to fix that soon.</p>
 <p>The “recovered” data from JHU are full of missing values and other issues, because those numbers
 are not being reported consistently. I’ve calculated
 “Active and recovered” by subtracting deaths from confirmed cases. This is an overestimate
@@ -81,6 +82,10 @@ library(&quot;lubridate&quot;)
 library(&quot;broom&quot;)
 savefilename &lt;- &quot;data/jhu_wide_2020-03-26.Rda&quot;
 
+# The following code is commented out and left in place. This isn&#39;t particularly good coding 
+# practice, but I don&#39;t want to have to rewrite it every day when I get the updated data.
+# I archive the data rather than pull fresh because this data source is very volatile, and
+# data that worked with this code yesterday might break today.
 # jhu_url &lt;- paste(&quot;https://raw.githubusercontent.com/CSSEGISandData/&quot;,
 #                  &quot;COVID-19/master/csse_covid_19_data/&quot;,
 #                  &quot;csse_covid_19_time_series/time_series_covid19_&quot;,sep = &quot;&quot;)
@@ -92,17 +97,19 @@ savefilename &lt;- &quot;data/jhu_wide_2020-03-26.Rda&quot;
 # save(jhu_confirmed_global, jhu_deaths_global, jhu_recovered_global, file = savefilename)
 load(savefilename)
 
-country_data &lt;- read_csv(&quot;data/countries_covid-19.csv&quot;) %&gt;% 
+country_data &lt;- read_csv(&quot;data/countries_covid-19_old.csv&quot;) %&gt;% 
   mutate(start_date = mdy(start_date))
 
 only_country_data &lt;- filter(country_data, is.na(province))
 source(&quot;R/jhu_helpers.R&quot;)
 
+# different data sources use different abbreviations for USA, and it is making me crazy.
 countries &lt;- c(&quot;US&quot;, &quot;Australia&quot;, &quot;Germany&quot;, &quot;Canada&quot;)
+countries2 &lt;- c(&quot;United States&quot;, &quot;Australia&quot;, &quot;Germany&quot;, &quot;Canada&quot;)
 # Take the wide format data and make it long
 all_country &lt;- list(
-  confirmed = other_wide2long(jhu_confirmed_global, countries = countries),
-  deaths = other_wide2long(jhu_deaths_global, countries = countries)
+  confirmed = other_wide2long_old(jhu_confirmed_global, countries = countries),
+  deaths = other_wide2long_old(jhu_deaths_global, countries = countries)
   # recovered data is a mess lots of missing values
 #  recovered = other_wide2long(jhu_recovered_global, countries = countries)
   ) %&gt;% 
@@ -171,13 +178,7 @@ all_predicted &lt;- cross_df(list(country_region = factor(countries, levels = co
   mutate(
     Date = date_100 + day100,
     country_region = factor(country_region, levels = countries), # use factor to modify plot order
-    fit = 10^.fitted,
-    pred_var = sigma^2 + .se.fit^2,
-    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
-    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
-    fitpc = fit / popn / 10,
-         lplpc = lpl / popn / 10,
-         uplpc = upl / popn / 10)</code></pre>
+    fit = 10^.fitted,</code></pre>
 <p>All the model objects are in a “list column” called <code>model</code>. So now <code>map()</code> with <code>broom::tidy()</code> should
 give us what we want.</p>
 <pre class="r"><code>all_models %&gt;% 
@@ -222,13 +223,10 @@ attached. So I also want to put confidence limits around the doubling time, and 
 the variance of the doubling time. I have the variance (<code>std.error^2</code>) of the rate of growth.
 I can use the Delta method to approximate the variance of doubling time. Everything I know about
 the Delta method I learned from <a href="https://larkinpowell.wixsite.com/larkinpowell">Larkin Powell</a>.
-He wrote an <a href="https://academic.oup.com/condor/article/109/4/949/5563525">awesome howto for the Delta method</a>.</p>
+He wrote an <a href="https://academic.oup.com/condor/article/109/4/949/5563525">awesome how-to for the Delta method</a>.</p>
 <p><span class="math display">\[
 var(\hat t) = var(\hat b)\left[\frac{\partial\hat t }{\partial \hat b}\right]^2 \\
-\frac{\partial\hat t }{\partial \hat b} = \frac{log_{10}2}{b^{2}}
-\]</span></p>
-<p>so</p>
-<p><span class="math display">\[
+\frac{\partial\hat t }{\partial \hat b} = \frac{log_{10}2}{b^{2}} \\
 var(\hat t) = var(\hat b)\frac{log_{10}2^2}{b^{4}}
 \]</span></p>
 <pre class="r"><code>doubling_times &lt;- all_models %&gt;% 
