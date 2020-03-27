@@ -1,0 +1,244 @@
+---
+title: "COVID-19 and R Part XI"
+author: "Drew Tyre"
+date: "2020-03-26"
+output:
+  word_document: default
+  html_document:
+    code_folding: hide
+draft: yes
+slug: COVID-19_and_R_XI
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+og_image: /post/covid-19_in_r_xi_files/figure-html/featured_image-1.png
+---
+
+Today's post represents a complete reset, because the data structures at the 
+JHU repository changed Monday and haven't fully settled down yet. Country level data are
+good; they haven't got state level data for the USA anymore. Germany seems to be #flatteningthecurve.
+USA, Australia, and Canada are still on exponential growth curves.
+
+[The first post in this series was a week and a half ago](/post/covid-19_and_r/), in case you're just joining and
+want to see the progression. 
+
+# The bottom line
+
+DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.[^1] 
+
+The figure below is complex, so I'll highlight some
+features first. The y axis is now Active and Recovered cases / 100,000 population to make it easier to compare locales. The SOLID LINES are exponential growth models that assume
+the rate of increase is *constant*. The dashed lines are predictions from that
+model. The red rectangle shows the range of ICU bed capacity per 100,000 population in each country.
+The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The 
+top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
+confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
+Note that the y axis is logarithmic. The x axis is now days since the 100th case in each country.
+
+```{r featured_image, warning=FALSE, message=FALSE, echo=FALSE}
+library("tidyverse")
+library("lubridate")
+library("broom")
+savefilename <- "data/jhu_wide_2020-03-27.Rda"
+
+# jhu_url <- paste("https://raw.githubusercontent.com/CSSEGISandData/",
+#                  "COVID-19/master/csse_covid_19_data/",
+#                  "csse_covid_19_time_series/time_series_covid19_",sep = "")
+# 
+# jhu_confirmed_global <- read_csv(paste0(jhu_url,"confirmed_global.csv")) # just grab it once from github
+# jhu_deaths_global <- read_csv(paste0(jhu_url,"deaths_global.csv")) # just grab it once from github
+# jhu_recovered_global <- read_csv(paste0(jhu_url,"recovered_global.csv")) # just grab it once from github
+# # archive it!
+# save(jhu_confirmed_global, jhu_deaths_global, jhu_recovered_global, file = savefilename)
+load(savefilename)
+
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
+  mutate(start_date = mdy(start_date))
+
+only_country_data <- filter(country_data, is.na(province))
+source("R/jhu_helpers.R")
+
+countries <- c("US", "Australia", "Germany", "Canada")
+# Take the wide format data and make it long
+all_country <- list(
+  confirmed = other_wide2long(jhu_confirmed_global, countries = countries),
+  deaths = other_wide2long(jhu_deaths_global, countries = countries)
+  # recovered data is a mess lots of missing values
+#  recovered = other_wide2long(jhu_recovered_global, countries = countries)
+  ) %>% 
+  bind_rows(.id = "variable") %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) %>% 
+  # roll up to country level
+  group_by(country_region, Date) %>% 
+  summarize(cumulative_confirmed = sum(confirmed),
+            cumulative_deaths = sum(deaths)) %>% 
+  group_by(country_region) %>% 
+  mutate(incident_cases = c(0, diff(cumulative_confirmed)),
+         incident_deaths = c(0, diff(cumulative_deaths)),
+         active_recovered = cumulative_confirmed - cumulative_deaths) %>% 
+  left_join(only_country_data, by = "country_region") %>% 
+  mutate(icpc = incident_cases / popn / 10,
+         arpc = active_recovered / popn / 10,
+         group = country_region,
+         date_100 = Date[min(which(cumulative_confirmed >= 100))],
+         day100 = as.numeric(Date - date_100)) %>% 
+  ungroup() %>% 
+  mutate(country_region = factor(country_region, levels = countries))
+
+# recreate this adding date_100  
+only_country_data <- all_country %>% 
+  group_by(country_region) %>% 
+  summarize(date_100 = first(date_100),
+            popn = first(popn),
+            icu_beds = first(icu_beds)) %>% 
+  mutate(max_icu_beds = icu_beds * 20,
+         start_day = 0,
+         end_day = 28)
+
+all_models <- all_country %>% 
+  mutate(log10_ar = log10(active_recovered)) %>% 
+  filter(day100 <= 13, day100 >= 0) %>%  # model using first 2 weeks of data
+  group_by(country_region) %>% 
+  nest() %>% 
+    mutate(model = map(data, ~lm(log10_ar~day100, data = .)))
+
+all_fit <- all_models %>% 
+  mutate(fit = map(model, augment, se_fit = TRUE),
+         fit = map(fit, select, -c("log10_ar","day100"))) %>% 
+  select(-model) %>% 
+  unnest(cols = c("data","fit")) %>% 
+  mutate(fit = 10^.fitted,
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lclpc = lcl / popn / 10,
+         uclpc = ucl / popn / 10)
+
+#all_predicted <- all_by_province %>% 
+all_predicted <- cross_df(list(country_region = factor(countries, levels = countries), 
+                               day100 = 14:28)) %>% 
+  #   mutate(day = as.numeric(Date - start_date)) %>% 
+  # filter(day > 12) %>% #these are the rows we want to predict with
+  group_by(country_region) %>% 
+  nest() %>% 
+  left_join(select(all_models, country_region, model), by="country_region") %>% 
+  mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+         sigma = map_dbl(model, ~summary(.x)$sigma)) %>% 
+  select(-c(model,data)) %>% 
+  unnest(cols = predicted) %>% 
+  ungroup() %>% 
+  left_join(only_country_data, by = "country_region") %>% 
+  mutate(
+    Date = date_100 + day100,
+    country_region = factor(country_region, levels = countries), # use factor to modify plot order
+    fit = 10^.fitted,
+    pred_var = sigma^2 + .se.fit^2,
+    lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+    upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)),
+    fitpc = fit / popn / 10,
+         lplpc = lpl / popn / 10,
+         uplpc = upl / popn / 10)
+
+doubling_times <- all_models %>% 
+  mutate(estimates = map(model, tidy)) %>% 
+  unnest(cols = estimates) %>%  # produces 2 rows per country, (intercept) and day100
+  filter(term == "day100") %>% 
+  select(country_region, estimate, std.error) %>% 
+  mutate(var_b = std.error^2,
+         t = log10(2) / estimate,
+         var_t = var_b * log10(2)^2 / estimate^4,
+         lcl_t = t - sqrt(var_t)*qt(0.975, 12),
+         ucl_t = t + sqrt(var_t)*qt(0.975, 12),
+         label = sprintf("%.2f (%.2f, %.2f)", t, lcl_t, ucl_t))
+
+facet_labels <- doubling_times %>% 
+  mutate(label = paste0(country_region," doubling time (95% CL): ", label)) %>% 
+  pull(label)
+names(facet_labels) <- pull(doubling_times, country_region)
+ggplot(data = filter(all_country, day100 >= 0),
+                    mapping = aes(x = day100)) + 
+  geom_point(mapping = aes(y = arpc, color = country_region)) + 
+  facet_wrap(~country_region, dir="v", labeller = labeller(country_region = facet_labels)) + 
+  scale_y_log10() + 
+  theme(legend.position = "none",
+        legend.title = element_blank()) + 
+  geom_line(data = all_fit,
+            mapping = aes(y = fitpc, color = country_region),
+            size = 1.25) +
+  geom_ribbon(data = all_fit,
+            mapping = aes(ymin = lclpc, ymax = uclpc),
+            alpha = 0.2) +
+  geom_line(data = all_predicted,
+            mapping = aes(y = fitpc, color = country_region),
+            linetype = 2) +
+ geom_ribbon(data = all_predicted,
+           mapping = aes(ymin = lplpc, ymax = uplpc),
+           alpha = 0.2)  +
+ geom_rect(data = only_country_data,
+             mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20), 
+           fill = "red", alpha = 0.2) +
+labs(y = "Active and Recovered cases per 100,000 population", title = "Active and Recovered cases by days since 100th case",
+     x = "Days since 100th case",
+       subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.",
+       caption = paste("Source data: https://github.com/CSSEGISandData/COVID-19 downloaded ",
+                       format(file.mtime(savefilename), usetz = TRUE),
+                       "\n Unofficial, not peer reviewed results.",
+                       "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))   +
+  geom_text(data = slice(only_country_data, 1),
+            mapping = aes(y = 1.4*icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# ICU beds / 100K",
+           size = 2.5, hjust = "left") +
+    geom_text(data = slice(only_country_data, 1),
+            mapping = aes(y = 20*icu_beds),
+            x = 0, #ymd("2020-03-01"),
+           label = "# 20 times ICU beds / 100K",
+           size = 2.5, hjust = "left", vjust = "top")
+```
+
+
+
+# Full Data Nerd
+
+Johannes Knops, a colleague from Xi'an Jiaotong Liverpool University, brought
+[this site created by his staff to my attention](https://ncov2020.org). They 
+have an R package for the data! Unfortunately it is weirdly tough to install, triggering
+lots of errors. Seems to work, but once I dug into it I couldn't tell if the datasets were time series, or
+just the most recent day. They don't use a standardized date format either, so I've given up on that.
+
+It looks like the county / state level data is available through the daily reports at JHU. I had
+nearly resigned myself to processing all those reports into the time series myself, when I 
+stumbled on [this project that provides an API to formatted versions of the JHU data](https://coviddata.github.io/covid-api/).
+
+```{r}
+api_confirmed_regions <- read_csv("https://coviddata.github.io/covid-api/v1/regions/cases.csv")
+# has the county/state bug still, so:
+us_confirmed_state <- us_wide2long(api_confirmed_regions, "United States")
+```
+
+A little manual checking between the API values and the JHU dashboard shows some discrepancies, but could
+easily be due to differences in the time of updating. 
+
+```{r}
+other_wide2long(api_confirmed_regions, "Canada")
+```
+
+
+
+
+# What's next?
+
+So that's enough for today. 
+Tomorrow I'll try to find a dataset that includes states.
+ 
+
+[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd).
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.
+
+[^2]: I'm feeling pretty chuffed about this! I didn't copy/paste -- that code chunk pulls in the hidden one 
+and then only echoes the lines I want echoed. 
