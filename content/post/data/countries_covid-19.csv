@@ -1,4 +1,4 @@
-﻿province,country_region,start_date,popn,icu_beds
+﻿Region,Country,start_date,popn,icu_beds
 ,Germany,2/29/20,82.79,29.2
 ,Australia,2/29/20,24.6,8.9
 ,Canada,2/27/20,37.59,12.9

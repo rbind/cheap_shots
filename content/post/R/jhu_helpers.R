@@ -2,6 +2,13 @@ require("dplyr")
 require("tidyr")
 require("stringr")
 require("lubridate")
+
+latest_data <- function(date=Sys.Date(), countries = NULL, regions = NULL, datapath=here::here("content/post/data/")){
+  # get all the data filenames
+  datafiles <- list.files(datapath, pattern = "api_\\S*_2020-\\d{2}-\\d{2}.Rda")
+  
+}
+
 us_wide2long <- function(all_wide, usa_abbr = NULL){
   # returns long dataframe with state level data for USA
   abbrv <- readr::read_csv(here::here("content/post/data/USA_state_abb.csv"))
