@@ -1,0 +1,96 @@
+---
+title: "The Bottom Line: latest data and forecasts for Canada"
+author: "Drew Tyre"
+date: '2020-03-31'
+output:
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-bottom-line-canada_files/figure-html/featured_image-1.png
+draft: no
+slug: covid19-bottom-line-canada
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+---
+
+
+
+<p>Trying something new – all plots for provinces with sufficient data.
+Click the name of the locale you want to see. Tabs would be better, but for reasons
+beyond my ken, automatic tabsets don’t work with blogdown.</p>
+<p><a href="/post/covid-19_and_r/">The first post in this series was on March 13</a>, in case you’re just joining and
+want to see the progression.</p>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>The figures below are complex, so I’ll highlight some
+features first. The y axis is now Active and Recovered cases / 100,000 population to make it easier to compare locales. The SOLID LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed lines are predictions from that
+model. The red rectangle shows the range of ICU bed capacity per 100,000 population.
+The faded solid lines are the fitted models for the other countries, to facilitate comparisons.
+The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The
+top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
+confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
+Note that the y axis is logarithmic. The x axis is days since the 20th case in each province.</p>
+<p>If the figure is blank there is insufficient data to build the model.</p>
+<details>
+<p><summary>Quebec</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Quebec-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Ontario</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Ontario-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>British Columbia</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/British%20Columbia-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Alberta</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Alberta-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Saskatchewan</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Saskatchewan-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Newfoundland and Labrador</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Newfoundland%20and%20Labrador-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Nova Scotia</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Nova%20Scotia-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Manitoba</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Manitoba-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>New Brunswick</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/New%20Brunswick-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Prince Edward Island</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Prince%20Edward%20Island-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Yukon</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Yukon-1.png" width="672" /></p>
+</details>
+<details>
+<p><summary>Northwest Territories</summary></p>
+<p><img src="/post/covid19-bottom-line-canada_files/figure-html/Northwest%20Territories-1.png" width="672" /></p>
+</details>
+<p>One of the drawbacks to this approach is that I can’t provide any interpretation of the figures.
+Please post questions in the comment section at the bottom!</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
