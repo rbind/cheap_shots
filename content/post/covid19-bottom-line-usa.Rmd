@@ -32,11 +32,10 @@ The figures below are complex, so I'll highlight some
 features first. The y axis is now Active and Recovered cases / 100,000 population to make it easier to compare locales. The SOLID LINES are exponential growth models that assume
 the rate of increase is *constant*. The dashed lines are predictions from that
 model. The red rectangle shows the range of ICU bed capacity per 100,000 population.
-The faded solid lines are the fitted models for the other countries, to facilitate comparisons.
 The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The 
 top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
 confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
-Note that the y axis is logarithmic. The x axis is days since the 20th case in each province.
+Note that the y axis is logarithmic. The x axis is days since the 20th case in each state.
 
 If the figure is blank there is insufficient data to build the model. 
 
@@ -45,7 +44,7 @@ library("tidyverse")
 library("lubridate")
 library("broom")
 library("forecast")
-savefilename <- "data/api_all_2020-04-01.Rda"
+savefilename <- "data/api_all_2020-04-02.Rda"
 # The following code is commented out and left in place. This isn't particularly good coding 
 # practice, but I don't want to have to rewrite it every day when I get the updated data.
 # I archive the data rather than pull fresh because this data source is very volatile, and
@@ -77,7 +76,7 @@ usa_by_state <- list(
   pivot_wider(names_from = variable, values_from = cumulative_cases) 
 usa_template <- c(
     "<details><summary>{{nm}}</summary>\n",
-    "```{r, echo = FALSE, warning = FALSE, message = FALSE}\n",
+    "```{r {{nm}}, echo = FALSE, warning = FALSE, message = FALSE}\n",
     "tmp <- usa_by_state %>% filter(Region == \"{{nm}}\") %>% \n",
     "plot_active_case_growth(x = ., country_data)\n",
     "tmp$.plot\n",
