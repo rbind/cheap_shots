@@ -1,0 +1,83 @@
+---
+title: 'COVID-19: A prediction about predictions'
+author: Drew Tyre
+date: '2020-04-02'
+slug: covid-19-a-prediction-about-predictions
+output:
+  html_document:
+    code_folding: hide
+  word_document: default
+draft: no
+tags_include:
+  - R
+  - OPD
+  - COVID19
+categories: 
+  - Research
+---
+
+
+
+<p>If you’ve been reading/watching/listening to the news this past week you
+almost certainly heard about <a href="http://covid19.healthdata.org/projections">the COVID-19 Epidemic projections from
+the University of Washington</a>.
+It’s a slick looking web application that provides hospital administrators and
+goverments with exactly what they need to know right now: what is the peak demand
+on healthcare, and when will it happen?</p>
+<p>What you might not have done is dig deeply into the <a href="https://www.medrxiv.org/content/10.1101/2020.03.27.20043752v1">preprint on MedRxiv</a>
+where the model is described. And, to save you the trouble I’m going to
+tell you what I think about it, and <a href="#my-prediction">make a prediction about their predictions</a>.</p>
+<div id="what-i-like" class="section level1">
+<h1>What I like</h1>
+<p>The model uses the reported deaths rather than cases to get localized information
+about the speed and trajectory of the epidemic at a state level. This is good,
+because the number of cases is biased low by testing issues, but society is
+pretty good at counting deaths. At least as long as the system isn’t overwhelmed.
+We also have a pretty good idea from places like Wuhan about what proportion of
+people that need hospital care end up dying. Again, this number underestimates
+the number of people who are sick, but for this application we only care about
+the number of people that end up in the hospital. So that’s a good idea.</p>
+<p>They provide “uncertainty intervals”. This is good. I wish they were a bit
+clearer about exactly what those intervals are – or maybe that’s a bit too complicated.
+The underlying statistical model is Bayesian, so credible intervals, but then
+they get the number of hospitalizations using a “microsimulation” AKA agent based
+model AKA individual based model. So who knows what to call the bastardization of
+a credible interval with a stochastic simulation. Uncertainty interval I guess.</p>
+</div>
+<div id="what-i-wish-for" class="section level1">
+<h1>What I wish for</h1>
+<p>Open source code and data? Some testing of projections by using old forecasts
+to compare with new data?</p>
+</div>
+<div id="why-im-worried-about-these-projections" class="section level1">
+<h1>Why I’m worried about these projections</h1>
+<p>I think they are optimistic. There are two reasons for this, one technical and
+one based on their assumptions about how Americans will act. They assume that
+Americans will behave like Chinese in response to various government interventions,
+and that serious travel bans are unnecessary. They also assume that any
+steps not already taken will be taken within a week, and last through the end of
+May. I don’t really have a problem with that last assumption, making forecasts
+requires making assumptions about future behavior of decision makers. But it
+would be handy if we could turn off those things at different points and see
+how it affects the model. I know that’s much harder than giving a set of fixed
+outputs.</p>
+<p>Now for the technical reason. The underlying model of the cumulative number of
+deaths is a cumulative normal distribution, which gives the familiar sigmoid
+function that rises exponentially, hits an inflection point halfway, and then
+decelerates to an asymptote. <a href="https://drewtyre.rbind.io/post/covid-19_and_r_v/">I tried fitting some similar models last week</a>, and in most cases the
+model underpredicted the continuing number of cases because the asymptote
+flattened off too quickly. I believe this will be the case for any model with
+these symmetric curves that is fit to data <em>before the inflection point is reached</em>.
+Although the number of active cases is starting to level off in the <a href="https://drewtyre.rbind.io/post/covid19-bottom-line-usa/">USA</a>
+and <a href="https://drewtyre.rbind.io/post/covid19-bottom-line-canada/">Canada</a>,
+the number of deaths is lagging behind that. So in many states the cumulative
+death rate has not reached the inflection point.</p>
+</div>
+<div id="my-prediction" class="section level1">
+<h1>My prediction</h1>
+<p>I predict that as the IHME group updates the model each day, the day of peak
+demand will be later, and the size of the demand higher, than the projection
+from the day before. This will continue until the increase in the number of
+deaths starts decelerating – when the inflection point is reached. Sticking my
+neck out again – I hope I’m wrong.</p>
+</div>
