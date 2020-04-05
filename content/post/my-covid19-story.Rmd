@@ -229,8 +229,8 @@ know. I've calculated the probability that someone a medical professional orders
 has COVID-19 given a negative test result. 
 
 It always surprises me when medical diagnoses don't use prior information, or combine 
-information about different symptoms in a meaningful way. The result I got here surprised,
-and disappointed, me. Shows the value of careful thinking. 
+information about different symptoms in a meaningful way. The result I got here surprised
+and disappointed me. Shows the value of careful thinking. 
 
 
 
