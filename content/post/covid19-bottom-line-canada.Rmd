@@ -44,7 +44,7 @@ library("tidyverse")
 library("lubridate")
 library("broom")
 library("forecast")
-savefilename <- "data/api_all_2020-04-04.Rda"
+savefilename <- "data/api_all_2020-04-06.Rda"
 # The following code is commented out and left in place. This isn't particularly good coding 
 # practice, but I don't want to have to rewrite it every day when I get the updated data.
 # I archive the data rather than pull fresh because this data source is very volatile, and
