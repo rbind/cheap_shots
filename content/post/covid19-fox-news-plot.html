@@ -1,0 +1,149 @@
+---
+title: "What about that viral fox news plot?"
+author: "Drew Tyre"
+date: '2020-04-07'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-fox-news-plot_files/figure-html/featured_image-1.png
+draft: yes
+slug: covid19-fox-news-plot
+tags_include:
+  - R
+  - OPD
+  - COVID19
+categories: 
+  - Research
+---
+
+
+
+<p>A screenshot of a plot from Fox News went somewhat viral among some segments of society. The
+y-axis is funky, apparently changing scales part way through. There was some debate about the
+plot, was Fox News trying to lie about the curve flattening? Or are their graphics people just
+incompetent?</p>
+<p><a href="/post/covid-19_and_r/">The first post in this series was March 13</a>, in case you’re just joining and
+want to see the progression. I’m now posting the bottom line figures for each <a href="/post/covid19-bottom-line-usa/">state</a> and <a href="/post/covid19-bottom-line-canada/">province</a> on
+the same post that just gets updated each day.</p>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>This is the plot in question, if you haven’t seen it. Pay close attention to the top
+of the y axis – the interval between the gridlines changes from 30 to 50. This reduces
+the perceived slope of the data from March 26.</p>
+<div class="figure">
+<img src="/post/covid19-fox-news-plot_files/fox-news-funky-plot.png" alt="Fox News Funky Plot" />
+<p class="caption">Fox News Funky Plot</p>
+</div>
+<p>Visual inspection of my data suggested that this was Colorado. Rebuild the plot.</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;lubridate&quot;)
+library(&quot;broom&quot;)
+
+savefilename &lt;- &quot;data/api_all_2020-04-06.Rda&quot;
+
+load(savefilename)
+
+country_data &lt;- read_csv(&quot;data/countries_covid-19.csv&quot;) %&gt;% 
+  mutate(start_date = mdy(start_date)) 
+
+source(&quot;R/jhu_helpers.R&quot;)
+source(&quot;R/plot_functions.R&quot;)
+
+fox_data &lt;- tibble(
+  Date = seq(ymd(&quot;2020-03-18&quot;), ymd(&quot;2020-04-01&quot;), by = &quot;day&quot;),
+  cases = c(33,61,86,112,116,129,192,174,344,304,327,246,320,339,376)
+)
+
+usa_by_state &lt;- list(
+  confirmed = us_wide2long(api_confirmed_regions, &quot;United States&quot;),
+  deaths = us_wide2long(api_deaths_regions, &quot;United States&quot;),
+  # recovered data is a mess lots of missing values
+  recoveries = us_wide2long(api_recoveries_regions, &quot;United States&quot;)
+  ) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) 
+
+colorado &lt;- plot_active_case_growth(usa_by_state, country_data)$data %&gt;% 
+  filter(Region == &quot;Colorado&quot;) %&gt;% 
+  select(Date, cases = incident_cases)
+
+all_data &lt;- bind_rows(&quot;Fox&quot; = fox_data, &quot;NYT&quot; = colorado, .id = &quot;source&quot;)
+totals &lt;- all_data %&gt;% 
+  filter(Date &lt;= &quot;2020-04-01&quot;) %&gt;% 
+  group_by(source) %&gt;% 
+  summarize(total_cases = sum(cases)) %&gt;% 
+  mutate(total_cases = paste(source, total_cases))
+  
+
+ggplot(data = all_data) +
+  geom_point(mapping = aes(x = Date, y = cases, color = source)) +
+  annotate(&quot;text&quot;, x = ymd(&quot;2020-03-10&quot;), y = c(454, 404, 354), 
+           label = c(&quot;Total Cases to April 1&quot;, pull(totals, total_cases)),
+           hjust = &quot;left&quot;, vjust = &quot;top&quot;) +
+  annotate(&quot;rect&quot;, xmin = ymd(&quot;2020-03-18&quot;), xmax = ymd(&quot;2020-04-01&quot;),
+           ymin = 0, ymax = 454, alpha = 0.1) +
+      labs(y = &quot;New Cases per day&quot;, 
+           title = &quot;New cases per day in Colorado by source&quot;,
+           x = &quot;Date&quot;,
+           subtitle = &quot;Grey box is extent of Fox News Plot&quot;,
+           caption = paste(&quot;Source data: https://coviddata.github.io/coviddata/ downloaded &quot;,
+                           format(file.mtime(savefilename), usetz = TRUE),
+                           &quot;\n Unofficial, not peer reviewed results.&quot;,
+                           &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;)) +
+  theme(legend.position = &quot;top&quot;,
+        legend.title = element_blank())</code></pre>
+<p><img src="/post/covid19-fox-news-plot_files/figure-html/featured_image-1.png" width="672" /></p>
+<p>Incident cases should be linear if cumulative cases are growing
+exponentially, so by eye the original plot is still suggestive of
+exponential growth. I can’t see where they are getting their
+total cases from – if I add up the data in their plot or even the NYT
+data through April 1 I get smaller numbers. NYT numbers are not much
+smaller, could be there were some cases prior to March 10 that my
+data source isn’t picking up anymore.</p>
+<p>One suggestion was that the axes were merely mislabeled. Let’s call
+this the “incompetent” hypothesis. Alternatively, Fox was trying
+to reduce the apparent slope of points after March 25. Let’s call that
+the “devious” hypothesis. So now I’ll try to force <code>ggplot()</code> to do both
+of those things …</p>
+<pre class="r"><code>incompetent &lt;- ggplot(data = fox_data) +
+  geom_line(mapping = aes(x = Date, y = cases), size = 2, color=&quot;white&quot;) +
+  geom_label(mapping = aes(x = Date, y = cases, label = cases)) +
+  scale_y_continuous(breaks = seq(30,400,30), labels = c(30, 60, 90, 100, 130, 160, 190, 240, 250, 300, 350, 400, 450))+
+  scale_x_date(date_breaks = &quot;1 day&quot;, date_labels = &quot;%B\n%d&quot;)+
+     labs(y = &quot;New Cases per day&quot;, 
+           title = &quot;New cases per day by Fox News&quot;,
+          subtitle = &quot;Y axis is mislabeled to match Fox News original plot&quot;,
+           x = &quot;Date&quot;,
+           caption = paste(&quot;Source data: Fox News Plot&quot;,
+                           &quot;\n Unofficial, not peer reviewed results.&quot;,
+                           &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;)) +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.background = element_rect(fill = &quot;darkblue&quot;),
+        plot.background = element_rect(fill = &quot;darkblue&quot;),
+        plot.title = element_text(color = &quot;white&quot;),
+        plot.subtitle = element_text(color = &quot;white&quot;),
+        plot.caption = element_text(color = &quot;white&quot;),
+        axis.text = element_text(color = &quot;white&quot;),
+        axis.title = element_blank(),
+        )
+incompetent</code></pre>
+<p><img src="/post/covid19-fox-news-plot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>OK, I think that rules out the incompetent hypothesis – the points don’t match the mislabeled
+axes at all. They do match up on the original plot. For example, March 26 is just below the line labeled
+350, while if the axes are merely mislabeled that point is above the 350 line.</p>
+<p>I was going to try to make a “devious” plot, but I can’t figure out how! Initially I thought there
+was only one break in the axis, but there are several. I might be able to reproduce it by using a
+discrete axis, and then bumping points up or down to match? Regardless, this degree of
+messing up has to be deliberate.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid19-fox-news-plot%20.Rmd">on Github</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
