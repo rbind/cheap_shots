@@ -8,7 +8,7 @@ output:
     code_folding: hide
   word_document: default
 og_image: /post/covid19-fox-news-plot_files/figure-html/featured_image-1.png
-draft: yes
+draft: no
 slug: covid19-fox-news-plot
 tags_include:
   - R
@@ -96,7 +96,7 @@ ggplot(data = all_data) +
                            &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;)) +
   theme(legend.position = &quot;top&quot;,
         legend.title = element_blank())</code></pre>
-<p><img src="/post/covid19-fox-news-plot_files/figure-html/featured_image-1.png" width="672" /></p>
+<p><img src="/post/covid19-fox-news-plot_files/figure-html/base_image-1.png" width="672" /></p>
 <p>Incident cases should be linear if cumulative cases are growing
 exponentially, so by eye the original plot is still suggestive of
 exponential growth. I can’t see where they are getting their
@@ -133,7 +133,7 @@ of those things …</p>
         axis.title = element_blank(),
         )
 incompetent</code></pre>
-<p><img src="/post/covid19-fox-news-plot_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="/post/covid19-fox-news-plot_files/figure-html/featured_image-1.png" width="672" /></p>
 <p>OK, I think that rules out the incompetent hypothesis – the points don’t match the mislabeled
 axes at all. They do match up on the original plot. For example, March 26 is just below the line labeled
 350, while if the axes are merely mislabeled that point is above the 350 line.</p>
