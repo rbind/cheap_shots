@@ -37,7 +37,7 @@ plot_active_case_growth <- function(x, country_data, case_cutoff = 20, min_n = 5
                 maxday = max(day)) %>% 
       mutate(max_icu_beds = icu_beds * 20,
              start_day = min(c(model_window, predict_window)),
-             end_day =  max(c(model_window, predict_window)))
+             end_day =  max(c(model_window, predict_window, maxday)))
     
     all_models <- data_by_region %>% 
       mutate(log10_ar = log10(active)) %>% 
