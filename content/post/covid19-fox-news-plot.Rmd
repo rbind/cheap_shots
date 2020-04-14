@@ -23,6 +23,10 @@ y-axis is funky, apparently changing scales part way through. There was some deb
 plot, was Fox News trying to lie about the curve flattening? Or are their graphics people just
 incompetent?
 
+EDIT 2020-04-14: An error in the post was pointed out, I said 
+"Incident cases should be linear if cumulative cases are growing
+exponentially, ..." which is wrong, they are linear on a log scale. Corrected.
+
 [The first post in this series was March 13](/post/covid-19_and_r/), in case you're just joining and
 want to see the progression. I'm now posting the bottom line figures for each [state](/post/covid19-bottom-line-usa/) and [province](/post/covid19-bottom-line-canada/) on
 the same post that just gets updated each day.
@@ -103,9 +107,9 @@ ggplot(data = all_data) +
   
 ```
 
-Incident cases should be linear if cumulative cases are growing
+~~Incident cases should be linear if cumulative cases are growing
 exponentially, so by eye the original plot is still suggestive of
-exponential growth. I can't see where they are getting their
+exponential growth.~~ I can't see where they are getting their
 total cases from -- if I add up the data in their plot or even the NYT 
 data through April 1 I get smaller numbers. NYT numbers are not much 
 smaller, could be there were some cases prior to March 10 that my 
