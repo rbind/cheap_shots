@@ -43,7 +43,7 @@ If the figure is blank there is insufficient data to build the model.
 library("tidyverse")
 library("lubridate")
 library("broom")
-savefilename <- "data/api_all_2020-04-13.Rda"
+savefilename <- "data/api_all_2020-04-16.Rda"
 # The following code is commented out and left in place. This isn't particularly good coding
 # practice, but I don't want to have to rewrite it every day when I get the updated data.
 # I archive the data rather than pull fresh because this data source is very volatile, and
