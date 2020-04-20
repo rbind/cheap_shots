@@ -146,3 +146,140 @@ plot_active_case_growth <- function(x, country_data, case_cutoff = 20, min_n = 5
   list(.plot = .plot, data = data_by_region, models = all_models, 
        fits = all_fit, predictions = all_predicted, doubling_times = doubling_times)
 }
+
+#' Plot of active case growth by country/region
+#'
+#' @param x dataframe with one row per date/region combination, and confirmed, deaths, recoveries variables 
+
+#'
+#' @return list of modified 
+#' @export
+#'
+plot_nytimes_counties <- function(x, county_data, 
+                                  case_cutoff = 20, min_n = 5, 
+                                    model_window = c(0,13), predict_window = c(min_n+1, 28),
+                                  exclude = ""){
+  data_by_county <- x %>% 
+    group_by(county) %>% 
+    mutate(incident_cases = c(0, diff(cases)),
+           incident_deaths = c(0, diff(deaths)),
+           active = cases - deaths) %>% 
+    left_join(county_data, by = "county") %>% 
+    mutate(icpc = incident_cases / POP / 10,
+           arpc = active / POP / 10, 
+           group = county,
+           date_cutoff = date[min(which(cases >= case_cutoff))],
+           day = as.numeric(date - date_cutoff),
+           samplesize = max(day),
+           exclude = county %in% exclude) %>% 
+    ungroup() %>% 
+    filter(!is.na(date_cutoff),
+           samplesize > min_n,
+           !exclude) # remove regions with less than 20 cases total or fewer than 5 days.
+  if(nrow(data_by_county) > min_n){
+    county_data <- data_by_county %>% 
+      group_by(county) %>% 
+      summarize(date_cutoff = first(date_cutoff),
+                POP = first(POP),
+                maxday = max(day)) %>% 
+      mutate(start_day = min(c(model_window, predict_window)),
+             end_day =  max(c(model_window, predict_window, maxday)))    
+    
+    all_models <- data_by_county %>% 
+      mutate(log10_ar = log10(active)) %>% 
+      filter(day <= model_window[2], day >= model_window[1]) %>%  # model using first 2 weeks of data
+      group_by(county) %>% 
+      nest() %>% 
+      mutate(model = map(data, ~lm(log10_ar~day, data = .)))
+    
+    all_fit <- all_models %>% 
+      mutate(fit = map(model, augment, se_fit = TRUE),
+             fit = map(fit, select, -c("log10_ar","day"))) %>% 
+      select(-model) %>% 
+      unnest(cols = c("data","fit")) %>% 
+      mutate(fit = 10^.fitted,
+             lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
+             ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)))
+    
+    all_predicted <- cross_df(list(county = unique(pull(data_by_county,county)), 
+                                   day = predict_window[1]:predict_window[2])) %>%
+      group_by(county) %>%
+      nest() %>%
+      left_join(select(all_models, county, model), by="county") %>%
+      mutate(predicted = map2(model, data, ~augment(.x, newdata = .y, se_fit = TRUE)),
+             sigma = map_dbl(model, ~summary(.x)$sigma)) %>%
+      select(-c(model,data)) %>%
+      unnest(cols = predicted) %>%
+      ungroup() %>% 
+      left_join(county_data, by = "county") %>% 
+      filter(day > pmin(maxday+1, max(model_window))) %>%
+      mutate(
+        date = date_cutoff + day,
+        county = county, # use factor to modify plot order
+        fit = 10^.fitted,
+        pred_var = sigma^2 + .se.fit^2,
+        lpl = 10^(.fitted - sqrt(pred_var)*qt(0.975, df = 10)),
+        upl = 10^(.fitted + sqrt(pred_var)*qt(0.975, df = 10)))
+    
+    doubling_times <- all_models %>% 
+      mutate(estimates = map(model, tidy)) %>% 
+      unnest(cols = estimates) %>%  # produces 2 rows per country, (intercept) and day100
+      filter(term == "day") %>% 
+      select(county, estimate, std.error) %>% 
+      mutate(var_b = std.error^2,
+             t = log10(2) / estimate,
+             var_t = var_b * log10(2)^2 / estimate^4,
+             lcl_t = t - sqrt(var_t)*qt(0.975, 12),
+             ucl_t = t + sqrt(var_t)*qt(0.975, 12),
+             label = sprintf("%.2f (%.2f, %.2f)", t, lcl_t, ucl_t))
+    
+    facet_labels <- doubling_times %>% 
+      mutate(label = paste0(county," doubling time (95% CL): ", label)) %>% 
+      pull(label)
+    names(facet_labels) <- pull(doubling_times, county)
+    .plot <- ggplot(data = filter(data_by_county, day >= 0),
+                    mapping = aes(x = day)) + 
+      geom_point(mapping = aes(y = active, color = county)) + 
+      facet_wrap(~county, dir="v", labeller = labeller(county = facet_labels), ncol=2) + 
+      scale_y_log10() + 
+      theme(legend.position = "none",
+            legend.title = element_blank()) + 
+      geom_line(data = all_fit,
+                mapping = aes(y = fit, color = county),
+                size = 1.25) +
+      geom_ribbon(data = all_fit,
+                  mapping = aes(ymin = lcl, ymax = ucl),
+                  alpha = 0.2) +
+      geom_line(data = all_predicted,
+                mapping = aes(y = fit, color = county),
+                linetype = 2) +
+      geom_ribbon(data = all_predicted,
+                  mapping = aes(ymin = lpl, ymax = upl),
+                  alpha = 0.2)  +
+      # geom_rect(data = country_data,
+      #           mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20),
+      #           fill = "red", alpha = 0.2) +
+      labs(y = "Active/recovered cases", 
+           title = paste0("Active/recovered cases by days since ", case_cutoff, "th case"),
+           x = paste0("Days since ", case_cutoff, "th case"),
+           subtitle = "Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.")   
+      # geom_text(data = slice(country_data, 1),
+      #           mapping = aes(y = icu_beds),
+      #           x = 0, #ymd("2020-03-01"),
+      #           label = "# ICU beds / 100K",
+      #           size = 2.5, hjust = "left", vjust = "bottom") +
+      # geom_text(data = slice(country_data, 1),
+      #           mapping = aes(y = 20*icu_beds),
+      #           x = 0, #ymd("2020-03-01"),
+      #           label = "# 20 times ICU beds / 100K",
+      #           size = 2.5, hjust = "left", vjust = "top")
+    
+  } else {
+    .plot = ggplot() # empty ggplot object
+    all_models <- all_fit <- doubling_times <- NULL
+  }
+  
+  list(.plot = .plot, data = data_by_county, models = all_models, 
+       facet_labesl = facet_labels,
+       fits = all_fit, predictions = all_predicted, doubling_times = doubling_times)
+}
