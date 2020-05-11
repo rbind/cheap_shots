@@ -1,0 +1,192 @@
+---
+title: "Can we open up Lancaster County?"
+author: "Drew Tyre"
+date: '2020-05-11'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-nebraska-by-county_files/figure-html/featured_image-1.png
+draft: no
+slug: covid19-nebraska-by-county
+tags_include:
+  - R
+  - OPD
+  - COVID19
+categories: Research
+---
+
+
+
+<p>Over the past few weeks outbreaks centered around meat processing facilities hit the news. I started
+wondering how these would impact Nebraska’s numbers. I break down Nebraska’s numbers by county here
+to see what is working and where we should be frankly alarmed. TL;DR: too early to open up
+Lancaster county according to whitehouse guidelines.</p>
+<p><a href="/post/covid-19_and_r/">The first post in this series was March 13</a>, in case you’re just joining and
+want to see the progression. I’m now posting the bottom line figures for each <a href="/post/covid19-bottom-line-usa/">state</a> and <a href="/post/covid19-bottom-line-canada/">province</a> on
+the same post that just gets updated each day.</p>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>For this analysis I’m going to the NY Times dataset directly, which has data for the USA broken
+down by county. I’m also testing out a data package I contributed to – <code>wnvdata</code><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> –
+has county level census
+data so I can calculate per capita case rates.</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;lubridate&quot;)
+library(&quot;broom&quot;)
+library(&quot;EpiEstim&quot;)
+
+source(&quot;R/plot_functions.R&quot;)
+
+# this package only from github
+census_data &lt;- wnvdata::census.data %&gt;% 
+  filter(year == 2019) %&gt;% 
+  select(fips,POP) 
+
+nytimes_counties &lt;- read_csv(&quot;https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv&quot;)
+ne_counties &lt;- nytimes_counties %&gt;% filter(state == &quot;Nebraska&quot;,
+                                           county != &quot;Unknown&quot;) %&gt;% 
+  group_by(county) %&gt;% 
+  mutate(maxcases = max(cases)) %&gt;% 
+  filter(maxcases &gt; 100)
+ggplot(data = ne_counties,
+       mapping = aes(x = date, y = cases)) + 
+  geom_point(mapping = aes(color = county)) +
+#  scale_y_log10() +
+  labs(x = &quot;Date&quot;,
+       y = &quot;Cumulative confirmed cases&quot;,
+       title = &quot;Confirmed cases of COVID-19 in Nebraska&quot;,
+       subtitle = &quot;Only counties with at least 100 cases&quot;,
+       caption = &quot;Data from NY Times Github Repository.&quot;) </code></pre>
+<p><img src="/post/covid19-nebraska-by-county_files/figure-html/base_calculations-1.png" width="672" /></p>
+<p>Looks like this data is including some of the initial cases from the Diamond Princess
+that were flown to UNMC, because I’m pretty sure there were no local cases in February.</p>
+<p>So lets give these the Tyre Treatment. I’ll start the models on the day each county hit
+20 cases, and only look at 6 counties that are interesting. The y axes are Active
+or Recovered cases per 100,000 population, so
+these curves can be directly compared despite the huge variation in the number of people in
+each county. I’ve put the actual dates on the x-axes, but let them shift, so all the x axes
+start on different days.</p>
+<pre class="r"><code>ne_counties &lt;- nytimes_counties %&gt;% filter(state == &quot;Nebraska&quot;,
+                                           county != &quot;Unknown&quot;) 
+
+county_data &lt;- ne_counties %&gt;% 
+  group_by(county) %&gt;%
+  summarize(fips = last(fips)) %&gt;% 
+  left_join(census_data)
+
+# new function adapted from the one for states
+ne_counties_plot &lt;- plot_nytimes_counties(ne_counties, 
+                                          county_data,
+                                          case_cutoff = 20,
+                                          exclude = c())
+county_pops &lt;- ne_counties_plot$data %&gt;% 
+  group_by(county) %&gt;% 
+  summarize(POP = first(POP)) %&gt;% 
+  arrange(POP)
+
+plot_data &lt;- ne_counties_plot$data %&gt;%
+  mutate(county = factor(county, levels = county_pops$county)) %&gt;% 
+  filter(day &gt;= 0,
+         county %in% c(&quot;Sarpy&quot;,&quot;Douglas&quot;, &quot;Lancaster&quot;, &quot;Hall&quot;, &quot;Dakota&quot;,&quot;Dawson&quot;))
+fits_data &lt;- ne_counties_plot$fits %&gt;% 
+  filter(county %in% c(&quot;Sarpy&quot;,&quot;Douglas&quot;, &quot;Lancaster&quot;, &quot;Hall&quot;, &quot;Dakota&quot;,&quot;Dawson&quot;))
+predictions_data &lt;- ne_counties_plot$predictions %&gt;% 
+  filter(county %in% c(&quot;Sarpy&quot;,&quot;Douglas&quot;, &quot;Lancaster&quot;, &quot;Hall&quot;, &quot;Dakota&quot;,&quot;Dawson&quot;))
+
+
+ggplot(data = plot_data,
+                    mapping = aes(x = date)) + 
+      geom_point(mapping = aes(y = active, color = county)) + 
+      facet_wrap(~county, dir=&quot;v&quot;, 
+                 labeller = labeller(county = ne_counties_plot$facet_labels), 
+                 ncol=2, scales = &quot;free&quot;) + 
+      scale_y_log10() + 
+      theme(legend.position = &quot;none&quot;,
+            legend.title = element_blank()) + 
+      geom_line(data = fits_data,
+                mapping = aes(y = fit, color = county),
+                size = 1.25) +
+      geom_ribbon(data = fits_data,
+                  mapping = aes(ymin = lcl, ymax = ucl),
+                  alpha = 0.2) +
+      geom_line(data = predictions_data,
+                mapping = aes(y = fit, color = county),
+                linetype = 2) +
+      geom_ribbon(data = predictions_data,
+                  mapping = aes(ymin = lpl, ymax = upl),
+                  alpha = 0.2)  +
+      # geom_rect(data = country_data,
+      #           mapping = aes(x = start_day, xmin = start_day, xmax = end_day, ymin = icu_beds, ymax = icu_beds * 20),
+      #           fill = &quot;red&quot;, alpha = 0.2) +
+      labs(y = &quot;Active/recovered cases per 100,000 population&quot;, 
+           title = paste0(&quot;Active/recovered cases by date since 20th case&quot;),
+           x = paste0(&quot;Date&quot;),
+           subtitle = &quot;Solid line: exponential model; Dashed line: forecast cases with 95% prediction intervals.&quot;,
+       caption = &quot;Data from NY Times Github Repository.&quot;)   </code></pre>
+<p><img src="/post/covid19-nebraska-by-county_files/figure-html/featured_image-1.png" width="672" /></p>
+<p>There are quite a few things to see here! First, the bump upwards in cases for
+the entire state that I attributed to an increase in testing just at the end of March happened entirely
+in Douglas county (part of Omaha, for non-Nebraskans), as far as I can tell.
+Douglas county also had clear signs
+of transmission reduction, with the points after April 8 flattening off relative
+to the exponential growth rate estimated from the first two weeks. Sarpy county
+is also part of Omaha and also showed signs of flattening. However, by the 3rd week of April
+both counties resumed accelerating at the early pace.</p>
+<p>Lincoln is in Lancaster county, and we clearly are not flattening the curve.
+In fact the doubling time will have decreased relative to the early number of 11 days.
+Douglas and Sarply counties also had long doubling times early. One possible
+reason is that urban Nebraskans had already started social distancing before the 20th
+case was reported. Another possibility is that even in Nebraska’s urban centers
+we are not as dense. <cough> I mean that in the population density sense! This
+hypothesis is more consistent with the observation that doubling time is &gt; 10 days in
+Douglas county where the outbreak started a month sooner. I can’t remember if
+people were discussing social distancing in the first week of March.</p>
+<p>And then there are Dakota, Hall, and Dawson counties, all with early doubling times less
+than four days.
+All three broke through 1000 cases per 100,000 people (1% incidence). All three have clearly
+flattened off, indicating that the outbreaks there are more under control.</p>
+<p>That’s encouraging. However, we are about to “open up” the state, and our cases in urban
+counties are still accelerating. The <a href="https://rt.live">state as a whole</a> has not hit
+<span class="math inline">\(R_t &lt; 1\)</span> (at least as of May 11). The <a href="https://www.whitehouse.gov/openingamerica/">guidelines for opening up</a> suggest
+“a downward trajectory of documented cases within a 14 day period”. There are other
+possible criteria, but this one we can check with the data in hand. The observation
+on May 10 is quite an outlier with outsized effect on the model, so we’ll slide back one day.</p>
+<pre class="r"><code>lincoln_data &lt;- ne_counties_plot$data %&gt;% 
+  filter(county == &quot;Lancaster&quot;,
+         date &gt; &quot;2020-04-25&quot;,
+         date &lt; &quot;2020-05-10&quot;) 
+lincoln_trend &lt;- lm(incident_cases ~ day, data = lincoln_data)
+summary(lincoln_trend)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = incident_cases ~ day, data = lincoln_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -22.697  -8.870   1.234   8.130  25.613 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) -30.1670    26.7219  -1.129   0.2810  
+## day           2.4484     0.9969   2.456   0.0303 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.04 on 12 degrees of freedom
+## Multiple R-squared:  0.3345, Adjusted R-squared:  0.279 
+## F-statistic: 6.032 on 1 and 12 DF,  p-value: 0.03026</code></pre>
+<p>The slope estimate is positive, an average of 2.4 more cases per day over the past 14 days.
+This is a statistically significant result, albeit barely. However, there is arguably no
+evidence of a decrease in cases over the past 14 days.
+So, at least by this criterion, there is NO WAY we should be re-opening Lancaster county yet.</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://github.com/rbind/cheap_shots">on Github</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>This package isn’t available on CRAN. <a href="https://github.com/akeyel/wnv_data">Get it on Github</a>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>

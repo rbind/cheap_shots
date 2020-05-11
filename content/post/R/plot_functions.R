@@ -280,6 +280,6 @@ plot_nytimes_counties <- function(x, county_data,
   }
   
   list(.plot = .plot, data = data_by_county, models = all_models, 
-       facet_labesl = facet_labels,
+       facet_labels = facet_labels,
        fits = all_fit, predictions = all_predicted, doubling_times = doubling_times)
 }
