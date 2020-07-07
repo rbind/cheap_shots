@@ -1,0 +1,43 @@
+---
+title: "If I have a goal to acheive an uncertain value, how hard should I look?"
+author: "Drew Tyre"
+date: '`r Sys.Date()`'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/uncertain-goals_files/figure-html/featured_image-1.png
+draft: yes
+slug: uncertain-goals
+tags_include:
+  - R
+  - Monitoring
+  - Power
+categories: Research
+---
+
+A colleague wrote:
+
+>I am working on a restoration monitoring protocol for [a grassland park] with one of my staff. I am struggling with determining an appropriate sample size, but more importantly, an appropriate statistical approach. What I think would be an appropriate approach is take enough samples that we can say with some level of confidence that our sample's confidence interval includes our target. Does that sound reasonable to you?
+
+>For example, say the target for achieving restoration is <38% bare ground visible. We measure this attribute at 40 plots in a restoration field, and then we can calculate the mean, SD, SE, and 90% confidence intervals (testing for normality here and transforming if necessary). The result is mean 43% (LCI 37%, UCI 49%). Target met.
+
+I> have data from previous monitoring that I could plug into a power analysis to help with sample size, but I can't seem to figure that out--in Program R, with the "pwr" package, I have tried the 'pwr.t.test' with one-sample, but the Cohen's D description doesn't seem to make sense for a one-sample test.
+
+```{r base_calculations, warning = FALSE, message = FALSE}
+library("tidyverse")
+library("pwr")
+pwr.t.test(n = NULL, d = 1, power = 0.8, type = "one.sample", alternative = "greater")
+```
+
+
+
+
+
+
+
+
+
+[^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
+
