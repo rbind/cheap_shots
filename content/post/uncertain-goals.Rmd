@@ -3,10 +3,7 @@ title: "If I have a goal to acheive an uncertain value, how hard should I look?"
 author: "Drew Tyre"
 date: '`r Sys.Date()`'
 output:
-  pdf_document: default
-  html_document:
-    code_folding: hide
-  word_document: default
+  html_document
 og_image: /post/uncertain-goals_files/figure-html/featured_image-1.png
 draft: yes
 slug: uncertain-goals
@@ -34,22 +31,44 @@ I can think of two ways to go about doing this.
 
 It is so common to use a null hypothesis of $\bar{x} = 0$ with a two sided alternative that it is
 easy to forget there are other possibilities! In this case I think the
-appropriate null hypothesis is $\bar{x} \geq 38$. This can be calculated with `pwr.t.test()` using the options for a one sample test against the alternative of $\bar{x} \lt 38$. The somewhat unusual bit is figuring out what effect size to specify.
+appropriate null hypothesis is $\bar{x} \geq 38$. This can be calculated with `pwr.t.test()` using the options for a one sample test against the alternative of $\bar{x} < 38$. The somewhat unusual bit is figuring out what effect size to specify.
 
 In a "normal" power calculation, you specify Cohen's d as the minimum difference between means. It is a minimum because larger differences will have greater power -- the specified effect size will have the desired power for the specified sample size. In the current case, the effect size is the minimum value below the target that has the specified power. So if the effect size is 1, power is 0.8, then the function will tell me how big a sample is needed to reject the hypothesis $\bar{x} \geq 38$. An effect size of 1 means that the calculated power will apply if $\left|\bar{x}_{true}-38\right|/s_x = 1$. We get the value of $s_x$ from pilot data.
 
-```{r base_calculations, warning = FALSE, message = FALSE, echo = -(2:5)}
+```{r base_calculations, warning = FALSE, message = FALSE, echo = -2}
 library("tidyverse")
 readxl::read_xlsx(here::here("content/post/data/Restoration confidence intervals example.xlsx"), sheet = "Bare ground", range = readxl::cell_cols("A")) %>%
   rename(bareground = `Bare ground`) %>% 
   write_csv(here::here("content/post/data/bareground.csv"))
 bareground <- read_csv(here::here("content/post/data/bareground.csv"))
+(sd_bg <- sd(bareground$bareground))
 ```
+
+To calculate the power of a given sample size, we need to choose two of sample size, effect size, and power. Of the three, I think it is 
+simpler to specify sample size, because we can calculate the effort needed to
+measure 40 plots for example. In ecological work, the limitation is usually
+the budget, and we want to know how well a given budgeted effort will work.
+Given the sample size I want to calculate the power of rejecting the null
+for many different effect sizes.   
 
 ```{r}
 library("pwr")
-pwr.t.test(n = NULL, d = 1, power = 0.8, type = "one.sample", alternative = "greater")
+results <- crossing(n = c(20, 40, 60, 80, 100), 
+                    severity = -(1:10)) %>% 
+  mutate(bg = severity + 38,
+         d = severity / sd_bg,
+         power = map2_dbl(n, d, ~pwr.t.test(n = .x, 
+                                            d = .y, 
+                                            power = NULL, 
+                                            type = "one.sample", 
+                                            alternative = "less")$power))
+ggplot(data = results,
+       mapping = aes(x = bg, y = power, color = n, group = n)) + 
+  geom_point() + 
+  geom_line() + 
+  xlab("% Bare ground")
 ```
+
 
 
 
