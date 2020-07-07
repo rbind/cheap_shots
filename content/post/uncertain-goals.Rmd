@@ -23,14 +23,33 @@ A colleague wrote:
 
 >For example, say the target for achieving restoration is <38% bare ground visible. We measure this attribute at 40 plots in a restoration field, and then we can calculate the mean, SD, SE, and 90% confidence intervals (testing for normality here and transforming if necessary). The result is mean 43% (LCI 37%, UCI 49%). Target met.
 
-I> have data from previous monitoring that I could plug into a power analysis to help with sample size, but I can't seem to figure that out--in Program R, with the "pwr" package, I have tried the 'pwr.t.test' with one-sample, but the Cohen's D description doesn't seem to make sense for a one-sample test.
+> I have data from previous monitoring that I could plug into a power analysis to help with sample size, but I can't seem to figure that out--in Program R, with the "pwr" package, I have tried the `pwr.t.test` with one-sample, but the Cohen's D description doesn't seem to make sense for a one-sample test.
 
-```{r base_calculations, warning = FALSE, message = FALSE}
+I can think of two ways to go about doing this. 
+
+1) Use a one sided hypothesis -- reject the hypothesis that bare ground is greater than 38%. 
+2) Use a Bayesian calculation of the probability that percent bare ground is less than 38%
+
+## Power of a one sided hypothesis
+
+It is so common to use a null hypothesis of $\bar{x} = 0$ with a two sided alternative that it is
+easy to forget there are other possibilities! In this case I think the
+appropriate null hypothesis is $\bar{x} \geq 38$. This can be calculated with `pwr.t.test()` using the options for a one sample test against the alternative of $\bar{x} \lt 38$. The somewhat unusual bit is figuring out what effect size to specify.
+
+In a "normal" power calculation, you specify Cohen's d as the minimum difference between means. It is a minimum because larger differences will have greater power -- the specified effect size will have the desired power for the specified sample size. In the current case, the effect size is the minimum value below the target that has the specified power. So if the effect size is 1, power is 0.8, then the function will tell me how big a sample is needed to reject the hypothesis $\bar{x} \geq 38$. An effect size of 1 means that the calculated power will apply if $\left|\bar{x}_{true}-38\right|/s_x = 1$. We get the value of $s_x$ from pilot data.
+
+```{r base_calculations, warning = FALSE, message = FALSE, echo = -(2:5)}
 library("tidyverse")
+readxl::read_xlsx(here::here("content/post/data/Restoration confidence intervals example.xlsx"), sheet = "Bare ground", range = readxl::cell_cols("A")) %>%
+  rename(bareground = `Bare ground`) %>% 
+  write_csv(here::here("content/post/data/bareground.csv"))
+bareground <- read_csv(here::here("content/post/data/bareground.csv"))
+```
+
+```{r}
 library("pwr")
 pwr.t.test(n = NULL, d = 1, power = 0.8, type = "one.sample", alternative = "greater")
 ```
-
 
 
 
