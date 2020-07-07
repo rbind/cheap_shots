@@ -51,7 +51,7 @@ the budget, and we want to know how well a given budgeted effort will work.
 Given the sample size I want to calculate the power of rejecting the null
 for many different effect sizes.   
 
-```{r}
+```{r featured_image}
 library("pwr")
 results <- crossing(n = c(20, 40, 60, 80, 100), 
                     severity = -(1:10)) %>% 
@@ -69,6 +69,29 @@ ggplot(data = results,
   xlab("% Bare ground")
 ```
 
+This graph gives the probability that a 95% one sided confidence limit will
+exclude the target, given the true value of average bare ground. Now that
+I see this, and re-read the question, I think my correspondent is actually satisfied if the *lower* confidence limit includes the target. 
+In other words, the goal is acheived if the test *fails* to reject
+a null of $\bar{x} < 38$. Failure to reject is 1 - power. 
+
+```{r}
+results <- crossing(n = c(20, 40, 60, 80, 100), 
+                    severity = 0) %>% 
+  mutate(bg = severity + 38,
+         d = severity / sd_bg,
+         power = map2_dbl(n, d, ~pwr.t.test(n = .x, 
+                                            d = .y, 
+                                            power = NULL, 
+                                            type = "one.sample", 
+                                            alternative = "greater")$power),
+         failure = 1 - power)
+ggplot(data = results,
+       mapping = aes(x = bg, y = failure, color = n)) + 
+  geom_point() + 
+  geom_line() + 
+  xlab("% Bare ground")
+```
 
 
 
