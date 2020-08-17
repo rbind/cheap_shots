@@ -18,8 +18,9 @@ categories: Teaching
 One of the exercises I make Ecological Statistics students do is 
 [work backwards from a given value of the dependent variable in a regression
 to the corresponding values of the independent variable](/classes/NRES803/Week_2/homework_2/). I usually just get them
-to eyeball it from a table of predictions. But today a student brought the
-"terms" type of prediction to my attention.[^1] What is this magic?
+to eyeball it from a table of predictions. But today a student suggested the
+"terms" type of prediction might be the answer. Unfortunately I've never
+tried to figure out what type = "terms" actually does[^1]. What is this magic?
 
 ```{r setup, message=FALSE}
 library("tidyverse")
@@ -27,11 +28,23 @@ df <- tibble(x1 = 1:10,
              x2 = rep(1:5, each = 2),
              y1 = -5 + 1 * x1 + rnorm(10),
              y2 = 0 + 1 * x1 - 1 * x2 + rnorm(10),
-             y3 = 0 + 0 * x1 + 1 * x1^2)
-
+             y3 = 25 -10 * x1 + 1 * x1^2) 
+mod1 <- lm(y1~x1, data = df)
+mod2 <- lm(y1~x1 + x2, data = df)
+mod3 <- lm(y1~x1 + x1^2, data = df)
 ```
 
+OK, so we've got three models, one with a single predictor, one with two predictors, and one with a polynomial model. When there is a single 
+predictor, there is only a single value of the independent variable that
+gives that value of the dependent variable. In mathematical terms the linear
+function is "invertible" -- you can run it both ways and get a unique 
+answer. 
 
+```{r}
+predict(mod1, type = "terms")
+```
+
+OK, if that was useful for "inverse prediction" it would be related to the values of x1, but it isn't. It's the fitted value (y) plus a constant. 
 
 
 [^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
