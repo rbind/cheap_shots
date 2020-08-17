@@ -1,0 +1,40 @@
+---
+title: "Inverse prediction"
+author: "Drew Tyre"
+date: '2020-08-19'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-dawson-county_files/figure-html/featured_image-1.png
+draft: yes
+slug: inverse-prediction
+tags_include:
+  - R
+categories: Teaching
+---
+
+One of the exercises I make Ecological Statistics students do is 
+[work backwards from a given value of the dependent variable in a regression
+to the corresponding values of the independent variable](/classes/NRES803/Week_2/homework_2/). I usually just get them
+to eyeball it from a table of predictions. But today a student brought the
+"terms" type of prediction to my attention.[^1] What is this magic?
+
+```{r setup, message=FALSE}
+library("tidyverse")
+df <- tibble(x1 = 1:10,
+             x2 = rep(1:5, each = 2),
+             y1 = -5 + 1 * x1 + rnorm(10),
+             y2 = 0 + 1 * x1 - 1 * x2 + rnorm(10),
+             y3 = 0 + 0 * x1 + 1 * x1^2)
+
+```
+
+
+
+
+[^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
+
+
+
