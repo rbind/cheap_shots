@@ -1,16 +1,17 @@
 ---
 title: "If I have a goal to acheive an uncertain value, how hard should I look?"
 author: "Drew Tyre"
-date: '`r Sys.Date()`'
+date: "`r Sys.Date()`"
 output:
-  html_document
+  word_document: default
+  html_document: default
 og_image: /post/uncertain-goals_files/figure-html/featured_image-1.png
 draft: yes
 slug: uncertain-goals
 tags_include:
-  - R
-  - Monitoring
-  - Power
+- R
+- Monitoring
+- Power
 categories: Research
 ---
 
@@ -54,9 +55,9 @@ for many different effect sizes.
 ```{r featured_image}
 library("pwr")
 results <- crossing(n = c(20, 40, 60, 80, 100), 
-                    severity = -(1:10)) %>% 
-  mutate(bg = severity + 38,
-         d = severity / sd_bg,
+                    true_diff = -(1:10)) %>% 
+  mutate(bg = true_diff + 38,
+         d = true_diff / sd_bg,
          power = map2_dbl(n, d, ~pwr.t.test(n = .x, 
                                             d = .y, 
                                             power = NULL, 
@@ -66,20 +67,25 @@ ggplot(data = results,
        mapping = aes(x = bg, y = power, color = n, group = n)) + 
   geom_point() + 
   geom_line() + 
-  xlab("% Bare ground")
+  xlab("True % Bare ground")
 ```
 
-This graph gives the probability that a 95% one sided confidence limit will
-exclude the target, given the true value of average bare ground. Now that
+This graph gives the probability that an upper 95% one sided confidence limit will
+exclude the target, given a true value of average bare ground. 
+
+Now that
 I see this, and re-read the question, I think my correspondent is actually satisfied if the *lower* confidence limit includes the target. 
 In other words, the goal is acheived if the test *fails* to reject
-a null of $\bar{x} < 38$. Failure to reject is 1 - power. 
+a null of $\bar{x} < 38$. This makes the question a bit tricky, because the best 
+way to acheive the target is to take a *small* sample size, which will give large
+confidence limits! Also, if $d = 0$ then the power is just $\alpha = 0.05$, the 
+value of a type I error. 
 
 ```{r}
 results <- crossing(n = c(20, 40, 60, 80, 100), 
-                    severity = 0) %>% 
-  mutate(bg = severity + 38,
-         d = severity / sd_bg,
+                    true_diff = -10:10) %>% 
+  mutate(bg = true_diff + 38,
+         d = true_diff / sd_bg,
          power = map2_dbl(n, d, ~pwr.t.test(n = .x, 
                                             d = .y, 
                                             power = NULL, 
@@ -87,15 +93,111 @@ results <- crossing(n = c(20, 40, 60, 80, 100),
                                             alternative = "greater")$power),
          failure = 1 - power)
 ggplot(data = results,
-       mapping = aes(x = bg, y = failure, color = n)) + 
+       mapping = aes(x = bg, y = failure, color = n, group = n)) + 
   geom_point() + 
   geom_line() + 
-  xlab("% Bare ground")
+  xlab("True % Bare ground") +
+  ylab("95% Confidence limit includes target")
+```
+
+This is very non-intuitive! By associating acheivement of the target with the *failure*
+to reject a given hypothesis, the probability of success goes *down* with increasing
+sample size, if the true amount of bare ground is bigger than the target. I've often 
+blithely advised my wildlife management students to use the lower confidence limit
+to evaluate whether a target has been acheived or not, but this is actually a bad idea.
+
+The point where all the lines cross is just the probability of a Type I error, 
+$\alpha = 0.05$ here. That happens at the point where the true amount of bare ground
+is equal to the target. This makes sense; a type I error is rejecting the null 
+(confidence limits excluding the target) when it is in fact true. If the true amount of 
+bare ground is less than the target (the desired condition), the situation flips around
+and increasing sample size increases the probability of success. I think that happens
+because a larger sample size decreases the probability that the estimated mean
+is above the target. The differences between sample sizes are very small in that case.
+
+What if we say the estimated mean has to be below the target? If the true mean is equal
+to the target, this strategy has a 50% chance of success *independent of 
+the sample size*! The probability of success rises if the true mean is less than 
+the target, and that does depend on the sample size because the distribution 
+of estimated means has $s = s_{x}/ \sqrt{n}$. 
+
+```{r}
+results <- crossing(n = c(20, 40, 60, 80, 100), 
+                    true_diff = -10:10) %>% 
+  mutate(bg = true_diff + 38,
+         p = pnorm(true_diff, sd = sd_bg/sqrt(n), lower.tail = FALSE)) 
+ggplot(data = results,
+       mapping = aes(x = bg, y = p, color = n, group = n)) + 
+  geom_point() + 
+  geom_line() + 
+  xlab("True % Bare ground") +
+  ylab("Probabilty estimate is below target")
+```
+
+That makes sense to me -- if the truth is above the target, having an estimate below
+the target is an error, and more samples reduces the probability of that error. If 
+the truth is below the target, then an estimate above the target is an error (1-probability on y axis). So I should redraw that like this:
+
+```{r}
+results <- results %>% 
+  mutate(error = if_else(true_diff < 0, 1-p, p))
+ggplot(data = results,
+       mapping = aes(x = bg, y = error, color = n, group = n)) + 
+  geom_point() + 
+  geom_line() + 
+  xlab("True % Bare ground") +
+  ylab("Probabilty of making an error")
+```
+
+Now we're getting somewhere! More samples always reduces the probability of
+making an error. The probability of an error is highest when the true amount
+of bare ground is at the target, and at that point the error is independent of
+sample size. Additional sampling makes the biggest difference at intermediate
+deviations of truth from the target. So really, I ought to integrate over all 
+possible values of the truth. 
+
+```{r}
+results <- crossing(n = seq(20,100, 5), 
+                    true_bg = 0:100) %>% 
+  mutate(true_diff = true_bg - 38,
+         p = pnorm(true_diff, sd = sd_bg/sqrt(n), lower.tail = FALSE),
+         error = if_else(true_diff < 0, 1-p, p)) %>% 
+  group_by(n) %>% 
+  mutate(tpz = (lag(error,1) + error)/2) %>% # this step is wrong somehow
+  summarize(error = sum(tpz, na.rm = TRUE),
+            sump = sum(p))
+
+ggplot(data = results, 
+       mapping = aes(x = n, y = error)) + 
+  geom_line() + geom_point()
+```
+
+So this is nearly there, but still not quite right. I'm missing a normalizing constant somewhere because these are all bigger than 1.
+
+```{r}
+error_prob <- function(x, target = 38, sd = NULL, n = NULL){
+  pnorm(x-target, sd = sd/sqrt(n), lower.tail = FALSE)
+}
 ```
 
 
+```{r}
+test <- matrix(rnorm(20000, mean = 0, sd = sd_bg), nrow = 20, ncol = 1000) %>% 
+  as.data.frame() %>% 
+  summarize_all(mean) %>% 
+  pivot_longer(cols = 1:1000)
 
+ggplot(data = test) + 
+  geom_histogram(mapping = aes(x = value, y = ..density..)) + 
+  stat_function(data = data.frame(x = seq(-3,3,0.1)), 
+                mapping = aes(x = x*sd_bg), 
+                fun = dt, args = list(df = 20)) + 
+  stat_function(data = data.frame(x = seq(-10,10,0.1)), 
+                mapping = aes(x = x), 
+                fun = dnorm, args = list(sd = sd_bg / sqrt(20)))
+  
 
+```
 
 
 
