@@ -1,7 +1,7 @@
 ---
 title: "Lab Week 1"
 author: "Drew Tyre"
-date: "2016-08-20"
+date: "2020-08-19"
 type: "lab"
 weight: 803011
 ---
@@ -9,7 +9,7 @@ weight: 803011
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
-The goal of this week's lab is just getting your feet wet, remembering how to use R, what a linear model is and getting some answers out. Like all labs, I expect you to submit an R Markdown file that I can compile to html. You should assume any data files are in a subdirectory called "data". Your file should *not* echo the code used. Answer the numbered questions in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference. 
+The goal of this week's lab is just getting your feet wet, remembering how to use R, what a linear model is and getting some answers out. Like all labs, I expect you to submit a compressed RStudio project folder. You should assume any data files are in a subdirectory called "data". Answer the numbered questions in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference. 
 
 This dataset in package *faraway* contains the number of plant species on each of 30 islands in the Galapagos Archipelago, along with some attributes of each island. The species-area relationship suggests that the number of species should vary with area according to
 
@@ -64,7 +64,8 @@ Notice that none of these plots test the assumption that the residuals are *inde
 library(broom)
 test_distance <- augment(gala.1)
 test_distance <- cbind(test_distance, Scruz = gala$Scruz)
-ggplot(test_distance, aes(x = Scruz, y = .resid)) + 
+# the current version of broom only produces .std.resid -- this may change
+ggplot(test_distance, aes(x = Scruz, y = .std.resid)) + 
   geom_point()
 ```
 
@@ -82,7 +83,7 @@ The line is a linear model, and the grey polygon shows us the confidence limits 
 ```{r}
 eco.1 <- lm(usborn ~ income, data = eco)
 eco.test <- augment(eco.1, data = eco)
-ggplot(eco.test, aes(x=.fitted, y = .resid)) +
+ggplot(eco.test, aes(x=.fitted, y = .std.resid)) +
   geom_point() +
   geom_smooth(color = "red")
 ```
@@ -120,13 +121,23 @@ There are a couple points with largish positive residuals and substantial levera
 
 4. Think about the possible values for the variable `usborn`. Do you expect this variable to follow a normal distribution? Why or why not? 
 
+Package `NRES803` has a function `check_assumptions()` that wraps up those
+4 plots nicely like the base `plot.lm()` does[^2].
+
+[^2]: If this fails try installing the most recent version of `NRES803`. There was an issue caused by the latest version of package Broom that should be fixed.
+
+```{r}
+NRES803::check_assumptions(eco.1)
+```
+
+
 Back to the Galapagos species data. Now we want to add some predictions from the model to our plot. This is a *critical* piece of analysis. I expect plots of raw data + predictions from models in *every* assignment in this course. 
 
 ```{r}
 ## always start by making a dataframe with the values of your covariates
 nd = data.frame(Area=seq(min(gala$Area),max(gala$Area),10))
 stats.gala <- glance(gala.1)
-pred.1 <- augment(gala.1, newdata = nd)
+pred.1 <- augment(gala.1, newdata = nd, se_fit = TRUE)
 
 # calculate the lower and upper 95% confidence limits on the mean
 tcrit <- qt(0.975, df = stats.gala$df.residual)
