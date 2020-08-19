@@ -53,7 +53,7 @@ library("gtable")
 
 source("R/plot_functions.R")
 
-# wnvdata package only from github.com/akeyel/wnv_data
+# wnvdata package only from github.com/akeyel/wnvdata
 census_data <- wnvdata::census.data %>% 
   filter(year == 2019) %>% 
   select(fips,POP) 
@@ -148,5 +148,5 @@ the same data.
 
 [^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
 
-[^2]: This package isn't available on CRAN. [Get it on Github](https://github.com/akeyel/wnv_data).
+[^2]: This package isn't available on CRAN. [Get it on Github](https://github.com/akeyel/wnvdata).
 

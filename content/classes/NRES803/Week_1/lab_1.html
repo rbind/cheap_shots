@@ -1,14 +1,14 @@
 ---
 title: "Lab Week 1"
 author: "Drew Tyre"
-date: "2016-08-20"
+date: "2020-08-19"
 type: "lab"
 weight: 803011
 ---
 
 
 
-<p>The goal of this week’s lab is just getting your feet wet, remembering how to use R, what a linear model is and getting some answers out. Like all labs, I expect you to submit an R Markdown file that I can compile to html. You should assume any data files are in a subdirectory called “data”. Your file should <em>not</em> echo the code used. Answer the numbered questions in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference.</p>
+<p>The goal of this week’s lab is just getting your feet wet, remembering how to use R, what a linear model is and getting some answers out. Like all labs, I expect you to submit a compressed RStudio project folder. You should assume any data files are in a subdirectory called “data”. Answer the numbered questions in text, referring to graphical and tabular output as needed. You may use base graphics or ggplot2, according to your preference.</p>
 <p>This dataset in package <em>faraway</em> contains the number of plant species on each of 30 islands in the Galapagos Archipelago, along with some attributes of each island. The species-area relationship suggests that the number of species should vary with area according to</p>
 <p><span class="math display">\[
 S = cA^z
@@ -30,7 +30,7 @@ confint(gala.1)</code></pre>
 <ol style="list-style-type: decimal">
 <li>What is the estimated value of <em>z</em>?</li>
 <li>What is the estimated value of <em>c</em>?</li>
-<li>Drakare et al. (2005) found the average value of <em>z</em> across many studies to be 0.27. Is the value of z from this dataset significantly different from 0.27? <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+<li>Drakare et al. (2005) found the average value of <em>z</em> across many studies to be 0.27. Is the value of z from this dataset significantly different from 0.27? <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
 </ol>
 <p>Now examine the assumptions of this model. This uses base graphics, but too easy not to!</p>
 <pre class="r"><code>old.par = par(mfrow=c(2,2))
@@ -44,7 +44,8 @@ par(old.par)</code></pre>
 library(broom)
 test_distance &lt;- augment(gala.1)
 test_distance &lt;- cbind(test_distance, Scruz = gala$Scruz)
-ggplot(test_distance, aes(x = Scruz, y = .resid)) + 
+# the current version of broom only produces .std.resid -- this may change
+ggplot(test_distance, aes(x = Scruz, y = .std.resid)) + 
   geom_point()</code></pre>
 <p>The two islands farthest away from Santa cruz have negative residuals. This means they have fewer species than expected for their size. It isn’t clear that is enough of a violation of independence to worry about.</p>
 <p>What do violations of assumptions look like? There is another dataset in package faraway that might have some. This is a plot of the proportion of people in a state born in the USA against the average income in that state.</p>
@@ -54,7 +55,7 @@ ggplot(test_distance, aes(x = Scruz, y = .resid)) +
 <p>The line is a linear model, and the grey polygon shows us the confidence limits on the mean. Let’s fit that model explicitly and check the residuals using ggplot.</p>
 <pre class="r"><code>eco.1 &lt;- lm(usborn ~ income, data = eco)
 eco.test &lt;- augment(eco.1, data = eco)
-ggplot(eco.test, aes(x=.fitted, y = .resid)) +
+ggplot(eco.test, aes(x=.fitted, y = .std.resid)) +
   geom_point() +
   geom_smooth(color = &quot;red&quot;)</code></pre>
 <p>So the confidence limits on the smooth line don’t exclude zero anywhere, but it is far from flat either!</p>
@@ -78,11 +79,14 @@ ggplot(eco.test, aes(.hat, .std.resid)) +
 <ol start="4" style="list-style-type: decimal">
 <li>Think about the possible values for the variable <code>usborn</code>. Do you expect this variable to follow a normal distribution? Why or why not?</li>
 </ol>
+<p>Package <code>NRES803</code> has a function <code>check_assumptions()</code> that wraps up those
+4 plots nicely like the base <code>plot.lm()</code> does<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<pre class="r"><code>NRES803::check_assumptions(eco.1)</code></pre>
 <p>Back to the Galapagos species data. Now we want to add some predictions from the model to our plot. This is a <em>critical</em> piece of analysis. I expect plots of raw data + predictions from models in <em>every</em> assignment in this course.</p>
 <pre class="r"><code>## always start by making a dataframe with the values of your covariates
 nd = data.frame(Area=seq(min(gala$Area),max(gala$Area),10))
 stats.gala &lt;- glance(gala.1)
-pred.1 &lt;- augment(gala.1, newdata = nd)
+pred.1 &lt;- augment(gala.1, newdata = nd, se_fit = TRUE)
 
 # calculate the lower and upper 95% confidence limits on the mean
 tcrit &lt;- qt(0.975, df = stats.gala$df.residual)
@@ -134,6 +138,7 @@ ggplot(gala, aes(x = log(Area))) +
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>I should dig out the SE and do the proper test. Thanks to Gabriela Palomo for pointing this out.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>I should dig out the SE and do the proper test. Thanks to Gabriela Palomo for pointing this out.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>If this fails try installing the most recent version of <code>NRES803</code>. There was an issue caused by the latest version of package Broom that should be fixed.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
