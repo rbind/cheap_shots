@@ -10,11 +10,11 @@ weight: 803021
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-This week will give you further practice with making plots, estimating linear models in R, and getting predicted values from those fitted models. This exercise will be completed by Friday afternoon at 5pm. Create a new project in RStudio named "yourlastname_lab2".  Submit the compressed project directory, which should include an R Markdown file that can be compiled directly to html without errors. The answers to the numbered questions should be in plain text. The code should be in R code chunks. 
+This week will give you further practice with making plots, estimating linear models in R, and getting predicted values from those fitted models. Create a new project in RStudio named "yourlastname_lab2".  Submit the compressed project directory, which should include an R Markdown file that can be compiled directly to html without errors. The answers to the numbered questions should be in plain text. The code should be in R code chunks. 
 
 ---
 
-Load the NRES803 package.
+Load the NRES803 package. If you are using the lab template, this can go in the setup chunk.
 
 ```{r}
 library(NRES803)
@@ -33,7 +33,7 @@ dim(RIKZ)
 You can see that we now have one more variable than before. Now we want to plot species richness against NAP, which is a measure of how far up the beach the sampling location is.
 
 ```{r}
-library(ggplot2)
+library(ggplot2) # unnecessary if you're using the template
 # make "Beach" into a factor otherwise treated as continuous
 RIKZ$fBeach <- factor(RIKZ$Beach)
 Richness_NAP <- ggplot(RIKZ, aes(x = NAP, y = Richness)) + 
@@ -137,8 +137,8 @@ RIKZ_model.3 <- lm(Richness~factor(week), data=RIKZ)
 However, this ends up labeling the parameters as factor(week) which is a bit odd, and makes it more difficult to do predictions from the model. A better approach is to change the variable in the dataframe:
 
 ```{r}
-RIKZ$fweek = factor(RIKZ$week)
-RIKZ_model.3 = lm(Richness ~ fweek, data = RIKZ)
+RIKZ$fweek <- factor(RIKZ$week)
+RIKZ_model.3 <- lm(Richness ~ fweek, data = RIKZ)
 
 ```
 
@@ -165,7 +165,7 @@ Whenever you come across a bit of R code that is doing something complicated, yo
 Now we need to use the nd data.frame, together with the fitted model object, to get the predicted values:
 
 ```{r}
-augment(RIKZ_model.3,newdata=nd)
+augment(RIKZ_model.3, newdata=nd, se_fit = TRUE)
 
 ```
 
@@ -174,7 +174,7 @@ This gives us a dataframe of mean species richness in each week and the standard
 So the mean species richness in week 3 is 4.2±0.96 (SE). That’s nice, but it would be nicer if we could plot it on a figure. Save the predicted means and standard errors to an object named ‘predicted.Richness ’ and make the plot again.
 
 ```{r, eval = FALSE}
-predicted.Richness <- augment(RIKZ_model.3, newdata=nd)
+predicted.Richness <- augment(RIKZ_model.3, newdata=nd, se_fit = TRUE)
 
 # have to set color explicitly otherwise looks for fbeach in predicted.Richness
 richness_week + geom_point(aes(x = fweek, y = .fitted), color = "red", data = predicted.Richness)
@@ -183,7 +183,7 @@ richness_week + geom_point(aes(x = fweek, y = .fitted), color = "red", data = pr
 That will fail with an error about a discrete value being supplied to a continuous scale. The problem is that we made the object richness_week with week not fweek. So let's redo that object.
 
 ```{r}
-predicted.Richness <- augment(RIKZ_model.3, newdata=nd)
+predicted.Richness <- augment(RIKZ_model.3, newdata=nd, se_fit = TRUE)
 # redo the plot object
 richness_week <- ggplot(RIKZ, aes(x = fweek, y = Richness, color = fBeach)) + 
   geom_point()
@@ -237,10 +237,7 @@ predicted.Richness.5 <- augment(RIKZ_model.5, newdata = nd)
 Richness_NAP + geom_line(aes(y = .fitted, group = fweek, linetype = fweek), color = "black", data = predicted.Richness.5)
 ```
 
-```{r}
-# try with sum-to-zero contrasts
-options(contrasts = c("contr.sum","contr.poly"))
-RIKZ_model.6 = lm(Richness~NAP*fweek,data=RIKZ)
+(@) Which model would you choose to make inferences from and why?
 
-```
+(@) Looking at the figure from `RIKZ_model.5`, are there any features that would cause concern from an *ecological* (as opposed to a statistical) perspective? Look carefully at the expected values of species richness for each week (the plotted lines). 
 
