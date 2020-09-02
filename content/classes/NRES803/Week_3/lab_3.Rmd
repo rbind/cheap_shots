@@ -1,7 +1,7 @@
 ---
 title: "Week 3 Lab"
 author: "Drew Tyre"
-date: "2017-08-01"
+date: "2020-09-02"
 output: html_document
 weight: 803031
 ---
