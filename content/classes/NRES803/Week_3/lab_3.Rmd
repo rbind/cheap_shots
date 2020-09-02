@@ -12,7 +12,7 @@ library(tidyverse)
 library(NRES803)
 ```
 
-In this week’s lab exercise we will first go through calculating the AIC values "by hand", and then using a addon package modavgAIC. Doing the calculations by hand serves three purposes: 1) you practice using R!, 2) you gain a deeper understanding of how much work the add-on package is doing for you, and 3) sometimes the add-on package won’t work for a new class of model, and if you can do it by hand you won’t be stuck.
+In this week’s lab exercise we will first go through calculating the AIC values "by hand", and then using a addon package `MuMIn`. Doing the calculations by hand serves three purposes: 1) you practice using R!, 2) you gain a deeper understanding of how much work the add-on package is doing for you, and 3) sometimes the add-on package won’t work for a new class of model, and if you can do it by hand you won’t be stuck.
 
 We’ll begin by using a simulated dataset from the paper "[Confronting collinearity: comparing methods for disentangling the effects of habitat loss and fragmentation](http://rdcu.be/vG1r)" by Adam Smith and colleagues. They had real data, but I have written a few lines of code that produce datasets that are similar. They have 4 variables that describe patches in a landscape (Amount, Edge, MnPatch, and Hetero), and simulated a normally distributed response variable. Amount, Edge and Hetero affect the response, Y, and MnPatch does not. All four of the variables are correlated to some extent. The script and data will be available in package `NRES803`. The code to make the data is in the examples section of `?smithsim`, or simply load the dataframe with `data("smithsim")`.  Include all the outputs and figures in your Rmd file. Answer the numbered questions. 
 
