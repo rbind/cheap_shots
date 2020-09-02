@@ -166,21 +166,26 @@ pander(truth)
 Is there nothing R can't do? Well, you still have to write the interpretation of the model! 
 
 And here is the easy way to do all of the above.
-First, make sure you have the AICcmodavg package installed on your computer.
+First, make sure you have the MuMIn package installed on your computer.
 ```{r}
-library(AICcmodavg)
-aictab(fits)
+library("MuMIn")
+model.sel(fits)
 ```
-where fits is the list of fitted model objects we created before, and 1:16 is a vector of labels to use in the table. One line! Two, if you count loading the library. If you look closely you’ll see that the AIC values in this table are slightly different from the ones we calculated, because aictab() is using the 2nd order sample size correction by default. If you do:
+where fits is the list of fitted model objects we created before. One line! Two, if you count loading the library. This package also adds the estimated coefficients to the table, leaving 
+blank spaces where the coefficient is not included in the model. 
+If you look closely you’ll see that the AIC values in this table are slightly different from the ones we calculated by hand, because `model.sel()` is using the 2nd order sample size correction by default. If you do:
 ```{r}
-aictab(fits,modnames=1:16,second.ord=FALSE)
+model.sel(fits, rank = AIC)
 ```
 
 You can get exactly the same results we obtained manually. It is also possible to calculate the 2nd order corrected AIC manually, but involves a couple of extra lines, so we’ll skip it. In general there is no reason to *not* use the 2nd order correction because it naturally converges to the uncorrected AIC as sample size increases. 
 The table is even easier to understand if we put the model formulas into the table.
 ```{r}
-modnames=map_chr(models,~deparse(.x[[3]]))
-pander(aictab(fits,modnames=modnames),split.tables=Inf)
+modnames <- map_chr(models,~deparse(.x[[3]]))
+names(fits) <- modnames
+
+pander(model.sel(fits)[,-6], split.tables=Inf)
 ```
 
-The `split.tables=Inf` argument to `pander` just tells pander to not try and be smart about dividing up the result to fit inside a fixed number of columns. While it pains me to admit it, Word is actually smarter than R when it comes to sizing the columns of the table to fit on a page. 
+The `[, -6]` just removes the superfluous column "family" -- it is the same for all the models
+so no point in adding to the table. The `split.tables=Inf` argument to `pander` just tells pander to not try and be smart about dividing up the result to fit inside a fixed number of columns. While it pains me to admit it, Word is actually smarter than R when it comes to sizing the columns of the table to fit on a page. 
