@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output:
   html_document: default
 og_image: /post/scale-location_files/figure-html/featured_image-1.png
-draft: yes
+draft: no
 slug: scale-location
 tags_include:
 - R
@@ -42,7 +42,7 @@ on the x axis, and the square root of the absolute value of the
 standardized residuals on the y axis. Say that last three times fast,
 I dare you. 
 
-```{r, message = FALSE}
+```{r featured_image, message = FALSE}
 diag_data <- augment(cars.lm)
 diag_data <- mutate(diag_data,
                     sqrabs_resid = sqrt(abs(.std.resid)))
