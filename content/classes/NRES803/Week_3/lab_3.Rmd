@@ -112,21 +112,22 @@ In this step we’re really taking advantage of R’s “vectorizing” of calcu
 
 We also want the number of estimated parameters in each model.
 ```{r}
-npars <- map_dbl(fits, ~length(coef(.x))+1)
+npars <- map_dbl(fits, "rank") + 1
 ```
 
-Recall that the second argument to `map_dbl()` is a function. Here I've defined an *anonymous* function (it has no name) just to use here. If that looks intimidating – start with `coef(global)` and build out and you’ll see what the function does with a single fitted model object. Finally, use `data_frame()` to show all the results together.[^usedataframe]
+If the second argument to `map_dbl()` is a character vector,
+`map_dbl()` tries to extract an object of that name from each element of the list. Finally, use `tibble()` to show all the results together.[^usedataframe]
 
-[^usedataframe]: In fact, we could have done all in the individual calculations directly inside the call to `data_frame()`. In this case I needed to explain each line one by one, so that becomes awkward.
+[^usedataframe]: In fact, we could have done all in the individual calculations directly inside the call to `tibble()`. In this case I needed to explain each line one by one, so that becomes awkward.
 
 ```{r}
-data_frame(AIC=aic,k=npars,deltas=deltas,weights=weights)
+tibble(AIC=aic,k=npars,deltas=deltas,weights=weights)
 ```
 
 This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:
 
 ```{r}
-aic.table <- data_frame(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
+aic.table <- tibble(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
 at2 <- aic.table %>%
   arrange(AIC) %>%
   mutate(cumw = cumsum(weights))

@@ -65,11 +65,12 @@ weights &lt;- exp(-deltas/2) # this is an intermediate step
 weights &lt;- weights/sum(weights) # so we can do this</code></pre>
 <p>In this step we’re really taking advantage of R’s “vectorizing” of calculations to automatically repeat the same calculation across an entire vector.</p>
 <p>We also want the number of estimated parameters in each model.</p>
-<pre class="r"><code>npars &lt;- map_dbl(fits, ~length(coef(.x))+1)</code></pre>
-<p>Recall that the second argument to <code>map_dbl()</code> is a function. Here I’ve defined an <em>anonymous</em> function (it has no name) just to use here. If that looks intimidating – start with <code>coef(global)</code> and build out and you’ll see what the function does with a single fitted model object. Finally, use <code>data_frame()</code> to show all the results together.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
-<pre class="r"><code>data_frame(AIC=aic,k=npars,deltas=deltas,weights=weights)</code></pre>
+<pre class="r"><code>npars &lt;- map_dbl(fits, &quot;rank&quot;) + 1</code></pre>
+<p>If the second argument to <code>map_dbl()</code> is a character vector,
+<code>map_dbl()</code> tries to extract an object of that name from each element of the list. Finally, use <code>tibble()</code> to show all the results together.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<pre class="r"><code>tibble(AIC=aic,k=npars,deltas=deltas,weights=weights)</code></pre>
 <p>This can be hard work to follow, so you can try a couple of things to make it easier to see what is going on. The first thing is to sort the models so they go from lowest AIC to highest AIC. This will mess up the row numbers, so we need to put them in the table directly before sorting:</p>
-<pre class="r"><code>aic.table &lt;- data_frame(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
+<pre class="r"><code>aic.table &lt;- tibble(model=1:16,AIC=aic,k=npars,deltas=deltas,weights=weights)
 at2 &lt;- aic.table %&gt;%
   arrange(AIC) %&gt;%
   mutate(cumw = cumsum(weights))
@@ -112,6 +113,6 @@ so no point in adding to the table. The <code>split.tables=Inf</code> argument t
 <hr />
 <ol>
 <li id="fn1"><p>You might already be familiar with base R functions <code>lapply()</code>, <code>sapply()</code> etc.; the <code>map*()</code> functions do the same thing, but are more picky about the arguments they get and the values they return. This makes them safer to program with. The <code>map*()</code> functions are found in package <code>purrr</code> in the <code>tidyverse</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>In fact, we could have done all in the individual calculations directly inside the call to <code>data_frame()</code>. In this case I needed to explain each line one by one, so that becomes awkward.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>In fact, we could have done all in the individual calculations directly inside the call to <code>tibble()</code>. In this case I needed to explain each line one by one, so that becomes awkward.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
