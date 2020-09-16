@@ -265,7 +265,7 @@ $$
 where $\beta X$ is the prediction on the link scale.
 ```{r,eval=lab.eval, results=lab.results, fig.show=lab.results}
 nd = data.frame(area=seq(0,9,0.01),isolation=median(isolation$isolation))
-pred.p <- augment(isolation.2,newdata=nd,type.predict="link",se.fit=TRUE) %>%
+pred.p <- augment(isolation.2,newdata=nd,type.predict="link",se_fit=TRUE) %>%
   mutate(p = 1/(1+exp(-.fitted)),
          lowerci = 1/(1+exp(-(.fitted-2*.se.fit))),
          upperci = 1/(1+exp(-(.fitted+2*.se.fit)))
