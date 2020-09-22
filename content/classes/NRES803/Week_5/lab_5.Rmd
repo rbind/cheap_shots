@@ -281,7 +281,7 @@ ggplot(data = pred.p,
 
 ```
 
-(@) Go back and make a new plot for the effect of isolation that includes the 95% confidence region.
+(@) Go back and make a new plot for the effect of *isolation* (not area) that includes the 95% confidence region. 
 
 What would happen if we used AIC model selection on this dataset?
 
