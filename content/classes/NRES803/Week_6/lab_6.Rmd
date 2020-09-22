@@ -53,7 +53,7 @@ This shows us the response first rises with increasing maximum spring temperatur
 ```{r ,eval=lab.eval, tidy=FALSE}
 library(broom)
 nd = data.frame(SprTmax=seq(9,17,0.1))
-pred.R = augment(M1,newdata=nd)
+pred.R = augment(M1, newdata=nd, se_fit = TRUE)
 p <- ggplot(vegetation, aes(x=SprTmax, y=Richness)) + 
   geom_point() + xlab("Maximum spring temperature")
 pgam <- p + geom_line(data=pred.R, mapping=aes(x=SprTmax, y=.fitted)) + 
@@ -71,7 +71,21 @@ ggplot(vegetation, aes(x=SAMPLEYR, y = SprTmax,  color=Transect)) + geom_point()
 So much of the variation in temperature is variation between transects, with the rank order of transects being fairly consistent within each year. It also appears that there might be 3 groups of transects (1&2, 3 through 6, and 7&8). So the effect of spring temperature could also be a spatial effect to some extent. Although this is stretching the amount of data we have greatly, we could explore to see if there is an interaction between the "group" and temperature to see if it is a temperature effect, a spatial effect, or both. First let us examine the residuals from our GAM. 
 
 ```{r ,eval=lab.eval}
-r <- augment(M1)
+#r <- augment(M1) 
+# clumsy workaround for new broom behavior - put into a function because
+# we will reuse below
+augment.gam <- function(model){
+  r <- model.frame(model)
+  r$.fitted <- fitted(model)
+  r$.resid <- resid(model)
+  r$.std.resid <- residuals(model, type = "scaled.pearson")
+  r$.hat <- model$hat
+  r$.cooksd <- cooks.distance(model)
+  return(r)
+}
+
+r <- augment.gam(M1)
+
 r1 <- ggplot(data = r, aes(x = .fitted, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 
@@ -85,12 +99,12 @@ r2 <- ggplot(r, aes(sample = .resid)) +
   stat_qq() + 
   geom_abline(slope = slope, intercept = int)
 
-r3 <- ggplot(r, aes(x = .fitted, y = sqrt(abs(.resid)))) + 
+r3 <- ggplot(r, aes(x = .fitted, y = sqrt(abs(.std.resid)))) + 
   geom_point() + 
   geom_smooth() + 
-  geom_hline(yintercept = 1)
+  geom_hline(yintercept = 0.822) # the actual value
 
-r4 <- ggplot(r, aes(.hat, .resid)) +
+r4 <- ggplot(r, aes(.hat, .std.resid)) +
  geom_vline(size = 2, colour = "white", xintercept = 0) +
   geom_hline(size = 2, colour = "white", yintercept = 0) +
   geom_point(aes(size = .cooksd)) + geom_smooth()
@@ -98,7 +112,7 @@ library(gridExtra) # for grid.arrange()
 grid.arrange(r1, r2, r3, r4, ncol=2)
 ```
 
-So it looks like there is a bit of heteroscedasticity, but no sign that there is any pattern to the residuals because the 0 line is entirely inside the confidence band on the smooth. Those plots are a bit different from the usual `lm()` ones because we don't get a standardized residual for `gam()` models, so I've just used the regular residuals. That mostly affects the bottom two plots.
+So it looks like there is a bit of heteroscedasticity, but no sign that there is any pattern to the residuals because the 0 line is entirely inside the confidence band on the smooth. 
 
 ## An aside
 
@@ -113,7 +127,7 @@ So the `gam` model has a much better $R^2$, but uses another 3 degrees of freedo
 
 This plot compares the predictions. 
 ```{r , eval=lab.eval}
-pred.Rlm = augment(lm.1,newdata=nd)
+pred.Rlm = augment(lm.1,newdata=nd, se_fit = TRUE)
 pgam + geom_line(data=pred.Rlm, mapping=aes(x=SprTmax, y=.fitted)) + 
   geom_ribbon(data=pred.Rlm, aes(x = SprTmax, ymin = .fitted - 1.96*.se.fit, ymax = .fitted + 1.96*.se.fit),inherit.aes = FALSE, alpha=0.5, color = "grey")
 
@@ -124,7 +138,7 @@ The conclusions are quite different, especially at low temperatures. Even at hig
 How can we tell if the linear model is sufficient? One way is to look at the residuals, and see if there is any kind of pattern in them. 
 
 ```{r ,eval=lab.eval}
-r <- augment(lm.1)
+r <- augment(lm.1) # this still works!
 r1 <- ggplot(data = r, aes(x = .fitted, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 
@@ -138,12 +152,12 @@ r2 <- ggplot(r, aes(sample = .resid)) +
   stat_qq() + 
   geom_abline(slope = slope, intercept = int)
 
-r3 <- ggplot(r, aes(x = .fitted, y = sqrt(abs(.resid)))) + 
+r3 <- ggplot(r, aes(x = .fitted, y = sqrt(abs(.std.resid)))) + 
   geom_point() + 
   geom_smooth() + 
-  geom_hline(yintercept = 1)
+  geom_hline(yintercept = 0.822)
 
-r4 <- ggplot(r, aes(.hat, .resid)) +
+r4 <- ggplot(r, aes(.hat, .std.resid)) +
  geom_vline(size = 2, colour = "white", xintercept = 0) +
   geom_hline(size = 2, colour = "white", yintercept = 0) +
   geom_point(aes(size = .cooksd)) + geom_smooth()
@@ -168,7 +182,7 @@ Before I was so rudely interrupted I was going to examine the residuals vs. `SAM
 # screwed up my residual df so make new one
 # add the SAMPLEYR and Transect columns
 r <- vegetation %>% select(SAMPLEYR, Transect) %>%
-  bind_cols(augment(M1))
+  bind_cols(augment.gam(M1))
 ggplot(r, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 ```
@@ -217,7 +231,7 @@ gam.check(M2)
 The quantile-quantile plot and histogram of the residuals look reasonable, but there is still that annoying amount of heteroscedasticity in the residuals. Let's repeat the plots of residuals against year and transect again too.
 ```{r ,eval=lab.eval}
 r2 <- vegetation %>% select(SAMPLEYR, Transect) %>%
-  bind_cols(augment(M2))
+  bind_cols(augment(M2)) # huh, for some reason broom is ok with M2??!?
 pr2a <- ggplot(r2, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 
