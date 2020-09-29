@@ -10,7 +10,7 @@ weight: 803081
 lab.eval=TRUE
  # set results and fig.show to 'hide' to produce lab handout.
 # set results = 'markup' and fig.show = 'asis'
-knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'markup', fig.show='asis', tidy.opts=list(arrow = TRUE, width.cutoff=60))
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'markup', fig.show='asis', tidy.opts=list(arrow = TRUE, width.cutoff=60), include = FALSE)
 ```
 
 We'll play with a few datasets from Mick Crawley's "The R Book" [^1] to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.
@@ -22,6 +22,16 @@ library(mgcv)
 library(broom)
 library(GGally)
 library(gridExtra)
+# need this to make residual plots of gam models
+bollocks.augment <- function(model){
+  r <- model.frame(model)
+  r$.fitted <- fitted(model)
+  r$.resid <- resid(model)
+  r$.std.resid <- residuals(model, type = "scaled.pearson")
+  r$.hat <- model$hat
+  r$.cooksd <- cooks.distance(model)
+  return(r)
+}
 data(sheep)
 ggplot(sheep, aes(x=Year, y=Population)) + 
   geom_point()
@@ -39,12 +49,12 @@ stuff_lm <- glance(sheep.lm)
 stuff_gam <- glance(sheep.gam)
 
 nd = data.frame(Population=seq(600,2000,10))
-pred_lm <- augment(sheep.lm, newdata=nd) %>%
+pred_lm <- augment(sheep.lm, newdata=nd, se_fit = TRUE) %>%
   mutate(l95ci = .fitted - .se.fit*qt(0.975, stuff_lm$df.residual),
          u95ci = .fitted + .se.fit*qt(0.975, stuff_lm$df.residual)) %>%
   rename(Delta=.fitted)
 
-pred_gam <- augment(sheep.gam, newdata=nd) %>%
+pred_gam <- augment(sheep.gam, newdata=nd, se_fit = TRUE) %>%
   mutate(
     l95ci = .fitted - .se.fit*qt(0.975, stuff_gam$df.residual),
          u95ci = .fitted + .se.fit*qt(0.975, stuff_gam$df.residual)) %>%
@@ -68,13 +78,13 @@ that we can use gam() to fit the simpler model as well.
 
 (@) Check the assumptions graphically, and plot the residuals of both models against population size. Can you tell here which model is better? Would you use the linear or non-linear model, and why?
 
-```{r answer01, echo=lab.eval}
+```{r answer01, echo=FALSE}
 # tired of typing out all that crap. I made a function
 # in NRES803 package
 #check_assumptions(sheep.lm)
 # but won't work with gam objects :( 
 gam.check(sheep.gam) # this is ugly
-rr <- augment(sheep.gam)
+rr <- bollocks.augment(sheep.gam)
 ggplot(rr, aes(x=.fitted, y=.resid)) + 
   geom_point() + 
   geom_hline(yintercept=0, linetype=2) + 
@@ -89,7 +99,7 @@ cat("> The residuals look OK from both models. There is a bit of structure in th
 (@) Fit the linear model using gam() and use anova() to compare the two
 models. Which one would you choose and why?
 
-```{r answer02a, echo=lab.eval}
+```{r answer02a, echo=FALSE}
 sheep.lm2 = gam(Delta~Population,data=sheep)
 anova(sheep.lm2, sheep.gam, test="F")
 ```
@@ -114,7 +124,7 @@ looks quite non-linear, as does radiation.
 
 (@) Set up a `gam()` model with smooth terms for all three predictor variables. Evaluate this model graphically and interpret the results graphically (make a prediction plot) and in written form. 
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 ogam1 <- gam(ozone~s(rad)+s(temp)+s(wind), data=ozone)
 gam.check(ogam1)
 ```
@@ -123,7 +133,7 @@ gam.check(ogam1)
 cat("> There is a bit of upward curvature in the qq plot and a hint of heteroscedasticity in the residuals vs. linear predictor plot. Both of those suggest a log transformation of ozone is helpful, especially combined with the observation that ozone is always strictly greater than zero.")
 ```
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 summary(ogam1)
 ```
 
@@ -132,7 +142,7 @@ cat("> All three smooth terms are significant at p < 0.01, and all have estimate
 I'll plot ozone vs each of the others, coloring by the second predictor, holding the third predictor at the median.")
 ```
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 
 ndrad <- with(ozone,
             expand.grid(rad=seq(min(rad), max(rad), length=100),
@@ -176,7 +186,7 @@ cat("> That was alot of typing but some pretty interesting results! The effect o
 
 (@) log transform Ozone, and repeat the model with three smooth terms. Compare these two models graphically and numerically, choose which one is better, and explain why.
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 ogam2 <- gam(log10(ozone)~s(rad)+s(temp)+s(wind), data=ozone)
 gam.check(ogam2)
 ```
@@ -185,7 +195,7 @@ gam.check(ogam2)
 cat("> The log transformed response gives better looking residuals. It is almost too strong -- the variance decreases with increasing mean, but not enough to worry about. There is one extreme negative outlier; the lowest observation is poorly predicted.")
 ```
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 summary(ogam2)
 ```
 
@@ -193,7 +203,7 @@ summary(ogam2)
 cat("> This looks good too. I would pick the log transformed model on the basis of improved residuals and the observation that the response distribution is continuous and bounded at 0. Now I'll redo the prediction plots, hopefully I can reuse some of the objects from above! I'm not going to use rad on the x axis, just wind and temp.")
 ```
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 
 ndtemp1 <- with(ozone,
             expand.grid(rad=quantile(rad),
@@ -253,10 +263,10 @@ models with either fewer smooth terms (possibly linear), or additional
 interaction terms. Evaluate and interpret these models graphically and numerically.
 
 ```{r, echo=FALSE}
-cat("> I can think of two possible explanations for the poor predictions at opposing extremes of temperature and wind. One is that there is an interaction between them. The other is that they are corrlated, and so we never see situations with low temps and low wind, or high temps and high wind. In that case the lines we are plotting just don't make sense in those regions, because those combinations don't occur. We can check the first explanation easily by adding a 2-D spline with wind and temperature.")
+cat("> I can think of two possible explanations for the poor predictions at opposing extremes of temperature and wind. One is that there is an interaction between them. The other is that they are correlated, and so we never see situations with low temps and low wind, or high temps and high wind. In that case the lines we are plotting just don't make sense in those regions, because those combinations don't occur. We can check the first explanation easily by adding a 2-D spline with wind and temperature.")
 ```
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 ogam3 <- gam(log10(ozone)~ s(rad) + s(temp) + s(wind) + s(temp, wind, bs="ts"), data=ozone)
 gam.check(ogam3)
 summary(ogam3)
@@ -266,7 +276,7 @@ summary(ogam3)
 cat("> The residuals on that model look fantastic, and the new 2-D smooth is very strong. Both of the 1-D smooths on temp and wind are now not-signficant, suggesting that their effects have been absorbed into the 2-D smooth. So I'll pull those out, refit, and look at the predictions.")
 ```
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 ogam3 <- update(ogam3, .~.-s(wind)-s(temp))
 plot(ogam3,select=2, se=FALSE, pch=19)
 # already have the newdataframes I need
@@ -290,7 +300,7 @@ ovrad + aes(x=wind, color=temp) + geom_line(aes(group=temp), data=predvwind2)
 cat("> Those are some crazy looking plots. I think the problem is the second case -- temp and wind are correlated, and the predictions I am making ignore that, and essentially cut straight across the surface. Generating predictions that respect that relationship is a bit tricky. I'm going to try, but note that this is in the \"beyond the scope of the course\" category.\n\n What I want is a new data.frame that has a range of values for wind that make sense for a particular temperature. If I was only interested in predicting the mean I could just use a linear model. But I want a range of values at particular quantiles. What I need is a quantile regression - how does the (say) 75th percentile of wind change as temperature changes. Enter package quantreg")
 ```
 
-```{r, echo=lab.eval}
+```{r, echo=FALSE}
 library(quantreg)
 windrq <- rq(wind~temp, tau=c(0.1, 0.5, 0.9), data=ozone)
 nd <- with(ozone, data.frame(rad=median(rad),
@@ -308,7 +318,7 @@ ovrad + aes(x=temp, color=wind) +
 cat("That's much better! Still, the prediction for the 90th percentile of wind is well outside the data. Let's see if the 2-D model does any better.")
 ```
 
-```{r, echo = lab.eval}
+```{r, echo = FALSE}
 predvtemp3 <- augment(ogam3, newdata=predwind)%>%
   rename(ozone=.fitted) %>%
   mutate(ozone=10^ozone)
