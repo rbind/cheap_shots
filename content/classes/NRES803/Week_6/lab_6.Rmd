@@ -7,7 +7,7 @@ weight: 803061
 ---
 ```{r setup2, include=FALSE, echo=FALSE}
 # set eval = FALSE in the following line to make handout
-lab.eval=TRUE 
+lab.eval=TRUE
  # set to 'hide' to produce lab handout.
 knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'hide', fig.show='hide', tidy.opts=list(arrow = TRUE, width.cutoff=60))
 ```
@@ -17,6 +17,19 @@ In this lab we're going to use a subset of data from Sikkink et al. (2007; Chapt
 library(NRES803)
 library(tidyverse)
 library(GGally) # for ggpairs()
+
+# clumsy workaround for new broom behavior - put into a function because
+# we will reuse below
+augment.other <- function(model){
+  r <- model.frame(model)
+  r$.fitted <- fitted(model)
+  r$.resid <- resid(model)
+  r$.std.resid <- residuals(model, type = "scaled.pearson")
+  r$.hat <- model$hat
+  r$.cooksd <- cooks.distance(model)
+  return(r)
+}
+
 data(vegetation)
 with(vegetation, table(SAMPLEYR, Time)) # different scale, same thing
 with(vegetation, table(SAMPLEYR, Transect)) # every transect sampled every year here
@@ -53,6 +66,7 @@ This shows us the response first rises with increasing maximum spring temperatur
 ```{r ,eval=lab.eval, tidy=FALSE}
 library(broom)
 nd = data.frame(SprTmax=seq(9,17,0.1))
+# use augment() with newdata ARRRGGG
 pred.R = augment(M1, newdata=nd, se_fit = TRUE)
 p <- ggplot(vegetation, aes(x=SprTmax, y=Richness)) + 
   geom_point() + xlab("Maximum spring temperature")
@@ -72,19 +86,9 @@ So much of the variation in temperature is variation between transects, with the
 
 ```{r ,eval=lab.eval}
 #r <- augment(M1) 
-# clumsy workaround for new broom behavior - put into a function because
-# we will reuse below
-augment.gam <- function(model){
-  r <- model.frame(model)
-  r$.fitted <- fitted(model)
-  r$.resid <- resid(model)
-  r$.std.resid <- residuals(model, type = "scaled.pearson")
-  r$.hat <- model$hat
-  r$.cooksd <- cooks.distance(model)
-  return(r)
-}
 
-r <- augment.gam(M1)
+
+r <- augment.other(M1)
 
 r1 <- ggplot(data = r, aes(x = .fitted, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
@@ -182,7 +186,7 @@ Before I was so rudely interrupted I was going to examine the residuals vs. `SAM
 # screwed up my residual df so make new one
 # add the SAMPLEYR and Transect columns
 r <- vegetation %>% select(SAMPLEYR, Transect) %>%
-  bind_cols(augment.gam(M1))
+  bind_cols(augment.other(M1))
 ggplot(r, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 ```
@@ -231,7 +235,7 @@ gam.check(M2)
 The quantile-quantile plot and histogram of the residuals look reasonable, but there is still that annoying amount of heteroscedasticity in the residuals. Let's repeat the plots of residuals against year and transect again too.
 ```{r ,eval=lab.eval}
 r2 <- vegetation %>% select(SAMPLEYR, Transect) %>%
-  bind_cols(augment(M2)) # huh, for some reason broom is ok with M2??!?
+  bind_cols(augment.other(M2)) # huh, for some reason broom is ok with M2??!?
 pr2a <- ggplot(r2, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 
@@ -284,7 +288,7 @@ Now lets reexamine the residuals to see how we're doing.
 gam.check(M4)
 
 r4 <- vegetation %>% select(SAMPLEYR, Transect) %>%
-  bind_cols(augment(M4))
+  bind_cols(augment.other(M4))
 pr4a <- ggplot(r4, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 
@@ -309,7 +313,7 @@ Although the model improves slightly, the new smooth term is not significant, an
 gam.check(M6)
 
 r6 <- vegetation %>% select(SAMPLEYR, Transect) %>%
-  bind_cols(augment(M6))
+  bind_cols(augment.other(M6))
 pr6a <- ggplot(r6, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 
@@ -333,7 +337,7 @@ This is better than M4 although not by much.
 ```{r ,eval=lab.eval}
 gam.check(M7)
 r7 <- vegetation %>% select(SAMPLEYR, Transect) %>%
-  bind_cols(augment(M7))
+  bind_cols(augment.other(M7))
 pr7a <- ggplot(r7, aes(x=SAMPLEYR, y=.resid)) + 
   geom_point() + geom_smooth() + geom_hline(yintercept = 0, linetype = 2)
 
