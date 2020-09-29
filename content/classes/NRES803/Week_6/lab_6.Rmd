@@ -281,7 +281,7 @@ summary(M5)
 ```
 There is no change in the $R^2$ and GCV scores, and the estimated degrees of freedom for the 2-D term is essentially zero, so we can leave it out. 
 
-(@) Just to be sure, run a model changing the basis of the two independent terms to "ts" as well, admitting the possibility that one of the independent terms should be removed. Compare that model with M4. Do we need the 2D interaction term?
+(@) Just to be sure, run a model changing the basis of the two single variable smooth terms in M5 to "ts" as well, admitting the possibility that those smooth terms should be removed. Compare that model with M4. Do we need the 2D interaction term?
 
 Now lets reexamine the residuals to see how we're doing.
 ```{r ,eval=lab.eval}

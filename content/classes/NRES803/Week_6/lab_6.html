@@ -190,7 +190,7 @@ plot(M4)</code></pre>
 summary(M5)</code></pre>
 <p>There is no change in the <span class="math inline">\(R^2\)</span> and GCV scores, and the estimated degrees of freedom for the 2-D term is essentially zero, so we can leave it out.</p>
 <ol class="example" style="list-style-type: decimal">
-<li>Just to be sure, run a model changing the basis of the two independent terms to “ts” as well, admitting the possibility that one of the independent terms should be removed. Compare that model with M4. Do we need the 2D interaction term?</li>
+<li>Just to be sure, run a model changing the basis of the two single variable smooth terms in M5 to “ts” as well, admitting the possibility that those smooth terms should be removed. Compare that model with M4. Do we need the 2D interaction term?</li>
 </ol>
 <p>Now lets reexamine the residuals to see how we’re doing.</p>
 <pre class="r"><code>gam.check(M4)</code></pre>
