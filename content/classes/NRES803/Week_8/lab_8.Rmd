@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, re
 
 We'll play with a few datasets from Mick Crawley's "The R Book" [^1] to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.
 
-```{r}
+```{r, include = TRUE}
 library(NRES803)
 library(tidyverse)
 library(mgcv)
@@ -40,7 +40,7 @@ ggplot(sheep, aes(x=Year, y=Population)) +
 The goal is to identify a function relating growth rate Delta to population size. The simplest population model has this as a linear
 function, but there’s no a priori reason to suppose that it should be linear.
 
-```{r}
+```{r, include = TRUE}
 sheep.lm = lm(Delta~Population,data=sheep)
 sheep.gam = gam(Delta~s(Population),data=sheep)
 
