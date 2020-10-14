@@ -24,6 +24,10 @@ good; they haven’t got state level data for the USA anymore. Germany seems to 
 USA, Australia, and Canada are still on exponential growth curves.</p>
 <p><a href="/post/covid-19_and_r/">The first post in this series was a week and a half ago</a>, in case you’re just joining and
 want to see the progression.</p>
+<p>EDIT 2020-10-14: Prof. Niko Speybroeck pointed out I’d
+made an error in the derivative (left out a minus sign)
+and copy/pasted the wrong df for the confidence limits in
+the first plot. No changes to the conclusions though. All fixed now! Thanks!</p>
 <div id="the-bottom-line" class="section level1">
 <h1>The bottom line</h1>
 <p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
@@ -155,8 +159,8 @@ all_fit &lt;- all_models %&gt;%
   select(-model) %&gt;% 
   unnest(cols = c(&quot;data&quot;,&quot;fit&quot;)) %&gt;% 
   mutate(fit = 10^.fitted,
-         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
-         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 12)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 12)),
     fitpc = fit / popn / 10,
          lclpc = lcl / popn / 10,
          uclpc = ucl / popn / 10)
@@ -226,7 +230,7 @@ the Delta method I learned from <a href="https://larkinpowell.wixsite.com/larkin
 He wrote an <a href="https://academic.oup.com/condor/article/109/4/949/5563525">awesome how-to for the Delta method</a>.</p>
 <p><span class="math display">\[
 var(\hat t) = var(\hat b)\left[\frac{\partial\hat t }{\partial \hat b}\right]^2 \\
-\frac{\partial\hat t }{\partial \hat b} = \frac{log_{10}2}{b^{2}} \\
+\frac{\partial\hat t }{\partial \hat b} = -\frac{log_{10}2}{b^{2}} \\
 var(\hat t) = var(\hat b)\frac{log_{10}2^2}{b^{4}}
 \]</span></p>
 <pre class="r"><code>doubling_times &lt;- all_models %&gt;% 
@@ -329,8 +333,8 @@ Tomorrow I’ll try to find a dataset that includes states.</p>
 <hr />
 <ol>
 <li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd">on Github</a>.
-This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>I’m feeling pretty chuffed about this! I didn’t copy/paste – that code chunk pulls in the hidden one
-and then only echoes the lines I want echoed.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+and then only echoes the lines I want echoed.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

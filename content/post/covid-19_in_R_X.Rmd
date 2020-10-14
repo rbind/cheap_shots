@@ -24,6 +24,11 @@ USA, Australia, and Canada are still on exponential growth curves.
 [The first post in this series was a week and a half ago](/post/covid-19_and_r/), in case you're just joining and
 want to see the progression. 
 
+EDIT 2020-10-14: Prof. Niko Speybroeck pointed out I'd 
+made an error in the derivative (left out a minus sign) 
+and copy/pasted the wrong df for the confidence limits in 
+the first plot. No changes to the conclusions though. All fixed now! Thanks! 
+
 # The bottom line
 
 DISCLAIMER: These unofficial results are not peer reviewed, and should not be
@@ -119,8 +124,8 @@ all_fit <- all_models %>%
   select(-model) %>% 
   unnest(cols = c("data","fit")) %>% 
   mutate(fit = 10^.fitted,
-         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 10)),
-         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 10)),
+         lcl = 10^(.fitted - .se.fit * qt(0.975, df = 12)),
+         ucl = 10^(.fitted + .se.fit * qt(0.975, df = 12)),
     fitpc = fit / popn / 10,
          lclpc = lcl / popn / 10,
          uclpc = ucl / popn / 10)
@@ -260,7 +265,7 @@ He wrote an [awesome how-to for the Delta method](https://academic.oup.com/condo
 
 $$
 var(\hat t) = var(\hat b)\left[\frac{\partial\hat t }{\partial \hat b}\right]^2 \\
-\frac{\partial\hat t }{\partial \hat b} = \frac{log_{10}2}{b^{2}} \\
+\frac{\partial\hat t }{\partial \hat b} = -\frac{log_{10}2}{b^{2}} \\
 var(\hat t) = var(\hat b)\frac{log_{10}2^2}{b^{4}}
 $$
 
