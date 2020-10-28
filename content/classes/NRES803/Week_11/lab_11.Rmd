@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       eval = lab.eval, 
                       results= lab.results,
                       tidy = TRUE)
+library(NRES803data)
 ```
 
 The first dataset we'll look at is from Zuur et al. (2009); the data are from Vicente et al. (2005) who looked at the distribution and faecal shedding patterns of 1st stage larvae of *Elaphostrongylus cervi* in red deer. Here we're interested in the presence and absence of larvae in deer as functions of size (length in cm), sex, and farm identity. 
@@ -62,7 +63,7 @@ M0 <- glmer(Ecervi.pa~fSex*cLength+(1 + fSex * cLength | Farm),
 summary(M0)
 ```
 
-That model fails to converge. Asking for the sex by length interaction to vary among farms is probably too much given there are some farms with relatively few observations. Looking at the summary, especially the random effects estimates, it is clear that the scaling between Sex and Length is very different. A 1 cm change in length is a much smaller change than a change from male to female. This kind of discrepancy can make it harder for a model to converge. If I rescale Length by dividing through with the standard deviation the coefficients for those two variables will be closer, and this can help with convergence. I will also change the contrasts on Sex to "sum to zero" contrasts, which has a similar beneficial effect to centering a continuous variable.   
+That model fails to converge, or at least is reporting some issues with the "singular fit" message. Asking for the sex by length interaction to vary among farms is probably too much given there are some farms with relatively few observations. Looking at the summary, especially the random effects estimates, it is clear that the scaling between Sex and Length is very different. A 1 cm change in length is a much smaller change than a change from male to female. This kind of discrepancy can make it harder for a model to converge. If I rescale Length by dividing through with the standard deviation the coefficients for those two variables will be closer, and this can help with convergence. I will also change the contrasts on Sex to "sum to zero" contrasts, which has a similar beneficial effect to centering a continuous variable.   
 
 ```{r checkGlobal1}
 ecervi <- ecervi %>%
@@ -83,7 +84,7 @@ summary(M0)
 
 ```
 
-That model also fails to converge! Let's check the two simpler models that allow fSex or csLength to vary across farms.
+That works! Let's check the two simpler models that allow either fSex or csLength to vary across farms.
 
 ```{r}
 M0a <- glmer(Ecervi.pa~fSex*csLength+(1 + csLength | Farm), 
@@ -95,11 +96,19 @@ summary(M0b)
 
 ```
 
-Both of those models converge. Check residuals for both. I will use the quantile residuals that I discussed in an earlier add on. 
+The first model converges fine, the second one has issues with a "singular fit" again. If you look closely at the summary for `M0b`, you can see that the variance of the `fSex` random effect is nearly 0, and the correlation with the intercept is 1.00. I suspect the issue is with some farms having only males.
+
+```{r}
+with(ecervi, table(Farm, fSex))
+```
+
+Yes, there are several. This might cause issues later, but ignore for now.
+
+Check residuals for both. I will use the randomized quantile residuals that I discussed in an earlier add on. 
 
 ```{r residualM0a}
 library(statmod)
-library(broom)
+library(broom.mixed)
 residM0a <- augment(M0a)
 #residM0a$qr <- qresiduals(M0a) # error prevents knitting
 ```
@@ -150,7 +159,7 @@ ggplot(residM0a, aes(x = .fitted, y = sqrt(abs(qr)))) +
 
 ```
 
-Those all look fine.
+Those all look fine. If you rerun `qres.binom()` you'll notice that the plots look different. These residuals are "randomized", meaning that they are drawn randomly from the distribution of the residuals, not the actual fixed values themselves. So they do fluctuate. Pay most attention to the confidence envelope -- if there is a flat line everywhere inside the envelope, any fluctuations up and down can be ignored.  
 
 (@) Repeat the residual checks with M0b, the model with the other random effect. Are there any differences? Which one looks like a better model? 
 
@@ -185,7 +194,7 @@ ggplot(residM0b, aes(x = .fitted, y = sqrt(abs(qr)))) +
 ```
 
 ```{r answer1, echo=FALSE, results="asis"}
-cat(">  The residuals for the fSex random effect model look OK, but not quite as good as the csLength random effect. This is particularly noticeable in the plots of the residuals vs. fitted and residuals vs. csLength plots.")
+cat(">  The residuals for the fSex random effect model look OK.")
 ```
 
 So we have identified the global models and checked that they are adequate. Next we need to make up a set of models and identify the best ones using $AIC_c$. We need to build the set with all possible random effects, and all possible fixed effects models. The number of variables is small, so this will be a reasonable thing to do. 
@@ -197,7 +206,8 @@ re <- c("(1 | Farm)",
         "(1 | Farm) + (0 + csLength | Farm)",
         "(1 | Farm) + (0 + fSex | Farm) + (0 + csLength | Farm)",
         "(1 + fSex | Farm)",
-        "(1 + csLength | Farm)")
+        "(1 + csLength | Farm)",
+        "(1 + csLength + fSex | Farm)")
 forms <- expand.grid(LHS="Ecervi.pa ~",fe=fe,re=re)
 models <- forms %>%
   mutate(RHS = paste(fe, re, sep = "+"),
@@ -217,7 +227,7 @@ models <- mutate(models,
 which(!models$converged)
 ```
 
-Now we're ready to see which models are the best, keeping a wary eye out for models 6, 9, 18.
+Now we're ready to see which models are the best, keeping a wary eye out for those models that had convergence issues.
 
 ```{r AICtable}
 library(MuMIn)
@@ -266,7 +276,7 @@ ggplot(nd, aes(x=csLength, y=pp, col=fSex)) +
 
 These lines represent the effect of length and sex for a typical farm. 
 
-(@) Repeat the model selection process for fixed effects using `glm()`, i.e. ignoring the correlation within farms. Compare and contrast the results that you get, both the magnitude and direction of the coefficients, as well as their relative standard errors.
+(@) Repeat the model selection process for fixed effects using `glm()`, i.e. ignoring the variation between farms. Compare and contrast the results that you get, both the magnitude and direction of the coefficients, as well as their relative standard errors.
 
 ## Inference with mixed models
 
@@ -291,7 +301,7 @@ rownames(topmod.WaldCI)<-NULL
 names(topmod.profCI)<-c("Profile_CI2.5","Profile_CI97.5")
 names(topmod.WaldCI)<-c("Wald_CI2.5","Wald_CI97.5")
 
-topmod.CI <- tidy(topmod) # from broom
+topmod.CI <- tidy(topmod) # from broom.mixed
 # add the profile intervals -- confint() uses a different order from tidy()
 topmod.CI <- cbind(topmod.CI,
                    topmod.profCI[c(4:7,1,3,2),],
@@ -315,7 +325,7 @@ ggplot(topmod.CI, aes(x=term, y=estimate, fill=type)) +
 It can be hard to see what is going on unless you use the "zoom" to make this plot large enough for the term names to not overlap.
 So the intervals for the intercept and sex effects are pretty close to the "simple" Wald intervals. The intervals for csLength and the interaction are longer with profile intervals, but at least they still exclude zero. In addition, the profile method gives us intervals on the variance parameters as well. 
 
-The reason it is hard to get confidence intervals on predictions is because of the uncertainty in the variance parameters, which can be substantial. The correlation coefficient includes zero, for example. This makes sense, as the 2nd best model was a model that assumed the random effects were uncorrelated.
+The reason it is hard to get confidence intervals on predictions is because of the uncertainty in the variance parameters, which can be substantial. The sd of the csLength random effect includes zero, for example. This makes sense, as the differences among the top 3 models were all in the random effects.
 
 ## But what the heck *IS* a profile limit?
 
