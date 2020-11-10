@@ -84,6 +84,7 @@ ggplot(data = cousens, aes(x=wheat_sr, y=wheat_yield)) +
 ```
 
 Those parameters are now per seed, so 3 / 400 = `r 3/400` seems like a good starting point for `a`
+
 ```{r}
 wheat_nl <- nls(wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr), 
     data = cousens, 
@@ -93,7 +94,16 @@ summary(wheat_nl)
 
 Figuring out what those parameters mean is always a good trick! I think we can interpret $f$ and $b$ as per-seed competition coefficients for inter- and intra specific competition, respectively. So an additional barley seed has about 3 x the competitive effect of adding another wheat seed. Taking the limit as C goes to infinity for a fixed value of D, we get $Y_{max} = a/b$, or about 3 kg. 
 
-4) Make a plot of the raw data for a single wheat seed rate, add the predicted lines for the model fitted above for question 3, and a predicted line for the model with both wheat and barley. 
+4) Make a plot of the raw data, add the predicted lines for the model with both wheat and barley. 
+
+```{r, eval=FALSE, echo=FALSE}
+nd = crossing(barley_sr = unique(cousens$barley_sr), 
+                wheat_sr = 0:400)
+wheat_nl_pred <- broom::augment(wheat_nl, newdata = nd)
+ggplot(data = cousens, aes(x = wheat_sr, y=wheat_yield, color = barley_sr)) + geom_jitter(width = 10) +
+  geom_line(wheat_nl_pred,
+            mapping = aes(x = wheat_sr, y=.fitted, color = barley_sr, group = barley_sr))
+```
 
 # Optional
 
@@ -114,3 +124,15 @@ summary(wheat_nl2)
 ```
 
 5) Compare the parameters with the 3 parameter model. Take a look at the estimate for $g$, can we conclude that it is different from 1? Compare the residual standard errors -- is the extra parameter worth it? What about comparing by the use of AIC?
+
+```{r, echo=FALSE, eval=FALSE}
+library(MuMIn)
+models <- list(wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr),
+               wheat_yield ~ a * wheat_sr / (1 + b * wheat_sr + f * barley_sr)^g)
+fits <- map(models, nls, data = cousens)
+model.sel(fits)
+model.sel(fits, rank = AIC)
+map_chr(models, ~deparse(.x[[3]]))
+AICcmodavg::aictab(fits)
+```
+
