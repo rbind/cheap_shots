@@ -1,4 +1,4 @@
-baseurl = "drewtyre.rbind.io/"  
+baseurl = "https://drewtyre.rbind.io/"  
 title = "EnTyrely Too Much"
 copyright = "&copy; 2019-2020 Andrew Tyre"
 theme = "hugo-academic"
