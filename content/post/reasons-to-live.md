@@ -1,17 +1,19 @@
 ---
-title: Reasons to live
-author: 'Drew Tyre'
+title: "Reasons to live"
+author: "Drew Tyre"
 date: '2019-03-25'
-slug: reasons-to-live
-categories:
-  - Personal
+output:
+  html_document:
+    df_print: paged
+categories: Personal
 tags_include:
-  - mental health
-  - suicidal ideation
+- mental health
+- suicidal ideation
 draft: yes
 image:
   caption: ''
   focal_point: ''
+slug: reasons-to-live
 ---
 
 At my darkest point, a single question dominated my thinking. Why continue to 
