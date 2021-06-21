@@ -1,0 +1,18 @@
+---
+title: "How big is too big: variance inflation factors"
+author: "Drew Tyre"
+date: '2021-06-21'
+output:
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: 
+draft: yes
+slug: how-big-is-too-big-vif
+tags_include:
+- R
+categories: Research
+---
+
+
+
