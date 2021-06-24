@@ -1,0 +1,82 @@
+---
+title: "How big is too big: variance inflation factors"
+author: "Drew Tyre"
+date: '2021-06-21'
+output:
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: 
+draft: no
+slug: how-big-is-too-big-vif
+tags_include:
+- R
+categories: Research
+---
+
+[In a comment Jacob E.](http://atyre2.github.io/2017/06/16/rebutting_cade.html) asked "Also, you mention using VIF for testing multi-collinearity. Is there a cutoff score you recommend for AIC?" I gave a snarky answer because I didn't have a good answer. What would a good answer look like?
+
+One way to proceed is to simulate data from the situation where the assumption 
+is not violated, and look at the distribution of VIF scores. 
+
+```{r}
+library("tidyverse")
+n <- 100
+N <- 1000
+make_data <- function(beta = c(0, 0.1, 1, 10), sigma = 1, residual_error = 1, n = 1){
+  if (is.null(dim(sigma))){
+    tmp <- sigma
+    sigma <- matrix(0, nrow = length(beta), ncol = length(beta))
+    diag(sigma) <- tmp
+  } 
+  X <- MASS:::mvrnorm(n, mu = rep(0, length(beta)), Sigma = sigma)
+  Y <- X %*% beta + rnorm(n, mean = 0, sd = residual_error)
+  return(data.frame(Y, X))
+}
+#Test it out
+test_df <- make_data(n = n)
+ggplot(data = test_df,
+       mapping = aes(x = X4, y = Y, color = X3)) + 
+  geom_point()
+```
+
+OK, now generate a bunch of data sets, fit linear models to them, and get the
+VIF scores.
+
+```{r}
+vif_null <- map(1:N, ~make_data(n = n)) %>% 
+  map(~lm(Y~X1+X2+X3+X4, data = .)) %>% 
+  map_dfr(car::vif) %>% 
+  mutate(rep = 1:N) %>% 
+  pivot_longer(cols = -rep, names_to = "variable",values_to = "vif")
+ggplot(data = vif_null,
+       mapping = aes(x = vif)) + 
+  geom_histogram() + 
+  facet_wrap(~variable)
+
+```
+
+OK, wow! Didn't expect that -- if there is NO correlation between the predictor 
+variables then VIF rarely exceeds 1.2. Lets do an example where a couple of the
+variables are highly correlated. 
+
+```{r}
+sigma <- matrix(c(1, 0, 0, 0,
+                  0, 1, -0.9, 0,
+                  0, -0.9, 1, 0,
+                  0, 0, 0, 1), nrow = 4, ncol = 4)
+vif_bad <- map(1:N, ~make_data(n = n, sigma = sigma)) %>% 
+  map(~lm(Y~X1+X2+X3+X4, data = .)) %>% 
+  map_dfr(car::vif) %>% 
+  mutate(rep = 1:N) %>% 
+  pivot_longer(cols = -rep, names_to = "variable",values_to = "vif")
+ggplot(data = vif_bad,
+       mapping = aes(x = vif)) + 
+  geom_histogram() + 
+  facet_wrap(~variable)
+```
+
+So a correlation of ~ -0.9 between two of the variables gives VIF scores bigger 
+than 2, about 5 on average. So choosing a cutoff of 2 is going to exclude 
+the worst offenders. 
+
