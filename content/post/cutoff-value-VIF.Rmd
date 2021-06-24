@@ -7,7 +7,7 @@ output:
     code_folding: hide
   word_document: default
 og_image: 
-draft: yes
+draft: no
 slug: how-big-is-too-big-vif
 tags_include:
 - R
