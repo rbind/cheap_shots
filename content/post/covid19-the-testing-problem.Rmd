@@ -1,0 +1,134 @@
+---
+title: "The testing problem is less of a problem than you might think."
+author: "Drew Tyre"
+date: '2020-04-14'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-the-testing-problem_files/figure-html/featured_image-1.png
+draft: yes
+slug: covid19-the-testing-problem
+tags_include:
+  - R
+  - OPD
+  - COVID19
+categories: Research
+---
+
+At least, from the standpoint of estimating the rate of increase. It certainly
+affects the estimated number of cases. But if you just want to know if things
+are growing less than exponentially, flawed data are OK. 
+
+[The first post in this series was March 13](/post/covid-19_and_r/), in case you're just joining and
+want to see the progression. I'm now posting the bottom line figures for each [state](/post/covid19-bottom-line-usa/) and [province](/post/covid19-bottom-line-canada/) on
+the same post that just gets updated each day.
+
+DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.[^1] 
+
+Here's why. Start with the simplest exponential growth model. 
+
+$$
+N_{t+1} = N_t e^r
+$$
+$r$ is the per capita rate of growth. When it is small, $e^r \approx 1 +r$, so 
+you can think of it like an interest rate, the percentage of growth over
+whatever period  of time is represented by $t$. $N_t$ is the number of cases on
+day $t$. If we're not testing everyone, then what we OBSERVE is $C_t$, the 
+confirmed cases on day $t$. There are lots of reasons why we don't test everyone.
+Some people have no symptoms. Some have a mild case and don't see a doctor. 
+Some sick people DO see a doctor, but tests are limited, and unless you're at
+deaths door, knowing you have COVID-19 doesn't change the treatment. So 
+some people who saw a doctor don't get tested. Furthermore, even if you have
+COVID-19 and get tested [there is a pretty high probability of a negative test result](/post/my-covid19-story/).
+Let's just lump all those processes together into a detection probability $p$ that determines
+how many actual cases get confirmed. 
+
+$$
+C_t = p N_t
+$$
+
+Now substitute that relationship back into the exponential growth model.
+
+$$
+\frac{C_{t+1}}{p} = \frac{C_t}{p}e^r \\
+C_{t+1} = C_t e^r
+$$
+
+So the detection probability cancels out, and the growth rate is the same. This is true as long
+as the detection probability stays constant.  One issue arises when a locale increases testing.
+That will increase the probability of detection. What does that look like? Now we have a different
+detection probability $p'$ in the next time step.
+
+$$
+\frac{C_{t+1}}{p'} = \frac{C_t}{p}e^r \\
+C_{t+1} = C_t \frac{p'}{p} e^r
+$$
+
+Because $p' > p$, an increase in the detection probability looks like an increase in the growth
+rate. If the testing regime stabilizes again, then the growth rate will drop back to the 
+same level it was increasing at before.
+
+$$
+N_{t+1} = N_t e^r \\
+I_t = N_{t+1} - N_t\\
+N_{t+1} - N_t = N_t e^r - N_t \\
+I_t = N_t (e^r - 1) \\
+I_t \approx N_t r
+$$
+
+
+```{r base_calculations, warning = FALSE, message = FALSE}
+library("tidyverse")
+library("lubridate")
+library("broom")
+library("forecast")
+library("EpiEstim")
+savefilename <- "data/api_all_2020-04-13.Rda"
+
+load(savefilename)
+
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
+  mutate(start_date = mdy(start_date)) 
+
+source("R/jhu_helpers.R")
+source("R/plot_functions.R")
+
+
+canada_by_region <- list(
+  confirmed = other_wide2long(api_confirmed_regions, countries = "Canada"),
+  deaths = other_wide2long(api_deaths_regions, countries = "Canada"),
+  # recovered data is a mess lots of missing values
+  recoveries = other_wide2long(api_recoveries_regions, countries = "Canada")
+  ) %>% 
+  bind_rows(.id = "variable") %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases)
+canada_by_region2 <- plot_active_case_growth(canada_by_region, country_data)$data
+
+usa_by_state <- list(
+  confirmed = us_wide2long(api_confirmed_regions, "United States"),
+  deaths = us_wide2long(api_deaths_regions, "United States"),
+  # recovered data is a mess lots of missing values
+  recoveries = us_wide2long(api_recoveries_regions, "United States")
+  ) %>% 
+  bind_rows(.id = "variable") %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) 
+usa_by_state2 <- plot_active_case_growth(usa_by_state, country_data)$data
+  
+
+
+```
+
+
+
+
+
+
+
+[^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
+
+

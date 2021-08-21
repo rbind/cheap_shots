@@ -1,0 +1,848 @@
+---
+title: "A new baseline model for my plots"
+author: "Drew Tyre"
+date: '2020-04-08'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-new-base-model_files/figure-html/featured_image-1.png
+draft: yes
+slug: covid19-new-base-model
+tags_include:
+  - R
+  - OPD
+  - COVID19
+categories: Research
+---
+
+
+
+<p><a href="/post/covid-19_and_r/">The first post in this series was March 13</a>, in case you’re just joining and
+want to see the progression. I’m now posting the bottom line figures for each <a href="/post/covid19-bottom-line-usa/">state</a> and <a href="/post/covid19-bottom-line-canada/">province</a> on
+the same post that just gets updated each day.</p>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;lubridate&quot;)
+library(&quot;broom&quot;)
+library(&quot;forecast&quot;)
+library(&quot;EpiEstim&quot;)
+savefilename &lt;- &quot;data/api_all_2020-04-08.Rda&quot;
+
+load(savefilename)
+
+country_data &lt;- read_csv(&quot;data/countries_covid-19.csv&quot;) %&gt;% 
+  mutate(start_date = mdy(start_date)) 
+
+source(&quot;R/jhu_helpers.R&quot;)
+source(&quot;R/plot_functions.R&quot;)
+
+
+canada_by_region &lt;- list(
+  confirmed = other_wide2long(api_confirmed_regions, countries = &quot;Canada&quot;),
+  deaths = other_wide2long(api_deaths_regions, countries = &quot;Canada&quot;),
+  # recovered data is a mess lots of missing values
+  recoveries = other_wide2long(api_recoveries_regions, countries = &quot;Canada&quot;)
+  ) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases)
+canada_by_region2 &lt;- plot_active_case_growth(canada_by_region, country_data)$data
+
+usa_by_state &lt;- list(
+  confirmed = us_wide2long(api_confirmed_regions, &quot;United States&quot;),
+  deaths = us_wide2long(api_deaths_regions, &quot;United States&quot;),
+  # recovered data is a mess lots of missing values
+  recoveries = us_wide2long(api_recoveries_regions, &quot;United States&quot;)
+  ) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) 
+usa_by_state2 &lt;- plot_active_case_growth(usa_by_state, country_data)$data</code></pre>
+<pre class="r"><code>usa_total &lt;- usa_by_state2 %&gt;%
+  group_by(Date) %&gt;% 
+  summarize(confirmed_cases = sum(confirmed, na.rm = TRUE),
+            incident_cases = sum(incident_cases, na.rm = TRUE)) %&gt;% 
+  mutate(log10_cc = log10(confirmed_cases),
+         log10_ic = log10(incident_cases),
+         # match how autoplot is representing the x axis?
+         Time = as.numeric(Date),
+         n_obs = n(),
+         Training = Time &lt; floor(n_obs*0.8) + min(Time)) %&gt;% 
+  filter(log10_ic &gt; 0)
+training_data &lt;- filter(usa_total, Training)
+expert_consensus &lt;- tibble(
+  Date = ymd(&quot;2020-04-05&quot;),
+  fit = 386500,
+  lpl = 280500,
+  hpl = 581500
+)
+usat_ts &lt;- zoo::zoo(pull(training_data, log10_ic), pull(training_data, Date))
+usat_ts_fit &lt;- auto.arima(usat_ts, seasonal = FALSE)
+usat_forecast &lt;- forecast(usat_ts_fit, h = 14) %&gt;% 
+  as_tibble() %&gt;% 
+  mutate(Date = seq(max(pull(training_data, Date))+1, max(pull(training_data, Date)) + 14, by = &quot;day&quot;),
+         fit = 10^`Point Forecast`,
+         l80pl = 10^`Lo 80`,
+         h80pl = 10^`Hi 80`,         
+         l95pl = 10^`Lo 95`,
+         h95pl = 10^`Hi 95`)
+p1 &lt;- ggplot(data = usa_total)  + scale_y_log10() +
+  geom_point(mapping = aes(x = Date, y = incident_cases))+
+  geom_line(data = usat_forecast,
+            mapping = aes(x = Date, y = fit), linetype = 2)+
+  geom_ribbon(data = usat_forecast,
+              mapping = aes(x = Date, ymin = l80pl, ymax = h80pl), alpha = 0.2) +
+    geom_ribbon(data = usat_forecast,
+              mapping = aes(x = Date, ymin = l95pl, ymax = h95pl), alpha = 0.2) +
+        labs(y = &quot;Incident cases&quot;, 
+           title = paste0(&quot;Total Incident cases in USA&quot;),
+           x = &quot;Date&quot;,
+           subtitle = &quot;Dashed line: ARIMA(0,2,0) forecast cases with (80%, 95%) prediction intervals.&quot;,
+           caption = paste(&quot;Source data: https://coviddata.github.io/coviddata/ downloaded &quot;,
+                           format(file.mtime(savefilename), usetz = TRUE),
+                           &quot;\n Unofficial, not peer reviewed results.&quot;,
+                           &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;))
+p1</code></pre>
+<p><img src="/post/covid19-new-base-model_files/figure-html/featured_image-1.png" width="672" /></p>
+<p>OK, now we have to simulate form that model.</p>
+<pre class="r"><code>set.seed(98987449) # fix the random number seed so results are reproducible.
+onerep &lt;- function(id, fit, Dates){
+  result &lt;- simulate(fit, nsim = nrow(Dates))
+  result &lt;- bind_cols(Dates, as_tibble(result)) %&gt;% 
+    mutate(incident_cases = 10^x)
+  result
+}
+results &lt;- map_dfr(1:10, onerep, fit = usat_ts_fit, Dates = usat_forecast[,&quot;Date&quot;], .id = &quot;rep&quot;)
+p1 + 
+  geom_line(data = results, mapping = aes(x = Date, y = incident_cases, group = rep))</code></pre>
+<p><img src="/post/covid19-new-base-model_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>OK, that looks cool. You can see the effect of the autocorrelation within each path. Now we figure out how to do the cumulative sum and plot that.</p>
+<pre class="r"><code>results &lt;- results %&gt;%
+  group_by(rep) %&gt;% 
+  mutate(confirmed_cases = cumsum(incident_cases)+ 
+           training_data[nrow(training_data),&quot;confirmed_cases&quot;, drop = TRUE])
+ggplot(data = usa_total)  + scale_y_log10() +
+  geom_point(mapping = aes(x = Date, y = confirmed_cases))+
+geom_line(data = results, mapping = aes(x = Date, y = confirmed_cases, group = rep))  +
+  # geom_line(data = usat_forecast,
+  #           mapping = aes(x = Date, y = fit), linetype = 2)+
+  # geom_ribbon(data = usat_forecast,
+  #             mapping = aes(x = Date, ymin = l80pl, ymax = h80pl), alpha = 0.2) +
+  #   geom_ribbon(data = usat_forecast,
+  #             mapping = aes(x = Date, ymin = l95pl, ymax = h95pl), alpha = 0.2) +
+        labs(y = &quot;Incident cases&quot;, 
+           title = paste0(&quot;Total Incident cases in USA&quot;),
+           x = &quot;Date&quot;,
+           subtitle = &quot;Dashed line: ARIMA(0,2,0) forecast cases with (80%, 95%) prediction intervals.&quot;,
+           caption = paste(&quot;Source data: https://coviddata.github.io/coviddata/ downloaded &quot;,
+                           format(file.mtime(savefilename), usetz = TRUE),
+                           &quot;\n Unofficial, not peer reviewed results.&quot;,
+                           &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;))</code></pre>
+<p><img src="/post/covid19-new-base-model_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>OK, this is better than <a href="/post/covid19-me-vs-experts/">yesterday’s time series forecast of the cumulative number of cases</a>.
+The number of cumulative cases does not go down. But I can see a different problem looming –
+this model is going to have an upper bound that is far too high, because it doesn’t account
+for the fact that there are a limited number of humans.</p>
+<p>Now we need a bunch of simulations, and then
+summarize them by date to get median and prediction intervals.</p>
+<pre class="r"><code>results &lt;- map_dfr(1:100, onerep, fit = usat_ts_fit, Dates = usat_forecast[,&quot;Date&quot;], .id = &quot;rep&quot;)%&gt;%
+  group_by(rep) %&gt;% 
+  mutate(confirmed_cases = cumsum(incident_cases)+ 
+           training_data[nrow(training_data),&quot;confirmed_cases&quot;, drop = TRUE]) %&gt;% 
+  group_by(Date) %&gt;% 
+  summarize(fit = median(confirmed_cases),
+            l95pl = quantile(confirmed_cases, probs = 0.025),
+            l80pl = quantile(confirmed_cases, probs = 0.1),
+            h80pl = quantile(confirmed_cases, probs = 0.9),
+            h95pl = quantile(confirmed_cases, probs = 0.975))</code></pre>
+<pre><code>## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes
+
+## Warning in bind_rows_(x, .id): Vectorizing &#39;ts&#39; elements may not preserve
+## their attributes</code></pre>
+<pre class="r"><code>ggplot(data = usa_total)  + scale_y_log10() +
+  geom_point(mapping = aes(x = Date, y = confirmed_cases))+
+geom_line(data = results, mapping = aes(x = Date, y = fit))  +
+  geom_ribbon(data = results,
+              mapping = aes(x = Date, ymin = l80pl, ymax = h80pl), alpha = 0.2) +
+    geom_ribbon(data = results,
+              mapping = aes(x = Date, ymin = l95pl, ymax = h95pl), alpha = 0.2) +
+        labs(y = &quot;Incident cases&quot;, 
+           title = paste0(&quot;Total Incident cases in USA&quot;),
+           x = &quot;Date&quot;,
+           subtitle = &quot;Dashed line: ARIMA(0,2,0) forecast cases with (80%, 95%) prediction intervals.&quot;,
+           caption = paste(&quot;Source data: https://coviddata.github.io/coviddata/ downloaded &quot;,
+                           format(file.mtime(savefilename), usetz = TRUE),
+                           &quot;\n Unofficial, not peer reviewed results.&quot;,
+                           &quot;\n Copyright Andrew Tyre 2020. Distributed with MIT License.&quot;))</code></pre>
+<p><img src="/post/covid19-new-base-model_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>As I mentioned above, the upper bound is far too high: reaches out to 10 billion, which is more
+than the number of people on the planet, let alone in the USA! The reason for this failure is that
+the simple model does not account for the slowdown that will occur as a larger fraction of
+the population is infected.</p>
+<div id="actual-epidemiological-estimates" class="section level1">
+<h1>Actual Epidemiological Estimates</h1>
+<p>The problem with throwing out a model is that one must choose a
+different model. I’m still interested in simple models. So what I want to do now is focus on estimation
+models developed by actual expert Epidemiologists. In particular, there is a model that calculates
+<span class="math inline">\(R_e\)</span>, the effective reproductive number. Recall that <span class="math inline">\(R_0\)</span>, the basic reproductive number, tells us
+how contagious a given disease is. The Effective reproductive number is analogous, in that it
+estimates the current level of contagion, given the actual conditions on the ground including
+public health efforts to reduce transmission, AKA social distancing. If <span class="math inline">\(R_e\)</span> is below 1, then
+our efforts will ultimately drive new cases to zero. So this is quite a useful number to know,
+especially if we want to be able to back off on social distancing. Doing that before <span class="math inline">\(R_e\)</span> is
+consistently below 1 is inviting a resurgence of cases.</p>
+<pre class="r"><code>incidence &lt;- usa_total %&gt;% 
+  select(dates = Date, I = incident_cases)
+eR &lt;- estimate_R(incidence, method = &quot;uncertain_si&quot;, 
+           config = make_config(mean_si = 5, std_mean_si = 2.0, min_mean_si = 2.3, max_mean_si = 8.4,
+                                std_si = 1.5, std_std_si = 1.0, min_std_si = 0.5, max_std_si = 4.0))</code></pre>
+<pre><code>## Default config will estimate R on weekly sliding windows.
+##     To change this change the t_start and t_end arguments.</code></pre>
+<pre><code>## Warning in check_config(config, method): The distribution you chose for the mean SI is not centered around
+##               the mean.</code></pre>
+<pre><code>## Warning in check_config(config, method): The distribution you chose for the std of the SI is not centered 
+##               around the mean.</code></pre>
+<pre class="r"><code>plot_Ri &lt;- function(estimate_R_obj) {
+    p_I &lt;- plot(estimate_R_obj, &quot;incid&quot;, add_imported_cases = TRUE)  # plots the incidence
+    p_SI &lt;- plot(estimate_R_obj, &quot;SI&quot;)  # plots the serial interval distribution
+    p_Ri &lt;- plot(estimate_R_obj, &quot;R&quot;)
+    return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
+}
+plot_Ri(eR)</code></pre>
+<pre><code>## The number of colors (8) did not match the number of groups (2).
+## Using `col_pal` instead.</code></pre>
+<p><img src="/post/covid19-new-base-model_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The total US epidemic curve from mid march to the present shows signs of flattening off.
+It is hard to see on this plot because of the exaggerated upper bound in the earliest weeks,
+but lower bound <span class="math inline">\(R_e &gt; 1\)</span> as of the week ending April 8.</p>
+<p>What does Nebraska look like?</p>
+<pre class="r"><code>incidence &lt;- usa_by_state2 %&gt;%
+  filter(Region == &quot;Nebraska&quot;) %&gt;% 
+  select(dates = Date, I = incident_cases)
+eR &lt;- estimate_R(incidence, method = &quot;uncertain_si&quot;, 
+           config = make_config(mean_si = 5, std_mean_si = 2.0, min_mean_si = 2.3, max_mean_si = 8.4,
+                                std_si = 1.5, std_std_si = 1.0, min_std_si = 0.5, max_std_si = 4.0))</code></pre>
+<pre><code>## Default config will estimate R on weekly sliding windows.
+##     To change this change the t_start and t_end arguments.</code></pre>
+<pre><code>## Warning in check_config(config, method): The distribution you chose for the mean SI is not centered around
+##               the mean.</code></pre>
+<pre><code>## Warning in check_config(config, method): The distribution you chose for the std of the SI is not centered 
+##               around the mean.</code></pre>
+<pre class="r"><code>plot_Ri &lt;- function(estimate_R_obj) {
+    p_I &lt;- plot(estimate_R_obj, &quot;incid&quot;, add_imported_cases = TRUE)  # plots the incidence
+    p_SI &lt;- plot(estimate_R_obj, &quot;SI&quot;)  # plots the serial interval distribution
+    p_Ri &lt;- plot(estimate_R_obj, &quot;R&quot;)
+    return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
+}
+plot_Ri(eR)</code></pre>
+<pre><code>## The number of colors (8) did not match the number of groups (1).
+## Using `col_pal` instead.</code></pre>
+<p><img src="/post/covid19-new-base-model_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>There was a bit of a surge upwards in the weeks ending around the start of April. I’ve
+been assuming that was due to an increase in testing around that time. Lower bound <span class="math inline">\(R_e &gt; 1\)</span>,
+so we’re not trying hard enough yet.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid19-different-perspective.Rmd">on Github</a>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
