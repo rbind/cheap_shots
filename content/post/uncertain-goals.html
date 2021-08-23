@@ -1,7 +1,7 @@
 ---
 title: "If I have a goal to acheive an uncertain value, how hard should I look?"
 author: "Drew Tyre"
-date: "2021-08-21"
+date: "2021-08-23"
 output:
   word_document: default
   html_document: default
@@ -15,6 +15,7 @@ tags_include:
 categories: Research
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>A colleague wrote:</p>
@@ -145,9 +146,9 @@ possible values of the truth.</p>
   group_by(n) %&gt;% 
   mutate(tpz = (lag(error,1) + error)/2) %&gt;% # this step is wrong somehow
   summarize(error = sum(tpz, na.rm = TRUE),
-            sump = sum(p))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre class="r"><code>ggplot(data = results, 
+            sump = sum(p))
+
+ggplot(data = results, 
        mapping = aes(x = n, y = error)) + 
   geom_line() + geom_point()</code></pre>
 <p><img src="/post/uncertain-goals_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
