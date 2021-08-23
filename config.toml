@@ -15,7 +15,7 @@ disqusShortname = "cheap-shots"
 # Enable analytics by entering your Google Analytics tracking ID
 googleAnalytics = "UA-102783334-1"
 
-ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
+ignoreFiles = ["\\.Rmd$", "_cache$","\\.Rmarkdown$", "\\.knit\\.md$", "\\.utf8\\.md$"]
 
 # Default language to use (if you setup multilingual support)
 defaultContentLanguage = "en"
@@ -370,3 +370,8 @@ enableGitInfo = false
 # Configure the English version of the website.
 [languages.en]
   languageCode = "en-us"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
