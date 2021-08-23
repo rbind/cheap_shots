@@ -1,0 +1,115 @@
+---
+title: "The testing problem is less of a problem than you might think."
+author: "Drew Tyre"
+date: '2020-04-14'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-the-testing-problem_files/figure-html/featured_image-1.png
+draft: yes
+slug: covid19-the-testing-problem
+tags_include:
+  - R
+  - OPD
+  - COVID19
+categories: Research
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>At least, from the standpoint of estimating the rate of increase. It certainly
+affects the estimated number of cases. But if you just want to know if things
+are growing less than exponentially, flawed data are OK.</p>
+<p><a href="/post/covid-19_and_r/">The first post in this series was March 13</a>, in case you’re just joining and
+want to see the progression. I’m now posting the bottom line figures for each <a href="/post/covid19-bottom-line-usa/">state</a> and <a href="/post/covid19-bottom-line-canada/">province</a> on
+the same post that just gets updated each day.</p>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>Here’s why. Start with the simplest exponential growth model.</p>
+<p><span class="math display">\[
+N_{t+1} = N_t e^r
+\]</span>
+<span class="math inline">\(r\)</span> is the per capita rate of growth. When it is small, <span class="math inline">\(e^r \approx 1 +r\)</span>, so
+you can think of it like an interest rate, the percentage of growth over
+whatever period of time is represented by <span class="math inline">\(t\)</span>. <span class="math inline">\(N_t\)</span> is the number of cases on
+day <span class="math inline">\(t\)</span>. If we’re not testing everyone, then what we OBSERVE is <span class="math inline">\(C_t\)</span>, the
+confirmed cases on day <span class="math inline">\(t\)</span>. There are lots of reasons why we don’t test everyone.
+Some people have no symptoms. Some have a mild case and don’t see a doctor.
+Some sick people DO see a doctor, but tests are limited, and unless you’re at
+deaths door, knowing you have COVID-19 doesn’t change the treatment. So
+some people who saw a doctor don’t get tested. Furthermore, even if you have
+COVID-19 and get tested <a href="/post/my-covid19-story/">there is a pretty high probability of a negative test result</a>.
+Let’s just lump all those processes together into a detection probability <span class="math inline">\(p\)</span> that determines
+how many actual cases get confirmed.</p>
+<p><span class="math display">\[
+C_t = p N_t
+\]</span></p>
+<p>Now substitute that relationship back into the exponential growth model.</p>
+<p><span class="math display">\[
+\frac{C_{t+1}}{p} = \frac{C_t}{p}e^r \\
+C_{t+1} = C_t e^r
+\]</span></p>
+<p>So the detection probability cancels out, and the growth rate is the same. This is true as long
+as the detection probability stays constant. One issue arises when a locale increases testing.
+That will increase the probability of detection. What does that look like? Now we have a different
+detection probability <span class="math inline">\(p&#39;\)</span> in the next time step.</p>
+<p><span class="math display">\[
+\frac{C_{t+1}}{p&#39;} = \frac{C_t}{p}e^r \\
+C_{t+1} = C_t \frac{p&#39;}{p} e^r
+\]</span></p>
+<p>Because <span class="math inline">\(p&#39; &gt; p\)</span>, an increase in the detection probability looks like an increase in the growth
+rate. If the testing regime stabilizes again, then the growth rate will drop back to the
+same level it was increasing at before.</p>
+<p><span class="math display">\[
+N_{t+1} = N_t e^r \\
+I_t = N_{t+1} - N_t\\
+N_{t+1} - N_t = N_t e^r - N_t \\
+I_t = N_t (e^r - 1) \\
+I_t \approx N_t r
+\]</span></p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;lubridate&quot;)
+library(&quot;broom&quot;)
+library(&quot;forecast&quot;)
+library(&quot;EpiEstim&quot;)
+savefilename &lt;- &quot;data/api_all_2020-04-13.Rda&quot;
+
+load(savefilename)
+
+country_data &lt;- read_csv(&quot;data/countries_covid-19.csv&quot;) %&gt;% 
+  mutate(start_date = mdy(start_date)) 
+
+source(&quot;R/jhu_helpers.R&quot;)
+source(&quot;R/plot_functions.R&quot;)
+
+
+canada_by_region &lt;- list(
+  confirmed = other_wide2long(api_confirmed_regions, countries = &quot;Canada&quot;),
+  deaths = other_wide2long(api_deaths_regions, countries = &quot;Canada&quot;),
+  # recovered data is a mess lots of missing values
+  recoveries = other_wide2long(api_recoveries_regions, countries = &quot;Canada&quot;)
+  ) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases)
+canada_by_region2 &lt;- plot_active_case_growth(canada_by_region, country_data)$data
+
+usa_by_state &lt;- list(
+  confirmed = us_wide2long(api_confirmed_regions, &quot;United States&quot;),
+  deaths = us_wide2long(api_deaths_regions, &quot;United States&quot;),
+  # recovered data is a mess lots of missing values
+  recoveries = us_wide2long(api_recoveries_regions, &quot;United States&quot;)
+  ) %&gt;% 
+  bind_rows(.id = &quot;variable&quot;) %&gt;% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) 
+usa_by_state2 &lt;- plot_active_case_growth(usa_by_state, country_data)$data</code></pre>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://github.com/rbind/cheap_shots">on Github</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

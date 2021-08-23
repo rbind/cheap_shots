@@ -1,0 +1,100 @@
+---
+title: "It's not a race, but: India vs. USA"
+author: "Drew Tyre"
+date: '2021-04-30'
+output:
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-india-vs-usa/figure-html/featured_image-1.png
+draft: yes
+slug: covid19-india-vs-usa
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+---
+
+
+[The first post in this series was on March 13, 2020](/post/covid-19_and_r/), in case you're just joining and
+want to see the progression. 
+
+DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.[^1] 
+
+The figures below are complex, so I'll highlight some
+features first. The y axis is now Active and Recovered cases / 100,000 population to make it easier to compare locales. The SOLID LINES are exponential growth models that assume
+the rate of increase is *constant*. The dashed lines are predictions from that
+model. The red rectangle shows the range of ICU bed capacity per 100,000 population.
+The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The 
+top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
+confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
+Note that the y axis is logarithmic. The x axis is days since the 20th case in each state.
+
+If the figure is blank there is insufficient data to build the model. 
+
+```{r featured_image, warning = FALSE, message = FALSE, echo = FALSE}
+library("tidyverse")
+library("lubridate")
+library("broom")
+library("forecast")
+savefilename <- "data/api_all_2020-04-20.Rda"
+# The following code is commented out and left in place. This isn't particularly good coding 
+# practice, but I don't want to have to rewrite it every day when I get the updated data.
+# I archive the data rather than pull fresh because this data source is very volatile, and
+# data that worked with this code yesterday might break today.
+# api_confirmed_countries <- read_csv("https://coviddata.github.io/coviddata/v1/countries/cases.csv")
+# api_deaths_countries <- read_csv("https://coviddata.github.io/coviddata/v1/countries/deaths.csv")
+# api_recoveries_countries <- read_csv("https://coviddata.github.io/coviddata/v1/countries/recoveries.csv")
+# api_confirmed_regions <- read_csv("https://coviddata.github.io/coviddata/v1/regions/cases.csv")
+# api_deaths_regions <- read_csv("https://coviddata.github.io/coviddata/v1/regions/deaths.csv")
+# api_recoveries_regions <- read_csv("https://coviddata.github.io/coviddata/v1/regions/recoveries.csv")
+# save(api_confirmed_countries, api_deaths_countries, api_recoveries_countries,
+#      api_confirmed_regions, api_deaths_regions, api_recoveries_regions,
+#      file = savefilename)
+load(savefilename)
+ 
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
+  mutate(start_date = mdy(start_date)) 
+
+source("R/jhu_helpers.R")
+source("R/plot_functions.R")
+
+usa_by_state <- list(
+  confirmed = us_wide2long(api_confirmed_regions, "United States"),
+  deaths = us_wide2long(api_deaths_regions, "United States"),
+  # recovered data is a mess lots of missing values
+  recoveries = us_wide2long(api_recoveries_regions, "United States")
+  ) %>% 
+  bind_rows(.id = "variable") %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) %>% 
+  filter(Region != "Virgin Islands")
+usa_template <- c(
+    "<details><summary>{{nm}}</summary>\n",
+    "```{r {{nm}}, echo = FALSE, warning = FALSE, message = FALSE}\n",
+    "tmp <- usa_by_state %>% filter(Region == \"{{nm}}\") %>% \n",
+    "plot_active_case_growth(x = ., country_data)\n",
+    "tmp$.plot\n",
+    "```\n",
+    "</details>\n"
+  )
+
+plots <- lapply(
+  unique(usa_by_state$Region), 
+  function(nm) knitr::knit_expand(text = usa_template)
+)
+```
+
+`r knitr::knit(text = unlist(plots))`
+
+The main drawback to this approach is that I can't keep up with individual interpretations.
+Please post questions in the comments below!
+
+
+
+[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd).
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.
+

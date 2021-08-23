@@ -52,7 +52,7 @@ enableGitInfo = false
   gravatar = false  # Get your avatar from Gravatar.com? (true/false)
   avatar = "tyre_mug_2019-01-20.jpg"  # Specify an avatar image (in `static/img/` folder) or delete value to disable avatar.
   email = "atyre2@unl.edu"
-  address = "416 Hardin Hall, 3310 Holdrege St, Lincoln, NE, 68583-0974"
+  address = "323 Hardin Hall, 3310 Holdrege St, Lincoln, NE, 68583-0974"
   office_hours = "email for appointment"
   phone = "+1 402 472 4054"
   skype = "drew_tyre"
@@ -100,7 +100,7 @@ enableGitInfo = false
   og_image = "/img/headers/tires_clover.jpg"
 
   # Twitter username (without @). Used when a vistor shares your site on Twitter.
-  twitter = "atiretoo"
+  twitter = "drewtyre"
 
   # Diplay a logo in navigation bar rather than title (optional).
   #   To enable, place an image in `static/img/` and reference its filename below. To disable, set the value to "".
@@ -253,7 +253,7 @@ enableGitInfo = false
   [[params.social]]
     icon = "twitter"
     icon_pack = "fab"
-    link = "https://twitter.com/atiretoo"
+    link = "https://twitter.com/drew_tyre"
 
   [[params.social]]
     icon = "instagram"

@@ -1,0 +1,263 @@
+---
+title: "A new baseline model for my plots"
+author: "Drew Tyre"
+date: '2020-04-08'
+output:
+  pdf_document: default
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-new-base-model_files/figure-html/featured_image-1.png
+draft: yes
+slug: covid19-new-base-model
+tags_include:
+  - R
+  - OPD
+  - COVID19
+categories: Research
+---
+
+
+
+[The first post in this series was March 13](/post/covid-19_and_r/), in case you're just joining and
+want to see the progression. I'm now posting the bottom line figures for each [state](/post/covid19-bottom-line-usa/) and [province](/post/covid19-bottom-line-canada/) on
+the same post that just gets updated each day.
+
+DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time, 
+how simple models compare with more complex models, and even how to compare
+different models.[^1] 
+
+
+
+```{r base_calculations, warning = FALSE, message = FALSE}
+library("tidyverse")
+library("lubridate")
+library("broom")
+library("forecast")
+library("EpiEstim")
+savefilename <- "data/api_all_2020-04-08.Rda"
+
+load(savefilename)
+
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
+  mutate(start_date = mdy(start_date)) 
+
+source("R/jhu_helpers.R")
+source("R/plot_functions.R")
+
+
+canada_by_region <- list(
+  confirmed = other_wide2long(api_confirmed_regions, countries = "Canada"),
+  deaths = other_wide2long(api_deaths_regions, countries = "Canada"),
+  # recovered data is a mess lots of missing values
+  recoveries = other_wide2long(api_recoveries_regions, countries = "Canada")
+  ) %>% 
+  bind_rows(.id = "variable") %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases)
+canada_by_region2 <- plot_active_case_growth(canada_by_region, country_data)$data
+
+usa_by_state <- list(
+  confirmed = us_wide2long(api_confirmed_regions, "United States"),
+  deaths = us_wide2long(api_deaths_regions, "United States"),
+  # recovered data is a mess lots of missing values
+  recoveries = us_wide2long(api_recoveries_regions, "United States")
+  ) %>% 
+  bind_rows(.id = "variable") %>% 
+  pivot_wider(names_from = variable, values_from = cumulative_cases) 
+usa_by_state2 <- plot_active_case_growth(usa_by_state, country_data)$data
+  
+
+
+```
+
+
+
+
+```{r featured_image, warning = FALSE, message = FALSE}
+usa_total <- usa_by_state2 %>%
+  group_by(Date) %>% 
+  summarize(confirmed_cases = sum(confirmed, na.rm = TRUE),
+            incident_cases = sum(incident_cases, na.rm = TRUE)) %>% 
+  mutate(log10_cc = log10(confirmed_cases),
+         log10_ic = log10(incident_cases),
+         # match how autoplot is representing the x axis?
+         Time = as.numeric(Date),
+         n_obs = n(),
+         Training = Time < floor(n_obs*0.8) + min(Time)) %>% 
+  filter(log10_ic > 0)
+training_data <- filter(usa_total, Training)
+expert_consensus <- tibble(
+  Date = ymd("2020-04-05"),
+  fit = 386500,
+  lpl = 280500,
+  hpl = 581500
+)
+usat_ts <- zoo::zoo(pull(training_data, log10_ic), pull(training_data, Date))
+usat_ts_fit <- auto.arima(usat_ts, seasonal = FALSE)
+usat_forecast <- forecast(usat_ts_fit, h = 14) %>% 
+  as_tibble() %>% 
+  mutate(Date = seq(max(pull(training_data, Date))+1, max(pull(training_data, Date)) + 14, by = "day"),
+         fit = 10^`Point Forecast`,
+         l80pl = 10^`Lo 80`,
+         h80pl = 10^`Hi 80`,         
+         l95pl = 10^`Lo 95`,
+         h95pl = 10^`Hi 95`)
+p1 <- ggplot(data = usa_total)  + scale_y_log10() +
+  geom_point(mapping = aes(x = Date, y = incident_cases))+
+  geom_line(data = usat_forecast,
+            mapping = aes(x = Date, y = fit), linetype = 2)+
+  geom_ribbon(data = usat_forecast,
+              mapping = aes(x = Date, ymin = l80pl, ymax = h80pl), alpha = 0.2) +
+    geom_ribbon(data = usat_forecast,
+              mapping = aes(x = Date, ymin = l95pl, ymax = h95pl), alpha = 0.2) +
+        labs(y = "Incident cases", 
+           title = paste0("Total Incident cases in USA"),
+           x = "Date",
+           subtitle = "Dashed line: ARIMA(0,2,0) forecast cases with (80%, 95%) prediction intervals.",
+           caption = paste("Source data: https://coviddata.github.io/coviddata/ downloaded ",
+                           format(file.mtime(savefilename), usetz = TRUE),
+                           "\n Unofficial, not peer reviewed results.",
+                           "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))
+p1
+```
+
+OK, now we have to simulate form that model.
+```{r, warning = FALSE}
+set.seed(98987449) # fix the random number seed so results are reproducible.
+onerep <- function(id, fit, Dates){
+  result <- simulate(fit, nsim = nrow(Dates))
+  result <- bind_cols(Dates, as_tibble(result)) %>% 
+    mutate(incident_cases = 10^x)
+  result
+}
+results <- map_dfr(1:10, onerep, fit = usat_ts_fit, Dates = usat_forecast[,"Date"], .id = "rep")
+p1 + 
+  geom_line(data = results, mapping = aes(x = Date, y = incident_cases, group = rep))
+```
+
+OK, that looks cool. You can see the effect of the autocorrelation within each path.  Now we figure out how to do the cumulative sum and plot that.
+
+```{r}
+results <- results %>%
+  group_by(rep) %>% 
+  mutate(confirmed_cases = cumsum(incident_cases)+ 
+           training_data[nrow(training_data),"confirmed_cases", drop = TRUE])
+ggplot(data = usa_total)  + scale_y_log10() +
+  geom_point(mapping = aes(x = Date, y = confirmed_cases))+
+geom_line(data = results, mapping = aes(x = Date, y = confirmed_cases, group = rep))  +
+  # geom_line(data = usat_forecast,
+  #           mapping = aes(x = Date, y = fit), linetype = 2)+
+  # geom_ribbon(data = usat_forecast,
+  #             mapping = aes(x = Date, ymin = l80pl, ymax = h80pl), alpha = 0.2) +
+  #   geom_ribbon(data = usat_forecast,
+  #             mapping = aes(x = Date, ymin = l95pl, ymax = h95pl), alpha = 0.2) +
+        labs(y = "Incident cases", 
+           title = paste0("Total Incident cases in USA"),
+           x = "Date",
+           subtitle = "Dashed line: ARIMA(0,2,0) forecast cases with (80%, 95%) prediction intervals.",
+           caption = paste("Source data: https://coviddata.github.io/coviddata/ downloaded ",
+                           format(file.mtime(savefilename), usetz = TRUE),
+                           "\n Unofficial, not peer reviewed results.",
+                           "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))
+```
+
+OK, this is better than [yesterday's time series forecast of the cumulative number of cases](/post/covid19-me-vs-experts/).
+The number of cumulative cases does not go down. But I can see a different problem looming -- 
+this model is going to have an upper bound that is far too high, because it doesn't account
+for the fact that there are a limited number of humans. 
+
+Now we need a bunch of simulations, and then
+summarize them by date to get median and prediction intervals.
+
+```{r}
+results <- map_dfr(1:100, onerep, fit = usat_ts_fit, Dates = usat_forecast[,"Date"], .id = "rep")%>%
+  group_by(rep) %>% 
+  mutate(confirmed_cases = cumsum(incident_cases)+ 
+           training_data[nrow(training_data),"confirmed_cases", drop = TRUE]) %>% 
+  group_by(Date) %>% 
+  summarize(fit = median(confirmed_cases),
+            l95pl = quantile(confirmed_cases, probs = 0.025),
+            l80pl = quantile(confirmed_cases, probs = 0.1),
+            h80pl = quantile(confirmed_cases, probs = 0.9),
+            h95pl = quantile(confirmed_cases, probs = 0.975))
+
+ggplot(data = usa_total)  + scale_y_log10() +
+  geom_point(mapping = aes(x = Date, y = confirmed_cases))+
+geom_line(data = results, mapping = aes(x = Date, y = fit))  +
+  geom_ribbon(data = results,
+              mapping = aes(x = Date, ymin = l80pl, ymax = h80pl), alpha = 0.2) +
+    geom_ribbon(data = results,
+              mapping = aes(x = Date, ymin = l95pl, ymax = h95pl), alpha = 0.2) +
+        labs(y = "Incident cases", 
+           title = paste0("Total Incident cases in USA"),
+           x = "Date",
+           subtitle = "Dashed line: ARIMA(0,2,0) forecast cases with (80%, 95%) prediction intervals.",
+           caption = paste("Source data: https://coviddata.github.io/coviddata/ downloaded ",
+                           format(file.mtime(savefilename), usetz = TRUE),
+                           "\n Unofficial, not peer reviewed results.",
+                           "\n Copyright Andrew Tyre 2020. Distributed with MIT License."))
+```
+
+As I mentioned above, the upper bound is far too high: reaches out to 10 billion, which is more
+than the number of people on the planet, let alone in the USA! The reason for this failure is that
+the simple model does not account for the slowdown that will occur as a larger fraction of 
+the population is infected.
+
+# Actual Epidemiological Estimates
+
+The problem with throwing out a model is that one must choose a 
+different model. I'm still interested in simple models. So what I want to do now is focus on estimation
+models developed by actual expert Epidemiologists. In particular, there is a model that calculates
+$R_e$, the effective reproductive number. Recall that $R_0$, the basic reproductive number, tells us
+how contagious a given disease is. The Effective reproductive number is analogous, in that it
+estimates the current level of contagion, given the actual conditions on the ground including
+public health efforts to reduce transmission, AKA social distancing. If $R_e$ is below 1, then
+our efforts will ultimately drive new cases to zero. So this is quite a useful number to know,
+especially if we want to be able to back off on social distancing. Doing that before $R_e$ is 
+consistently below 1 is inviting a resurgence of cases. 
+
+```{r}
+incidence <- usa_total %>% 
+  select(dates = Date, I = incident_cases)
+eR <- estimate_R(incidence, method = "uncertain_si", 
+           config = make_config(mean_si = 5, std_mean_si = 2.0, min_mean_si = 2.3, max_mean_si = 8.4,
+                                std_si = 1.5, std_std_si = 1.0, min_std_si = 0.5, max_std_si = 4.0))
+plot_Ri <- function(estimate_R_obj) {
+    p_I <- plot(estimate_R_obj, "incid", add_imported_cases = TRUE)  # plots the incidence
+    p_SI <- plot(estimate_R_obj, "SI")  # plots the serial interval distribution
+    p_Ri <- plot(estimate_R_obj, "R")
+    return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
+}
+plot_Ri(eR)
+```
+
+The total US epidemic curve from mid march to the present shows signs of flattening off.
+It is hard to see on this plot because of the exaggerated upper bound in the earliest weeks,
+but lower bound $R_e > 1$ as of the week ending April 8.  
+
+What does Nebraska look like? 
+
+```{r}
+incidence <- usa_by_state2 %>%
+  filter(Region == "Nebraska") %>% 
+  select(dates = Date, I = incident_cases)
+eR <- estimate_R(incidence, method = "uncertain_si", 
+           config = make_config(mean_si = 5, std_mean_si = 2.0, min_mean_si = 2.3, max_mean_si = 8.4,
+                                std_si = 1.5, std_std_si = 1.0, min_std_si = 0.5, max_std_si = 4.0))
+plot_Ri <- function(estimate_R_obj) {
+    p_I <- plot(estimate_R_obj, "incid", add_imported_cases = TRUE)  # plots the incidence
+    p_SI <- plot(estimate_R_obj, "SI")  # plots the serial interval distribution
+    p_Ri <- plot(estimate_R_obj, "R")
+    return(gridExtra::grid.arrange(p_I, p_SI, p_Ri, ncol = 1))
+}
+plot_Ri(eR)
+```
+
+There was a bit of a surge upwards in the weeks ending around the start of April. I've
+been assuming that was due to an increase in testing around that time. Lower bound $R_e > 1$, 
+so we're not trying hard enough yet.
+
+[^1]: Code not shown in the post can be found [on Github](https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid19-different-perspective.Rmd).
+
+
