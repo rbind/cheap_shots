@@ -1,0 +1,381 @@
+---
+title: "It's not a race, but: India vs. USA"
+author: "Drew Tyre"
+date: '2021-04-30'
+output:
+  html_document:
+    code_folding: hide
+  word_document: default
+og_image: /post/covid19-india-vs-usa/figure-html/featured_image-1.png
+draft: yes
+slug: covid19-india-vs-usa
+tags_include:
+- R
+- OPD
+- COVID19
+categories: Research
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p><a href="/post/covid-19_and_r/">The first post in this series was on March 13, 2020</a>, in case you’re just joining and
+want to see the progression.</p>
+<p>DISCLAIMER: These unofficial results are not peer reviewed, and should not be
+treated as such. My goal is to learn about forecasting in real time,
+how simple models compare with more complex models, and even how to compare
+different models.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>The figures below are complex, so I’ll highlight some
+features first. The y axis is now Active and Recovered cases / 100,000 population to make it easier to compare locales. The SOLID LINES are exponential growth models that assume
+the rate of increase is <em>constant</em>. The dashed lines are predictions from that
+model. The red rectangle shows the range of ICU bed capacity per 100,000 population.
+The lower limit assumes all reported cases need ICU care (unlikely, but worst case). The
+top of the rectangle assumes only 5% of cases need ICU support. That best case assumes that the
+confirmed cases are a good representation of the size of the outbreak (also unlikely, unfortunately).
+Note that the y axis is logarithmic. The x axis is days since the 20th case in each state.</p>
+<p>If the figure is blank there is insufficient data to build the model.</p>
+<details>
+<summary>
+Alabama
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Alabama-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Alaska
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Alaska-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+American Samoa
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/American%20Samoa-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Arizona
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Arizona-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Arkansas
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Arkansas-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+California
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/California-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Colorado
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Colorado-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Connecticut
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Connecticut-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Delaware
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Delaware-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+District of Columbia
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/District%20of%20Columbia-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Florida
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Florida-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Georgia
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Georgia-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Guam
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Guam-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Hawaii
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Hawaii-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Idaho
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Idaho-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Illinois
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Illinois-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Indiana
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Indiana-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Iowa
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Iowa-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Kansas
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Kansas-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Kentucky
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Kentucky-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Louisiana
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Louisiana-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Maine
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Maine-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Maryland
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Maryland-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Massachusetts
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Massachusetts-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Michigan
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Michigan-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Minnesota
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Minnesota-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Mississippi
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Mississippi-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Missouri
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Missouri-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Montana
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Montana-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Nebraska
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Nebraska-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Nevada
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Nevada-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+New Hampshire
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/New%20Hampshire-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+New Jersey
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/New%20Jersey-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+New Mexico
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/New%20Mexico-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+New York
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/New%20York-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+North Carolina
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/North%20Carolina-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+North Dakota
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/North%20Dakota-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Northern Mariana Islands
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Northern%20Mariana%20Islands-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Ohio
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Ohio-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Oklahoma
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Oklahoma-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Oregon
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Oregon-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Pennsylvania
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Pennsylvania-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Puerto Rico
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Puerto%20Rico-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Recovered
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Recovered-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Rhode Island
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Rhode%20Island-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+South Carolina
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/South%20Carolina-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+South Dakota
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/South%20Dakota-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Tennessee
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Tennessee-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Texas
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Texas-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Utah
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Utah-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Vermont
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Vermont-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Virginia
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Virginia-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Washington
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Washington-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+West Virginia
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/West%20Virginia-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Wisconsin
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Wisconsin-1.png" width="672" /></p>
+</details>
+<details>
+<summary>
+Wyoming
+</summary>
+<p><img src="/post/covid19-india-vs-usa_files/figure-html/Wyoming-1.png" width="672" /></p>
+</details>
+<p>The main drawback to this approach is that I can’t keep up with individual interpretations.
+Please post questions in the comments below!</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_IX.Rmd">on Github</a>.
+This post benefited from comments by Ramona Sky, Kelly Helm Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
