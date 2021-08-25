@@ -1,0 +1,73 @@
+---
+title: "Checking linear model assumptions"
+author: "Drew Tyre"
+date: '2021-08-25'
+output:
+  html_document:
+    code_folding: hide
+  pdf_document: default
+  word_document: default
+og_image: /post/covid19-dawson-county_files/figure-html/featured_image-1.png
+draft: yes
+slug: checking-assumptions
+tags_include:
+  - R
+categories: Teaching
+---
+
+Many years ago I started making videos of my lectures for my ecological statistics course. I still use those early videos, [now on YouTube](https://youtube.com/playlist?list=PLUFo9SxNSLuaipofuL20_Ynd3QMFTLj18),
+but a recent comment on [the checking assumptions video](https://youtu.be/E27HcS9QaT0) made me realize that I somehow misplaced 
+the code that I used to create the figures in the powerpoints 
+of the early videos.
+
+Rather than try to reproduce the old code in a non-public way, I 
+thought I would redo it here so it is easy to share. Plus, I get 
+to show of the new function my students and I wrote for making 
+nice residual plots with ggplot2. The exercise uses the horseshoe crab satellite male data from Agresti's book on categorical data analysis.
+
+```{r setup, message=FALSE}
+# install.packages("glmbb") # install Ben Bolker's package 
+data(crabs, package = "glmbb")
+library("tidyverse")
+library("broom")
+library("NRES803")
+```
+
+The video doesn't show it (it's in another video), but we first need to 
+fit a linear model of female weight in grams as a function of carapace width in cm.
+
+```{r}
+hsc1 <- lm(weight~width, data = crabs)
+summary(hsc1)
+```
+
+The first figure in the video is a histogram of the residuals, with 
+the normal distribution superimposed.
+
+```{r}
+hist(residuals(hsc1), main = "Histogram of Residuals",
+     freq = FALSE, col = NULL,
+     xlab = "Residuals")
+# add the normal curve with the residual standard error from model
+curve(dnorm(x, sd = 264.1), from = -1000, to =1000, add = TRUE)
+```
+
+In the video I also mention the results of a Kolmogorov-Smirnov
+test of the residuals vs. a normal distribution.
+
+```{r}
+ks.test(residuals(hsc1), "pnorm", 0, 264.1)
+```
+
+Then there's a quantile-quantile plot.
+
+```{r}
+qqnorm(residuals(hsc1))
+qqline(residuals(hsc1))
+```
+
+
+[^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
+
+
+
