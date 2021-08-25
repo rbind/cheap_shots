@@ -100,7 +100,7 @@ enableGitInfo = false
   og_image = "/img/headers/tires_clover.jpg"
 
   # Twitter username (without @). Used when a vistor shares your site on Twitter.
-  twitter = "drewtyre"
+  twitter = "drew_tyre"
 
   # Diplay a logo in navigation bar rather than title (optional).
   #   To enable, place an image in `static/img/` and reference its filename below. To disable, set the value to "".
