@@ -140,7 +140,7 @@
   {{ if .Params.og_image }}
   <meta property="og:image" content="http://drewtyre.rbind.io{{ .Params.og_image | relURL }}"/>
   <meta property="og:image:secure_url" content="{{ .Params.og_image | absURL }}"/>
-  <meta property="twitter:image" content="{{ .Params.og_image | absURL }}"/>
+  <meta property="twitter:image" content="http://drewtyre.rbind.io{{ .Params.og_image | relURL }}"/>
   {{ else }}
   <meta property="og:image" content="http://drewtyre.rbind.io{{ .Site.Params.og_image | relURL }}"/>
   <meta property="og:image:secure_url" content="{{ .Site.Params.og_image | absURL }}"/>
