@@ -137,24 +137,24 @@
     {{ $og_image = "img/icon-192.png" | absURL }}
     {{ $twitter_card = "summary" }}
   {{ end }}
-  {{ if .Params.og_image }}
-  <meta property="og:image" content="http://drewtyre.rbind.io{{ .Params.og_image | relURL }}"/>
-  <meta property="og:image:secure_url" content="{{ .Params.og_image | absURL }}"/>
-  <meta property="twitter:image" content="http://drewtyre.rbind.io{{ .Params.og_image | relURL }}"/>
-  {{ else }}
-  <meta property="og:image" content="http://drewtyre.rbind.io{{ .Site.Params.og_image | relURL }}"/>
-  <meta property="og:image:secure_url" content="{{ .Site.Params.og_image | absURL }}"/>
-  {{ end }}
   <meta property="twitter:card" content="{{ $twitter_card }}">
   {{ with .Site.Params.twitter }}
   <meta property="twitter:site" content="@{{ . }}">
   <meta property="twitter:creator" content="@{{ . }}">
   {{ end }}
+  {{ if .Params.og_image }}
+  <meta property="og:image" content="https://drewtyre.rbind.io{{ .Params.og_image | relURL }}"/>
+  <meta property="og:image:secure_url" content="{{ .Params.og_image | absURL }}"/>
+  <meta property="twitter:image" content="https://drewtyre.rbind.io{{ .Params.og_image | relURL }}"/>
+  {{ else }}
+  <meta property="og:image" content="https://drewtyre.rbind.io{{ .Site.Params.og_image | relURL }}"/>
+  <meta property="og:image:secure_url" content="{{ .Site.Params.og_image | absURL }}"/>
+  {{ end }}
   <meta property="og:site_name" content="{{ .Site.Title }}">
   <meta property="og:url" content="{{ .Permalink }}">
   <meta property="og:title" content="{{ if not .IsHome }}{{ .Title }} | {{ end }}{{ .Site.Title }}">
   <meta property="og:description" content="{{ $desc }}">
-  {{- with $og_image }}<meta property="og:image" content="{{ . }}">{{end}}
+
   <meta property="og:locale" content="{{ .Site.LanguageCode | default "en-us" }}">
   {{ if .IsPage }}
   {{ if not .PublishDate.IsZero }}<meta property="article:published_time" content="{{ .PublishDate.Format "2006-01-02T15:04:05-07:00" | safeHTML }}">
