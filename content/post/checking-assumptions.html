@@ -1,0 +1,146 @@
+---
+title: "Checking linear model assumptions"
+author: "Drew Tyre"
+date: '2021-08-25'
+output:
+  html_document:
+    code_folding: hide
+  pdf_document: default
+  word_document: default
+og_image: /post/checking-assumptions_files/figure-html/featured_image-1.png
+draft: yes
+slug: checking-assumptions
+tags_include:
+  - R
+categories: Teaching
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Many years ago I started making videos of my lectures for my ecological statistics course. I still use those early videos, <a href="https://youtube.com/playlist?list=PLUFo9SxNSLuaipofuL20_Ynd3QMFTLj18">now on YouTube</a>,
+but a recent comment on <a href="https://youtu.be/E27HcS9QaT0">the checking assumptions video</a> made me realize that I somehow misplaced
+the code that I used to create the figures in the powerpoints
+of the early videos. <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>Rather than try to reproduce the old code in a non-public way, I
+thought I would redo it here so it is easy to share. Plus, I get
+to show of the new function my students and I wrote for making
+nice residual plots with ggplot2. The exercise uses the horseshoe crab satellite male data from Agresti’s book on categorical data analysis.
+If you would like the explanations of the figures have a look at the
+video.</p>
+<pre class="r"><code># install.packages(&quot;glmbb&quot;) # install Ben Bolker&#39;s package 
+data(crabs, package = &quot;glmbb&quot;)
+library(&quot;tidyverse&quot;)
+library(&quot;broom&quot;)
+library(&quot;NRES803&quot;) # devtools::install_github(&quot;atyre2/NRES803&quot;)</code></pre>
+<p>The video doesn’t show it (it’s in another video), but we first need to
+fit a linear model of female weight in grams as a function of carapace width in cm.</p>
+<pre class="r"><code>hsc1 &lt;- lm(weight~width, data = crabs)
+summary(hsc1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = weight ~ width, data = crabs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1186.00  -116.15    -5.13   150.76  1015.50 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -3944.019    255.027  -15.46   &lt;2e-16 ***
+## width         242.642      9.666   25.10   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 267.4 on 171 degrees of freedom
+## Multiple R-squared:  0.7865, Adjusted R-squared:  0.7853 
+## F-statistic: 630.1 on 1 and 171 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>The first figure in the video is a histogram of the residuals, with
+the normal distribution superimposed.</p>
+<pre class="r"><code>hist(residuals(hsc1), main = &quot;Histogram of Residuals&quot;,
+     freq = FALSE, col = NULL,
+     xlab = &quot;Residuals&quot;)
+# add the normal curve with the residual standard error from model
+curve(dnorm(x, sd = 264.1), from = -1000, to =1000, add = TRUE)</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>In the video I also mention the results of a Kolmogorov-Smirnov
+test of the residuals vs. a normal distribution.</p>
+<pre class="r"><code>ks.test(residuals(hsc1), &quot;pnorm&quot;, 0, 264.1)</code></pre>
+<pre><code>## Warning in ks.test(residuals(hsc1), &quot;pnorm&quot;, 0, 264.1): ties should not be
+## present for the Kolmogorov-Smirnov test</code></pre>
+<pre><code>## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  residuals(hsc1)
+## D = 0.089237, p-value = 0.1271
+## alternative hypothesis: two-sided</code></pre>
+<p>Then there’s a quantile-quantile plot.</p>
+<pre class="r"><code>qqnorm(residuals(hsc1))
+qqline(residuals(hsc1))</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Next is the output of the <code>plot()</code> on a linear model object.</p>
+<pre class="r"><code>old.par &lt;- par(mfrow = c(2,2))
+plot(hsc1)</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>par(old.par)</code></pre>
+<p>My students and I put together a function that uses ggplot2
+to make something similar. I like it because it includes
+confidence regions, which makes it easier to judge if the
+smooth spline is “flat”.</p>
+<pre class="r"><code>check_assumptions(hsc1)</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/featured-image-1.png" width="672" /></p>
+<p>One thing that plot makes clear is the presence of several
+outliers. In <a href="https://www.google.com/books/edition/The_Ecological_Detective/katmvQDi8PMC?hl=en">The Ecological Detective</a>, Ray Hilborn and Marc Mangel
+have an entire section entitled “Don’t let outliers ruin your life”.
+In that spirit, the next few plots identify and eliminate the
+outliers, and then refit the model. I’m going to switch
+over to using <code>broom</code> functions here, because too easy.
+I think in the video I remove the points with the largest
+absolute values of the residuals, which isn’t necessarily
+a good definition of an outlier.</p>
+<pre class="r"><code>crabs &lt;- augment(hsc1) # add model diagnostics 
+#which points have biggest residuals
+crabs |&gt;   ## native pipe!!
+  rownames_to_column()|&gt;
+  arrange(desc(abs(.resid))) |&gt;
+  head()</code></pre>
+<pre><code>## # A tibble: 6 x 9
+##   rowname weight width .fitted .resid    .hat .sigma .cooksd .std.resid
+##   &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;
+## 1 69        1300  26.5   2486. -1186. 0.00583   252.  0.0581      -4.45
+## 2 26        1300  26.2   2413. -1113. 0.00579   254.  0.0508      -4.18
+## 3 79        1200  25.7   2292. -1092. 0.00625   255.  0.0528      -4.10
+## 4 141       5200  33.5   4184.  1016. 0.0736    256.  0.618        3.95
+## 5 14        1850  21     1151.   699. 0.0425    263.  0.158        2.67
+## 6 91        3850  29.7   3262.   588. 0.0209    264.  0.0526       2.22</code></pre>
+<p>So rows 69, 26, 79, and 141 have large residuals, more than 50%
+larger than the remainder.</p>
+<pre class="r"><code>outliers &lt;- c(26, 69, 79, 141)
+hsc2 &lt;- lm(weight~width, data = crabs[-outliers,])
+plot(weight~width, data = crabs)
+points(crabs[outliers,2, drop = TRUE], crabs[outliers,1, drop = TRUE], pch = &quot;x&quot;, col = &quot;red&quot;)
+abline(hsc2, lwd = 2)
+abline(hsc1, lty = 2)</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>The “outliers” are identified with the red ’x’s. The
+original fit is given with a dashed line. How do the
+residual plots look with the outliers removed?</p>
+<pre class="r"><code>qqnorm(residuals(hsc2))
+qqline(residuals(hsc2))</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>and finally checking for non-linearity by plotting
+residuals against the independent variable width.</p>
+<pre class="r"><code>plot(crabs[-outliers, &quot;width&quot;, drop = TRUE], residuals(hsc2), 
+     xlab = &quot;width [cm]&quot;, ylab = &quot;Residuals&quot;,
+     main = &quot;Residuals vs. Independent&quot;)
+abline(h = 0, lwd = 2, lty = 2)</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>and finally with the function from my package.</p>
+<pre class="r"><code>check_assumptions(hsc2)</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://github.com/rbind/cheap_shots">on Github</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
