@@ -8,7 +8,7 @@ output:
   pdf_document: default
   word_document: default
 og_image: /post/checking-assumptions_files/figure-html/featured_image-1.png
-draft: yes
+draft: no
 slug: checking-assumptions
 tags_include:
   - R
@@ -128,7 +128,7 @@ residual plots look with the outliers removed?</p>
 <pre class="r"><code>qqnorm(residuals(hsc2))
 qqline(residuals(hsc2))</code></pre>
 <p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>and finally checking for non-linearity by plotting
+<p>and checking for non-linearity by plotting
 residuals against the independent variable width.</p>
 <pre class="r"><code>plot(crabs[-outliers, &quot;width&quot;, drop = TRUE], residuals(hsc2), 
      xlab = &quot;width [cm]&quot;, ylab = &quot;Residuals&quot;,
@@ -138,6 +138,15 @@ abline(h = 0, lwd = 2, lty = 2)</code></pre>
 <p>and finally with the function from my package.</p>
 <pre class="r"><code>check_assumptions(hsc2)</code></pre>
 <p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>The scale-location plot in the bottom left also has a “guide” line
+at ~0.82, which turns out to be <a href="/post/scale-location/">the expected value of the
+square root of the absolute value of the standardized residuals</a>.</p>
+<p>My students and I also developed a function that automatically
+plots the residuals against all the independent variables to
+check for possible non-linearities.</p>
+<pre class="r"><code>check_nonlinear(hsc2)</code></pre>
+<p><img src="/post/checking-assumptions_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Hm. Clearly need to update that into ggplot for nice confidence regions!</p>
 <div class="footnotes">
 <hr />
 <ol>

@@ -8,7 +8,7 @@ output:
   pdf_document: default
   word_document: default
 og_image: /post/checking-assumptions_files/figure-html/featured_image-1.png
-draft: yes
+draft: no
 slug: checking-assumptions
 tags_include:
   - R
@@ -127,7 +127,7 @@ qqnorm(residuals(hsc2))
 qqline(residuals(hsc2))
 ```
 
-and finally checking for non-linearity by plotting 
+and checking for non-linearity by plotting 
 residuals against the independent variable width.
 
 ```{r}
@@ -142,6 +142,20 @@ and finally with the function from my package.
 ```{r}
 check_assumptions(hsc2)
 ```
+
+The scale-location plot in the bottom left also has a "guide" line
+at ~0.82, which turns out to be [the expected value of the 
+square root of the absolute value of the standardized residuals](/post/scale-location/). 
+
+My students and I also developed a function that automatically
+plots the residuals against all the independent variables to 
+check for possible non-linearities.
+
+```{r}
+check_nonlinear(hsc2)
+```
+
+Hm. Clearly need to update that into ggplot for nice confidence regions!
 
 [^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
 
