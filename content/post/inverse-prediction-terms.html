@@ -1,0 +1,72 @@
+---
+title: "Inverse prediction: terms prediction type"
+author: "Drew Tyre"
+date: '2020-08-19'
+output:
+  html_document:
+    code_folding: hide
+  pdf_document: default
+  word_document: default
+og_image: /post/inverse-prediction-terms_files/figure-html/featured_image-1.png
+draft: yes
+slug: inverse-prediction-terms
+tags_include:
+  - R
+categories: Teaching
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>One of the exercises I make Ecological Statistics students do is
+<a href="/classes/NRES803/Week_2/homework_2/">work backwards from a given value of the dependent variable in a regression
+to the corresponding values of the independent variable</a>. I usually just get them
+to eyeball it from a table of predictions. But today a student suggested the
+“terms” type of prediction might be the answer. Unfortunately I’ve never
+tried to figure out what type = “terms” actually does<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. What is this magic?</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+df &lt;- tibble(x1 = 1:10,
+             x2 = rep(1:5, each = 2),
+             y1 = -5 + 1 * x1 + rnorm(10),
+             y2 = 0 + 1 * x1 - 1 * x2 + rnorm(10),
+             y3 = 25 -10 * x1 + 1 * x1^2) 
+mod1 &lt;- lm(y1~x1, data = df)
+mod2 &lt;- lm(y1~x1 + x2, data = df)
+mod3 &lt;- lm(y1~x1 + x1^2, data = df)</code></pre>
+<pre class="r"><code>ggplot(data = df) + 
+  geom_point(mapping = aes(x = x1, y = y1)) +
+  geom_smooth(mapping = aes(x = x1, y = y1), method = &quot;lm&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/post/inverse-prediction-terms_files/figure-html/featured-1.png" width="672" /></p>
+<p>OK, so we’ve got three models, one with a single predictor, one with two predictors, and one with a polynomial model. When there is a single
+predictor, there is only a single value of the independent variable that
+gives that value of the dependent variable. In mathematical terms the linear
+function is “invertible” – you can run it both ways and get a unique
+answer.</p>
+<pre class="r"><code>predict(mod1, type = &quot;terms&quot;)</code></pre>
+<pre><code>##            x1
+## 1  -5.0070087
+## 2  -3.8943401
+## 3  -2.7816715
+## 4  -1.6690029
+## 5  -0.5563343
+## 6   0.5563343
+## 7   1.6690029
+## 8   2.7816715
+## 9   3.8943401
+## 10  5.0070087
+## attr(,&quot;constant&quot;)
+## [1] 0.4617342</code></pre>
+<p>OK, if that was useful for “inverse prediction” I expect it would be related to the values of x1, but it isn’t. It’s the fitted value (y) plus a constant. A bit of digging online reveals that it is
+the fitted value for that particular term, after centering the
+independent variable. The constant is related to the centering process.
+In all the digging I couldn’t figure out
+what one uses the terms type for. I’m sure it’s good for something, I
+just don’t know what! Suggestions in the comments please.</p>
+<p>So the question of easily doing inverse prediction is unanswered. Stay tuned for part 2 though, I did learn something in my digging!</p>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Code not shown in the post can be found <a href="https://github.com/rbind/cheap_shots">on Github</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

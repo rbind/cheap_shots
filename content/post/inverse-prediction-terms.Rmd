@@ -1,15 +1,15 @@
 ---
-title: "Inverse prediction"
+title: "Inverse prediction: terms prediction type"
 author: "Drew Tyre"
 date: '2020-08-19'
 output:
-  pdf_document: default
   html_document:
     code_folding: hide
+  pdf_document: default
   word_document: default
-og_image: /post/covid19-dawson-county_files/figure-html/featured_image-1.png
+og_image: /post/inverse-prediction-terms_files/figure-html/featured_image-1.png
 draft: yes
-slug: inverse-prediction
+slug: inverse-prediction-terms
 tags_include:
   - R
 categories: Teaching
@@ -32,6 +32,13 @@ df <- tibble(x1 = 1:10,
 mod1 <- lm(y1~x1, data = df)
 mod2 <- lm(y1~x1 + x2, data = df)
 mod3 <- lm(y1~x1 + x1^2, data = df)
+
+```
+
+```{r featured}
+ggplot(data = df) + 
+  geom_point(mapping = aes(x = x1, y = y1)) +
+  geom_smooth(mapping = aes(x = x1, y = y1), method = "lm")
 ```
 
 OK, so we've got three models, one with a single predictor, one with two predictors, and one with a polynomial model. When there is a single 
@@ -44,8 +51,14 @@ answer.
 predict(mod1, type = "terms")
 ```
 
-OK, if that was useful for "inverse prediction" it would be related to the values of x1, but it isn't. It's the fitted value (y) plus a constant. 
+OK, if that was useful for "inverse prediction" I expect it would be related to the values of x1, but it isn't. It's the fitted value (y) plus a constant. A bit of digging online reveals that it is
+the fitted value for that particular term, after centering the
+independent variable. The constant is related to the centering process. 
+In all the digging I couldn't figure out
+what one uses the terms type for. I'm sure it's good for something, I 
+just don't know what! Suggestions in the comments please.
 
+So the question of easily doing inverse prediction is unanswered. Stay tuned for part 2 though, I did learn something in my digging!
 
 [^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
 
