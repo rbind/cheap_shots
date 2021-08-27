@@ -8,7 +8,7 @@ output:
   pdf_document: default
   word_document: default
 og_image: /post/inverse-prediction-terms_files/figure-html/featured_image-1.png
-draft: yes
+draft: no
 slug: inverse-prediction-terms
 tags_include:
   - R
