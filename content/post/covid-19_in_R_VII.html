@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 and R Part VII"
 author: "Drew Tyre"
-date: "2020-03-19"
+date: "2021-08-30"
 output:
   word_document: default
   html_document:
@@ -16,6 +16,7 @@ categories: Research
 og_image: /post/covid-19_in_r_vii_files/figure-html/featured_image-1.png
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>Wednesday’s number of new cases in the USA was still inside the prediction interval,
@@ -32,7 +33,7 @@ dramatically increases the peak number of sick people. If you’re lucky to be
 in a low risk group, you can still spread the virus. Although your symptoms are mild,
 the person you hand the virus off to could experience much worse symptoms. You don’t
 have to hermetically seal your house. I like this graphic:
-<img src="http://rutherfordcountytn.gov/img/2.png" alt="social distancing suggestions" /></p>
+<img src="https://rutherfordcountytn.gov/img/2.png" alt="social distancing suggestions" /></p>
 <p><a href="/post/covid-19_and_r/">This all started a week ago</a>, in case you’re just joining.</p>
 <div id="the-bottom-line" class="section level1">
 <h1>The bottom line</h1>
@@ -86,10 +87,14 @@ abbreviations to the state names in the state rows. So that took an hour. I took
 to follow a suggestion from brilliant quantitative ecologist JB and put the data munging code that
 isn’t changing into a separate script file. And then that fancy new code broke everything in my
 base plot, so spent another hour figuring out how I broke everything.</p>
-<pre class="r"><code>us_by_state &lt;- us_confirmed_long(jhu_wide) # see, fancy! 
-canada_by_prov &lt;- other_confirmed_long(jhu_wide, countries = &quot;Canada&quot;)
+<pre class="r"><code>us_by_state &lt;- us_wide2long_old(jhu_wide,&quot;USA&quot;) # see, fancy! </code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X12&#39; [12]</code></pre>
+<pre class="r"><code>canada_by_prov &lt;- other_wide2long_old(jhu_wide, countries = &quot;Canada&quot;)
+# reload the country data because I messed it up above
+country_data &lt;- read_csv(&quot;data/countries_covid-19.csv&quot;) %&gt;% 
+  mutate(start_date = mdy(start_date))
 all_by_province &lt;- bind_rows(us_by_state, canada_by_prov) %&gt;% 
-  left_join(country_data) %&gt;% 
+  left_join(country_data, by = c(&quot;province&quot; =&quot;Region&quot;)) %&gt;% 
   group_by(country_region, province) %&gt;% 
   mutate(incident_cases = c(0, diff(cumulative_cases)),
          max_cases = max(cumulative_cases)) %&gt;% 
@@ -188,7 +193,7 @@ there needs to be a kind of sliding window sum of the new cases.</p>
 <hr />
 <ol>
 <li id="fn1"><p>Code not shown in the post can be found <a href="https://raw.githubusercontent.com/rbind/cheap_shots/master/content/post/covid-19_in_R_VII.Rmd">on Github</a>.
-This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p><a href="https://mfr.osf.io/render?url=https://osf.io/fd4rh/?view_only=c2f00dfe3677493faa421fc2ea38e295%26fbclid=IwAR2XQCAUzqpOWtdkLKmaIiorv5uih9RBg0BreAgSnYd2Qq9BnjWxyIf0zAk%26direct%26mode=render%26action=download%26mode=render">This preprint is the source of the figure, and discusses age structure effects</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+This post benefited from comments by Ramona Sky, Kelly Helm-Smith, and Jessica Burnett.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://mfr.osf.io/render?url=https://osf.io/fd4rh/?view_only=c2f00dfe3677493faa421fc2ea38e295%26fbclid=IwAR2XQCAUzqpOWtdkLKmaIiorv5uih9RBg0BreAgSnYd2Qq9BnjWxyIf0zAk%26direct%26mode=render%26action=download%26mode=render">This preprint is the source of the figure, and discusses age structure effects</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

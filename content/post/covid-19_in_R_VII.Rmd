@@ -31,7 +31,7 @@ dramatically increases the peak number of sick people. If you're lucky to be
 in a low risk group, you can still spread the virus. Although your symptoms are mild, 
 the person you hand the virus off to could experience much worse symptoms. You don't 
 have to hermetically seal your house. I like this graphic:
-![social distancing suggestions](http://rutherfordcountytn.gov/img/2.png)
+![social distancing suggestions](https://rutherfordcountytn.gov/img/2.png)
 
 [This all started a week ago](/post/covid-19_and_r/), in case you're just joining.
 
@@ -69,11 +69,14 @@ savefilename <- "data/jhu_wide_2020-03-19.Rda"
 load(savefilename)
 
 country_data <- read_csv("data/countries_covid-19.csv") %>% 
-  mutate(start_date = mdy(start_date))
+  mutate(start_date = mdy(start_date))%>% 
+  filter(is.na(Region)) %>% 
+  mutate(Country = case_when(Country == "United States" ~ "USA",
+                             TRUE ~ Country))
 
 source("R/jhu_helpers.R")
 
-us_confirmed_total <- us_confirmed_long(jhu_wide) %>% 
+us_confirmed_total <- us_wide2long_old(jhu_wide, "USA") %>% 
   group_by(Date) %>% # then group by Date and sum
   summarize(cumulative_cases = sum(cumulative_cases)) %>% 
   ungroup() %>% 
@@ -112,7 +115,7 @@ us_predicted <- predicted %>%
          fit = 10^fit)
 
 # Take the wide format data and make it long
-italy_confirmed <- other_confirmed_long(jhu_wide, countries = "Italy") %>% 
+italy_confirmed <- other_wide2long_old(jhu_wide, countries = "Italy") %>% 
   # Calculate the number of new cases per day
   mutate(incident_cases = c(0, diff(cumulative_cases)))%>% 
   # only keep data after feb 21 when the outbreak started, and remove row with no reported cases
@@ -151,17 +154,17 @@ italy_predicted <- predicted %>%
 
 
 observed <- bind_rows(us_confirmed_total, italy_confirmed) %>% 
-  left_join(country_data) %>% 
+  left_join(country_data, by = c("country_region" = "Country") ) %>% 
   mutate(icpc = incident_cases * 10 / popn,
          group = as.numeric(factor(country_region)))
 fits <- bind_rows(USA = us_fits, Italy = italy_fits)%>% 
-  left_join(country_data)%>% 
+  left_join(country_data, by = c("country_region" = "Country"))%>% 
   mutate(fitpc = fit * 10 / popn,
          lclpc = lcl * 10 / popn,
          uclpc = ucl * 10 / popn,
          group = as.numeric(factor(country_region)))
 predicted <- bind_rows(USA = us_predicted, Italy = italy_predicted)%>% 
-  left_join(country_data)%>% 
+  left_join(country_data, by = c("country_region" = "Country"))%>% 
   mutate(fitpc = fit * 10 / popn,
          lplpc = lpl * 10 / popn,
          uplpc = upl * 10 / popn,
@@ -250,10 +253,13 @@ isn't changing into a separate script file. And then that fancy new code broke e
 base plot, so spent another hour figuring out how I broke everything. 
 
 ```{r, message=FALSE}
-us_by_state <- us_confirmed_long(jhu_wide) # see, fancy! 
-canada_by_prov <- other_confirmed_long(jhu_wide, countries = "Canada")
+us_by_state <- us_wide2long_old(jhu_wide,"USA") # see, fancy! 
+canada_by_prov <- other_wide2long_old(jhu_wide, countries = "Canada")
+# reload the country data because I messed it up above
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
+  mutate(start_date = mdy(start_date))
 all_by_province <- bind_rows(us_by_state, canada_by_prov) %>% 
-  left_join(country_data) %>% 
+  left_join(country_data, by = c("province" ="Region")) %>% 
   group_by(country_region, province) %>% 
   mutate(incident_cases = c(0, diff(cumulative_cases)),
          max_cases = max(cumulative_cases)) %>% 
