@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 and R Part VII"
 author: "Drew Tyre"
-date: "`r Sys.Date()`"
+date: "2020-03-19"
 output:
   word_document: default
   html_document:
