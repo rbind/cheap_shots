@@ -30,7 +30,7 @@ dramatically increases the peak number of sick people. If you're lucky to be
 in a low risk group, you can still spread the virus. Although your symptoms are mild, 
 the person you hand the virus off to could experience much worse symptoms. You don't 
 have to hermetically seal your house. I like this graphic:
-![social distancing suggestions](http://rutherfordcountytn.gov/img/2.png)
+![social distancing suggestions](https://rutherfordcountytn.gov/img/2.png)
 
 # The bottom line
 
@@ -66,7 +66,10 @@ savefilename <- "data/jhu_wide_2020-03-18.Rda"
 # save(jhu_wide, file = savefilename)
 load(savefilename)
 
-country_data <- read_csv("data/countries_covid-19.csv")
+country_data <- read_csv("data/countries_covid-19.csv") %>% 
+  filter(is.na(Region)) %>% 
+  mutate(Country = case_when(Country == "United States" ~ "USA",
+                             TRUE ~ Country))
 
 us_confirmed_total <- jhu_wide %>% 
   rename(province = "Province/State", 
@@ -159,17 +162,17 @@ italy_predicted <- predicted %>%
 
 
 observed <- bind_rows(USA = us_confirmed_total, Italy = italy_confirmed, .id = "country") %>% 
-  left_join(country_data, by = c("country" = "country_region")) %>% 
+  left_join(country_data, by = c("country" = "Country")) %>% 
   mutate(icpc = incident_cases * 10 / popn,
          group = as.numeric(factor(country)))
 fits <- bind_rows(USA = us_fits, Italy = italy_fits, .id = "country")%>% 
-  left_join(country_data, by = c("country" = "country_region"))%>% 
+  left_join(country_data, by = c("country" = "Country"))%>% 
   mutate(fitpc = fit * 10 / popn,
          lclpc = lcl * 10 / popn,
          uclpc = ucl * 10 / popn,
          group = as.numeric(factor(country)))
 predicted <- bind_rows(USA = us_predicted, Italy = italy_predicted, .id = "country")%>% 
-  left_join(country_data, by = c("country" = "country_region"))%>% 
+  left_join(country_data, by = c("country" = "Country"))%>% 
   mutate(fitpc = fit * 10 / popn,
          lplpc = lpl * 10 / popn,
          uplpc = upl * 10 / popn,
