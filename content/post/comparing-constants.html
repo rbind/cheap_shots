@@ -18,7 +18,7 @@ categories: Teaching
 <script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<p><a href="/classes/Week_1/lab_1/">One of the exercises in Ecological Statistics</a>
+<p><a href="/classes/NRES803/Week_1/lab_1/">One of the exercises in Ecological Statistics</a>
 fits a species area curve to data from the Galapogos Islands. I ask students
 to compare the estimated power coefficient <span class="math inline">\(z\)</span> with the value 0.27 reported in <a href="https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/j.1461-0248.2005.00848.x">a meta-analysis by Drakare et al. 2006</a>. But Drakare et al. only reported the mean, not the standard error.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 <p>To do the comparison properly, I need to know how uncertain the average <span class="math inline">\(z\)</span> is. I looked through the paper carefully, but couldn’t find a standard error anywhere! The individual estimates used in the meta-analysis are in an appendix, but the standard errors are not reported there either. They do
@@ -26,6 +26,10 @@ exist, because Drakare et al. discuss the value of a “weighted” average,
 where poor estimates (large SE) of <span class="math inline">\(z\)</span> get reduced weight. Oh well, I’ll
 do the best I can. I think if I ignore the variation between studies I’ll
 get an overestimate of the significance of the difference; inflated Type I error probability.</p>
+<pre class="r"><code>library(&quot;tidyverse&quot;)
+library(&quot;NRES803&quot;) #devtools::install_github(&quot;atyre2/NRES803&quot;)
+library(&quot;faraway&quot;) # for the data
+drakare &lt;- read_csv(here::here(&quot;static/post/data/Drakare_etal_2006_species-area-curves-review.csv&quot;))</code></pre>
 <p>The data come from Johnson and Raven (1973); I should check if any of the
 estimates in the Drakare data come from there.</p>
 <pre class="r"><code>grep(&quot;Raven&quot;, drakare$Oref)</code></pre>

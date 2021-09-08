@@ -15,7 +15,7 @@ tags_include:
 categories: Teaching
 ---
 
-[One of the exercises in Ecological Statistics](/classes/Week_1/lab_1/)
+[One of the exercises in Ecological Statistics](/classes/NRES803/Week_1/lab_1/)
 fits a species area curve to data from the Galapogos Islands. I ask students
 to compare the estimated power coefficient $z$ with the value 0.27 reported in [a meta-analysis by Drakare et al. 2006](https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/j.1461-0248.2005.00848.x). But Drakare et al. only reported the mean, not the standard error.[^1]
 
@@ -25,12 +25,16 @@ where poor estimates (large SE) of $z$ get reduced weight. Oh well, I'll
 do the best I can. I think if I ignore the variation between studies I'll
 get an overestimate of the significance of the difference; inflated Type I error probability. 
 
-```{r, include = FALSE}
+```{r, setup, eval=FALSE}
 library("tidyverse")
 library("NRES803") #devtools::install_github("atyre2/NRES803")
 library("faraway") # for the data
-drakare <- read_csv(here::here("content/post/data/Drakare_etal_2006_species-area-curves-review.csv"))
+drakare <- read_csv(here::here("static/post/data/Drakare_etal_2006_species-area-curves-review.csv"))
 ```
+
+```{r, setup, eval = TRUE, include = FALSE}
+```
+
 The data come from Johnson and Raven (1973); I should check if any of the
 estimates in the Drakare data come from there.
 
