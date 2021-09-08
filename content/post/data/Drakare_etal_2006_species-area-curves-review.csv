@@ -1,0 +1,810 @@
+﻿ID,Oref,Realm,rz_power,z_power,rz_semi.log,z_semi.log,method,Organism,body_mass_g,latitude,Area_range,Area_min,Area_max
+1,"Abele L.G. (1979). The community structure of coral-associated decapod crustaceans in variable environments. In: Ecological processes in coastal and marine systems (ed. Livingston RJ), pp. 265-290. Plenum Press, London (UK)",aqu,0.76,0.27,,,ind,zoobenthos,0.22,9,,,
+,,aqu,0.52,0.36,,,ind,zoobenthos,0.22,9,,,
+2,"Amerson A.B.J. (1975). Species richness on the nondisturbed northwestern Hawaiian Islands. Ecology, 56, 435-444",ter,1.13,0.6,,,ind,birds,450,27.5,1.15,4500,64300
+,,ter,0.62,0.66,,,ind,plants,10,27.5,1.15,4500,64300
+,,ter,1.55,0.57,,,ind,birds,450,27.5,1,,
+,,ter,0.78,0.33,,,ind,plants,10,27.5,1,,
+3,"Anderson M.J. (1999). Effects of patch size on colonisation in estuaries: Revisiting the species-area relationship. Oecologia, 118, 87-98",aqu,1.86,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,0.09,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,0.66,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,0.74,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,0.87,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,0.95,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,0.98,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,2.04,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+,,aqu,0.31,,,,ind,zoobenthos,0.026,-32.7,1.2,0.01,0.16
+4,"Andow D.A. & Imura O. (1994). Specialization of phytophagous arthropod communities on introduced plants. Ecology, 75, 296-300",ter,0.63,0.18,0.59,23.2,ind,arthropods,0.005,,4.36,1.00 ­.106,2.28 .1010
+5,"Androukaki E. & Adamantopoulou S. (1992). A species-area relationship in the avifauna of northern Sporades (Aegean, Greece). Biologia Gallo Hellenica, 19, 121-128",ter,0.77,1.86,0.63,125,ind,birds,150,39,1.2,6.00­ .106,9.60­ .107
+6,"Angermeier P.L. & Schlosser I.J. (1989). Species-area relationship for stream fishes. Ecology, 70, 1450-1462",aqu,1.12,0.21,1.12,4.77,ind,fish,270,8,2.39,0.2,48.8
+,,aqu,0.31,0.14,0.29,3.63,ind,fish,270,40,1.1,6.7,84.3
+,,aqu,0.25,0.21,0.32,3.98,ind,fish,270,48,1.12,2.5,32.6
+,,aqu,0.62,0.24,0.74,5.63,ind,fish,270,40,1.57,0.9,33.6
+,,aqu,0.6,0.4,0.7,5.02,ind,fish,270,48,1.41,0.35,9.1
+,,aqu,0.98,0.26,0.96,3.27,ind,fish,270,8,2.27,0.07,13
+7,"Anselin A. & Meire P.M. (1986). Breeding bird communities of reedmarshes in northwest Flanders Belgium. Biologisch Jaarboek, 54, 174-186",aqu,0.48,0.15,0.53,4.71,ind,birds,150,51,1.03,40000,428000
+8,"Archer S., Scifres C., Bassham C.R. & Maggio R. (1988). Autogenic succession in a subtropical savanna: conversion of grassland to thorn woodland. Ecol. Monogr., 58, 111-127",ter,1.1,0.33,,,ind,plants,22000,27.7,1.3,5,100
+9,"Archibald E.E.A. (1949). The specific character of plant communities: I. Herbaceous communities. J. Ecol., 37, 260-273",aqu,1.49,0.08,1.35,1.39,nes,plants,10,53,5.81,0.0001,64
+,,aqu,1.01,0.03,1.02,0.71,nes,plants,10,53,5.81,0.0001,64
+,,ter,2.38,0.25,1.64,3.7,nes,plants,10,53,5.81,0.0001,64
+,,ter,1.97,0.09,1.85,2.82,nes,plants,10,53,2.6,0.0025,1
+,,ter,3.8,0.12,2.11,4.89,nes,plants,10,53,5.81,0.0001,64
+,,ter,2.08,0.11,2.27,4.82,nes,plants,10,53,5.81,0.0001,64
+,,ter,2.13,0.11,1.82,0.64,nes,plants,10,53.5,5.81,0.0001,64
+,,ter,2.23,0.11,2.38,1.42,nes,plants,10,54.3,4,0.0001,1
+,,ter,2.38,0.1,2.76,8.68,nes,plants,10,52,2.6,0.0025,1
+,,ter,1.85,0.15,2.32,11,nes,plants,10,51.8,4,0.0001,1
+10,"Assmann T. (1999). The ground beetle fauna of ancient and recent woodlands in the lowlands of north-west Germany (Coleoptera, Carabidae). Biodivers. Conserv., 8, 1499-1517",ter,0.75,-0.17,0.77,-7,ind,insects,0.45,52.2,1.79,290000,1.80 .107
+11,"Auerbach M.J. & Hendrix S.D. (1980). Insect fern interactions macro lepidopteran utilization and species area association. Ecol. Entomol. 5, 99-104",ter,0.36,0.2,,,ind,insects,0.004,,2.26,25.4,4.60 .1013
+12,"Azovsky A.I. (2000). Concept of scale in marine ecology: linking the words or the worlds? Web Ecology, 1, 28-34",aqu,2.19,0.14,1.05,0.43,both,zoobenthos,0.00032,,,,
+,,aqu,1.78,0.07,1.32,1.36,both,nonv plants,3.9 .10-10,,,,
+,,aqu,2.67,0.13,1.09,0.84,both,helminths,1.4 .10-6,,,,
+,,aqu,2.11,0.08,1.7,0.83,both,zooplankton,5 .10-6,,,,
+,,aqu,2.01,0.19,0.83,0.1,both,zoobenthos,0.026,,,,
+13,"Baldi A. & Kisbenedek T. (1999). Orthopterans in small steppe patches: An investigation for the best-fit model of the species-area curve and evidences for their non-random distribution in the patches. Acta Oecol., 20, 125-132",ter,1.26,0.15,,,ind,insects,0.071,47.6,3.35,180,400000
+14,"Barbour C.D. & Brown J.H. (1974). Fish species diversity in lakes. Am. Nat, 108, 473-489",aqu,0.61,0.14,0.57,17.1,ind,fish,270,,5.74,800000,4.36 .1011
+15,"Barnes W.J. (1991). Tree populations on the islands of the lower Chippewa River in Wisconsin. B Bull. Torrey Botan. Club, 118, 424-431",ter,0.67,0.18,,,ind,plants,44000,45.5,2.24,370,65000
+16,"Bastian O., Hummitzsch P. & Schrack M. (1989). Beziehungen zwischen Landschaftsstruktur und Artenvielfalt der Avifauna in der Agrarlandschaft nordlich von Dresden (Aves). Zoologische Abhandlungen, 45, 53-73",ter,0.56,0.39,,,ind,birds,150,51,1.89,8.84 .106,6.85 .108
+17,"Bauer L.J. (1989). Moorland beetle communities on limestone `habitat islands'. I. Isolation, invasion and local species diversity in carabids and staphylinids. J. Anim. Ecol., 58, 1077-1098",ter,0.09,0.02,0.1,2.57,ind,insects,0.004,,1.9,2000,160000
+,,ter,0.39,-0.09,0.45,-4.39,ind,insects,0.45,,1.9,2000,160000
+,,ter,0.61,0.11,0.59,2.42,ind,insects,0.004,,1.93,20,1700
+,,ter,0.45,0.05,0.45,1.19,ind,insects,0.004,,1.97,17,1600
+18,"Beard J.S., Chapman A.R. & Gioia P. (2001). Species richness and endemism in the Western Australian Flora. J Biogeogr., 27, 1257-1268",ter,1.07,0.31,,,,plants,10,15,2,,
+19,"Beaver R.A. (1979). Host specificity of temperate and trophical animals. Nature, 281, 139-141",ter,,-0.93,3.11,-627,ind,insects,0.005,25.3,0.62,1.31 .109,5.50 .109
+20,"Belant J.L. & Van Stappen J.F. (2002). Island biogeography of mammals in Apostle Islands National Lakeshore, USA. Nat. Areas J., 22, 180-185",ter,1.39,0.34,,,,mammals,800,46.9,3.53,12000,4.07 .107
+21,"Bell G. & Burt A. (1991). The Comparative biology of parasite species diversity: Internal helminths of freshaqu fish. J. Anim. Ecol., 60, 1047-1064",aqu,0.4,0.39,,,ind,helminths,,,,,
+22,"Bengtson S.A. & Bloch D. (1983). Island land bird population densities in relation to island size and habitat quality on the Faroe Islands Denmark. Oikos, 41, 507-522",ter,1.99,0.28,1.62,14.8,ind,birds,150,62,3.53,110000,3.74 .108
+23,"Bengtson S.A. (1980). Species assemblages and coexistence of Faroe Island Denmark ground beetles Coleoptera Carabidae. Entomologia Generalis, 6, 251-266",ter,1.02,0.25,1.06,6.84,ind,insects,0.45,62,2.14,2.70 .106,3.74 .108
+24,"Bennett J.P. (1997). Nested taxa area curves for eastern United States floras. Rhodora, 99, 241-251",ter,1.54,0.22,0.4,6097,both,plants,10,,10.7,32400,1.50 .1015
+25,"Berglund H. & Jonsson B.G. (2001). Predictability of plant and fungal species richness of old- growth boreal forest islands. J. Veg. Sci., 12, 857-866",ter,0.85,0.1,,,ind,nonv plants,,66.5,1.85,1700,120000
+,,ter,1.21,0.16,,,ind,plants,10,66.5,1.85,1700,120000
+,,ter,0.87,0.2,,,ind,plants,10,66.5,1.85,1700,120000
+,,ter,1,0.2,,,ind,nonv plants,0.1,66.5,1.85,1700,120000
+,,ter,1,0.29,,,ind,fungi,,66.5,1.85,1700,120000
+,,ter,0.98,0.41,,,ind,fungi,,66.5,1.85,1700,120000
+,,ter,1.06,0.44,,,ind,redlist spec,,66.5,1.85,1700,120000
+,,ter,1,0.56,,,ind,rare species,,66.5,1.85,1700,120000
+26,"Bevanger K. (1987). Number of bird species used for selection of protected areas. Fauna Norvegica Ser.C Cinclus, 10, 45-52",ter,0.97,0.22,0.94,58.4,ind,birds,150,,0.58,5.40 .107,2.04 .108
+27,"Billings W.D. (1938). The structure and development of old field shortleaf pine stands and certain associated physical properties of the soil. Ecol. Monogr., 8, 437-500",ter,3.8,0.23,2.55,4.37,nes,plants,10,36,0.6,1.01,4
+,,ter,2.32,0.2,2.3,7.9,nes,plants,2000,36,1.2,1.01,16.2
+,,ter,2.48,0.36,1.73,5.16,nes,plants,44000,36,2,1.01,101
+28,"Bills G.F., Holtzman G.I. & Miller O.K.J. (1986). Comparison of ectomycorrhizal basidiomycete communities in red spruce vs. northern hardwood forests of West-Virginia USA. Can. J. Bot., 64, 760-768",ter,2.48,0.34,,,nes,fungi,,,38.2,2.27,8.4
+,,ter,2.44,0.43,,,nes,fungi,,,38.2,1.99,15.8
+29,"Blake J.G. (1986). Species-area relationship of migrants in isolated woodlots in east-central Illinois. Wilson Bull., 98, 291-296",ter,0.5,0.06,0.56,8.37,ind,birds,150,40,2.52,18000,6.00 .106
+,"Blake J.G. (1987). Species-area relationships of winter residents in isolated woodlots. Wilson Bull., 99, 243-252",ter,1.52,0.19,,,ind,birds,150,40,2.49,17000,5.28 .106
+,,ter,1.44,0.19,,,ind,birds,150,40,2.45,18200,5.18 .106
+,,ter,1.43,0.23,,,ind,birds,150,40,2.51,19000,6.09 .106
+,,ter,0.91,0.19,,,ind,birds,150,40,2.53,18600,6.29 .106
+30,"Boecklen W.J. (1986). Effects of habitat heterogeneity on the species-area relationships of forest birds. J. Biogeogr., 13, 59-68",ter,0.61,0.49,,,ind,birds,150,,0.63,56000,239000
+31,"Bolger D.T., Alberts A.C. & Soule M.E. (1991). Occurrence patterns of bird species in habitat fragments: Sampling, extinction, and nested species subsets. Am. Nat., 137, 155-166",ter,1.39,0.36,,,ind,birds,93,33,2.48,2500,750000
+,,ter,1.25,0.13,,,ind,birds,93,33,2.6,1250,500000
+32,"Bond W.J., Midgley J. & Vlok J. (1988). When is an island not an island? Insular effects and their causes in fynbos shrublands. Oecologia, 77, 515-521",ter,2.55,0.42,1.49,43.2,ind,plants,10,-33.9,3.13,5000,6.70 .106
+33,"Bowers M.A. (1982). Insular biogeography of mammals in the Great Salt Lake. Great Basin Nat., 42, 589-596",ter,0.92,0.17,0.88,2.33,ind,mammals,800,41,5.55,2000,7.08 .108
+34,"Brändle M. & Brandl R. (2001). Species richness of insects and mites on trees: expanding Southwood. J. Anim. Ecol., 70, 491-504",ter,0.61,1.46,,,,arthropods,0.0019,,,,
+,,ter,1.12,1.9,,,,arthropods,0.0019,,,,
+35,"Brashares J.S., Arcese P. & Sam M.K. (2001). Human demography and reserve size predict wildlife extinction in West Africa. Proc. R. Soc. Lond. Ser. B., 268, 2473-2478",ter,0.87,0.07,0.82,4.14,ind,mammals,200000,7.5,1.92,5.80 .107,4.84 .109
+,,ter,1.72,0.29,1.52,7.37,ind,mammals,200000,7.5,1.92,5.80 .107,4.84 .109
+36,"Briceño R.D. (1992). Efecto geografico en la diversidad y en la distribucion de especies del Orden Dermaptera en el Continente Americano. Brenesia, 38, 71-75",ter,0.38,-0.08,0.39,-8.73,ind,insects,0.002,,2.63,2.11 .1010,9.00 .1012
+37,"Briggs J.C. (1996). Tropical diversity and conservation. Conserv. Biol., 10, 713-718",aqu,1.7,0.59,,,ind,zoobenthos,0.026,,1.23,3.83 .1011,6.53 .1012
+38,"Brönmark C., Herrmann J., Malmqvist B., Otto C. & Sjöström P. (1984). Animal community structure as a function of stream size. Hydrobiologia, 112, 73-79",aqu,0.84,0.18,0.82,6.29,ind,zoobenthos,0.026,55,2.11,100,12800
+39,"Brooks T.M., Pimm S.L., Kapos V. & Ravilious C. (1999). Threat from deforestation to montane and lowland birds and mammals in insular South-east Asia. J. Anim. Ecol., 68, 1061-1078",ter,0.94,0.42,0.7,18.1,ind,birds,150,-15,2.32,3.53 .109,7.38 .1011
+,,ter,1.07,0.67,0.9,20.3,ind,mammals,730,-15,2.32,3.53 .109,7.38 .1011
+40,"Brown M. & Dinsmore J.J. (1988). Habitat islands and the equilibrium theory of island biogeography testing some predictions. Oecologia, 75, 426-429",ter,1.16,0.23,1.18,4.14,ind,birds,150,43,2.96,2000,1.82 .106
+41,"Browne D.J., Peck S.B. & Ivie M.A. (1993). The longhorn beetles (Coleoptera Cerambycidae) of the Bahama Islands with an analysis of species-area relationships, distribution patterns, origin of the fauna and an annotated species list. Tropical Zoology, 6, 27-53",ter,0.14,0.09,0.18,2.91,ind,insects,0.45,24.5,2.41,2.30 .107,5.89 .109
+42,"Brunet A.K. & Medellin R.A. (2001). The species-area relationship in bat assemblages of tropical caves. Journal of Mammalogy, 82, 1114-1122",ter,0.79,0.31,0.81,3.18,ind,mammals,13,20.1,2.22,18,3010
+43,"Buckton S.T. & Ormerod S.J. (2002). Global patterns of diversity among the specialist birds of riverine landscapes. Freshw. Biol., 47, 695-709",aqu,0.66,1.04,0.87,25.5,ind,birds,150,,0.71,8.55 .1012,4.36 .1013
+44,"Cafaro M.J. (2002). Species richness patterns in symbiotic gut fungi (Trichomycetes). Fungal Diversity, 9, 47-56",ter,1.95,0.56,,,,fungi,,,,,
+,,ter,1.94,0.67,,,,arthropods,0.005,,4.79,2.51 .106,1.55 .1011
+45,"Cao Y., Williams D.D. & Larsen D.P. (2002). Comparison of ecological communities: The problem of sample representativeness. Ecol. Monogr., 72, 41-56",aqu,2.27,0.25,1.17,3.52,nes,zoobenthos,0.026,17,2.08,0.009,1.09
+,,aqu,1.99,0.35,3.45,20.3,nes,zoobenthos,0.026,17,1.76,0.027,1.56
+,,aqu,2.32,0.43,2.35,19.5,nes,zoobenthos,0.026,17,2.18,0.009,1.37
+,,aqu,1.84,0.33,3.45,19.7,nes,zoobenthos,0.026,17,2.18,0.009,1.37
+,,aqu,3.8,0.5,2.23,14.4,nes,zoobenthos,0.026,62,1.39,0.0281,0.69
+,,aqu,3.45,0.25,2.51,4.01,nes,zoobenthos,0.026,62,1.41,0.0281,0.73
+,,aqu,3.45,0.25,2.65,4.92,nes,zoobenthos,0.026,62,1.41,0.0281,0.72
+,,aqu,2.99,0.44,2.83,11.2,nes,zoobenthos,0.026,62,1.41,0.0281,0.72
+,,aqu,2.65,0.45,3.11,13.3,nes,zoobenthos,0.026,62,1.41,0.0281,0.73
+,,aqu,3.25,0.17,2.76,20.3,nes,zoobenthos,0.026,53,1.4,1.92,48
+,,aqu,3.11,0.3,2.76,11.1,nes,zoobenthos,0.026,53,1.4,1.92,48
+,,aqu,3.45,0.4,3.11,5.04,nes,zoobenthos,0.026,53,1.4,1.92,48
+46,"Capogrego J.V. (1989). Woodlot carabid diversity (Coleoptera Carabidae) utilization of island biogeographic theory for agricultural lands. Melsheimer Entomological Series, 1-8",ter,1.08,0.14,1.42,1.3,ind,insects,0.45,40.9,4.7,100,5.00 .106
+,,ter,0.3,0.04,0.25,0.63,ind,insects,0.45,40.9,4.7,100,5.00 .106
+47,"Cardillo M. (2002). Body size and latitudinal gradients in regional diversity of New World birds. Global Ecol. Biogeogr., 11, 59-65",ter,0.21,1.6,0.2,902,ind,birds,150,31,0.13,1.22 .1011,1.64 .1011
+48,"Carter Lovejoy S.H. (1982). The relation between species numbers and island characteristics for habitat islands in a volcanic landscape. Great Basin Nat., 42, 113-119",ter,0.51,0.1,0.48,7.41,ind,plants,10,43.5,1.35,1600,36000
+,,ter,0.65,0.15,0.67,1.68,ind,mammals,730,43.5,1.35,1600,36000
+49,"Casas A.G. (1992). Amphibians and reptiles of the Tres Marias Islands and other islands near the coast of Nayarit, Mexico, and some issues on biogeography and conservation. Anales del Instituto de Biologia Universidad Nacional Autonoma de Mexico Serie Zoologia, 63, 95-112",ter,1.13,0.21,1.21,5.27,ind,vertebrates,330,21,2.31,700000,1.44 .108
+50,"Castella E., Adalsteinsson H., Brittain J.E., Gislason G.M., Lehmann A., Lencioni V., Lods-Crozet B., Maiolini B., Milner A.M., Olafsson J.S., Saltveit S.J. & Snook D.L. (2001). Macrobentic invertibrate richness and composition along a latitudinal gradient of European glacier-fed streams. Freshw. Biol., 46, 1811-1831",aqu,0.46,-0.17,0.56,-4.16,ind,zoobenthos,0.026,60.5,2.3,4.20 .106,8.40 .108
+51,"Castelló V., Corvillo M. & Garcia J.E. (1987). Species-area relationship in a neotropical freshaqu fish community. Miscellania Zoologica Barcelona, 11, 243-248",aqu,1.05,0.21,,,ind,fish,270,-14.5,2.43,84,22800
+52,"Chaloupka M.Y. & Domm S.B. (1986). Role of anthropochory in the invasion of coral cays by alien flora. Ecology, 67, 1536-1547",ter,1.07,0.18,0.97,13.4,ind,plants,10,-24,1.72,20000,1.05 .106
+53,"Chapman C.A. (1983). Speciation of tropical rain forest primates of Africa insular bio geography. Afr. J. Ecol., 21, 297-308",ter,0.78,0.18,,,ind,mammals,4400,,3.96,6.68 .107,6.16 .1011
+54,"Cheylan G. (1984). The mammal fauna of Western Mediterranean islands an example of unbalanced island communities. Revue d'Ecologie la Terre et la Vie, 39, 37-54",ter,1.95,0.19,1.52,4.06,ind,mammals,730,,5.23,150000,2.57 .1010
+55,"Chittaro P.M. (2002). Species-area relationships for coral reef fish assemblages of St. Croix, US Virgin Islands. Mar. Ecol. Prog. Ser., 233, 253-261",aqu,1.64,0.42,,,ind,fish,270,18,2,1,100
+,,aqu,1.77,0.43,,,ind,fish,270,18,2,1,100
+,,aqu,1.77,0.47,,,ind,fish,270,18,2,1,100
+,,aqu,1.13,0.24,,,ind,fish,270,18,2.03,0.6,64
+,,aqu,1.57,0.38,,,ind,fish,270,18,2.3,1,200
+,,aqu,1.57,0.39,,,ind,fish,270,18,2.3,1,200
+,,aqu,2.29,0.45,,,ind,fish,270,18,2.3,1,200
+,,aqu,2.18,0.42,,,ind,fish,270,18,2.3,1,200
+,,aqu,1.94,0.43,,,ind,fish,270,18,2.3,1,200
+,,aqu,1.94,0.45,,,ind,fish,270,18,2.3,1,200
+,,aqu,1.64,0.48,,,ind,fish,270,18,2.3,1,200
+,,aqu,1.94,0.48,,,ind,fish,270,18,2.3,1,200
+,,aqu,1.77,0.49,,,ind,fish,270,18,2.3,1,200
+,,aqu,1.72,0.52,,,ind,fish,270,18,2.3,1,200
+56,"Choi B.M., Ogata K. & Terayama M. (1993). Comparative studies of ant faunas of Korea and Japan: I. Faunal comparison among islands of southern Korea and northern Kyushu, Japan. Bulletin of the Biogeographical Society of Japan, 48, 37-49",ter,1.1,0.22,0.91,35.3,ind,insects,0.004,,2.77,1.34 .108,7.90 .1010
+,,ter,1.28,0.15,1.21,16.6,ind,insects,0.004,,3.62,5.90 .106,2.46 .1010
+57,"Claridge M.F. & Wilson M.R. (1982). Insect herbivore guilds and species - area relationships: leafminers on british trees. Ecol. Entomol., 7, 19-30",ter,0.43,0.3,0.37,6.21,ind,insects,0.005,,2.89,3.00 .108,2.34 .1011
+58,"Clergeau P., Jokimäki J. & Savard J.-P.L. (2001). Are urban bird communities influenced by the bird diversity of adjacent landscapes? J. of Appl. Ecol., 38, 1122-1134",ter,0.39,-0.38,,,ind,birds,42,37.5,1.58,60000,2.30 .106
+59,"Coleman B.D., Mares M.A., Willig M.R. & Hsieh Y.-H. (1982). Randomness, area, and species richness. Ecology, 63, 1121-1133",ter,1.48,0.54,1.75,12.8,ind,birds,150,41.5,2.89,900,694000
+60,"Connor E.F. & McCoy E.D. (1979). The statistics and biology of the species area relationship. Am. Nat., 113, 791-833.",,,,,,,,,,,,
+,"Abbott I. (1973) Birds of Bass Strait. Proc. R. Soc Victoria 85, 197-223.",ter,1.11,0.39,1.13,6.94,ind,birds,100,-40,5,,
+,"Abbott I. (1974) Numbers of plant, insect, and land bird species on nineteen remote islands in the Southern Hemisphere. Biol. J. Linn. Soc. 6, 143-152.",ter,0.38,0.22,0.42,19.1,ind,plants,10,49,5,,
+,,ter,0.42,0.22,0.3,20.8,ind,insects,0.0019,49,5,,
+,,ter,0.09,0.03,0.25,0.54,ind,birds,100,49,5,,
+,"Abele L. (1976) Comparative species richness in fluctuating and constant environments: coral-associated decapod crustaceans. Science 192, 461-463.",aqu,0.53,0.25,0.55,4.87,ind,zoobenthos,0.22,9,,,
+,,aqu,0.69,0.36,0.76,8.21,ind,zoobenthos,0.22,9,,,
+,Abele unpubl.,aqu,0.52,0.24,0.47,3,,zoobenthos,0.22,24,,,
+,,aqu,0.91,0.25,0.97,5.08,,zoobenthos,0.22,16.5,4,,
+,,aqu,1.09,0.26,1.02,12.2,,zoobenthos,0.22,16.5,4,,
+,"Amerson A.B. (1971) The natural history of French Frigate Schoals, northwestern Hawaiian Islands. Atoll Res. Bull. 150",ter,0.89,0.39,0.95,4.2,ind,plants,10,23.5,2,,
+,,ter,0.7,0.3,0.78,2.76,ind,birds,450,23.5,2,,
+,"Amerson A.B. (1975) Species richness on the nondisturbed northwestern Hawaiian Islands. Ecology 56, 435-444",ter,1.13,0.78,1.08,8.78,,birds,450,27.5,1,,
+,,ter,0.66,0.66,0.79,8.04,,plants,10,27.5,1,,
+,"Barbour C.D. & Brown J.H. (1974) Fish species diversity in lakes. Am. Nat. 108, 473-489.",aqu,0.87,0.35,0.84,63.5,ind,fish,270,7.4,4,,
+,,aqu,0.54,0.12,0.62,13.8,ind,fish,270,58.3,6,,
+,,aqu,0.55,0.12,0.69,6.43,ind,fish,270,23.1,4,,
+,,aqu,0.53,0.12,0.65,14.5,ind,fish,270,48.1,5,,
+,,aqu,0.86,0.21,0.69,25.3,ind,fish,270,17.6,4,,
+,,aqu,0.5,0.11,0.6,13.1,ind,fish,270,58.3,6,,
+,"Baroni-Urbani C. (1971) Studien zur Ameisenfauns Italiens. XI. Die Ameisen des Taskanischen Archipels. Betrachtungen zer Herkunft dur Inselfaunen. Rev. Suisse Zool. 78, 1037-1067.",ter,1.47,0.31,1.49,184,ind,plants,10,42.8,4,,
+,,ter,1.67,0.27,1.22,7.65,ind,insects,0.071,42.8,4,,
+,,ter,1.85,0.19,1.47,5,ind,insects,0.004,42.8,4,,
+,"Beard J.S. (1949) The natural vegetation of the windward and leeward islands. Clarendon, Oxford.",ter,1.14,0.16,1.18,56.5,ind,plants,10,15,2,,
+,"Brown J.H. (1971) Mammals on mountaintops: nonequilibrium insular biogeography. Am. Nat. 105, 467-478.",ter,1.16,0.43,1.12,4.87,ind,mammals,730,38.5,2,,
+,"Cairns J. & Ruthven J.A. (1970) Artificial microhabitat size and the number of colonizing protozoan species. Trans. Am. Microsc. Soc. 89, 100-109.",aqu,0.62,0.08,0.68,2.77,,zooplankton,3.9 .10-10,45.4,,,
+,"Carlqvist S. (1974) Island biology. Columbia University Press, New York.",ter,1.03,1.13,1.36,116,ind,insects,0.005,20.6,2,,
+,,ter,1.08,0.58,1.16,59.9,ind,plants,10,20.6,2,,
+,"Carrick R. & Ingham S.E. (1970) Ecology and population dynamics of Antarctic seabirds. In: Antarictic ecology (ed. Holdgate M.W.), pp. 505-525. Academivc Press, London.",ter,0.37,0.13,0.38,3.97,ind,birds,450,57.2,2,,
+,"Case T. J. (1975) Species numbers, density compensation, and colonizing ability of lizards on islands in the Gulf of California. Ecology 56, 3-18.",ter,0.79,0.17,0.79,1.91,ind,reptiles,34,27,3,,
+,,ter,1.08,0.27,1.2,14.7,ind,plants,10,27,3,,
+,Connor unpubl,ter,1.43,0.96,1.08,45.2,ind,plants,10,27,,,
+,"Cook R.E. (1974) Origin of the highland avifauna of southern Venezuela. Syst. Zool. 23, 257-264.",ter,0.2,0.05,0.13,3.15,ind,birds,150,5.3,3,,
+,"Croasdale H. (1973) Freshwater algae of Ellesmere Island, N. W. T. Natl. Mus. Can. Publ. Bot. no.3.",aqu,0.36,0.11,0.26,6.07,ind,nonv plants,,81.7,3,,
+,"Culver D., Holsinger J.R. & Bargody R. (1973) Toward a predictive cave biogeography: the Greenbriar Valley as a case study. Evolution 27, 689-695.",aqu,0.76,0.18,0.78,1.95,ind,zoobenthos,0.026,37.5,1,,
+,,ter,1.53,0.66,1.05,6.6,ind,,0.026,37.5,1,,
+,"Diamond J.M. (1972) Biogeographic kinetics: estimation of relaxation times for avifaunas of southwest Pacific islands. Proc. Natl. Acad. Sci. 69, 3199-3203.",ter,1.4,0.23,1.01,25.7,ind,birds,150,5,6,,
+,Ellis D.V. (1970) Marine infaunal benthos in Arctic North America. Arctic Inst. North Am. Tech. Pap. 5.,aqu,2.6,0.4,2.48,38.3,,zoobenthos,0.026,73,2,,
+,"Exell A.W. (1944) Catalogue of the vascular plants of S. Tome (with Principe and Annobon). British Museum (Natural History), London.",ter,3.45,0.4,2.04,321,ind,plants,10,1.9,2,,
+,"Glassman S.F. (1965) Geographic distribution of the New World palms. Principes 8, 47-49.",ter,1.01,0.38,0.73,10.9,ind,plants,10,21,4,,
+,"Greenslade P. J. (1968) Island patterns in the Solomon Islands bird fauna. Evolution 22, 751-761.",ter,1.11,0.27,1.33,20.4,ind,birds,150,8.3,3,,
+,"Gressitt J.S. (1965) Biogeography and ecology of land arthropods of Antarctica. In: Biogeography and ecology in Antarctica (eds. van Mieghem J. & Vanoye P.), pp. 431-490. Junk, The Hauge.",ter,0.04,0.03,0.14,-1.3,ind,arthropods,0.005,53.6,2,,
+,"Gressitt, J.S. (1970) Subantarctic entomology and biogeography. Pac. Inst. Monogr. 23, 295-374.",ter,0.12,0.04,0.07,1.46,ind,insects,0.005,49.3,1,,
+,"Hall E.R. & Kelson K.R. (1959) The mammals of North America. Vols. 1-2. Ronald, New York.",ter,0.78,0.59,0.53,84.8,nes,mammals,730,55,2,,
+,,ter,0.59,0.06,0.59,22.7,nes,mammals,730,22.5,2,,
+,,ter,0.78,0.55,0.53,72,nes,vertebrates,800,55,2,,
+,,ter,1.23,0.2,1.2,50.2,nes,vertebrates,800,22.5,2,,
+,,ter,0.61,0.93,0.48,12.9,nes,mammals,13,55,2,,
+,,ter,0.91,-0.24,0.91,-26.2,nes,mammals,13,22.5,2,,
+,"Hamilton T.H. & Armstrong N.E. (1965) Environmental determination of insular variation in bird species abundance in the Gulf of Guinea. Nature 207, 148-151. ",ter,1.78,0.5,1.18,48,ind,birds,150,2.1,2,,
+,"Harris M.P. (1973) The Galapagos avifauna. Condor 75, 265-278.",ter,1.27,0.16,1.35,5.18,ind,birds,100,1,3,,
+,"Harrison J.L. & Hendrickson J.R. (1963) The fauna of the islands of the Straits of Malacca. In: Pacific basin biogeography (ed. Gressitt J.L.), pp. 543-555. Bishop Museum, Honolulu.",ter,1.58,0.39,1.54,6.62,ind,mammals,13,3,3,,
+,Heatwole H. (1975) Biogeography of reptiles on some of the islands and cays of eastern Papua-New Guinea. Atoll Res. Bull. 180.,ter,0.88,0.14,0.9,1.5,ind,reptiles,650,10,4,,
+,"Hope J. H. (1973) Mammals of the Bass Strait Islands. Proc. R. Soc. Victoria 85, 163-195.",ter,1.01,0.25,1.14,2.77,ind,mammals,730,-40,4,,
+,"Hulten E. (1960) Flora of the Aleutian Islands. Cramer, Weinheim.",ter,0.86,0.65,0.94,73.7,ind,plants,10,53,4,,
+,"Johnson M.P. & Raven P.H. (1973) Species number and endemism: the galapagos Archipelago revised. Science 179, 893-895.",ter,1.39,0.4,1.06,60.4,ind,plants,10,1,5,,
+,"Johnson M.P. & Simberloff D.S. (1974) Environmental determinants of island species numbers in the British Isles. J. Biogeogr. 1, 149-154.",ter,0.74,0.21,0.78,158,ind,plants,10,56.2,4,,
+,"Johnson M.P., Mason L.G. & Raven P.H. (1968) Ecological parameters and plant species diversity. Am. Nat. 102, 297-306.",ter,1.46,0.45,1.13,133,ind,plants,10,32.7,2,,
+,,ter,1.28,0.42,1.15,133,ind,plants,10,32.7,2,,
+,,ter,1.35,0.16,1.13,486,ind,plants,10,33.1,3,,
+,"Koopman K.F. (1958) Land bridges and ecology in bat distribution on islands off the northern coast of South America. Evolution 12, 429-439.",ter,0.76,0.52,0.83,21.3,ind,mammals,13,11.3,1,,
+,"Lassen H.H. (1975) The diversity of freshwater snails in view of the equilibrium theory of island biogeography. Oecologia 19, 1-8.",aqu,2,0.23,1.52,3.02,ind,zoobenthos,0.025,56.5,4,,
+,,aqu,1.16,0.15,1.18,2.3,,zoobenthos,0.025,56.5,4,,
+,"Levins R. & Heatwole H. (1963) On the distribution of organisms on islands. Caribb. J. Sci. 3,173-177. ",ter,0.97,0.28,0.91,11.8,ind,vertebrates,330,17.8,6,,
+,,ter,1.07,0.42,0.79,5.02,ind,plants,5,14,4,,
+,,ter,1.1,0.42,1.06,3.94,ind,plants,10,14,4,,
+,,ter,1.1,0.26,0.95,5.08,ind,plants,10,14,2,,
+,"Lems C. (1960) Floristic botay of the Canary Islands. Sarracenia 5, 1-94.",ter,0.47,0.24,0.56,404,ind,plants,10,28.8,1,,
+,Luther H. (1961) Veranderungen in der gefasspflanzen flora der Meeresfelsen von Tvärminne. Acta Bot. Fenn. 62.,ter,0.55,0.48,0.69,39.2,ind,plants,10,59.8,1,,
+,"MacArthur R. & Wilson E.O. (1967) An equilibrium theory of insular zoogeography. Evolution 17, 373-387.",ter,1.64,0.37,1.44,104,ind,birds,120,6,4,,
+,"Malyshev L.I. (1969) The dependence of the species abundance of a flora on the environmental and historical factors. Acad. Sci (USSR) Bot. J. 54, 1137-1147.",ter,0.24,-0.11,0.34,-443,nes,plants,10,57,,,
+,"Niering W.A. (1956) Bioecology of Kapingamarangi Atoll, Caroline Islands: terrestrial aspects. Atoll Res. Bull. 49.",ter,1.27,0.44,1.38,16.6,ind,plants,10,1,1,,
+,"Niering W.A. (1963) Terrestrial ecology of Kapingamarangi Atoll, Caroline Islands. Ecol. Monogr. 33, 131-160.",,,,,,,,,,,,
+,"Opler P.A. (1974) Oaks as evolutionary islands for leaf-mining insects. Am. Sci. 62, 67-73.",ter,1.82,0.47,1.28,7.21,ind,insects,0.71,37,2,,
+,"Patrick R. (1967) The effect of invasion rates, species pool, and size of area on the structure of the diatom community. Proc. Natl. Acad. Sci. USA 58, 1335-1342.",aqu,1.19,0.67,1.95,20.5,,nonv plants,3.9 .10-10,39.5,,,
+,"Power D.M. (1972) Numbers of bird species on the California Islands. Evolution 26, 451-463.",ter,0.76,0.21,0.74,5.46,ind,birds,120,31,3,,
+,,ter,1.25,0.45,1.25,114,ind,plants,10,31,3,,
+,"Preston F.W. (1962) The canonical distribution of commonness and rarity. Ecology 43, 185-215, 410-432.",ter,1.87,0.35,1.65,200,ind,birds,150,9.5,2,,
+,,ter,1.63,0.26,1.56,20.8,ind,vertebrates,800,45.5,5,,
+,Rey unpubl.,ter,1.67,0.45,1.01,231,nes,insects,0.45,19,5,,
+,,ter,0.29,0.2,0.67,72.8,nes,insects,0.45,53.2,3,,
+,"Ricklefs R.E. & Cox G.W. (1972) Taxon cycles in the West Indian avifauna. Am. Nat. 106, 195-219.",ter,1.54,0.18,1.62,14.3,ind,birds,120,18.3,4,,
+,"Schoener T.W. (1976) The species-area realtion within archipelagos: models and evidence from island land birds. In: Proceedings of the 16th International Ornithological Conference (eds Firth H.J. & Calaby J. H.), pp. 629-642. Australian Academy of Science, Canberra.",ter,1.49,0.32,1.18,25.5,ind,birds,120,3,6,,
+,,ter,1.5,0.32,1.89,4.63,ind,birds,150,60.3,4,,
+,"Seidenfaden G. & Sorensen T. (1937) A summary of the vascular plants found in eastern Greenland. Medd. Gronl. 101, 141-215.",ter,0.57,-0.28,0.49,-93.1,nes,plants,10,69.8,1,,
+,"Sepkoski J.J. & Rex M.A. (1974) Distribution of freshwater mussels: coastal rivers as biogeographic islands. Syst. Zool. 23,165-188.",aqu,0.77,0.35,0.69,7.76,ind,zoobenthos,0.08,36.5,1,,
+,"Simberloff D.S. (1970) Taxonomic diversity of island biotas. Evolution 24, 23-47.",ter,0.74,0.12,0.75,9.15,ind,birds,150,28.8,1,,
+,,ter,1.47,0.31,1.3,10.6,ind,birds,150,59.1,6,,
+,,ter,1.04,0.24,1.31,15.6,ind,birds,150,54.3,2,,
+,"Simberloff D.A. (1976) Experimental zoogeography of islands: effects of island size. Ecology 57,629-648.",ter,0.99,0.22,1.03,31.5,ind,insects,0.005,24.8,,,
+,"Strong D.R. & Levin D.A. (1975) Species richness of the parasitic fungi of British trees. Proc. Natl. Acad. Sci. USA 72, 2116-2119.",ter,0.59,0.3,0.61,11.5,ind,fungi,,54.3,2,,
+,"Strong D.R. (1974) Nonasymptotic species richness models and the insects of British trees. Proc. Natl. Acad. Sci. USA 71, 2766-2769.",ter,1.07,1.12,0.79,113,ind,insects,0.005,54.3,2,,
+,"Strong D.R. (1974) Rapid asymptotic species accumulation in phytophagous insect communities: the pests of cacao. Science 185, 1064-1066.",ter,0.71,0.37,0.9,32.3,ind,insects,0.005,10,3,,
+,"Strong D.R., McCoy E.D. & Rey J.R. (1977) Time and the number of herbivore species: the pest of sugar cane. Ecology 58, 167-175.",ter,0.88,0.37,0.63,21.9,ind,insects,0.005,19,6,,
+,"Terborgh J. (1973) Change, habitat and dispersal in the distribution of birds in the West Indies. Evolution 27, 338-349.",ter,1.31,0.19,1.55,18.2,ind,birds,120,17.5,3,,
+,"Thornton I.W. (1967) The measurement of isolation on archipelagos, and its relation to insular faunal size and endemism. Evolution 21, 842-849.",ter,0.92,0.4,1.02,27.3,ind,insects,,20.6,1,,
+,"Vuilleumier F. (1970) Insular biogeography in continental regions. I. The northern Andes of South America. Am. Nat. 104, 373-388.",ter,0.82,0.3,0.9,16.4,ind,birds,120,5.8,2,,
+,,aqu,0.45,0.43,0.53,8.67,ind,zoobenthos,0.026,46,,,
+,Watson G. (1964) Ecology and evolution of passerine birds on the islands of the Aegan Sea. Vols 1-2. Ph.D. diss. Yale University.,ter,1.22,0.35,1.47,12,,birds,120,39.5,4,,
+,"Weissman D.B. & Rentz D.E. (1976) Zoogeography of the grasshoppers and their relatives (Orthoptera) on the California Channel Islands. J. Biogeogr. 3, 105-114.",ter,0.95,0.28,0.84,10.3,ind,insects,0.071,33.5,2,,
+,"Wilson E.O. & Taylor R.W. (1967) An estimate of the potential evolutionary increase in species density in the Polynesian ant fauna. Evolution 21, 1-10.",ter,0.81,0.16,0.8,4.23,ind,insects,0.004,12,4,,
+,"Wilson E.O. (1961) The nature of the taxon cycle in the Melanesian ant fauna. Am. Nat. 95, 169-193.",ter,1.04,0.24,0.72,13.8,,insects,0.004,12,4,,
+61,"Connor E.F. & Simberloff D. (1978). Species number and compositional similarity of the Galapagos flora and avifauna. Ecol. Monogr., 48, 219-248",ter,0.02,-0.002,0.08,-0.2,ind,birds,150,0,5.67,10000,4.67 .109
+,,ter,0.18,-0.07,0.43,-27.8,ind,plants,10,0,5.67,10000,4.67 .109
+62,"Cowlishaw G. (1999). Predicting the pattern of decline of African primate diversity: An extinction debt from historical deforestation. Conservation Biology, 13, 1183-1193",ter,0.71,0.16,0.87,3.97,ind,mammals,4400,,3.3,510000,1.01 .109
+63,"Crawley M.J. & Harral J.E. (2001). Scale dependence in plant biodiversity. Science, 291, 864-868",ter,,0.24,,,nes,plants,10,,3.96,2.50 .107,2.30 .1011
+,,ter,,0.45,,,nes,plants,10,51.5,3.04,1000,1.10 .106
+,,ter,,0.5,,,nes,plants,10,,1.2,1.00 .106,1.60 .107
+,,ter,,0.16,,,ind,plants,10,51.5,4,0.01,100
+64,"Crowell K.L. (1986). A comparison of relict vs. equilibrium models for insular mammals of the Gulf of Maine USA. Biol. J. Linn. Soc., 28, 37-64",ter,1.36,0.35,1.41,14.2,ind,mammals,800,43,1.44,1.09 .107,2.97 .108
+,,ter,0.82,0.17,0.87,1.21,ind,mammals,800,43,3.02,3000,3.11 .106
+65,"Currie D.J. (1991). Energy and large-scale patterns of animal- and plant-species richness. Am. Nat., 137, 27-49",ter,0.19,0.16,0.12,12.6,ind,vertebrates,800,,2.29,5.00 .106,9.80 .108
+,,ter,0.34,0.17,0.32,40.1,ind,birds,150,,2.27,5.00 .106,9.30 .108
+66,"Darlington J., Kaib M. & Brand R. (2001). Termites (Isoptera) in forest remnants and forest islands in the Shimba Hills National Reserve, Coastal Province of Kenya. Sociobiology, 37, 527-538",ter,0.83,0.25,,,ind,insects,0.005,-3,3.02,4,4200
+67,"Davies N. & Smith D.S. (1998). Munroe revisited: A survey of West Indian butterfly faunas and their species-area relationship. Global Ecol. Biogeogr. Lett., 7, 285-294",ter,1.1,0.2,,,ind,insects,0.71,,5.56,300000,1.09 .1011
+,"Munroe E.G. (1948) The geographical distribution of Butterflies in the West Indies. Ph.D. Thesis, Cornell University, Ithaca, NY.",ter,1.32,0.26,,,ind,insects,0.71,,3.14,7.80 .107,1.09 .1011
+,"Scott J.A. (1986) Distribution of Caribbean butterflies. Papilio, New Series 3, 1-26.",ter,1.6,0.26,,,ind,insects,0.71,,3.69,2.20 .107,1.09 .1011
+68,"Davis B.N.K. & Jones P.E. (1986). Insects on isolated colonies of common rock-rose Helianthemum-Chamaecistus. Ecol. Entomol, 11, 267-282",ter,1.11,0.15,1.28,2.93,ind,insects,0.004,52.5,4.21,0.4,6540
+,,ter,0.91,0.14,1.06,2.07,ind,insects,0.005,52.5,4.21,0.4,6540
+,,ter,0.8,0.16,0.99,1.67,ind,insects,0.071,52.5,4.21,0.4,6540
+69,"de Silva M. & Premachandra S.P.U. (1998). An ecological study of the sand-dune vegetation of the Ruhuna National Park, Sri Lanka. Journal of South Asian Natural History, 3, 173-192",ter,1.23,0.23,,,ind,plants,10,7,1.4,8,200
+70,"de Vries H.H., den Boer P.J. & van Dijk T.S. (1996). Ground beetle species in heathland fragments in relation to survival, dispersal, and habitat preference. Oecologia, 107, 332-342",ter,0.24,1.66,,,ind,insects,0.45,52.5,3.76,2980,1.71 .107
+71,"Dodson S.I. & Silva B.M. (1996). Crustacean zooplankton species richness and associations in reservoirs and ponds of Aguascalientes State, Mexico. Hydrobiologia, 325, 163-172",aqu,0.74,0.05,0.76,0.48,ind,arthropods,0.00018,21.5,6,12,1.19 .107
+,,aqu,0.46,0.06,0.52,0.64,ind,arthropods,0.00018,21.5,6,12,1.19 .107
+72,"Dodson S. (1991). Species richness of crustacean zooplankton in European lakes of different sizes. Internationale Vereinigung fuer Theoretische und Angewandte Limnologie. Verhandlungen, 24, 1223-1229",aqu,0.66,0.05,0.63,1.14,ind,zooplankton,6.3 .10-5,50.2,9.72,6,3.15 .1010
+73,"Dodson S. (1992). Predicting crustacean zooplankton species richness. Limnol. Oceanogr., 37, 848-856",aqu,0.97,0.09,,,ind,zooplankton,0.00018,,10.3,4,8.20 .1010
+74,"Dodson S.I., Arnott S.E. & Cottingham K.L. (2000). The relationship in lake communities between primary productivity and species richness. Ecology, 81, 2662-2679",aqu,0.03,0.01,0.2,-7.14,ind,nonv plants,6.0 .10-9,,5.13,5000,6.74 .108
+,,aqu,0.59,0.085,0.55,0.15,ind,plants,5,,5.13,5000,6.74 .108
+,,aqu,0.54,0.15,0.59,5.89,ind,zooplankton,5.0 .10-6,,5.13,5000,6.74 .108
+,,aqu,0.26,0.04,0.23,0.34,ind,arthropods,6.0 .10-5,,5.13,5000,6.74 .108
+,,aqu,0.45,0.09,0.52,1.33,ind,arthropods,0.00005,,5.13,5000,6.74 .108
+,,aqu,0.82,0.27,0.77,9.23,ind,fish,130,,5.13,5000,6.74 .108
+75,"Douglas M. & Lake P.S. (1994). Species richness of stream stones: An investigation of the mechanisms generating the species-area relationship. Oikos, 69, 387-396",aqu,1.44,0.79,,,ind,zoobenthos,0.026,-37.5,0.87,0.012,0.087
+,,aqu,1.33,0.68,,,ind,zoobenthos,0.026,-37.5,1.4,0.005,0.113
+76,"Dressler R.L. (1981). The Orchids: Natural History and Classification. Harvard University Press, Cambridge, MA.",ter,0.38,0.18,0.39,548,ind,plants,5,3,1.59,5.09 .1010,1.97 .1012
+77,"Dueser R.D. & Brown W.C. (1980). Ecological correlates of insular rodent diversity. Ecology, 61, 50-56",ter,1.2,0.38,0.97,2.23,ind,mammals,49,18,1.88,290000,2.20 .107
+78,"Dunn C.P. & Loehle C. (1988). Species-area parameter estimation: Testing the null model of lack of relationship. J. Biogeogr., 15, 721-728",ter,0.08,-0.05,0.07,-4.15,ind,plants,10,43,0.88,40000,300000
+,,ter,0.04,-0.01,0.05,-0.93,ind,plants,10,43,3.12,300,400000
+79,"Durand T. (2000). Ecological significance of a species-area relationship in helminth communities of the Alpine Chamois (Rupicapra r. rupicapra Linne, 1758). Rev. Ecol. Terre Vie, 55, 321-335",ter,0.41,0.18,0.36,8.47,,helminths,,45.5,0.65,2.63 .107,1.17 .108
+80,"Eadie J.M., Hurly T.A., Montgomerie R.D. & Teather K.L. (1986). Lakes and rivers as islands species-area relationships in the fish faunas of Ontario Canada. Environ. Biol. of Fishes, 15, 81-89",aqu,0.58,0.31,,,ind,fish,270,,2.6,30000,1.19 .107
+,,aqu,1.04,0.25,,,ind,fish,270,,3.03,86000,9.16 .107
+,,aqu,1.38,0.29,,,ind,fish,270,,4.04,6.55 .106,7.25 .1010
+,,aqu,2.6,0.27,,,ind,fish,270,,7.8,1000,6.30 .1010
+,,aqu,0.84,0.23,,,ind,fish,270,,1.54,446000,1.54 .107
+81,"Eckmann R. (1995). Fish species richness in lakes of the northeastern lowlands in Germany. Ecology of Freshaqu Fish, 4, 62-69",aqu,1.48,0.14,1.71,3.08,ind,fish,270,53.4,2.54,30000,1.05 .107
+82,"Eggeling W.J. (1947). Observations on the Ecology of the Budongo Rain Forest, Uganda. J. Ecol., 34, 20-87",ter,3.58,0.81,,,nes,plants,44000,2,0.6,3720,14900
+,,ter,2.71,0.71,,,nes,plants,44000,2,0.6,3720,14900
+,,ter,2.8,1.01,,,nes,plants,44000,2,0.6,3720,14900
+,,ter,2.47,0.77,,,nes,plants,44000,2,0.6,3720,14900
+83,"Evans F.C., Clark P.J. & Brand R.H. (1955). Estimation of the number of species present on a given area. Ecology, 36, 342-343",ter,1.53,0.22,,,nes,plants,10,42.5,0.9,21,167
+84,"Fattorini S. (2002). Biogeography of the tenebrionid beetles (Coleoptera, Tenebrionidae) on the Aegean Islands (Greece). J. Biogeogr., 29, 49-67",ter,0.68,0.25,0.75,12.7,ind,insects,0.005,32.9,3.34,3.80 .106,8.26 .109
+85,"Fine P.V.A. (2001). An evaluation of the geographic area hypothesis using the latitudinal gradient in North American tree diversity. Evolutionary Ecology Research, 3, 413-428",ter,0.31,-1.24,0.52,-337,ind,plants,44000,,0.25,2.2 .1011,3.9 .1011
+86,"Frank K.T. & Shackell N.L. (2001). Area-dependent patterns of finfish diversity in a large marine ecosystem. Can. J. Fish. Aquat. Sci., 58, 1703-1707",aqu,1.47,0.18,,,ind ,fish,270,43,1.3,5.00 .108,1.0 .1010
+87,"Friday L.E. (1987). The diversity of macroinvertebrate and macrophyte communities in ponds. Freshw. Biol., 18, 87-104",aqu,0.33,0.1,0.36,12,ind,zoobenthos,0.026,50.5,1.94,230,20000
+,,aqu,0.22,-0.09,0.06,-0.39,ind,plants,5,50.5,1.94,230,20000
+88,"Gardner A.S. (1986). The biogeography of the lizards of the Seychelles Islands. J. Biogeogr., 13, 237-253",ter,0.92,0.17,,,ind,reptiles,34,-7,4.56,4220,1.52 .108
+,,ter,0.48,0.11,,,ind,reptiles,34,-7,2.76,262000,1.50 .108
+89,"Geldenhuys C.J. (1997). Composition and biogeography of forest patches on the inland mountains of the southern Cape. Bothalia, 27, 57-74",ter,0.79,0.27,0.73,31.9,ind,plants,10,-34,1.88,20000,1.50 .106
+,,ter,0.76,0.31,0.66,18.5,ind,plants,44000,-34,1.88,20000,1.50 .106
+,,ter,0.24,0.11,0.31,2.24,ind,plants,10,-34,1.88,20000,1.50 .106
+,,ter,0.92,0.48,0.74,4.36,ind,plants,22000,-34,1.88,20000,1.50 .106
+,,ter,0.4,0.19,0.47,2.47,ind,plants,10,-34,1.88,20000,1.50 .106
+,,ter,0.7,0.37,0.78,4.26,ind,plants,,-34,1.88,20000,1.50 .106
+90,"Glaser P.H. (1992). Raised bogs in Eastern North America - Regional controls for species richness and floristic assemblages. J. Ecol., 80, 535-554",ter,0.27,-0.05,0.24,-2.42,ind,plants,10,,3.39,100000,2.48 .108
+91,"Gonzalez A. (2000). Community relaxation in fragmented landscapes: the relation between species richness, area and age. Ecol. Lett., 3, 441-448",ter,1.1,0.19,,,,insects,0.005,,1,0.002,0.02
+,,ter,1.03,0.18,,,,insects,0.005,,1,0.002,0.02
+,,ter,0.88,0.19,,,,insects,0.005,,1,0.002,0.02
+,,ter,0.87,0.27,,,,insects,0.005,,1,0.002,0.02
+,,ter,0.84,0.28,,,,insects,0.005,,1,0.002,0.02
+92,"Gotelli N.J. & Ellison A.M. (2002). Biogeography at a regional scale: Determinants of ant species density in New England bogs and forests. Ecology, 83, 1604-1609",ter,0.13,-0.04,0.13,-0.57,ind,insects,0.004,43.5,3.54,248,865000
+93,"Gray J.S. (1994). Is deep-sea species diversity really so high? Species diversity of the Norwegian continental shelf. Mar. Ecol. Prog. Ser., 112, 205-209",aqu,1.09,0.46,,,,zoobenthos,0.026,,0.65,4.5,20
+94,"Gray J.S. (2001). Antarctic marine benthic biodiversity in a world-wide latitudinal context. Polar Biol., 24, 633-641",aqu,0.37,0.17,,,ind,zoobenthos,0.026,,0.86,10.4,75
+95,"Grez A.A. (1992). Species richness of herbivorous insects versus patch size of host plant - an experimental test. Rev. Chil. Hist. Nat., 65, 115-120",ter,0.2,0.03,,,,insects,0.004,-33.5,1.75,4,225
+,,ter,0.72,0.17,,,,insects,0.004,-33.5,1.75,4,225
+,,ter,1.06,0.17,,,,insects,0.004,-33.5,1.75,4,225
+,,ter,0.88,0.2,,,,insects,0.004,-33.5,1.75,4,225
+,,ter,0.92,0.24,,,,insects,0.004,-33.5,1.75,4,225
+,,ter,1.02,0.24,,,,insects,0.004,-33.5,1.75,4,225
+,,ter,0.83,0.29,,,,insects,0.004,-33.5,1.75,4,225
+96,"Griffiths D. (1997). Local and regional species richness in North American lacustrine fish. J. Anim. Ecol., 66, 49-56",aqu,1.1,0.17,,,,fish,270,,4.82,1.50 .106,1 .1011
+,,aqu,0.92,0.27,,,,fish,270,,2.18,10000,1.50 .106
+97,"Haila Y. (1981). Winter bird communities in the Åland southwestern Finland archipelago an island bio geographic point of view. Holarctic Ecology, 4, 174-183",ter,1.6,0.34,1.97,21.1,ind,birds,150,60,5.29,5000,9.70 .108
+98,"Hanski I. & Gyllenberg M. (1997). Uniting two general patterns in the distribution of species. Science, 275, 397-400",,,,,,,,,,,,
+,"Nieminen M. (1996) Oecologia 108, 643-651.",ter,1.34,0.28,,,ind,insects,0.071,,2.5,0.29,91.5
+,"Witkowski Z., Płonka P. 1984. The species/area relationship in plants and birds on protected and unprotected isolates in Poland. Bull. Acad. Pol. Sci. 32, 241-249.",ter,1.2,0.18,,,ind,birds,150,,3.18,16.9,25700
+,"Harms W.B. & Opdam P. (1990) Woods as habitat patches for birds: application in landscape planning in the Netherlands. In: Changing landscapes: An Ecological Perspective (eds Zonneveld I.G. & Forman R.T.T.), pp. 73-97, Springer-Verlag, New York.",,,,,,,,,,,,
+99,"Harcourt A.H., Parks S.A. & Woodroffe R. (2001). Human density as an influence on species/area relationships: Double jeopardy for small African reserves? Biodivers. Conserv., 10, 1011-1026",ter,0.79,-0.19,,,ind ,mammals,100000,,2.53,6.50 .107,2.22 .1010
+100,"Harner R.F. & Harper K.T. (1976). The role of area, heterogeneity, and favorability in plant species diversity of Pinyon-Juniper ecosystems. Ecology, 57, 1254-1263",ter,1.83,0.16,,,nes,plants,10,37,,1,10000
+,,ter,2.04,0.21,,,nes,plants,10,39,,1,10000
+101,"Harris L.D. & Wallace R.D. (1984). Breeding bird species in Florida forest fragments. Proceedings of the Annual Conference Southeastern Association of Fish and Wildlife Agencies, 38, 87-96",ter,1.2,0.26,1.4,8.21,ind,birds,150,30,1.88,4000,300000
+102,"Harte J. & Kinzig A.P. (1997). On the implications of species-area relationships for endemism, spatial turnover, and food-web patterns. Oikos, 80, 417-427",ter,0.51,0.13,,,,plants,10,,6,,
+103,"Hattori T. & Ishida H. (2000). Relationship between species diversity, species composition and forest area of fragmented lucidophyllous forests in central Miyazaki Prefecture. Japanese J. of Ecol. Otsu, 50, 221-234",ter,1.52,0.2,1.74,25.7,ind,plants,44000,32,3.42,30,78400
+104,"Have A. (1993). Effects of area and patchiness on species richness - an experimental archipelago of ciliate microcosms. Oikos, 66, 493-500",aqu,2.44,0.16,,,ind,zooplankton,,56,1.08,0.0005,0.006
+105,"Hawkins S.J. & Hartnoll R.G. (1980). A study of the small-scale relationship between species number and area on a rocky shore. Estuarine And Coastal Marine Science, 10, 201-214",aqu,2.25,0.36,2.76,15.4,nes,zoobenthos,0.026,54.3,1.4,0.0625,1.56
+,,aqu,1.9,0.25,2.38,25.2,nes,zoobenthos,0.026,54.3,1.4,0.0625,1.56
+,,aqu,2.21,0.53,1.76,34.5,nes,zoobenthos,0.026,54.3,1.4,0.0625,1.56
+,,aqu,1.64,0.4,1.59,1.76,nes,zoobenthos,0.026,54.3,1.48,0.0625,1.88
+106,"Hawkins B.A. & Porter E.E. (2001). Area and the latitudinal diversity gradient for terrestrial birds. Ecol. Lett., 4, 595-601",ter,0.19,0.08,0.3,102,ind,birds,150,,2.22,6.60 .1010,1.11 .1013
+107,"He F.L. & Legendre P. (1996). On species-area relations. Am. Nat., 148, 719-737",ter,1.81,0.52,2.15,180,ind,plants,44000,2,4.82,3.81,250000
+108,"Heaney L.R. (1984). Mammalian species richness on islands on the Sunda shelf southeast Asia. Oecologia, 61, 11-17",ter,0.86,0.15,1.02,17.1,ind,mammals,800,-7,6.79,120000,7.43 .1011
+109,"Heaney L.R. (1991). An analysis of patterns of distribution and species richness among Philippine fruit bats Pteropodidae. Bull. Am. Mus. Nat. Hist., 206, 145-167",ter,1.13,0.08,1.07,2.26,ind,mammals,13,,4.85,1.20 .107,8.55 .1011
+110,"Heatwole H. (1975). Biogeography of reptiles on some of the islands and cays of Eastern Papua-New Guinea. Atoll Res. Bull., 180, 1-39",ter,1.35,0.26,,,ind,reptiles,650,,4.9,15800,1.25 .109
+,,ter,0.87,0.24,,,ind,reptiles,650,,5.61,250000,1.01 .1011
+111,"Helle P. (1984). Effects of habitat area on breeding bird communities in northeastern Finland. Annales Zoologici Fennici, 21, 421-425",ter,1.03,0.54,,,ind,birds,150,66,1.59,26000,1.00 .106
+,,ter,0.67,0.54,,,ind,birds,150,66,0.59,179000,702000
+112,"Helzer C.J. & Jelinski D.E. (1999). The relative importance of patch area and perimeter-area ratio to grassland breeding birds. Ecol. Appl., 9, 1448-1458",ter,1.06,0.35,1.13,3.12,ind,birds,150,41,2.65,10000,4.47 .106
+113,"Herkert J.R. (1994). The effects of habitat fragmentation on midwestern grassland bird communities. Ecol. Appl., 4, 461-471",ter,1.16,0.29,1.46,4.25,ind,birds,150,42,2.81,10000,6.45 .106
+114,"Hill J.L., Curran P.J. & Foody G.M. (1994). The effect of sampling on the species-area curve. Global Ecol. Biogeogr. Letters, 4, 97-106",ter,1.36,0.3,,,ind,plants,44000,7.5,1.39,3.60 .107,8.81 .108
+115,"Hirano T., Ishida H. & Kunitomo T. (1989). The relationship between forest area and the number of bird species in winter. Strix, 8, 173-178",ter,1.84,0.34,,,ind,birds,150,36.5,2.78,1200,725000
+116,"Hochstrasser T., Kroel-Dulay G., Peters D.P.C. & Gosz J.R. (2002). Vegetation and climate characteristics of and and semi-arid grasslands in North America and their biome transition zone. J. Arid. Environ., 51, 55-78",ter,3.8,0.25,2.25,7.03,nes,plants,10,32.5,2.37,4,936
+,,ter,2.99,0.26,2.18,3.62,nes,plants,10,40.8,2.37,4.01,944
+,,ter,3.11,0.43,1.86,6.51,nes,plants,10,34.5,2.36,4.02,916
+,,ter,3.25,0.31,1.89,8.67,nes,plants,10,32.5,2.97,1.05,991
+,,ter,2.83,0.27,2.27,16.7,nes,plants,10,40.8,2.97,1.02,959
+,,ter,2.99,0.41,1.95,10.4,nes,plants,10,34.5,2.97,1.02,966
+117,"Hogg E.H., Morton J.K. & Venn J.M. (1989). Biogeography of islands floras in the Great Lakes Canada I. Species richness and composition in relation to gull nesting activities. Can. J. Bot., 67, 961-969",ter,0.99,0.45,1.18,94.2,ind,plants,10,45.5,2.29,2000,390000
+,,ter,1.21,0.26,1.17,87.7,ind ,plants,10,45.5,4.09,4000,4.97 .107
+118,"Houle G. (1990). Species-area relationship during primary succession in granite outcrop plant communities. Am. J. of Bot, 77, 1433-1439",ter,1.18,0.53,,,ind,plants,10,33.5,2.34,10910,2.38 .106
+119,"Howe R.W. (1984). Local dynamics of bird assemblages in small forest habitat islands in Australia and North America. Ecology, 65, 1585-1601",ter,1.17,0.21,,,ind,birds,150,43,1.85,1000,70000
+,,ter,1.23,0.28,,,ind,birds,150,-31,1.78,1000,60000
+,,ter,1.34,0.3,,,ind,birds,150,43,1.85,1000,70000
+,,ter,1.44,0.39,,,ind,birds,150,-31,1.85,1000,70000
+120,"Hruby T. (1975). Seasonal changes in two algal populations from the coastal aqus of Washington State. J. Ecol., 63, 881-889",aqu,1.35,0.32,1.39,6.36,nes,nonv plants,4.6,48.4,0.7,0.25,1.25
+,,aqu,1.78,0.29,1.84,6,nes,nonv plants,4.6,48.5,1,0.25,2.5
+,,aqu,1.19,0.2,1.22,2.34,nes,nonv plants,4.6,48.5,1,0.25,2.5
+121,"Hugueny B. & Paugy D. (1995). Unsaturated fish communities in African rivers. Am. Nat., 146, 162-169",aqu,1.96,0.31,,,ind,fish,130,7,2.08,8.0 .108,9.7 .1010
+122,"Humphreys W.F. & Kitchener D.J. (1982). The effect of habitat utilization on species-area curves: implications for optimal reserve area. J. Biogeogr., 9, 391-396",ter,1.06,0.16,,,ind,birds,100,,2.18,340000,5.12 .107
+,,ter,0.95,0.27,,,ind,reptiles,34,,2.18,340000,5.12 .107
+,,ter,1.19,0.32,,,ind,mammals,730,,2.18,340000,5.12 .107
+123,"Hutterer R., Van Der Straeten E. & Verheyen W.N. (1987). A checklist of the shrews of Rwanda and biogeographical considerations in African Soricidae. Bonner Zoologische Beitraege, 38, 155-172",ter,0.62,0.22,0.4,4.05,ind,mammals,10,,4.29,1.28 .108,2.51 .1012
+124,"Hylleberg J., Nateewathana A. & Chatananthawej B. (1985). Temporal changes in the macrobenthos on the west coast of Phuket Island, with emphasis on the effects of offshore tin mining. Res. bull. Phuket Mar. Biol. Cent., 38, 32 pp",aqu,2.65,0.55,,,nes,helminths,0.00032,8,1.2,0.1,1.6
+125,"Ishida H., Hattori T., Takeda Y. & Kodate S. (1998). Relationship between species richness or species composition and area of fragmented lucidophyllous forests in southeastern Hyogo Prefecture. Japanese Journal of Ecology Tokyo, 48, 1-16",ter,1.69,0.23,1.74,21.3,ind,plants,44000,35,2.82,250,164000
+126,"Jackson D.A. & Harvey H.H. (1989). Biogeographic associations in fish assemblages: Local vs. regional processes. Ecology, 70, 1472-1484",aqu,0.47,0.16,0.52,2.89,ind,fish,270,45.5,2.65,21700,9.74 .106
+,,aqu,0.32,0.2,0.44,4.14,ind,fish,270,48,1.41,67500,1.74 .106
+,,aqu,0.57,0.19,0.63,3.21,ind,fish,270,46,2.33,48900,1.05 .107
+,,aqu,0.91,0.25,1.08,5.34,ind,fish,270,45.7,3.05,87600,9.77 .107
+,,aqu,0.63,0.24,0.73,4.42,ind,fish,270,31.2,2.67,57200,2.68 .107
+,,aqu,0.42,0.17,0.46,3.63,ind,fish,270,45,2.41,46500,1.19 .107
+127,"James F.C., Wamer N.O. & Leather S.R. (1982). Relationships between temperate forest bird communities and vegetation structure. Ecology, 63, 159-171",ter,0.6,-0.87,0.58,-37.7,ind,birds,150,,0.39,116000,288000
+128,"Janzen D.H. (1981). The peak in North American ichneumonid species richness lies between 38 degrees and 42 degrees N. Ecology, 62, 532-537",ter,1,2.27,0.74,1379,ind,insects,0.005,,0.58,3.38 .109,1.30 .1010
+129,"Järvinen O. & Ranta E. (1987). Patterns and processes in species assemblages on northern Baltic islands. Annales Zoologici Fennici, 24, 249-266",ter,1.2,0.75,,,ind,plants,10,63.3,0.83,1030,7000
+,,ter,0.35,0.12,,,ind,plants,10,63.3,0.93,1030,8670
+,,ter,1.15,0.68,,,ind,insects,0.004,59.8,2.32,390,80600
+,,ter,1.59,0.5,,,ind,birds,120,60.3,3.11,4700,6.02 .106
+,,ter,1.34,0.37,,,ind,plants,10,63.3,4.82,19,1.27 .106
+,,ter,0.85,0.34,,,ind,molluscs,0.025,59.8,3.88,190,1.46 .106
+130,"Johansson L., Andersen J. & Nilssen A.C. (1994). Distribution of bark insects in island plantations of spruce (Picea-Abies (L) Karst) in sub-arctic Norway. Polar Biol., 14, 107-116",ter,0.37,0.12,0.29,0.81,ind,insects,,69.3,1.86,10000,725000
+131,"Johnson D.W. (1986). Desert buttes natural experiments for testing theories of island biogeography. National Geographic Research, 2, 152-166",ter,0.33,0.02,0.3,0.34,ind,insects,0.004,37,1.92,20000,1.67 .106
+,,ter,1.02,0.14,1.16,0.95,ind,reptiles,650,37,1.92,20000,1.67 .106
+,,ter,0.55,0.11,0.67,0.92,ind,mammals,730,37,1.92,20000,1.67 .106
+132,"Jokinen E.H. (1987). Structure of freshaqu snail communities: species-area relationships and incidence categories. Bulletin of the American Malacological Union Incorporated, 5, 9-19",aqu,0.11,-0.02,,,ind,molluscs,0.025,43,4.5,100,3.16 .106
+,,aqu,1.25,0.19,,,ind,molluscs,0.025,43,4.5,100,3.16 .106
+,,aqu,0.52,0.11,,,ind,molluscs,0.025,43,4.5,100,3.16 .106
+,,aqu,0.78,0.12,,,ind,molluscs,0.025,43,4.5,100,3.16 .106
+133,"Jones C.G. & Lawton J.H. (1991). Plant chemistry and insect species richness of british umbellifers. J. Anim. Ecol., 60, 767-777",ter,0.71,0.32,,,ind,insects,0.005,,,,
+134,"Jordal B.H., Beaver R.A. & Kirkendall L.R. (2001). Breaking taboos in the tropics: Incest promotes colonization by wood-boring beetles. Global Ecol. and Biogeogr., 10, 345-357",ter,1.55,0.34,1.15,60.8,ind,insects,0.005,,4.67,1.60 .107,7.57 .1011
+,,ter,1.66,0.49,0.81,27.7,ind,insects,0.005,,4.67,1.60 .107,7.57 .1011
+135,"Judas M. (1988). The species-area relationship of european Lumbricidae Annelida Oligochaeta. Oecologia, 76, 579-587",ter,0.99,0.08,0.91,2.66,ind,helminths,0.00032,,9.74,100,5.47 .1011
+136,"Kassas M. & Imam M. (1959). Habitat and plant communities in the Egyptian desert: IV. The gravel desert. J. Ecol., 47, 289-310",ter,2.55,0.3,2.3,21.9,nes,plants,10,30,1.15,100,1400
+,,ter,2.16,0.41,1.96,7.34,nes,plants,10,30,1.15,100,1400
+137,"Kassas M. (1953). Habitat and plant communities in the Egyptian desert: II. The features of a desert community. J. Ecol., 41, 248-256",ter,2.51,0.48,1.87,0.07,nes,plants,10,,2.12,30,4000
+,,ter,2.51,0.59,2.03,11.6,nes,plants,10,30,2.12,30,4000
+138,"Kelly B.J., Wilson J.B. & Mark A.F. (1989). Causes of the species-area relation: A study of islands in Lake Manapouri, New Zealand. J. Ecology 77, 1021-1028",ter,0.37,0.05,0.4,1.83,ind,plants,10,-45.5,2.89,3000,2.34 .106
+,,ter,0.39,0.06,0.33,2.13,ind,plants,10,-45.5,4.05,200,2.27 .106
+139,"Khalife S. (1985). The minimal area of a terricolous Lichen-Bryophyte population Toninio-Psoretum-Decipientis. Ecologia Mediterranea, 11, 11-24",ter,2.09,0.29,2.41,9.36,nes,nonv plants,,44,3.01,0.0002,0.205
+140,"Kikkawa J. (1994). Why are there so many animal species in the coral reef? Bulletin of Marine Sciences and Fisheries Kochi University, 14, 3-14",aqu,2.3,0.81,,,ind,zoobenthos,0.026,-17,0.99,5.09 .107,5.01 .108
+141,"Kilburn P.D. (1966). Analysis of the species-area relation. Ecology, 47, 831-843",ter,2.3,0.35,1.06,9.96,nes,plants,10,39,9.95,1.00 .107,900
+,,ter,2.76,0.26,1.15,4.78,nes,plants,10,46.5,9.95,1.00 .107,900
+,,ter,2.6,0.29,1.07,4.22,nes,plants,10,45.5,9.95,1.00 .107,900
+,,ter,2.18,0.3,1.13,8.52,nes,plants,10,46.5,9.95,1.00 .107,900
+,,ter,2.18,0.3,1.17,8.27,nes,plants,10,46.5,9.95,1.00 .107,900
+,,ter,1.97,0.32,1.12,5.64,nes,plants,10,39,9.95,1.00 .107,900
+142,"Kinkel L.L., Andrews J.H., Berbee F.M. & Nordheim E.V. (1987). Leaves as islands for microbes. Oecologia, 71, 405-408",ter,0.03,-0.03,,,ind,fungi,,43.1,0.55,0.00217,0.00771
+143,"Knight D.H. (1975). A phytosociological analysis of species-rich tropical forest on Barro Colorado Island, Panama. Ecol. Monogr., 45, 259-284",ter,2.99,0.31,3.11,63.4,nes,plants,44000,9.2,1.26,800,14600
+144,"Köchy M. & Rydin H. (1997). Biogeography of vascular plants on habitat islands, peninsulas and mainlands in an east-central Swedish agricultural landscape. Nord. J. Bot., 17, 215-223",ter,1.28,0.19,,,ind,plants,10,59.8,2.13,89.5,12200
+145,"Kodric-Brown A. & Brown J.H. (1993). Highly structured fish communities in Australian desert springs. Ecology, 74, 1847-1855",aqu,1.42,0.19,,,ind,fish,270,-25,3.9,10,79400
+146,"Kodric-Brown A. & Brown J.H. (1993). Incomplete data sets in community ecology and biogeography: A cautionary tale. Ecol. Appl., 3, 736-742",,,,,,,,,,,,
+,"Brown J.H. (1971) Mammals on mountaintops: nonequilibrium insular biogeography. Am. Nat. 105, 467-478.",ter,1.19,0.34,,,ind,mammals,730,,2,5.00 .106,5.00 .108
+147,"Koh L.P., Sodhi N.S., Tan H.T.W. & Peh K.S.H. (2002). Factors affecting the distribution of vascular plants, springtails, butterflies and birds on small tropical islands. J. Biogeogr., 29, 93-108",ter,0.76,0.29,0.9,4.65,ind,insects,0.71,1.3,3.49,3300,1.03 .107
+,,ter,0.86,0.4,1.04,16.4,ind,insects,0.005,1.3,3.49,3300,1.03 .107
+,,ter,0.6,0.13,0.61,300,ind,plants,10,1.3,3.49,3300,1.03 .107
+,,ter,1.07,0.22,1.35,9.57,ind,birds,150,1.3,3.49,3300,1.03 .107
+148,"Kohn D.D. & Walsh D.M. (1994). Plant species richness-The effect of island size and habitat diversity. J. Ecol., 82, 367-377",ter,1.22,0.51,1.7,18.3,ind,plants,10,60,3.51,310,996000
+149,"Kouki J., Niemelae P. & Viitasaari M. (1994). Reversed latitudinal gradient in species richness of sawflies (Hymenoptera, Symphyta). Annales Zoologici Fennici, 31, 83-88",ter,1.06,0.38,,,ind,plants,10,36.5,3.3,9.00 .109,1.8 .1013
+,,ter,0.3,0.13,,,ind,insects,0.004,36.5,3.3,9.00 .109,1.8 .1013
+150,"Kratter A.W. (1992). Montane avian biogeography in southern California and Baja- California. J. Biogeogr., 19, 269-283",ter,1.07,0.13,0.82,5.56,ind,birds,150,25,6.03,1000,1.07 .109
+151,"Kruczek H. (1996). Arten-Areal-Beziehung am Beispiel der Saltatoria (Orthoptera). Articulata, 11, 59-75",ter,0.26,0.02,,,ind,insects,0.09,48,1.07,1650,19500
+152,"Kruger F.J. & Taylor H.C. (1980). Plant species diversity in cape fynbos South Africa gamma diversity and delta diversity. Vegetatio, 41, 85-93",ter,2.04,0.14,1.71,299,ind,plants,10,,4.8,300000,1.88 .1010
+,,ter,2.13,0.24,1.33,555,ind,plants,10,,3.24,270000,4.71 .108
+153,"Kujawa K. (2000). Bird species number in farmland: Interactions between point counts number and landscape structure. Acta Ornithologica Warsaw, 35, 91-95",ter,2.18,0.37,,,nes,birds,150,,1.48,31400,942000
+,,ter,2.44,0.43,,,nes,birds,150,,1.48,31400,942000
+,,ter,2.99,0.41,,,nes,birds,150,,1.48,31400,942000
+,,ter,2.44,0.4,,,nes,birds,150,52,1.72,70700,3.68 .106
+,,ter,2.29,0.41,,,nes,birds,150,50,1.72,70700,3.68 .106
+,,ter,2.99,0.63,,,nes,birds,150,,1.48,31400,942000
+154,"Kwiatkowska A.J. (1994). Effect of species diversity, frequency and spatial distribution on the species-area relationship in an oak forest stand. Ann. Bot. Fenn., 31, 169-178",ter,2.29,0.28,,,nes,plants,10,52.7,2.11,4,512
+,,ter,2.64,0.34,,,nes,plants,10,52.7,2.11,4,512
+,,ter,2.64,0.34,,,nes,plants,10,52.7,2.11,4,512
+,,ter,2.64,0.38,,,nes,plants,10,52.7,2.11,4,512
+,,ter,2.99,0.46,,,nes,plants,10,52.7,2.11,4,512
+,,ter,2.64,0.32,,,nes,plants,10,52.7,2.11,4,512
+155,"Latham R.E. & Ricklefs R.E. (1993). Global patterns of tree species richness in moist forests: energy-diversity theory does not account for variation in species richness. Oikos, 67, 325-333",ter,0.12,-0.04,0.38,-26.5,ind,plants,100000,,5.87,10000,7.40 .109
+156,"Lawlor T.E. (1986). Comparative biogeography of mammals on islands. Biol. J. Linn. Soc., 28, 99-126",,,,,,,,,,,,
+,"Corbet G.B. (1971) Provisional distribution maps of British mammals. Mammal Review 1, 95-142.",ter,1.93,0.29,1.75,2.54,ind ,mammals,800,49.5,1.95,1.30 .106,1.16 .108
+,"Corbet G.B. & Southern H.N. eds (1977) The handbook of British Mammals, 2nd ed. Oxford, Blackewell Scientific Publications.",,,,,,,,,,,,
+,,ter,1.21,0.23,1,3.95,ind ,mammals,13,,4.63,5.00 .106,2.12 .1011
+,,ter,1.91,0.35,1.71,8.1,ind ,mammals,800,,4.63,5.00 .106,2.12 .1011
+,,ter,0.9,0.32,0.74,2.54,ind ,mammals,800,,2.48,2.00 .106,6.10 .108
+,,ter,1.05,0.31,1.16,6.28,ind ,mammals,800,,2.09,5.00 .107,6.22 .109
+,,ter,0.65,0.33,0.57,2.26,ind ,mammals,800,8,2.05,4.00 .106,4.50 .108
+,,ter,1.13,0.3,1.32,3.87,ind ,mammals,800,,3.71,1.00 .106,5.10 .109
+,"Burbridge A.A. & McKenzie N.L. (1978) The islands of the north-west Kimberley, Western Australia. Wildlife Research Bulletin Western Australia 7, 1-47.",ter,0.71,0.37,0.93,2.88,ind ,mammals,800,-15,1.57,4.80 .106,1.80 .108
+,"Lawlor T.E. (1983) The mammals. In: Island Biogeography in the Sea of Cortez (eds Case T.J. & Cody M.L.), pp. 265-289, 482-500. University of California Press, Berkeley.",ter,1.41,0.28,1.29,2.6,ind ,mammals,800,25,3.48,400000,1.21 .109
+,,ter,0.57,0.1,0.65,0.41,ind ,mammals,800,25,3.35,400000,8.95 .108
+,"Hope J. H. (1973) Mammals of the Bass Strait Islands. Proceedings of the Royal Society of Victoria 85, 163-195.",ter,1.67,0.33,1.8,4.64,ind ,mammals,800,-40,4.53,2.00 .106,6.79 .1010
+,,ter,1.56,0.25,1.43,19.9,ind ,mammals,800,-7,4.97,8.00 .106,7.43 .1011
+,,ter,0.76,0.23,0.9,3.05,ind ,mammals,800,,5.28,1.20 .106,2.30 .1011
+,,ter,1.01,0.21,0.96,1.75,ind ,mammals,800,,4.63,800000,3.38 .1010
+,"von Bloecker Jr J.C. (1967) The land mammals of the southern California Islands. In: Proceedings of a Symposium on the Biology of the California Islands (ed Philbrick R.N.), pp. 245-263. Santa Barbara Botanical Garden, California.",ter,1.41,0.17,1.08,0.78,ind ,mammals,800,34,3.7,50000,2.49 .108
+,,ter,0.85,0.19,0.96,5.4,ind ,mammals,800,,3.64,2.50 .107,1.08 .1011
+,,ter,0.65,0.17,0.65,1.15,ind ,mammals,800,-5,3.54,5.00 .106,1.74 .1010
+,,ter,0.78,0.32,0.69,3.94,ind ,mammals,13,,3.54,5.00 .106,1.74 .1010
+,,ter,1.48,0.21,1.47,5.2,ind ,mammals,13,,4.63,2.60 .106,1.11 .1011
+,,ter,0.61,0.12,0.71,0.72,ind ,mammals,800,,4.63,2.60 .106,1.11 .1011
+,,ter,0.51,0.14,0.55,0.91,ind ,mammals,800,,4.56,1.00 .106,3.67 .1010
+,,ter,0.86,0.23,0.83,4.15,ind ,mammals,13,,4.56,1.00 .106,3.67 .1010
+157,"Lawlor T.E. (1998). Biogeography of great mammals: Paradigm lost? Journal of Mammalogy, 79, 1111-1130",ter,0.7,0.13,0.75,2.83,ind ,mammals,730,40,1.38,1.27 .108,3.05 .109
+158,"Lawrey J.D. (1991). The species-area curve as an index of disturbance in saxicolous lichen communities. Bryologist, 94, 377-382",ter,0.72,0.16,,,ind,nonv plants,,-45.2,,0.01,1
+,,ter,0.42,0.16,,,ind,nonv plants,,38.5,2,0.01,1
+,,ter,0.65,0.19,,,ind,nonv plants,,-43,,0.01,1
+,,ter,0.62,0.2,,,ind,nonv plants,,38.9,2,0.01,1
+,,ter,1.01,0.2,,,ind,nonv plants,,,,0.01,1
+,,ter,0.97,0.21,,,ind,nonv plants,,-43,,0.01,1
+,,ter,0.63,0.28,,,ind,nonv plants,,38.9,2,0.01,1
+159,"Lawson G.W., Armstrong-Mensah K.O. & Hall J.B. (1970). A catena in tropical moist semi-deciduous forest near Kade, Ghana. J. Ecol., 58, 371-398",ter,2.9,0.3,1.95,92.7,nes,plants,44000,6.2,2.22,60,9960
+,,ter,1.49,0.48,2.65,48.3,nes,plants,10,6.2,2.52,30,9960
+160,"Lawton J.H. & Price P.W. (1979). Species richness of parasites on hosts agromyzid flies on the British umbelliferae. J. Anim. Ecol., 48, 619-637",ter,0.55,0.16,0.48,1.22,ind,insects,0.071,,3.52,1.00 .108,3.29 .1011
+,,ter,0.64,0.14,0.56,0.67,ind,insects,0.004,,3.52,1.00 .108,3.29 .1011
+,,ter,0.7,0.22,0.61,1.57,ind,insects,0.005,,3.52,1.00 .108,3.29 .1011
+161,"Lawton J.H., Lewihnson T.M. & Compton S.G. (1993). Patterns of diversity for the insect herbivores on bracken. In: Species diversity in ecological communities: historical and geographical perspectives (eds. Ricklefs RE & Schluter D), pp. 178-184. University of Chicago Press, Chicago",ter,2.63,0.47,,,,insects,0.004,,1.44,,
+162,"Leather S.R. (1986). Insect species richness of the british Rosaceae: The importance of host range, plant architecture, age of establishment, taxonomic isolation and species-area relationships. J. Anim. Ecol., 55, 841-860",ter,0.59,0.37,0.55,6.78,ind,insects,0.005,,2.89,3.02 .108,2.34 .1011
+,,ter,0.93,0.41,0.52,16.9,ind,insects,0.005,,3.36,1.00 .108,2.29 .1011
+,,ter,1.11,0.85,0.82,65.6,ind,insects,0.005,,1.5,6.76 .109,2.14 .1011
+163,"Leather S.R. (1991). Feeding specialization and host distribution of british and finnish Prunus feeding Macrolepidoptera. Oikos, 60, 40-48",ter,1.11,0.96,,,,insects,0.071,,1.47,6.68 .109,1.99 .1011
+,,ter,1.51,0.63,,,,insects,0.071,,1.59,1.04 .1010,4.04 .1011
+164,"Levenson J.B. (1981). Woodlots as biogeographic islands in southeastern Wisconsin. In: Ecol. Stud. (eds. Burgess RL & Sharpe DM), pp. 13-39",ter,0.13,0.02,0.1,0.96,ind,plants,22000,43,3.12,300,400000
+165,"Li Y.H. (1993). Grazing dynamics of the species diversity in Aneurolepidium chinense steppe and Stipa grandis steppe. Acta Botanica Sinica, 35, 877-884",ter,2.18,0.06,,,nes,plants,10,43.8,12.2,5.94 .10-7,1.00 .106
+,,ter,2.21,0.06,,,nes,plants,10,43.8,12.3,4.83 .10-7,1.00 .106
+,,ter,1.87,0.05,,,nes,plants,10,43.8,12,9.40 .10-7,1.00 .106
+,,ter,1.96,0.09,,,nes,plants,10,43.8,12,9.72 .10-7,1.00 .106
+166,"Linder H.P. (2001). Plant diversity and endemism in sub-Saharan tropical Africa. J. Biogeogr., 28, 169-182",ter,0.24,2.47,0.26,350,ind,plants,10,,0.16,5.18 .1010,7.56 .1010
+167,"Lobo J.M. & Davis A.L.V. (1999). An intercontinental comparison of dung beetle diversity between two mediterranean-climatic regions: local versus regional and historical influences. Divers. Distrib., 5, 91-103",ter,0.61,0.07,,,ind,insects,0.004,3.8,5,200000,1.99 .1010
+,,ter,0.8,0.12,,,ind,insects,0.004,3.8,5,200000,1.99 .1010
+168,"Lobo J.M. & Martin-Piera F. (1999). Between-group differences in the Iberian dung beetle species- area relationship (Coleoptera : Scarabaeidae). Acta Oecol. Int. J. Ecol., 20, 587-597",ter,0.75,0.09,0.75,7.04,both,insects,0.45,,6.47,200000,5.97 .1011
+,,ter,0.85,0.14,0.81,2.46,both,insects,0.45,,6.47,200000,5.97 .1011
+,,ter,0.82,0.09,0.88,4.24,both,insects,0.45,,6.47,200000,5.97 .1011
+169,"Lods-Crozet B., Lencioni V., Ólafsson J.S., Snook D.L., Velle G., Brittain J.E., Castella E. & Rossaro B. (2001). Chironomid (Diptera; Chironomidae) communities in six European glacier-fed streams. Freshw. Biol., 46, 1791-1809",aqu,0.43,-0.13,0.59,-7.3,ind,insects,0.001,,2.3,4.20 .106,8.40 .108
+170,"Lomolino M.V. & Perault D.R. (2001). Island biogeography and landscape ecology of mammals inhabiting fragmented, temperate rain forests. Global Ecol. and Biogeogr., 10, 113-132",ter,0.46,0.15,0.42,2.05,ind,mammals,800,47.7,1.8,9300,589000
+171,"Lomolino M.V. (1982). Species area and species distance relationships of terrestrial mammals in the thousand island region St-Lawrence River USA Canada. Oecologia, 54, 72-75",ter,1.27,0.23,1.17,2.35,ind,mammals,730,45,4.17,400,5.91 .106
+172,"Lomolino M.V., Brown J.H. & Davis R. (1989). Island biogeograhy of montane forest mammals in the American southwest. Ecology, 70, 180-194",ter,1.2,0.39,1.24,4.16,ind,mammals,730,35.2,3.21,6.89 .106,1.11 .1010
+173,"Lonsdale W.M. (1999). Global patterns of plant invasions and the concept of invasibility. Ecology, 80, 1522-1536",ter,1.39,0.27,,,ind,plants,10,,7.49,320000,1.00 .1013
+,,ter,0.59,0.18,,,ind,plants,10,,7.49,320000,1.00 .1013
+174,"Ma M., Tarmi S. & Helenius J. (2002). Revisiting the species-area relationship in a semi-natural habitat: Floral richness in agricultural buffer zones in Finland. Agric. Ecosyst. Environ., 89, 137-148",ter,0.65,0.12,0.65,10.9,ind,plants,10,60.4,1.95,30,2700
+175,"MacDonald K.B. (1969). Quantitative studies of salt marsh mollusc faunas from the North American Pacific Coast. Ecol. Monogr., 39, 33-60",aqu,0.34,0.13,0.36,1.78,ind,molluscs,0.07,,1.66,19500,886000
+176,"MacGarvin M. (1982). Species-area relationships of insects on host plants: Herbivores on rosebay willowherb. J. Anim. Ecol., 51, 207-223",ter,0.6,0.07,0.56,0.99,ind,insects,0.004,,4.47,0.23,6730
+177,"MacRoberts B.R. & MacRoberts M.H. (1992). Floristics of four small bogs in western Louisiana with observations on species-area relationships. Phytologia, 73, 49-56",ter,2.25,0.22,,,ind,plants,10,31.2,3.71,10,50900
+178,"Magnussen E. (2002). Demersal fish assemblages of Faroe Bank: species composition, distribution, biomass spectrum and diversity. Mar. Ecol.Prog. Ser., 238, 211-225",aqu,1.32,0.2,,,nes,fish,270,61,,,
+179,"Magura T., Kodobocz V. & Tothmeresz B. (2001). Effects of habitat fragmentation on carabids in forest patches. J. Biogeogr., 28, 129-138",ter,0.53,-0.1,0.5,-3.87,ind,insects,0.45,49,1.99,412000,4.00 .107
+180,"Martin T.E. (1988). Habitat and area effects on forest bird assemblages: Is nest predation an influence? Ecology, 69, 74-84",ter,1.43,0.73,1.1,14.88,ind,birds,150,34,0.72,12000,62300
+,,ter,1.84,0.67,2.08,19.57,ind,birds,150,34,0.93,7790,66400
+181,"Mason C.F. (2001). Woodland area, species turnover and the conservation of bird assemblages in lowland England. Biodivers. Conserv., 10, 495-510",ter,1.46,0.28,1.55,9.55,ind,birds,150,51.8,2.76,1000,570000
+182,"Matter S.F., Hanski I. & Gyllenberg M. (2002). A test of the metapopulation model of the species-area relationship. J. Biogeogr., 29, 977-983",,,,,,,,,,,,
+,"Behle W.H. (1978) Avian biogeography of the Great Basin and intermountain region. Great Basin Naturalist Memoirs 2, 55-80.",ter,0.76,0.19,,,ind,birds,150,,,,
+,"Cody M.L. (1983) The land birds. In: Island biogeography in the Sea of Cortez (eds Case T.J. & Cody M.L.), pp. 210-264, University of California Press, Berkeley.",ter,1.47,0.21,,,ind,birds,150,25,,,
+,"Diamond J.M. (1984) Distributions of New Zealand birds on real and virtual islands. New Zealand Journal of Ecology, 7, 37-55.",ter,1.12,0.18,,,ind,birds,150,,,,
+,"Draffan R.D.W., Garnett S.T. & Malone G.J. (1983) Birds of the Torres Strait: an annotated list and biogeographical analysis. Emu 83, 207-234.",ter,1.21,0.19,,,ind,birds,150,-10,,,
+,"Hanski I. & Kuitunen J. (1986) Shrews on small islands: epigenic variation elucidates population stability. Holarctic Ecology 9, 193-204.",ter,0.95,0.35,,,ind,mammals,730,62.7,,,
+183,"McClanahan T.R. (1994). Kenyan coral reef lagoon fish: Effects of fishing, substrate complexity, and sea urchins. Coral Reefs, 13, 231-241",aqu,1.27,-0.93,1.38,-180,ind,fish,270,-3.5,0.15,7000,10000
+184,"McDonald K.A. & Brown J.H. (1992). Using montane mammals to model extinctions due to global change. Conserv. Biol., 6, 409-415",ter,0.97,0.39,0.92,4.19,ind,mammals,10,,1.96,5.00 .106,4.55 .108
+185,"Medail F. & Vidal E. (1998). Organization of species richness and composition of the flora in the western Mediterranean Islands (Southeastern France). Can. J. Bot., 76, 321-331",ter,1.13,0.49,1.25,115,ind,plants,10,44,4.1,1000,1.25 .107
+186,"Michener C.D. (1979). Biogeography of the bees. Annals of the Missouri Botanical Garden, 66, 277-347",ter,1.46,0.74,0.5,252,ind,insects,0.005,,3.73,1.03 .108,5.47 .1011
+187,"Miller S.E. (1984). Butterflies of the California Channel Islands USA. Journal of Research on the Lepidoptera, 23, 282-296",ter,0.61,0.17,0.64,6.55,ind,insects,0.71,34,1.98,2.60 .106,2.49 .108
+,,ter,0.73,0.21,0.73,9.5,ind,insects,0.071,34,1.98,2.60 .106,2.49 .108
+188,"Miyashita T., Shinkai A. & Chida T. (1998). The effects of forest fragmentation on web spider communities in urban areas. Biol. Conserv., 86, 357-364",ter,1.75,0.24,1.64,7.46,ind,arthropods,0.005,35.7,2.13,2000,270000
+,,ter,1.39,0.19,,,ind,arthropods,0.005,35.4,1.58,4000,151000
+,,ter,1.1,0.09,1.28,5.62,ind,arthropods,0.005,35.4,4.1,4000,5.00 .107
+189,"Moody A. (2000). Analysis of plant species diversity with respect to island characteristics on the Channel Islands, California. J. Biogeogr., 27, 711-723",ter,1.34,0.24,1.19,184,ind,plants,10,34,2.05,2.60 .106,2.94 .108
+190,"Morimoto K. & Miyakawa S. (1985). Weevil fauna of the Izu Islands Japan. Mushi, 50, 19-85",ter,1.53,0.3,1.77,23.5,ind,insects,0.071,32,1.38,3.80 .106,9.10 .107
+191,"Morrison L.W. (1997). The insular biogeography of small Bahamian cays. J. Ecol., 85, 441-454",ter,0.85,0.43,1.03,6.9,ind,plants,10,25,2.6,12,4810
+,,ter,0.48,0.41,0.38,5.11,ind,plants,10,23,2.43,61,16400
+192,"Morrison L.W. (1997). Polynesian ant (Hymenoptera: Formicidae) species richness and distribution: a regional survey. Acta Oecologica, 18, 685-695",ter,0.32,0.18,,,ind,insects,0.004,-20,2,3.00 .106,3.00 .108
+193,"Mulugeta D., Stoltenberg D.E. & Boerboom C.M. (2001). Weed species-area relationships as influenced by tillage. Weed Sci., 49, 217-223",ter,2.7,0.18,1.89,5.26,nes,plants,10,43.5,3.91,0.0625,512
+,,ter,2.41,0.17,3.45,3.25,nes,plants,10,43.5,3.91,0.0625,512
+194,"Myers A.A. (1996). Species and generic gamma-scale diversity in shallow-aqu marine amphipoda with particular reference to the mediterranean. Journal of the Marine Biological Association of the United Kingdom, 76, 195-202",aqu,0.95,0.16,,,ind,arthropods,0.005,,4.69,4.27 .107,2.09 .1012
+195,"Myers N., Mittermeier R.A., Mittermeier C.G., da Fonseca G.A.B. & Kent J. (2000). Biodiversity hotspots for conservation priorities. Nature, 403, 853-858",ter,0.86,0.39,0.66,10309,ind,plants,10,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.66,0.3,0.56,345,ind,birds,150,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.59,0.31,0.45,3680,ind,plants,10,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.46,0.25,0.33,99.8,ind,reptiles,650,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.72,0.52,0.39,33.2,ind,mammals,730,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.7,0.54,0.58,140,ind,mammals,730,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.31,0.23,0.22,46.2,ind,reptiles,650,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.81,0.81,0.57,174,ind,amphibians,11,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.73,0.76,0.51,117,ind,amphibians,11,,2.1,1.86 .1010,2.36 .1012
+,,ter,0.4,0.43,0.37,92.9,ind,birds,150,,2.1,1.86 .1010,2.36 .1012
+196,"Natuhara Y. & Imai C. (1999). Prediction of species richness of breeding birds by landscape-level factors of urban woods in Osaka Prefecture, Japan. Biodivers. Conserv., 8, 239-253",ter,1.63,0.21,1.72,7.19,ind,birds,150,35.1,6.03,600,6.47 .108
+197,"Newmark W.D. (1986). Species-area relationship and its determinants for mammals in western North American national parks. Biol. J. Linn. Soc., 28, 83-98",ter,1.18,0.12,1.19,12.3,ind,mammals,730,43.9,2.4,8.30 .107,2.07 .1010
+198,"Newton A.C. & Haigh J.M. (1998). Diversity of ectomycorrhizal fungi in Britain: A test of the species-area relationship, and the role of host specificity. New Phytol., 138, 619-627",ter,0.56,0.61,0.71,83,ind,fungi,,,2.3,3.26 .107,6.47 .109
+199,"Newton I. (1995). The Contribution of Some Recent Research on Birds to Ecological Understanding. J. Anim. Ecol., 64, 675-696",,,,,,,,,,,,
+,"Boström U. & Nilsson S.G. (1983) Latitudinal gradients and local variations in species richness and structure of bird communities on raised peat-bogs in Sweden. Ornis Scandinavica 14, 213-226.",ter,1.13,0.44,0.92,5.24,ind,birds,150,,1.84,80000,5.48 .106
+,"Elmberg J., Nummi P, Pöysä H & Sjöberg K. (1994) Relationship between species number, lake size and resource diversity in assemblages of breeding waterfowl. J. Biogeogr. 21, 75-84.",ter,0.6,0.38,0.72,6.1,ind,birds,795,,1.39,20000,496000
+,"Ford H.A. (1987) Bird communities on habitat islands in England. Bird Study 34, 205-218.",ter,1.15,0.35,1.31,9.71,ind,birds,120,,2.19,1550,241000
+,"Fuller R.J. (1982) Bird Habitats in Britain. Poyser, Calton.",ter,2.27,0.74,2.35,10.5,ind,birds,150,,0.78,630000,3.78 .106
+,"Bellamy P.E., Hinsley S.A. & Newton I. (1996) Factors influencing bird species numbers in woodland fragments in south-east England. J. Appl. Ecol. 33, 249-262.",ter,1.18,0.34,1.24,6.3,ind,birds,150,52.5,3.19,200,308000
+,"Hinsley S.A., Bellamy P.E. Newton I. (1995) Bird species turnover and stochastic extinction in woodland fragments. Ecography 18, 41-50.",,,,,,,,,,,,
+200,"Niell F.X. (1977). Sampling method and area minima for structural studies of rocky intertidal macrophytobenthos in the Ria of Vigo. Invest. Pesq., 41, 509-521",ter,1.4,0.48,,,nes,nonv plants,10,42.3,1.21,0.0296,0.481
+,,ter,1.84,0.42,,,nes,nonv plants,10,42.3,1.21,0.0296,0.48
+,,ter,2.03,0.45,,,nes,nonv plants,10,42.3,1.35,0.0308,0.694
+,,ter,2.3,0.42,,,nes,nonv plants,10,42.3,1.61,0.00905,0.37
+,,ter,1.77,0.42,,,nes,nonv plants,10,42.3,1.47,0.0247,0.723
+,,ter,2.08,0.4,,,nes,nonv plants,10,42.3,1.67,0.00783,0.369
+201,"Nieminen M. & Hanski I. (1998). Metapopulations of moths on islands: A test of two contrasting models. J. Anim. Ecol., 67, 149-160",ter,1.4,0.37,1.2,41.1,ind,insects,0.071,60,1.3,3200,64200
+,,ter,1.27,0.27,1.25,104,ind,insects,0.071,60,1.11,32800,420000
+,,ter,1.04,0.15,1.01,20,ind,plants,10,60,2.14,3100,432000
+202,"Nilsson S.G., Bengtsson J. & Ås S. (1988). Habitat diversity or area per se? Species richness of woody plants, carabid beetles and land snails on islands. J. Anim. Ecol., 57, 685-704",ter,1,0.1,1.02,5.65,ind,plants,44000,59.5,2.09,6000,743000
+,,ter,0.7,0.15,0.7,5.48,ind,molluscs,0.025,59.5,2.09,6000,743000
+,,ter,0.96,0.37,0.99,11.7,ind,insects,0.45,59.5,2.09,6000,743000
+203,"Nores M. (1995). Insular biogeography of birds on mountain-tops in north-western Argentina. J. Biogeogr., 22, 61-70",ter,1.44,0.36,1.02,12.4,,birds,150,-30,2.44,1.30 .107,3.60 .109
+204,"Oberdorff T., Hugueny B., Compin A. & Belkessam D. (1998). Non-interactive fish communities in the coastal streams of north-western France. J. Anim. Ecol., 67, 472-484",aqu,0.72,0.16,,,ind,fish,130,49,0.76,2.50 .107,1.44 .108
+205,"Obeso J.R. & Aedo C. (1992). Plant-species richness and extinction on isolated dunes along the rocky coast of northwestern Spain. J. Veg. Sci., 3, 129-132",ter,1.01,0.34,,,ind,plants,10,43.5,3.03,250,269000
+,,ter,0.87,0.4,,,ind,plants,10,43.5,3.15,500,711000
+206,"Osman R.W. (1978). The influence of seasonality and stability on the species equilibrium. Ecology, 59, 383-399",aqu,2.76,0.28,2.09,15.9,ind,zoobenthos,0.026,41.5,1.32,0.0014,0.0293
+,,aqu,1.53,0.9,1.69,10.6,ind,zoobenthos,0.026,41.5,1.59,0.0007,0.0272
+,,aqu,0.95,0.53,1.17,8.34,ind,zoobenthos,0.026,41.5,1.78,0.0004,0.0241
+,,aqu,0.38,0.17,0.37,1.03,ind,zoobenthos,0.026,41.5,1.76,0.0008,0.0457
+,,aqu,0.86,0.44,0.74,3.12,ind,zoobenthos,0.026,41.5,1.9,1.20 .10-3,0.0952
+207,"Ottosson J.G. & Anderson J.M. (1983). Number, seasonality and feeding habits of insects attacking ferns in Britain: An ecological consideration. J. Anim. Ecol., 52, 385-406",ter,0.69,0.37,,,,insects,0.005,,,1.00 .107,3.00 .109
+,,ter,1.25,0.58,,,,insects,0.005,,,1.00 .107,3.00 .109
+208,"Paijmans K. (1970). An analysis of four tropical rain forest sites in New Guinea. J. Ecol., 58, 77-101",ter,2.13,0.69,1.75,94.4,nes,plants,44000,-7,,360,8020
+209,"Panitsa M. & Tzanoudakis D. (2001). A floristic investigation of the islet groups Arki and Lipsi (East Aegean area, Greece). Folia Geobotanica, 36, 265-279",ter,0.86,0.31,0.97,52.1,ind,plants,10,37.4,7.13,500,6.70 .109
+210,"Pannach G. (1987). Colonization of birds on cemeteries in Brunswick (Lower Saxony). Braunschw. Naturkd. Schr., 2, 751-757",ter,0.68,0.23,0.77,8.25,ind,birds,150,52.2,0.65,6000,27000
+211,"Park C.R. & Lee W.S. (2000). Relationship between species composition and area in breeding birds of urban woods in Seoul, Korea. Landsc. Urban Plan., 51, 29-36",ter,1.36,0.21,,,,birds,150,38.5,3.35,1600,3.56 .106
+212,"Parthasarathy N. & Karthikeyan R. (1997). Biodiversity and population density of woody species in a tropical evergreen forest in Courtallum reserve forest, Western Ghats, India. Tropical Ecology, 38, 297-306",ter,3.25,0.51,1.85,24.7,nes,plants,22000,8.9,2,100,10000
+213,"Parthasarathy N. (1999). Tree diversity and distribution in undisturbed and human-impacted sites of tropical wet evergreen forest in southern Western Ghats, India. Biodivers. Conserv., 8, 1365-1381",ter,2.9,0.5,2.44,61.8,nes,plants,44000,8.5,1,1000,10000
+,,ter,2.51,0.38,2.7,48.6,nes,plants,44000,8.5,1,1000,10000
+,,ter,2.35,0.46,2.83,52.4,nes,plants,44000,8.5,1,1000,10000
+214,"Pastor J., Downing A. & Erickson H.E. (1996). Species-area curves and diversity-productivity relationships in beaver meadows of Voyageurs National Park, Minnesota, USA. Oikos, 77, 399-406",ter,2.53,0.19,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,2.2,0.19,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,2.86,0.2,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,2.51,0.21,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,2.08,0.21,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,1.62,0.24,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,1.67,0.24,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,2.86,0.27,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,2.76,0.32,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,2.12,0.36,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,1.58,0.37,,,nes,plants,10,48.5,1.56,0.25,9
+,,ter,1.74,0.42,,,nes,plants,10,48.5,1.56,0.25,9
+215,"Peake A.J. & Quinn G.P. (1993). Temporal variation in species-area curves for invertebrates in clumps of an intertidal mussel. Ecography, 16, 269-277",aqu,1.49,0.35,,,ind,zoobenthos,0.026,-38.5,1.7,4.81 .10-4,0.0239
+,,aqu,1.59,0.48,,,ind,zoobenthos,0.026,-38.5,1.91,3.27 .10-4,0.0263
+,,aqu,1.42,0.44,,,ind,zoobenthos,0.026,-38.5,2.35,1.28 .10-4,0.0287
+,,aqu,1.46,0.41,,,ind,zoobenthos,0.026,-38.5,1.79,4.44 .10-4,0.0274
+216,"Peck S.B. & Howden H.F. (1985). Biogeography of scavenging scarab beetles in the Florida Keys USA post-pleistocene land-bridge islands. Can. J.  Zool., 63, 2730-2737",ter,1.17,0.38,1.7,20.5,ind ,insects,0.45,25,5.33,700000,1.50 .1011
+217,"Petersen F.T. & Meier R. (2001). A preliminary list of the Diptera of Denmark. Steenstrupia, 26, 119-276",ter,0.51,0.15,0.47,1647,ind ,insects,0.005,,1.05,3.00 .1010,3.38 .1011
+218,"Plotkin J.B., Potts M.D., Yu D.W., Bunyavejchewin S., Condit R., Foster R., Hubbell S., LaFrankie J., Manokaran N., Seng L.H., Sukumar R., Nowak M.A. & Ashton P.S. (2000). Predicting species diversity in tropical forests. Proc. Natl. Acad. Sci. U. S. A., 97, 10850-10854",ter,1.99,0.47,,,nes,plants,44000,2,4.39,20,487000
+,,ter,2.11,0.52,,,nes,plants,44000,3,5.04,4.64,511000
+,,ter,1.9,0.5,,,nes,plants,44000,10,5.52,1.47,487000
+,,ter,2.01,0.6,,,nes,plants,44000,17,5.62,1.1,464000
+,,ter,1.92,0.57,,,nes,plants,44000,9,5.6,1.16,464000
+219,"Poff N.L. & Allan J.D. (1995). Functional organization of stream fish assemblages in relation to hydrological variability. Ecology, 76, 606-627",aqu,0.05,0.01,0.06,1.32,ind,fish,270,,1.59,1.05 .108,4.09 .109
+220,"Pomeroy D. & Lewis A. (1987). Bird species richness in tropical Africa: Some comparisons. Biol. Conserv., 40, 11-28",ter,1.52,0.13,0.94,120,ind,birds,42,,8.37,10000,2.35 .1012
+221,"Poore M.E.D. (1964). Integration in the plant community. J. Anim. Ecol., 33, 213-226",ter,2.99,0.65,2.04,111,nes,plants,44000,2,1.76,277,16100
+,,ter,3.11,0.58,2.16,224,nes,plants,44000,3,6.56,4720,1.70 .1010
+222,"Preston F.W. (1960). Time and space and the variation of species. Ecology, 41, 611-627",ter,2.15,0.15,,,both,birds,150,,9.14,15200,2.08 .1013
+,,ter,1.48,0.17,,,both,birds,150,,11.4,2020,5.06 .1014
+223,"Preston F.W. (1962). The canonical distribution of commonness and rarity: Part I. Ecology, 43, 185-215",ter,1.72,0.3,,,ind,vertebrates,800,45,4.17,10100,1.51 .108
+,,ter,1.87,0.35,,,ind,birds,150,,1.84,1.16 .1010,8.08 .1011
+,,ter,1.99,0.24,,,ind,birds,150,,2.59,3.11 .108,1.22 .1011
+,,ter,1.01,0.33,,,ind,plants,10,0,4.05,518000,5.82 .109
+224,"Proctor J., Anderson J.M., Chai P. & Vallack H.W. (1983). Ecological studies in four contrasting lowland rain forests in Gunung Mulu National Park, Sarawak: I. Forest environment, structure and floristics. J. Ecol., 71, 237-260",ter,2.83,0.82,1.99,165,nes,plants,44000,3,1.4,400,10000
+,,ter,2.65,0.67,1.67,49.9,nes,plants,44000,3,1.4,400,10000
+,,ter,2.7,0.72,2.27,151,nes,plants,44000,3,1.4,400,10000
+,,ter,2.21,0.62,2.9,85.4,nes,plants,44000,3,1.4,400,10000
+225,"Proctor J. Lee Y.F., Langley A. M., Munro W.R.C. & Nelson T. (1988) Ecological studies on Gunung Silam, A small ultrabasic mountain in Sabah, malaysia. I. Environment, forest structure and floristics. J. Ecol., 76, 320-340",ter,2.11,0.64,1.96,70.9,ind,plants,10,5,1.06,350,4050
+226,"Pysek P. (1998). Alien and native species in Central European urban floras: A quantitative comparison. J. Biogeogr., 25, 155-163",ter,0.93,0.33,0.94,508,ind,plants,10,,1.78,8.00 .106,4.80 .108
+227,"Rahbek C. (1997). The relationship among area, elevation, and regional species richness in neotropical birds. Am. Nat., 149, 875-902",ter,1.6,0.44,2.09,59.4,ind,birds,150,,1.74,3.00 .109,1.64 .1011
+,,ter,1.11,0.26,0.98,107,ind,birds,150,,1.97,2.00 .109,1.86 .1011
+,,ter,0.8,0.35,1.02,298,ind,birds,150,,1.35,5.00 .109,1.13 .1011
+,,ter,0.52,0.34,0.73,324,ind,birds,150,,1,8.00 .109,8.00 .1010
+,,ter,0.71,0.3,0.97,372,ind,birds,150,,2.05,1.50 .1010,1.68 .1012
+,,ter,0.38,0.33,0.57,387,ind,birds,150,,0.89,1.50 .1010,1.17 .1011
+,,ter,1.41,0.34,1.58,446,ind,birds,150,,2.77,1.10 .1010,6.54 .1012
+228,"Reed K.E. & Fleagle J.G. (1995). Geographic and climatic control of primate diversity. Proc. Natl. Acad. Sci. U. S. A., 92, 7874-7876",ter,1.09,0.55,1.12,34.4,ind,mammals,4400,,1.51,124000,3.99 .106
+229,"Reed T. (1981). The number of breeding landbird species on British Islands. J. Anim. Ecol., 50, 613-624",ter,1.15,0.34,1.07,13.1,ind,birds,150,,4.13,8000,1.07 .108
+230,"Reed T.M. (1983). The role of species-area relationships in reserve choice: A British example. Biol. Conserv., 25, 263-271",ter,1.16,0.33,,,ind,birds,120,,3.96,11100,1.01 .106
+231,"Rejmanek M. & Rosen E. (1992). Influence of colonizing shrubs on species-area relationships in alvar plant-communities. J. Veg. Sci., 3, 625-630",ter,1.74,0.22,,,nes,plants,10,56.3,5.8,0.001,625
+232,"Rey J.R. (1981). Ecological biogeography of arthropods on Spartina Islands in Northwest Florida. Ecol. Monogr., 51, 237-265",ter,1.6,0.3,1.39,7.3,ind,arthropods,0.005,30,1.13,87,1170
+233,"Rice E.L. (1952). Phytosociological analysis of a tall-grass prairie in Marshall County, Oklahoma. Ecology, 33, 112-116",ter,1.84,0.4,2.48,16.1,nes,plants,10,33.6,1.3,0.1,2
+,,ter,1.8,0.43,2.3,17.8,nes,plants,10,33.6,1.3,0.1,2
+234,"Richards P.W. (1939). Ecological studies on the rain forest of Southern Nigeria: I. The structure and floristic composition of the primary forest. J. Ecol, 27, 1-61",ter,3.45,0.4,3.8,31.6,nes,plants,44000,7,0.57,4000,15000
+,,ter,2.99,0.34,3.11,10.7,nes,plants,44000,7,0.57,4000,15000
+,,ter,3.11,0.39,3.8,26.4,nes,plants,44000,7,0.57,4000,15000
+,,ter,3.25,0.52,3.25,60.1,nes,plants,44000,6.3,0.57,4000,15000
+,,ter,2.99,0.45,2.9,19.6,nes,plants,44000,7,0.57,4000,15000
+,,ter,3.25,0.64,3.25,38.7,nes,plants,44000,6.3,0.57,4000,15000
+235,"Ricklefs R.E. & Lovette I.J. (1999). The roles of island area per se and habitat diversity in the species-area relationships of four Lesser Antillean faunal groups. J. Anim. Ecol, 68, 1142-1160",ter,1.01,0.23,0.92,3.46,ind,mammals,13,15,2.07,1.30 .107,1.51 .109
+,,ter,0.88,0.26,0.89,16.5,ind,insects,0.71,15,2.07,1.30 .107,1.51 .109
+,,ter,0.95,0.21,0.98,11.8,ind,birds,150,15,2.07,1.30 .107,1.51 .109
+,,ter,0.55,0.16,0.68,3.98,ind,vertebrates,330,15,2.07,1.30 .107,1.51 .109
+236,"Ricklefs R.E. (2000). The relationship between local and regional species richness in birds of the Caribbean Basin. J. Anim. Ecol., 69, 1111-1116",ter,1.24,0.23,,,ind,birds,42,13.6,3.05,1.80 .108,2.03 .1011
+237,Rosenzweig M.L. (1995). Species diversity in space and time. Cambridge University Press.,,,,,,,,,,,,
+,"Mares M.A. & Ojeda R.A. (1982) Patterns of diversity and adaptation in South American hystricognath rodents. In: Mammalian biology in South America (eds Mares M.A. & Genoways H. H.), pp. 393-433, Univ. Pittsburgh, Spec. Publ. 6 ",ter,,0.93,,,,mammals,49,,1.5,,
+,,,,,,,,,,,,,
+238,"Roux C. & Rieux R. (1981). The minimal area of lichen populations saxicolous calcicolous lichen populations. Vegetatio, 44, 65-76",ter,1.68,0.37,,,nes,nonv plants,,44,2.42,0.000319,0.0836
+,,ter,2.35,0.58,,,nes,nonv plants,,44,2.06,0.000451,0.0516
+239,"Rudnicky T.C. & Hunter M.L. (1993). Reversing the fragmentation perspective: Effects of clearcut size on bird species richness in Maine. Ecol. Appl, 3, 357-366",ter,1.18,0.34,1.12,10.7,ind,birds,150,44,1.91,13900,1.13 .106
+240,"Rundle S.D., Foggo A., Choiseul V. & Bilton D.T. (2002). Are distribution patterns linked to dispersal mechanism? An investigation using pond invertebrate assemblages. Freshw. Biol., 47, 1571-1581",aqu,0.68,0.15,0.74,7.68,ind,zoobenthos,0.026,50,2.3,12,2400
+241,"Rydin H. & Borgegård S.O. (1988). Plant species richness on islands over a century of primary succession: Lake Hjälmaren. Ecology, 69, 916-927",ter,0.84,0.2,,,ind,plants,10,59.3,1.9,316,25100
+,,ter,0.97,0.46,,,ind,plants,10,59.3,2.6,63,25100
+,,ter,1.39,0.52,,,ind,plants,10,59.3,3.4,10,25100
+,,ter,1.25,0.36,,,ind,plants,10,59.3,2.7,50,25100
+,,ter,1.39,0.56,,,ind,plants,10,59.3,3.1,20,25100
+242,"Santelices B., Hoffmann A.J., Aedo D., Bobadilla M. & Otaiza R. (1995). A bank of microscopic forms on disturbed boulders and stones in tide pools. Mar. Ecol. Prog. Ser., 129, 215-228",aqu,1.57,0.42,,,ind,nonv plants,4.6,-32.8,1.51,,
+243,"Schlosser I.J. (1985). Flow regime, juvenile abundance, and the assemblage structure of stream fishes. Ecology, 66, 1484-1490",aqu,0.55,0.19,,,ind,fish,270,40,1.35,18,400
+,,aqu,0.71,0.23,,,ind,fish,270,40,1.35,18,400
+,,aqu,0.75,0.24,,,ind,fish,270,40,1.35,18,400
+,,aqu,1.05,0.34,,,ind,fish,270,40,1.35,18,400
+,,aqu,1.03,0.5,,,ind,fish,270,40,1.35,18,400
+,,aqu,1.1,0.56,,,ind,fish,270,40,1.35,18,400
+244,"Schmiegelow F.K.A. & Nudds T.D. (1987). Island biogeography of vertebrates in Georgian Bay Islands National Park Canada. Can. J. Zool., 65, 3041-3043",ter,1.21,0.42,,,ind,mammals,800,45.4,3.44,4000,1.09 .107
+,,ter,1.21,0.32,,,ind,birds,150,45.4,3.44,4000,1.09 .107
+,,ter,1.19,0.37,,,ind,vertebrates,330,45.4,3.44,4000,1.09 .107
+245,"Selmi S. & Boulinier T. (2001). Ecological biogeography of Southern Ocean Islands: The importance of considering spatial issues. Am. Nat., 158, 426-437",ter,,0.11,,,,birds,150,,,,
+,,ter,,0.15,,,,insects,0.005,,,,
+,,ter,,0.19,,,,birds,150,,,,
+,,ter,,0.29,,,,plants,10,,,,
+246,"Selmi S., Boulinier T. & Barbault R. (2002). Richness and composition of oasis bird communities: Spatial issues and species-area relationships. Auk, 119, 533-539",ter,0.46,0.04,0.46,0.74,ind,birds,150,32,1.23,537000,9.21 .106
+,,ter,1.49,0.12,1.44,2.84,ind,birds,150,32,1.43,219000,5.91 .106
+,,ter,0.75,0.07,0.76,1.85,ind,birds,150,32,1.31,320000,6.60 .106
+247,"Semenova G.V. & Onipchenko V.G. (1996). Soil seed bank of an alpine lichen heath in the Northwestern Caucasus: Species richness. Oecologia Montana, 5, 83-86",ter,1.58,0.17,1.75,6,nes,plants,10,43.5,1.69,0.01,0.49
+,,ter,1.44,0.37,2.06,9.8,nes,plants,10,43.5,1.69,0.01,0.49
+248,"Sfenthourakis S. (1996). The species-area relationship of terrestrial isopods (Isopoda; Oniscidea) from the Aegean archipelago (Greece): A comparative study. Global Ecol. Biogeogr. Letters, 5, 149-157",ter,1.83,0.2,1.57,7.03,ind,arthropods,0.005,38,4.2,30000,4.76 .108
+249,"Shimizu Y. (1986). Species numbers areas and habitat diversity on the habitat-islands of Mizorogaike Pond Japan. Ecological Research, 1, 185-194",ter,0.85,0.21,,,ind,plants,10,35.1,3,0.02,200
+250,"Shurin J.B. (2000). Dispersal limitation, invasion resistance, and the structure of pond zooplankton communities. Ecology, 81, 3074-3086",aqu,0.38,0.11,,,ind,zooplankton,5 .10-6,42,1.67,260,12100
+,,aqu,0.01,0,,,ind,zooplankton,0.00018,42,1.67,260,12100
+251,"Shurin J.B., Leibold M.A., Havel J.E. & Pinel-Alloul B. (2000). Local and regional zooplankton species richness: A scale-independent test for saturation. Ecology, 81, 3062-3073",aqu,1.36,0.08,,,ind,zooplankton,0.00018,,4.96,1.33 .108,1.20 .1013
+,,aqu,1.36,0.16,,,ind,zooplankton,0.00018,,4.96,1.33 .108,1.20 .1013
+,,aqu,1.23,0.07,,,ind,zooplankton,0.00018,,4.96,1.33 .108,1.20 .1013
+252,"Sidner R. & Davis R. (1995). Use of species/area equations to estimate potential species richness of bats on inadequately surveyed mountain islands. U S Forest Service General Technical Report RM, 264, 294-300",ter,0.91,0.57,0.97,4.84,ind,mammals,13,34,1.15,1.05 .108,1.47 .109
+253,"Simberloff D. & Gotelli N. (1984). Effects of insularization on plant species richness in the prairie forest ecotone. Biol. Conserv., 29, 27-46",ter,1.15,0.2,0.97,7.67,ind,plants,10,,3.16,660,960000
+254,"Simberloff D. (1976). Experimental zoogeography of islands: Effects of island size. Ecology, 57, 629-648",ter,0.71,0.11,0.69,18.1,ind,arthropods,0.005,25,1.37,54,1263
+255,"Soulé M.E., Bolger D.T., Alberts A.C., Wright J., Sorice M. & Hill S. (1988). Reconstructed dynamics of rapid extinctions of chaparral-requiring birds in urban habitat islands. Conserv. Biol, 2, 75-92",ter,0.62,0.32,0.68,2.57,ind,birds,93,33,2.41,4000,1.03 .106
+,,ter,1.01,0.36,1.08,2.75,ind,birds,93,33,2.41,4000,1.03 .106
+256,"Steffan-Dewenter I. & Tscharntke T. (2000). Butterfly community structure in fragmented habitats. Ecol. Lett., 3, 449-456",ter,0.81,0.11,0.85,6.42,ind,insects,0.71,51.5,2.46,326,93100
+,,ter,0.82,0.14,0.81,14.6,ind,plants,10,51.5,2.41,304,78400
+257,"Stevens G.C. (1986). Dissection of the species-area relationship among wood-boring insects and their host plants. Am. Nat., 128, 35-46",ter,0.44,0.42,0.46,4.2,ind,insects,0.005,,1.13,2.80 .1011,3.75 .1012
+258,"Straw N.A. & Ludlow A.R. (1994). Small-scale dynamics and insect diversity on plants. Oikos, 71, 188-192",ter,0.94,0.66,,,,insects,0.005,,0.88,4.60 .1010,3.49 .1011
+,,ter,0.31,1,,,,insects,0.005,,0.45,8.32 .1010,2.37 .1011
+259,"Strong J.D.R., McCoy E.D. & Rey J.R. (1977). Time and the number of herbivore species: The pests of sugarcane. Ecology, 58, 167-175",ter,0.88,0.37,0.63,21.9,ind,arthropods,0.005,,6.02,20000,2.08 .1010
+260,"Summerville K.S., Veech J.A. & Crist T.O. (2002). Does variation in patch use among butterfly species contribute to nestedness at fine spatial scales? Oikos, 97, 195-204",ter,1.23,1.07,1.08,14,ind,insects,0.71,39.5,0.7,45,225
+261,"Tanner E.V.J. (1977). Four montane rain forests of Jamaica: A quantitative characterization of the floristics, the soils and the foliar mineral levels, and a discussion of the interrelations. J. Ecol., 65, 883-918",ter,2.65,0.27,2.35,7.65,nes,plants,44000,18,0.96,87,798
+,,ter,3.25,0.5,2.13,18,nes,plants,44000,18,1.05,87,982
+,,ter,2.7,0.36,2.32,19.2,nes,plants,44000,18,1.03,92,987
+,,ter,1.76,0.52,2.15,24.1,nes,plants,44000,18,1.08,87,1040
+262,"Taylor C.M. (1996). Abundance and distribution within a guild of benthic stream fishes: Local processes and regional patterns. Freshw. Biol., 36, 385-396",aqu,0.97,0.4,,,nes,fish,270,36,1.25,10,188
+263,"Terayama M. & Murata K. (1987). Relation between ant communities and vegetations of Toshima Island the Izu Islands Japan. Bulletin of the Biogeographical Society of Japan, 42, 57-64",ter,0.1,0.07,0.29,3.72,ind,insects,0.004,32,1.36,75000,1.70 .106
+264,"Terayama M. (1992). Structure of ant communities in East Asia: I. Regional differences and species richness. Bulletin of the Biogeographical Society of Japan, 47, 1-31",ter,1.34,0.52,1.63,660,ind,plants,10,27,2.3,6.30 .106,1.26 .109
+,,ter,0.52,0.06,0.57,4.87,ind,insects,0.004,,4.66,40000,1.84 .109
+,,ter,1.61,0.27,1.19,295,ind,plants,10,,3.93,100000,8.57 .108
+,,ter,0.25,0.06,0.19,2.78,ind,insects,0.004,32,3.46,300000,8.57 .108
+,,ter,1.64,0.27,1.38,23.2,ind,insects,0.004,27,3.4,500000,1.26 .109
+,,ter,0.76,0.11,0.79,6.41,ind,insects,0.004,24,4.36,30000,6.82 .108
+265,"Terborgh J.W. & Faaborg J. (1980). Saturation of bird communities in the West Indies. Am. Nat., 116, 178-195",ter,1.33,0.23,1.52,16.2,ind,birds,42,64.2,3.18,5.00 .106,7.60 .109
+266,"Tonn W.M. & Magnuson J.J. (1982). Patterns in the species composition and richness of fish assemblages in Northern Wisconsin Lakes. Ecology, 63, 1149-1166",aqu,0.86,0.34,0.82,3.7,ind,fish,270,46,1.57,24000,898000
+267,"Usher M.B. (1979). Changes in the species-area relations of higher plants on nature reserves. J. Appl. Ecol, 16, 213-215",ter,0.91,0.29,,,,plants,0.005,,8,100000,1.00 .1013
+268,"van Buskirk J. (1985). Species-area relationship of birds on small islands at Isle Royale, Michigan. Wilson Bull., 97, 566-569",ter,1.43,0.24,1.19,2.15,ind,birds,150,48,4.84,3,206000
+269,"Vaughan R.E. & Wiehe P.O. (1941). Studies on the vegetation of Mauritius: III. The structure and development of the upland climax forest. J. Ecol., 29, 127-160",ter,2.38,0.37,2.51,11.3,nes,plants,10,-20,2.7,2,1000
+,,ter,2.18,0.43,2.65,29.3,nes,plants,10,-20,2.7,2,1000
+,,ter,2.48,0.49,2,23.9,nes,plants,10,-20,2.7,2,1000
+270,"Vaughn C.C. (1997). Regional patterns of mussel species distributions in North American rivers. Ecography, 20, 107-115",aqu,0.29,0.08,,,ind,zoobenthos,0.08,38.5,1.68,2.95 .108,1.40 .1010
+271,"Virola T., Kaitala V., Lammi A., Siikamäki P. & Suhonen J. (2001). Geographical patterns of species turnover in aquatic plant communities. Freshw. Biol., 46, 1471-1478",aqu,0.38,0.12,,,,plants,5,,1.55,,
+,,aqu,0.41,0.13,,,,plants,5,,2.19,,
+272,"Wade G.L. & Thompson R.L. (1991). The species-area curve and regional floras USA. Transactions of the Kentucky Academy of Science, 52, 21-26",ter,1.36,0.12,1.36,177,ind,plants,10,,4.97,70000,6.57 .109
+273,"Ward D. & Blaustein L. (1994). The overriding influence of flash floods on species-area curves in ephemeral Negev Desert pools: A consideration of the value of island biogeography theory. J. Biogeogr., 21, 595-603",aqu,0.39,0.18,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.91,0.18,,,ind,arthropods,0.005,30.8,,,
+,,aqu,1.17,0.25,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.63,0.22,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.69,0.22,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.47,0.16,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.73,0.37,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.72,0.31,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.48,0.32,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.64,0.33,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.41,0.27,,,ind,arthropods,0.005,30.8,,,
+,,aqu,0.41,0.32,,,ind,arthropods,0.005,30.8,,,
+274,"Watson D.M. & Peterson T. (1999). Determinants of diversity in a naturally fragmented landscape: humid montane forest avifaunas of Mesoamerica. Ecography, 22, 582-589",ter,0.37,0.07,0.34,20,ind,birds,150,17.5,3.11,1.00 .106,1.30 .109
+275,"Watters G.T. (1992). Unionids, fishes, and the species-area curve. J. Biogeogr., 19, 481-490",aqu,1.52,0.33,1.39,50.1,nes,fish,270,41,4.72,1.00 .107,5.30 .1011
+,,aqu,1.58,0.34,1.38,22.1,nes,molluscs,0.08,39,4.72,1.00 .107,5.30 .1011
+276,"Weiher E. (1999). The combined effects of scale and productivity on species richness. J. Ecol., 87, 1005-1011",aqu,1.9,0.1,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.29,0.15,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.64,0.21,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.13,0.16,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.08,0.17,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.31,0.23,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.13,0.21,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.15,0.26,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,2.31,0.34,,,nes,plants,10,45,2.78,0.25,150
+,,aqu,1.78,0.22,,,nes,plants,10,45,2.78,0.25,150
+277,"Weinberg S. (1978). The minimal area problem in invertebrate communities of Mediterranean rocky substrata. Mar. Biol., 49, 33-40",aqu,1.58,0.15,,,nes,zoobenthos,0.026,42.5,0.99,0.0409,0.403
+,,aqu,1.85,0.17,,,nes,zoobenthos,0.026,42.5,1.03,0.235,2.5
+,,aqu,2.21,0.32,,,nes,zoobenthos,0.026,42.5,1,0.0407,0.403
+,,aqu,2.35,0.33,,,nes,zoobenthos,0.026,42.5,1.02,0.241,2.5
+,,aqu,1.9,0.28,,,nes,zoobenthos,0.026,42.5,1.03,0.232,2.5
+278,"Wells P.V. (1983). Paleobiogeography of montane islands in the Great Basin since the last glaciopluvial. Ecol. Monogr, 53, 341-382",ter,0.82,0.16,,,ind,mammals,800,,3,2.60 .106,2.60 .109
+,,ter,0.69,0.36,,,ind,birds,120,,3,2.60 .106,2.60 .109
+,,ter,0.64,0.21,,,ind,plants,44000,,3,2.60 .106,2.60 .109
+279,"Wetterer J.K. (2002). Ants of Tonga. Pacific Science, 56, 125-135",ter,1.01,0.2,1.37,23.5,ind,insects,0.004,-19,2.4,7.20 .107,1.83 .1010
+280,"White P.S. & Miller R.I. (1988). Topographic models of vascular plant richness in the Southern Appalachian high peaks. Journal of Ecology, 76, 192-199",ter,0.76,0.12,,,ind,plants,10,,3.21,30000,4.90 .107
+281,"White P.S., Miller R.I. & Ramseur G.S. (1984). The species area relationship of the Southern Appalachian high peaks vascular plant richness and rare plant distributions. Castanea, 49, 47-61",ter,0.76,0.12,0.73,32.5,ind,plants,10,35,3.21,30000,4.90 .107
+282,"Winkler H. & Kampichler C. (2000). Local and regional species richness in communities of surface-dwelling grassland Collembola: indication of species saturation. Ecography, 23, 385-394",ter,0.45,0.05,,,ind,insects,0.001,48.1,2.36,2500,570000
+283,"Wood T.K. & Olmstead K.L. (1984). Latitudinal effects on treehopper species richness (Homoptera: Membracidae). Ecol. Entomol., 9, 109-115",ter,0.35,0.15,0.45,64.5,ind ,insects,0.006,,1.85,4.98 .1010,3.55 .1012
+284,"Woolhouse M.E.J. (1983). The theory and practice of the species-area effect, applied to the breeding birds of British woods. Biol. Conserv., 27, 315-332",ter,0.83,0.22,0.83,12.6,ind,birds,150,,1.05,36000,401000
+,,ter,0.67,0.2,0.67,11.9,ind,birds,150,,1.05,36000,401000
+,,ter,0.75,0.2,0.74,11.8,ind,birds,150,,1.05,36000,401000
+,,ter,0.73,0.23,0.74,12.6,ind,birds,150,,1.05,36000,401000
+,,ter,0.98,0.29,1,16.1,ind,birds,150,,1.05,36000,401000
+285,"Wright S.J. (1981). Intra-archipelago vertebrate distributions: the slope of the species-area relation. Am. Nat., 118, 726-748",,,,,,,,,,,,
+,"Abbott I. (1973) Birds of Bass Straight. Proc. R. Soc. Victoria 85, 197-223.",ter,1.25,0.34,1.53,8.44,ind,birds,150,-40,2.65,3.00 .106,1.33 .109
+,"Baker R.J. & Genoways H.H. (1978) Zoogeography of Antillean bats. In: Zoogeography in the Caribbean (ed Gill F.B.), pp. 53-98, Phila. Acad. Nat. Sci. Spec. Publ. 13. ",ter,1.14,0.2,1.41,5.37,ind,mammals,13,,3.93,1.30 .107,1.11 .1011
+,Cody (pers comm),ter,1.2,0.27,1.54,6.51,ind,birds,150,27,3.2,1.27 .108,3.05 .109
+,"Diamond J.M. (1969) Avifaunal equilibria and species turnover rates on the Channel Islands of California. Proc. Natl. Acad. Sci. USA 64, 57-63.",ter,1.09,0.2,1.03,9.81,ind,birds,150,34,1.98,0.01,1
+,"Dobson R. (1952) The birds of the Channel Islands. Staples, London.",ter,2.08,0.19,1.87,15.5,ind,birds,150,49.5,1.95,0.01,1
+,"Frazer J.F.D. (1949) The reptiles and amphibia of the Channel Isles and their distribution. Br. J. Herpetol. 1, 51-53.",ter,1.29,0.23,1.17,1.12,ind,amphibians,11,49.5,1.95,0.01,1
+,,ter,0.97,0.24,1.11,1.52,ind,reptiles,650,49.5,1.95,0.01,1
+,"Grant P.R. & Cowan I.M. (1964) A review of the avifauna of the Tres Marias Islands, Nayarit, Mexico. Condor 66, 221-228.",ter,1.28,0.27,1.38,15.7,ind,birds,150,22,1.22,0.01,1
+,"Hope J.H. (1973) Mammals of the Bass Straight Islands. Proc. R. Soc. Victoria 85, 163-195.",ter,1.3,0.38,1.57,4.92,ind,mammals,800,-40,2.65,0.01,1
+,"Lack D. (1942) Ecological features of the bird faunas of the British small islands. J. Anim. Ecol. 11, 9-36.",ter,1.13,0.16,1.3,34.7,ind,birds,150,,2.78,0.01,1
+,"Lack D. (1969) The number of bird species on islands. Bird Study 16, 193-209.",,,,,,,,,,,,
+,"Lack D. (1976) Island biology. Studies in ecology Vol. 3. University of California Press, Berkeley.",ter,1.39,0.21,1.66,17,ind,birds,150,,3.93,60,9950
+,"Lawlor T.E. (1983) Biogeography of mammals on islands in the Gulf of California, Mexico. In: Island biogeography in the Sea of Cortez (eds Case T.J. & Cody M.L.), University of California Press, Berkeley.",ter,0.71,0.09,0.72,0.65,ind,mammals,800,27,3.2,1.00 .108,3.29 .1011
+,,ter,1.53,0.21,1.43,2.44,ind,mammals,800,27,3.48,30,9960
+,"Littlejohn M.J. & Martin A.A. (1974) The amphibia of Tasmania. In: Biogeography and ecology in Tasmania. (ed Williams W.D.), pp. 251-289, Junk, The Hauge.",ter,1.99,0.3,2.44,1.94,ind,amphibians,11,-40,2.65,1.00 .108,3.29 .1011
+,"MacLean W.P, Kellner R. & Dennis H. (1977) Island lists of West Indian amphibians and reptiles. Smithsonian Herpetol. Info. Serv. 40.",ter,1.52,0.29,1.2,19.9,ind,reptiles,650,,3.93,1.00 .108,3.29 .1011
+,,ter,1.5,0.41,1.31,10.6,ind,amphibians,11,,3.93,1,1
+,"McDiarmid R.W., Copp J.F. & Breedlove D.E. (1976) Notes on the herpetofauna of western Mexico: new records from Sinaloa and the Tres Marias Islands. Nat. Hist. Mus. L.A. County Contrib. Sci. 275.",ter,2.27,0.36,2.09,8.9,ind,reptiles,650,22,1.22,1.00 .108,2.29 .1011
+,"Zweifel R.G. (1960) Results of the Puritan-American Museum of Natural History expedition to western Mexico. 9. Herpetology of the Tres Marias Islands. Bull. Am. Mus. Nat. Hist. 119, 77-128.",ter,1.79,0.41,1.6,1.6,ind,amphibians,11,22,1.22,3.02 .108,2.34 .1011
+,"Murphy R.W. & Ottley J.R. (1983) A checklist of the amphibians and reptiles on the islands in the Sea of Cortez. In: Island biogeography in the Sea of Cortez (eds Case T.J. & Cody M.L.), University of California Press, Berkeley.",ter,0.36,0.03,0.36,0.11,ind,amphibians,11,27,3.2,6.76 .109,2.14 .1011
+,,ter,1.26,0.19,1.25,2.62,ind,reptiles,650,27,3.2,6.68 .109,1.99 .1011
+,,ter,0.63,0.07,0.57,0.25,ind,amphibians,11,27,3.48,1.04 .1010,4.04 .1011
+,,ter,0.95,0.17,0.94,2.67,ind,reptiles,650,27,3.48,1,1
+,"Rawlinson P.A. (1974) Biogeography and ecology of the reptiles of Tasmania and the Bass Strait area. In: Biogeography and ecology in Tasmania. (ed Williams W.D.), pp. 291-339, Junk, The Hauge.",ter,0.74,0.19,0.83,2.57,ind,reptiles,650,-40,2.65,1,1
+,"van Rossem, A.J. (1932) The avifauna of Tiburon Island, Sonora, Mexico, with descriptions of four new races. Trans. San Diego Soc. Nat. Hist. 7, 119-150.",ter,2.08,0.21,3.25,9.65,ind,birds,150,27,3.48,1,1
+,+ Cody (pers comm),,,,,,,,,,,,
+,"Savage J.M. (1967) Evolution of the insular herpetofaunas (ed Philbrick R.N.) Proc. Symp. Biology Calif. Channel Islands. Santa Barbara Botanic Gardens, Santa Barbara, Calif.",ter,0.73,0.17,0.63,1.68,ind,reptiles,650,34,1.98,1,1
+,,ter,0.53,0.16,0.62,0.86,ind,amphibians,11,34,1.98,1,1
+,"Smith M. (1951) The British amphibians and reptiles. Collins, London.",ter,0.29,0.08,0.39,0.73,ind,amphibians,11,,2.78,0.01,64
+,,ter,0.16,0.04,0.24,0.46,ind,reptiles,650,,2.78,0.01,64
+,"Southern H.N. (1964) The handbook of British mammals. Blackwell Scientific, Oxford.",ter,1.71,0.26,1.43,3.27,ind,mammals,800,49.5,1.95,0.01,64
+,,ter,1.34,0.29,1.42,7.8,ind,mammals,800,,2.78,0.01,64
+,,ter,1.35,0.19,1.46,2.94,ind,mammals,13,,2.78,0.01,64
+,"Varona L.S. (1974) Catálogo de los mamiferos viventes y extinguidos de las Antillas. Academia de Ciencias de Cube, Habana.",ter,1.48,0.38,1.45,6.02,ind,mammals,800,,3.93,0.01,64
+,"von Bloeker J.C. Jr. (1967) Land mammals of the Southern California islands. (ed Philbrick R.N.) Proc. Symp. Biology Calif. Channel Islands. Santa Barbara Botanic Gardens, Santa Barbara, Calif.",ter,1.38,0.19,1.09,1.38,ind,mammals,800,34,1.98,0.01,64
+286,"Yagasaki T. & Mochida Y. (1997). Floristic diversity of plant communities on boulders in Oirase Gorge, northern Honshu, Japan. Ecol. Rev., 23, 283-294",ter,2.13,0.53,,,ind,plants,10,40.5,1.12,0.773,10.3
+,,ter,1.25,0.26,,,ind,plants,10,40.5,2.08,0.283,34.2
+287,"Yamada A. & Katsuya K. (2001). The disparity between the number of ectomycorrhizal fungi and those producing fruit bodies in a Pinus densiflora stand. Mycol. Res, 105, 957-965",ter,2.27,0.2,,,nes,fungi,,36.1,2.49,2,625
+,,ter,2.76,0.74,,,nes,fungi,,36.1,2.8,1,625
+288,"Zhu G., Jiang S., Zheng Z. & Fang G. (1986). Preliminary studies on geographical ecology of birds and mammals on some islands of Zhejiang Province. Acta Zoologica Sinica, 32, 74-85",ter,2.03,0.29,1.83,3.32,ind,mammals,730,30.2,3.32,250000,5.24 .108
+,,ter,0.35,0.07,0.53,4.75,ind,birds,150,30.2,3.32,250000,5.24 .108
+289,"Zurlini G., Grossi L. & Rossi O. (2002). Spatial-accumulation pattern and extinction rates of Mediterranean flora as related to species confinement to habitats in preserves and larger areas. Conserv. Biol., 16,948-963.",ter,1,0.28,1.14,375,ind,plants,10,,3.96,165000,1.49 .109
+,,ter,1.25,0.55,0.96,21,ind,plants,10,,3.96,165000,1.49 .109
+,,ter,0.67,0.43,0.67,1599,ind,plants,10,,2.19,3.00 .109,4.70 .1011
+,,ter,1.13,0.53,0.97,503,ind,plants,10,,2.19,3.00 .109,4.70 .1011

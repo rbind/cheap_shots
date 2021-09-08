@@ -1,0 +1,148 @@
+---
+title: "Comparing an estimated coefficient with a constant"
+author: "Drew Tyre"
+date: '2021-09-08'
+output:
+  html_document:
+    code_folding: hide
+  pdf_document: default
+  word_document: default
+og_image: /post/checking-assumptions_files/figure-html/featured_image-1.png
+draft: no
+slug: comparing-constants
+tags_include:
+  - R
+categories: Teaching
+---
+
+[One of the exercises in Ecological Statistics](/classes/Week_1/lab_1/)
+fits a species area curve to data from the Galapogos Islands. I ask students
+to compare the estimated power coefficient $z$ with the value 0.27 reported in [a meta-analysis by Drakare et al. 2006](https://onlinelibrary.wiley.com/doi/pdfdirect/10.1111/j.1461-0248.2005.00848.x). But Drakare et al. only reported the mean, not the standard error.[^1]
+
+To do the comparison properly, I need to know how uncertain the average $z$ is. I looked through the paper carefully, but couldn't find a standard error anywhere! The individual estimates used in the meta-analysis are in an appendix, but the standard errors are not reported there either. They do 
+exist, because Drakare et al. discuss the value of a "weighted" average, 
+where poor estimates (large SE) of $z$ get reduced weight. Oh well, I'll
+do the best I can.
+
+```{r, include = FALSE}
+library("tidyverse")
+library("NRES803") #devtools::install_github("atyre2/NRES803")
+library("faraway") # for the data
+drakare <- read_csv(here::here("content/post/data/Drakare_etal_2006_species-area-curves-review.csv"))
+```
+The data come from Johnson and Raven (1973); I should check if any of the
+estimates in the Drakare data come from there.
+
+```{r}
+grep("Raven", drakare$Oref)
+drakare[193:197,"Oref"]
+```
+
+OK, we need to remove row 194. I included rows before and after the
+hits because sometimes more than one estimate is taken from a single
+reference, and the references are missing for those extra rows. 
+
+```{r}
+drakare <- drakare[-194,]
+```
+
+OK. Now I'll get a mean and standard error for all the studies.
+
+```{r}
+drakare %>% 
+  summarize(mean_z = mean(z_power),
+            se_z = sd(z_power)/sqrt(n()))
+```
+
+Oh right, there are some studies that didn't report z for the power method. 
+I could use `na.rm = TRUE` for both `mean()` and `sd()`, but then
+`n()` would be reporting the incorrect number. 
+
+```{r}
+drakare %>% 
+filter(!is.na(z_power)) %>% 
+  summarize(mean_z = mean(z_power),
+            se_z = sd(z_power)/sqrt(n()),
+            n = n())
+```
+Cooool. The SE is tiny because there are so many observations. Also, 
+weighting the observations by their variance makes quite a difference -- 
+the weighted value reported is 0.27 compared to 0.30 unweighted. 
+
+OK, but before I get carried away, Drakare et al. did find differences by
+method (nested vs. independent) and "realm" (aquatic vs. terrestrial). 
+
+```{r}
+z_estimates <- drakare %>% 
+filter(!is.na(z_power)) %>% 
+  group_by(method, Realm) %>% 
+  summarize(mean_z = mean(z_power),
+            se_z = sd(z_power)/sqrt(n()),
+            n = n())
+z_estimates
+```
+
+The Galapagos data is terrestrial and independent, because each observation
+is a distinct island. Now get the estimated coefficient of z for the Galapagos islands.
+
+```{r}
+gala.1 <- lm(log(Species)~log(Area),data=gala)
+summary(gala.1)
+```
+
+[Consulting wikipedia](https://en.wikipedia.org/wiki/Student%27s_t-test#Independent_(unpaired)_samples) I believe I want
+
+$$
+t = \frac{\bar{X_1}-\bar{X_2}}{s_{\bar{\Delta}}}
+$$
+
+where
+
+$$
+s_{\bar{\Delta}} = \sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}
+$$
+
+I already have the things inside the square root; they are the square of the
+estimated standard errors. So ... 
+
+```{r}
+gala.coefs <- tidy(gala.1)
+s_combined <- sqrt(z_estimates[4, "se_z"]^2 + gala.coefs[2, "std.error"]^2)
+s_combined
+```
+
+which is ever so slightly bigger than the se from the model alone.
+
+```{r}
+t <- (gala.coefs[2, "estimate"] - z_estimates[4, "mean_z"])/s_combined
+t
+```
+
+OK, to get a p value for that, I need to get the degrees of freedom ... 
+it's ugly. 
+
+```{r}
+(z_estimates[4, "se_z"]^2 + gala.coefs[2, "std.error"]^2)^2 /
+  (z_estimates[4, "se_z"]^4/433 + gala.coefs[2, "std.error"]^4/28)
+
+```
+
+That makes sense ... it is a little bigger than the sample size for the
+larger variance. 
+
+```{r}
+# have to coax t into a naked number, many ways to do this
+pt(t[1,1, drop = TRUE], df = 34.15, lower.tail = FALSE)
+```
+
+Nice -- so that is a test of the hypothesis that the estimated coefficient
+from the Galapagos is the same as the unweighted average for all independently sampled
+terrestrial systems. The p value is the probability of getting an estimate
+as large as 0.39 *or larger*, given the null hypothesis was true. So the 
+Galapagos Islands plant communities are not like the other things. I'm not
+sure what to make of that ecologically, but 
+
+[^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
+
+
+
