@@ -29,7 +29,7 @@ get an overestimate of the significance of the difference; inflated Type I error
 <pre class="r"><code>library(&quot;tidyverse&quot;)
 library(&quot;NRES803&quot;) #devtools::install_github(&quot;atyre2/NRES803&quot;)
 library(&quot;faraway&quot;) # for the data
-drakare &lt;- read_csv(here::here(&quot;static/post/data/Drakare_etal_2006_species-area-curves-review.csv&quot;))</code></pre>
+drakare &lt;- read_csv(&quot;https://drewtyre.rbind.io/post/data/Drakare_etal_2006_species-area-curves-review.csv&quot;)</code></pre>
 <p>The data come from Johnson and Raven (1973); I should check if any of the
 estimates in the Drakare data come from there.</p>
 <pre class="r"><code>grep(&quot;Raven&quot;, drakare$Oref)</code></pre>

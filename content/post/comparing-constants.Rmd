@@ -29,7 +29,7 @@ get an overestimate of the significance of the difference; inflated Type I error
 library("tidyverse")
 library("NRES803") #devtools::install_github("atyre2/NRES803")
 library("faraway") # for the data
-drakare <- read_csv(here::here("static/post/data/Drakare_etal_2006_species-area-curves-review.csv"))
+drakare <- read_csv("https://drewtyre.rbind.io/post/data/Drakare_etal_2006_species-area-curves-review.csv")
 ```
 
 ```{r, setup, eval = TRUE, include = FALSE}
