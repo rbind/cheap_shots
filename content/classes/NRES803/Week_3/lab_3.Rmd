@@ -8,8 +8,9 @@ weight: 803031
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(arrow = TRUE, width.cutoff=60), eval = FALSE)
-library(tidyverse)
-library(NRES803)
+library("tidyverse")
+library("NRES803")
+library("NRES803data")
 ```
 
 In this week’s lab exercise we will first go through calculating the AIC values "by hand", and then using a addon package `MuMIn`. Doing the calculations by hand serves three purposes: 1) you practice using R!, 2) you gain a deeper understanding of how much work the add-on package is doing for you, and 3) sometimes the add-on package won’t work for a new class of model, and if you can do it by hand you won’t be stuck.
