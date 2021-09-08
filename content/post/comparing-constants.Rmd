@@ -22,7 +22,8 @@ to compare the estimated power coefficient $z$ with the value 0.27 reported in [
 To do the comparison properly, I need to know how uncertain the average $z$ is. I looked through the paper carefully, but couldn't find a standard error anywhere! The individual estimates used in the meta-analysis are in an appendix, but the standard errors are not reported there either. They do 
 exist, because Drakare et al. discuss the value of a "weighted" average, 
 where poor estimates (large SE) of $z$ get reduced weight. Oh well, I'll
-do the best I can.
+do the best I can. I think if I ignore the variation between studies I'll
+get an overestimate of the significance of the difference; inflated Type I error probability. 
 
 ```{r, include = FALSE}
 library("tidyverse")
@@ -136,11 +137,11 @@ pt(t[1,1, drop = TRUE], df = 34.15, lower.tail = FALSE)
 ```
 
 Nice -- so that is a test of the hypothesis that the estimated coefficient
-from the Galapagos is the same as the unweighted average for all independently sampled
+from Galapagos plants is the same as the unweighted average for all independently sampled
 terrestrial systems. The p value is the probability of getting an estimate
 as large as 0.39 *or larger*, given the null hypothesis was true. So the 
 Galapagos Islands plant communities are not like the other things. I'm not
-sure what to make of that ecologically, but 
+sure what to make of that ecologically, but it's cool. 
 
 [^1]: Code not shown in the post can be found [on Github](https://github.com/rbind/cheap_shots).
 
