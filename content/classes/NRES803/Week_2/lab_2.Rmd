@@ -14,12 +14,13 @@ This week will give you further practice with making plots, estimating linear mo
 
 ---
 
-Load the NRES803 package. If you are using the lab template, this can go in the setup chunk.
+Load the NRES803 and NRES803data packages. If you are using the lab template, this can go in the setup chunk.
 
 ```{r}
 library("tidyverse")
 library("broom")
 library("NRES803")
+library("NRES803data")
 data(RIKZ)
 dim(RIKZ)
 ```

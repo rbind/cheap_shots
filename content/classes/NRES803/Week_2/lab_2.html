@@ -6,14 +6,16 @@ output: html_document
 weight: 803021
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>This week will give you further practice with making plots, estimating linear models in R, and getting predicted values from those fitted models. Create a new project in RStudio named “yourlastname_lab2”. Submit the compressed project directory, which should include an R Markdown file that can be compiled directly to html without errors. The answers to the numbered questions should be in plain text. The code should be in R code chunks.</p>
 <hr />
-<p>Load the NRES803 package. If you are using the lab template, this can go in the setup chunk.</p>
+<p>Load the NRES803 and NRES803data packages. If you are using the lab template, this can go in the setup chunk.</p>
 <pre class="r"><code>library(&quot;tidyverse&quot;)
 library(&quot;broom&quot;)
 library(&quot;NRES803&quot;)
+library(&quot;NRES803data&quot;)
 data(RIKZ)
 dim(RIKZ)</code></pre>
 <p>This file has 45 observations and 89 variables. Many of those variables are abundance measures for single species. These are in columns 2 through 76. To calculate species richness for each site we need to first use a logical variable to seperate the zeros from positive abundances. Then we add up each row. We can use a convenient function rowSum() that calculates the sum of each row in a matrix. The “&gt;0” part converts the count observations of species in columns 2 through 76 into presence/absence of each species. The result is a single vector that contains the species richness, or alpha diversity, of each site in the dataset.</p>
