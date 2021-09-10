@@ -71,7 +71,7 @@ ggplot(test_RIKZ, aes(sample = .resid)) +
 ggplot(test_RIKZ, aes(x = .fitted, y = sqrt(abs(.std.resid)))) + 
   geom_point() + 
   geom_smooth() + 
-  geom_hline(yintercept = 1)
+  geom_hline(yintercept = 0.823)
 
 ggplot(test_RIKZ, aes(.hat, .std.resid)) +
  geom_vline(size = 2, colour = "white", xintercept = 0) +
