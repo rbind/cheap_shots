@@ -1,11 +1,12 @@
 ---
-title: "Week 8 Lab"
+title: "More GAMs than you wanted"
 author: "Drew Tyre"
 date: "2017-09-07"
 output: html_document
 weight: 803081
 ---
 
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
 <p>We’ll play with a few datasets from Mick Crawley’s “The R Book” <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.</p>
@@ -25,9 +26,8 @@ bollocks.augment &lt;- function(model) {
     r$.cooksd &lt;- cooks.distance(model)
     return(r)
 }
-data(sheep)
+data(sheep, package = &quot;NRES803data&quot;)
 ggplot(sheep, aes(x = Year, y = Population)) + geom_point()</code></pre>
-<p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>The goal is to identify a function relating growth rate Delta to population size. The simplest population model has this as a linear
 function, but there’s no a priori reason to suppose that it should be linear.</p>
 <pre class="r"><code>sheep.lm &lt;- lm(Delta ~ Population, data = sheep)
@@ -38,21 +38,27 @@ stuff_lm &lt;- glance(sheep.lm)
 stuff_gam &lt;- glance(sheep.gam)
 
 nd &lt;- data.frame(Population = seq(600, 2000, 10))
-pred_lm &lt;- augment(sheep.lm, newdata = nd, se_fit = TRUE) %&gt;% 
-    mutate(l95ci = .fitted - .se.fit * qt(0.975, stuff_lm$df.residual), 
-        u95ci = .fitted + .se.fit * qt(0.975, stuff_lm$df.residual)) %&gt;% 
+pred_lm &lt;- augment(sheep.lm, newdata = nd, se_fit = TRUE) %&gt;%
+    mutate(l95ci = .fitted - .se.fit * qt(0.975, stuff_lm$df.residual),
+        u95ci = .fitted + .se.fit * qt(0.975, stuff_lm$df.residual)) %&gt;%
     rename(Delta = .fitted)
 
-pred_gam &lt;- augment(sheep.gam, newdata = nd, se_fit = TRUE) %&gt;% 
-    mutate(l95ci = .fitted - .se.fit * qt(0.975, stuff_gam$df.residual), 
-        u95ci = .fitted + .se.fit * qt(0.975, stuff_gam$df.residual)) %&gt;% 
+
+pred.R &lt;- predict(sheep.gam, newdata = nd, se.fit = TRUE)
+pred.R &lt;- as.data.frame(pred.R)
+pred.R &lt;- cbind(nd, pred.R)
+names(pred.R)[names(pred.R) == &quot;fit&quot;] &lt;- &quot;.fitted&quot;
+names(pred.R)[names(pred.R) == &quot;se.fit&quot;] &lt;- &quot;.se.fit&quot;
+pred_gam &lt;- pred.R %&gt;%
+    mutate(l95ci = .fitted - .se.fit * qt(0.975, stuff_gam$df.residual),
+        u95ci = .fitted + .se.fit * qt(0.975, stuff_gam$df.residual)) %&gt;%
     rename(Delta = .fitted)
 
 # make a plot
-ggplot(sheep, aes(x = Population, y = Delta)) + geom_point() + 
-    geom_line(data = pred_lm, color = &quot;blue&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci, 
-    ymax = u95ci), data = pred_lm, color = &quot;grey&quot;, alpha = 0.33) + 
-    geom_line(data = pred_gam, color = &quot;green&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci, 
+ggplot(sheep, aes(x = Population, y = Delta)) + geom_point() +
+    geom_line(data = pred_lm, color = &quot;blue&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci,
+    ymax = u95ci), data = pred_lm, color = &quot;grey&quot;, alpha = 0.33) +
+    geom_line(data = pred_gam, color = &quot;green&quot;, size = 2) + geom_ribbon(aes(ymin = l95ci,
     ymax = u95ci), data = pred_gam, color = &quot;grey&quot;, alpha = 0.33)</code></pre>
 <p><img src="/classes/NRES803/Week_8/lab_8_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>The gam fit is kind of interesting, looks like there are two broad regimes of population growth within which the growth rate is pretty constant with respect to population size.

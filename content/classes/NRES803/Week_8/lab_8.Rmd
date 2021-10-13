@@ -1,5 +1,5 @@
 ---
-title: "Week 8 Lab"
+title: "More GAMs than you wanted"
 author: "Drew Tyre"
 date: "2017-09-07"
 output: html_document
@@ -9,8 +9,9 @@ weight: 803081
 # set eval = FALSE in the following line to make handout
 lab.eval=TRUE
  # set results and fig.show to 'hide' to produce lab handout.
-# set results = 'markup' and fig.show = 'asis'
-knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'markup', fig.show='asis', tidy.opts=list(arrow = TRUE, width.cutoff=60), include = FALSE)
+# set results = 'markup' and fig.show = 'asis' 
+# to produce answer key
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, warning=FALSE, message=FALSE, results= 'hide', fig.show='hide', tidy.opts=list(arrow = TRUE, width.cutoff=60), include = FALSE)
 ```
 
 We'll play with a few datasets from Mick Crawley's "The R Book" [^1] to see how to identify when a GAM can be useful, and when to stick with a GLM. The first dataset is of population sizes of Soay Sheep.
@@ -32,7 +33,7 @@ bollocks.augment <- function(model){
   r$.cooksd <- cooks.distance(model)
   return(r)
 }
-data(sheep)
+data(sheep, package = "NRES803data")
 ggplot(sheep, aes(x=Year, y=Population)) + 
   geom_point()
 ```
@@ -40,7 +41,7 @@ ggplot(sheep, aes(x=Year, y=Population)) +
 The goal is to identify a function relating growth rate Delta to population size. The simplest population model has this as a linear
 function, but there’s no a priori reason to suppose that it should be linear.
 
-```{r, include = TRUE}
+```{r, include = TRUE, fig.show = 'as.is', results = 'markup'}
 sheep.lm = lm(Delta~Population,data=sheep)
 sheep.gam = gam(Delta~s(Population),data=sheep)
 
@@ -54,7 +55,13 @@ pred_lm <- augment(sheep.lm, newdata=nd, se_fit = TRUE) %>%
          u95ci = .fitted + .se.fit*qt(0.975, stuff_lm$df.residual)) %>%
   rename(Delta=.fitted)
 
-pred_gam <- augment(sheep.gam, newdata=nd, se_fit = TRUE) %>%
+
+pred.R <- predict(sheep.gam,newdata=nd, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(nd,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+pred_gam <- pred.R %>%
   mutate(
     l95ci = .fitted - .se.fit*qt(0.975, stuff_gam$df.residual),
          u95ci = .fitted + .se.fit*qt(0.975, stuff_gam$df.residual)) %>%
@@ -84,10 +91,11 @@ that we can use gam() to fit the simpler model as well.
 #check_assumptions(sheep.lm)
 # but won't work with gam objects :( 
 gam.check(sheep.gam) # this is ugly
+check_assumptions(sheep.gam) # works but doesn't have scaled residuals right
 rr <- bollocks.augment(sheep.gam)
-ggplot(rr, aes(x=.fitted, y=.resid)) + 
+ggplot(rr, aes(x=.fitted, y=sqrt(abs(.std.resid)))) + 
   geom_point() + 
-  geom_hline(yintercept=0, linetype=2) + 
+  geom_hline(yintercept=0.822, linetype=2) + 
   geom_smooth()
 ```
 
@@ -114,7 +122,7 @@ cat("> So that's a borderline case if ever there was one! This is actually appar
 Next we'll take a look at an air quality dataset. Not ecological, but a good test of your ability to see patterns in residuals.
 
 ```{r}
-data(ozone)
+data(ozone, package = "NRES803data")
 
 ggpairs(ozone)
 ```
@@ -148,7 +156,12 @@ ndrad <- with(ozone,
             expand.grid(rad=seq(min(rad), max(rad), length=100),
                         temp=median(temp),
                         wind=quantile(wind)))
-predvrad <- augment(ogam1, newdata=ndrad) %>%
+pred.R <- predict(ogam1, newdata=ndrad, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndrad,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvrad <- pred.R %>%
   rename(ozone=.fitted)
 ovrad <- ggplot(ozone, aes(x=rad, y=ozone, color=wind)) + geom_point()
 ovrad1 <- ovrad + geom_line(aes(group=wind), data=predvrad)
@@ -157,7 +170,12 @@ ndrad2 <- with(ozone,
             expand.grid(rad=seq(min(rad), max(rad), length=100),
                         temp=quantile(temp),
                         wind=median(wind)))
-predvrad2 <- augment(ogam1, newdata=ndrad2) %>%
+pred.R <- predict(ogam1, newdata=ndrad2, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndrad2,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvrad2 <- pred.R %>%
   rename(ozone=.fitted)
 ovrad2 <- ovrad + aes(color=temp) + geom_line(aes(group=temp), data=predvrad2)
 
@@ -165,7 +183,12 @@ ndtemp1 <- with(ozone,
             expand.grid(rad=quantile(rad),
                         temp=seq(min(temp),max(temp),length=100),
                         wind=median(wind)))
-predvtemp1 <- augment(ogam1, newdata=ndtemp1) %>%
+pred.R <- predict(ogam1, newdata=ndtemp1, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndtemp1,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvtemp1 <- pred.R %>%
   rename(ozone=.fitted)
 ovtemp1 <- ovrad + aes(x=temp, color=rad) + geom_line(aes(group=rad), data=predvtemp1)
 
@@ -173,7 +196,12 @@ ndtemp2 <- with(ozone,
             expand.grid(rad=median(rad),
                         temp=seq(min(temp),max(temp),length=100),
                         wind=quantile(wind)))
-predvtemp2 <- augment(ogam1, newdata=ndtemp2) %>%
+pred.R <- predict(ogam1, newdata=ndtemp2, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndtemp2,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvtemp2 <- pred.R %>%
   rename(ozone=.fitted)
 ovtemp2 <- ovrad + aes(x=temp, color=wind) + geom_line(aes(group=wind), data=predvtemp2)
 
@@ -211,7 +239,12 @@ ndtemp1 <- with(ozone,
                         wind=median(wind)))
 
 # don't forget to backtransform predictions!
-predvtemp1 <- augment(ogam2, newdata=ndtemp1) %>%
+pred.R <- predict(ogam2, newdata=ndtemp1, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndtemp1,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvtemp1 <- pred.R %>%
   rename(ozone=.fitted) %>%
   mutate(ozone = 10^ozone)
 
@@ -221,7 +254,12 @@ ndtemp2 <- with(ozone,
             expand.grid(rad=median(rad),
                         temp=seq(min(temp), max(temp), length=100),
                         wind=quantile(wind)))
-predvtemp2 <- augment(ogam2, newdata=ndtemp2) %>%
+pred.R <- predict(ogam2, newdata=ndtemp2, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndtemp2,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvtemp2 <- pred.R %>%
   rename(ozone=.fitted) %>%
   mutate(ozone = 10^ozone)
 
@@ -233,8 +271,12 @@ ndwind1 <- with(ozone,
                         wind=seq(min(wind),max(wind),length=100)))
 
 # don't forget to backtransform predictions!
-predvwind1 <- augment(ogam2, newdata=ndwind1) %>%
-  rename(ozone=.fitted) %>%
+pred.R <- predict(ogam2, newdata=ndwind1, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndwind1,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvwind1 <- pred.R %>%  rename(ozone=.fitted) %>%
   mutate(ozone = 10^ozone)
 
 ovwind1 <- ovrad + aes(x=wind, color=rad) + geom_line(aes(group=rad), data=predvwind1)
@@ -245,8 +287,12 @@ ndwind2 <- with(ozone,
                         wind=seq(min(wind),max(wind),length=100)))
 
 # don't forget to backtransform predictions!
-predvwind2 <- augment(ogam2, newdata=ndwind2) %>%
-  rename(ozone=.fitted) %>%
+pred.R <- predict(ogam2, newdata=ndwind2, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndwind2,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvwind2 <- pred.R %>%  rename(ozone=.fitted) %>%
   mutate(ozone = 10^ozone)
 
 ovwind2 <- ovrad + aes(x=wind, color=temp) + geom_line(aes(group=temp), data=predvwind2)
@@ -280,19 +326,16 @@ cat("> The residuals on that model look fantastic, and the new 2-D smooth is ver
 ogam3 <- update(ogam3, .~.-s(wind)-s(temp))
 plot(ogam3,select=2, se=FALSE, pch=19)
 # already have the newdataframes I need
-predvtemp2 <- augment(ogam3, newdata=ndtemp2) %>%
-  rename(ozone=.fitted) %>%
+pred.R <- predict(ogam3, newdata=ndtemp2, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(ndtemp2,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvtemp2 <- pred.R %>%  rename(ozone=.fitted) %>%
   mutate(ozone = 10^ozone)
 
 ovrad + aes(x=temp, color=wind) + geom_line(aes(group=wind), data=predvtemp2)
 
-
-# don't forget to backtransform predictions!
-predvwind2 <- augment(ogam3, newdata=ndwind2) %>%
-  rename(ozone=.fitted) %>%
-  mutate(ozone = 10^ozone)
-
-ovrad + aes(x=wind, color=temp) + geom_line(aes(group=temp), data=predvwind2)
 
 ```
 
@@ -305,9 +348,23 @@ library(quantreg)
 windrq <- rq(wind~temp, tau=c(0.1, 0.5, 0.9), data=ozone)
 nd <- with(ozone, data.frame(rad=median(rad),
                              temp=seq(min(temp), max(temp), length=100)))
-predwind <- augment(windrq, newdata=nd) %>%
-  rename(wind=.fitted)
-predvtemp3 <- augment(ogam2, newdata=predwind)%>%
+# there's a bug in augment.rqs! I pulled the guts out here 
+# to manually get what should be one line.
+predwind <- predict(windrq, newdata = nd)
+predwind <- setNames(as.data.frame(predwind), windrq[["tau"]])
+predwind <- pivot_longer(predwind, 
+                         cols = dplyr::everything(), 
+                         names_to = ".tau", 
+                         values_to = "wind") %>%
+  as.data.frame() %>% 
+  bind_cols(nd[rep(seq_len(nrow(nd)), each = 3),], .) 
+
+pred.R <- predict(ogam2, newdata=predwind, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(predwind,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvtemp3 <- pred.R %>%  
   rename(ozone=.fitted) %>%
   mutate(ozone=10^ozone)
 ovrad + aes(x=temp, color=wind) +
@@ -319,7 +376,12 @@ cat("That's much better! Still, the prediction for the 90th percentile of wind i
 ```
 
 ```{r, echo = FALSE}
-predvtemp3 <- augment(ogam3, newdata=predwind)%>%
+pred.R <- predict(ogam3, newdata=predwind, se.fit=TRUE)
+pred.R <-as.data.frame(pred.R)
+pred.R <- cbind(predwind,pred.R)
+names(pred.R)[names(pred.R)=="fit"] <- ".fitted"
+names(pred.R)[names(pred.R)=="se.fit"] <- ".se.fit"
+predvtemp3 <- pred.R %>%
   rename(ozone=.fitted) %>%
   mutate(ozone=10^ozone)
 ovrad + aes(x=temp, color=wind) +
