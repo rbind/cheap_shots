@@ -34,9 +34,9 @@ cc</code></pre>
 </ol>
 <p>We can use a mixed model approach to get the best of both worlds - an estimate of the population average intercept and slope, and an idea of how much variation there is among individuals. The function lmer() in package lme4 is the method of choice here. The fixed effects part of the formula is identical to the lm() formula, with a response variable on the left of the ˜ and a covariate on the right. The new part specifies the random effects, and these are given in (). To the left of the | are the fixed effects that will vary among groups, and to the right of the | are the variable(s) that specify the groups. In this case the variable Subject defines the groups. As with other formulas, the intercept is implicit, so (Days | Subject) indicates that both the intercept and the slope are allowed to vary among subjects. This is the same as fitting a separate line to each subject, as we did above.</p>
 <pre class="r"><code># fit a mixed model
-## ss.mm &lt;- lmer(Reaction ~ Days + (Days | Subject), sleepstudy,
-##     REML = FALSE)
-## summary(ss.mm)</code></pre>
+ss.mm &lt;- lmer(Reaction ~ Days + (Days | Subject), sleepstudy,
+    REML = FALSE)</code></pre>
+<pre class="r"><code>summary(ss.mm)</code></pre>
 <p>Looking at the summary of the mixed model, you should see a “fixed effects” section which is identical to that from a normal lm() fit, with one notable exception. There are no p-values reported for each coefficient. This isn’t a mistake, it is a deliberate choice by the software designer to avoid an argument over the correct number of degrees of freedom to use for the test!</p>
 <ol start="2" class="example" style="list-style-type: decimal">
 <li>Compare the estimates and standard errors with those from the pooled data model.</li>
@@ -74,9 +74,9 @@ is called “shrinkage”, because the estimates of the within group coefficient
 <pre class="r"><code>data(mice, package = &quot;NRES803data&quot;)
 mice &lt;- filter(mice, sex != &quot;U&quot;)
 basemouse &lt;- ggplot(mice, aes(x = foot, y = ear)) + geom_point(alpha = 0.2) +
-    xlab(&quot;Foot Length [mm]&quot;) + ylab(&quot;Ear Length [mm]&quot;)
-## 
-basemouse + geom_smooth(method = &quot;lm&quot;) + facet_wrap(~site)</code></pre>
+    xlab(&quot;Foot Length [mm]&quot;) + ylab(&quot;Ear Length [mm]&quot;)</code></pre>
+<pre class="r"><code>basemouse + geom_smooth(method = &quot;lm&quot;) + facet_wrap(~site) +
+    labs(caption = &quot;Ear length vs. foot length in mm at a number of sites in the Northwest of Nebraska for two species of deer mouse.&quot;)</code></pre>
 <p>A few things are obvious from this plot. First, January collected alot of data at a few sites, and much less at others. Some of the sex size effects are clear in a few sites (two groups of points), but much less clear in others. But most interesting is the variation in slope. In many sites the bigger the feet the bigger the ears. But not everywhere! Put it all in one plot, adjusting the alpha level so overplotting is clearer.</p>
 <pre class="r"><code>basemouse + geom_smooth(aes(group = site), method = &quot;lm&quot;, se = FALSE) +
     labs(caption = &quot;Ear length by foot length with a predicted line for each site. Shading indicates overlapping points.&quot;)</code></pre>
@@ -96,8 +96,8 @@ measurements.</p>
 <pre class="r"><code>mice &lt;- mutate(mice, cfoot = foot - mean(foot), cear = ear -
     mean(ear))
 mice.global &lt;- lmer(cear ~ cfoot * species * sex + (cfoot | site),
-    data = mice)
-## summary(mice.global)</code></pre>
+    data = mice)</code></pre>
+<pre class="r"><code>summary(mice.global)</code></pre>
 <p>The convergence message goes away. If you compare those two summaries you will see that a lot things have stayed the same. The correlation between the random effects drops, the intercept changes (because measuring mean ear vs. mean foot instead of mean ear length when foot = 0), but the residual variance and the
 the foot coefficient are the same. Incidentally, old
 versions of package lme4 didn’t produce this message,
@@ -138,42 +138,41 @@ knitr::kable(aic)</code></pre>
 random effect is the best, by a large margin!
 In the next phase of model selection we use package lmerTest to evaluate the fixed effects structures using backwards selection with F tests.</p>
 <pre class="r"><code>library(&quot;lmerTest&quot;)  # need to rerun models after loading package to use these functions
-## mice.1 &lt;- lmer(cear ~ cfoot * species * sex + (cfoot - 1 | site) +
-##     (1 | site), data = mice)
-## 
-## 
-## coefTable &lt;- summary(mice.1, ddf = &quot;Kenward-Roger&quot;)$coefficients
-## knitr::kable(coefTable, digits = 2, caption = &quot;Fixed effects coefficients from a global model of mouse ear length. Degrees of freedom from the Kenward-Roger approximation.&quot;)</code></pre>
+mice.1 &lt;- lmer(cear ~ cfoot * species * sex + (cfoot - 1 | site) +
+    (1 | site), data = mice)
+
+
+coefTable &lt;- summary(mice.1, ddf = &quot;Kenward-Roger&quot;)$coefficients</code></pre>
+<pre class="r"><code>knitr::kable(coefTable, digits = 2, caption = &quot;Fixed effects coefficients from a global model of mouse ear length. Degrees of freedom from the Kenward-Roger approximation.&quot;)</code></pre>
 <p>Unlike the default <code>lmer()</code>, the extra functions in <code>lmerTest</code> push the p values out following the practices used in SAS. There is also a nice function that does automatic backwards selection. In order to stay within the R framework we have to change the default values to get a Type I sums of squares test.</p>
 <pre class="r"><code>step(mice.1, ddf = &quot;Satterthwaite&quot;)</code></pre>
 <p>Our final model is simply <code>cear ~ cfoot + (cfoot-1|site) + (1|site)</code>. This means the relationship between ear and foot length is constant between sexes and species, but varies geographically. I find that quite fascinating. I’ll fit this final model, and make a plot or two.</p>
 <pre class="r"><code>mice.final &lt;- lmer(cear ~ cfoot + (cfoot - 1 | site) + (1 | site),
-    data = mice)
-## summary(mice.final)  # capture the output</code></pre>
+    data = mice)</code></pre>
+<pre class="r"><code>summary(mice.final)</code></pre>
 <p>You can make predictions from these models just as you would with other models. Unfortunately <code>broom.mixed::augment()</code> doesn’t do predictions anymore. So we’ll do the manual route. You have to specify both the fixed effects values <em>and</em> a value for the random effect.</p>
 <pre class="r"><code>nd &lt;- data.frame(cfoot = seq(min(mice$cfoot), max(mice$cfoot),
     length = 50), site = factor(&quot;42&quot;, levels = unique(mice$site)))
-## # AAAHHH -- have to hack the class of the model to get the
-## # predict function working!  unnecessary if you don&#39;t use
-## # lmerTest
-## class(mice.final) &lt;- class(mice.global)
-## pred42 &lt;- bind_cols(nd, cear = predict(mice.final, newdata = nd,
-##     re.form = NULL))
-## ggplot(mice, aes(x = cfoot, y = cear)) + geom_point(alpha = 0.2) +
-##     xlab(&quot;Foot Length deviations [mm]&quot;) + ylab(&quot;Ear Length deviations [mm]&quot;) +
-##     geom_point(data = filter(mice, site == &quot;42&quot;), alpha = 1,
-##         color = &quot;red&quot;) + geom_line(data = pred42, size = 2, color = &quot;red&quot;)</code></pre>
+# AAAHHH -- have to hack the class of the model to get the
+# predict function working!  unnecessary if you don&#39;t use
+# lmerTest
+class(mice.final) &lt;- class(mice.global)</code></pre>
+<pre class="r"><code>pred42 &lt;- bind_cols(nd, cear = predict(mice.final, newdata = nd,
+    re.form = NULL))
+ggplot(mice, aes(x = cfoot, y = cear)) + geom_point(alpha = 0.2) +
+    xlab(&quot;Foot Length deviations [mm]&quot;) + ylab(&quot;Ear Length deviations [mm]&quot;) +
+    geom_point(data = filter(mice, site == &quot;42&quot;), alpha = 1,
+        color = &quot;red&quot;) + geom_line(data = pred42, size = 2, color = &quot;red&quot;)</code></pre>
 <p>So you could get lines for every site, but that would be a bit messy. We say these predictions are “conditional” on the random effects, because they include the perturbations from the random effects. Another thing you might want are predictions “unconditional” on the random effects. We can get these too but not from <code>broom::augment()</code>. Package lme4 includes a <code>predict()</code> function for these fitted objects.</p>
 <pre class="r"><code># get predictions unconditional on random effect
-## preduc &lt;- cbind(nd, cear = predict(mice.final, newdata = nd,
-##     re.form = ~0))
-## 
-## # make the plot above, but fade out the red line and add
-## # unconditional prediction
-## ggplot(mice, aes(x = cfoot, y = cear)) + geom_point(alpha = 0.2) +
-##     xlab(&quot;Foot Length deviations[mm]&quot;) + ylab(&quot;Ear Length deviations [mm]&quot;) +
-##     geom_line(data = pred42, size = 2, color = &quot;red&quot;, alpha = 0.4) +
-##     geom_line(data = preduc, size = 2)</code></pre>
+preduc &lt;- cbind(nd, cear = predict(mice.final, newdata = nd,
+    re.form = ~0))</code></pre>
+<pre class="r"><code># make the plot above, but fade out the red line and add
+# unconditional prediction
+ggplot(mice, aes(x = cfoot, y = cear)) + geom_point(alpha = 0.2) +
+    xlab(&quot;Foot Length deviations[mm]&quot;) + ylab(&quot;Ear Length deviations [mm]&quot;) +
+    geom_line(data = pred42, size = 2, color = &quot;red&quot;, alpha = 0.4) +
+    geom_line(data = preduc, size = 2)</code></pre>
 <p>That line represents the relationship between ears and feet we expect to find at a randomly chosen new site.</p>
 <p>What about confidence intervals on our predictions? A very good question, young grasshopper, but one that will have to wait!</p>
 </div>

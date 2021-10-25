@@ -61,10 +61,13 @@ all.equal(meancc, coef(ss.lm))
 
 We can use a mixed model approach to get the best of both worlds - an estimate of the population average intercept and slope, and an idea of how much variation there is among individuals. The function lmer() in package lme4 is the method of choice here. The fixed effects part of the formula is identical to the lm() formula, with a response variable on the left of the ˜ and a covariate on the right. The new part specifies the random effects, and these are given in (). To the left of the | are the fixed effects that will vary among groups, and to the right of the | are the variable(s) that specify the groups. In this case the variable Subject defines the groups. As with other formulas, the intercept is implicit, so (Days | Subject) indicates that both the intercept and the slope are allowed to vary among subjects. This is the same as fitting a separate line to each subject, as we did above.
 
-```{r MixedModel, eval=1}
+```{r}
 # fit a mixed model
 ss.mm <- lmer(Reaction ~ Days + (Days | Subject),
-                      sleepstudy,REML=FALSE)
+              sleepstudy,REML=FALSE)
+```
+
+```{r MixedModel, eval=lab.eval}
 summary(ss.mm)
 ```
 
@@ -116,17 +119,20 @@ is called “shrinkage”, because the estimates of the within group coefficient
 
 Let's look at January Frost's mouse dataset. These are morphological measurements of mice caught at various sites in the Niobrara Valley. Let's look at the breakdown of the relationship between ear size and foot length by geographic site. Sex also matters.
 
-```{r figureEarFootbySite, eval=-4, fig.cap='Ear length vs. foot length in mm at a number of sites in the Northwest of Nebraska for two species of deer mouse.'}
+```{r figureEarFootbySite}
 data(mice, package = "NRES803data")
 mice = filter(mice, sex != "U")
 basemouse <- ggplot(mice, aes(x=foot, y=ear)) + 
   geom_point(alpha=0.2) +
   xlab('Foot Length [mm]') + ylab('Ear Length [mm]')
-
+```
+```{r, eval = lab.eval}
 basemouse + 
   geom_smooth(method="lm") + 
-  facet_wrap(~site)
+  facet_wrap(~site) +
+  labs(caption = 'Ear length vs. foot length in mm at a number of sites in the Northwest of Nebraska for two species of deer mouse.')
 ```
+
 
 A few things are obvious from this plot. First, January collected alot of data at a few sites, and much less at others. Some of the sex size effects are clear in a few sites (two groups of points), but much less clear in others. But most interesting is the variation in slope. In many sites the bigger the feet the bigger the ears. But not everywhere! Put it all in one plot, adjusting the alpha level so overplotting is clearer.
 
@@ -153,10 +159,12 @@ slope of the line increases, the intercept necessarily
 decreases. One possible fix is to center the foot and ear
 measurements.
 
-```{r, eval = ifelse(lab.eval, TRUE, -3)}
+```{r}
 mice <- mutate(mice, cfoot = foot - mean(foot),
                cear = ear - mean(ear))
 mice.global = lmer(cear ~ cfoot * species * sex + (cfoot | site), data = mice)
+```
+```{r, eval = lab.eval}
 summary(mice.global)
 ```
 
@@ -211,12 +219,14 @@ If you do that with the uncentered data, the correlated
 random effect is the best, by a large margin! 
  In the next phase of model selection we use package lmerTest to evaluate the fixed effects structures using backwards selection with F tests.
 
-```{r globalModelSummary, eval=ifelse(lab.eval, TRUE, 1:3)}
+```{r globalModelSummary}
 library("lmerTest") # need to rerun models after loading package to use these functions
 mice.1 <- lmer(cear ~ cfoot * species * sex + (cfoot -1 | site)+(1 | site), data = mice)
 
 
 coefTable = summary(mice.1,                    ddf="Kenward-Roger")$coefficients
+```
+```{r, eval=lab.eval}
 knitr::kable(coefTable,digits=2,caption='Fixed effects coefficients from a global model of mouse ear length. Degrees of freedom from the Kenward-Roger approximation.')
 ```
 
@@ -228,15 +238,17 @@ step(mice.1, ddf = "Satterthwaite")
 
 Our final model is simply `cear ~ cfoot + (cfoot-1|site) + (1|site)`. This means the relationship between ear and foot length is constant between sexes and species, but varies geographically. I find that quite fascinating. I'll fit this final model, and make a plot or two.
 
-```{r finalModelSummary, eval=ifelse(lab.eval,TRUE,1), result='hold'}
+```{r finalModelSummary}
 mice.final = lmer(cear ~ cfoot + (cfoot - 1 | site) + 
                     (1|site), data = mice)
-summary(mice.final) # capture the output
+```
+```{r, eval = lab.eval}
+summary(mice.final)
 ```
 
 You can make predictions from these models just as you would with other models. Unfortunately  `broom.mixed::augment()` doesn't do predictions anymore. So we'll do the manual route. You have to specify both the fixed effects values *and* a value for the random effect. 
 
-```{r, eval= ifelse(lab.eval,TRUE,1:2)}
+```{r}
 nd <- data.frame(cfoot=seq(min(mice$cfoot),
                            max(mice$cfoot),length=50), 
                  site=factor("42",
@@ -245,6 +257,8 @@ nd <- data.frame(cfoot=seq(min(mice$cfoot),
 # to get the predict function working! 
 # unnecessary if you don't use lmerTest
 class(mice.final) <- class(mice.global)
+```
+```{r, eval = lab.eval}
 pred42 <- bind_cols(nd, 
                     cear = predict(mice.final, newdata=nd, re.form =  NULL)) 
 ggplot(mice, aes(x=cfoot, y=cear)) + 
@@ -257,10 +271,11 @@ ggplot(mice, aes(x=cfoot, y=cear)) +
 
 So you could get lines for every site, but that would be a bit messy. We say these predictions are "conditional" on the random effects, because they include the perturbations from the random effects. Another thing you might want are predictions "unconditional" on the random effects. We can get these too but not from `broom::augment()`. Package lme4 includes a `predict()` function for these fitted objects. 
 
-```{r, eval=ifelse(lab.eval,TRUE,1)}
+```{r}
 # get predictions unconditional on random effect
 preduc <- cbind(nd, cear=predict(mice.final, newdata = nd, re.form = ~0))
-
+```
+```{r, eval = lab.eval}
 # make the plot above, but fade out the red line and add unconditional prediction
 ggplot(mice, aes(x=cfoot, y=cear)) + 
   geom_point(alpha=0.2) +
